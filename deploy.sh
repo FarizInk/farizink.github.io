@@ -1,1 +1,1 @@
-npm install && npm run build && node ./gh-pages.cjs
+npm install && npm run build && echo 'fariz.dev' > ./dist/CNAME && node ./gh-pages.cjs
