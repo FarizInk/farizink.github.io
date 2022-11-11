@@ -1,7 +1,7 @@
 <script>
   import SpotifyLogoIcon from "./icons/SpotifyLogoIcon.svelte";
   import { onMount } from "svelte";
-  
+
   let spotifyToken = null;
   let spotify = false;
   let isPlaying = false;
@@ -39,8 +39,8 @@
         if (data.devices.length >= 1) {
           const activeDevice = data.devices.find((device) => device.is_active);
           if (activeDevice !== undefined) {
-            device.name = activeDevice.name
-            device.type = activeDevice.type
+            device.name = activeDevice.name;
+            device.type = activeDevice.type;
           } else {
             device = { ...defaultDevice };
           }
@@ -110,7 +110,7 @@
       .catch((error) => {
         spotify = false;
         console.log(error);
-        setTimeout(() => getCurrentPlayingTrack(), 7000)
+        setTimeout(() => getCurrentPlayingTrack(), 7000);
         return [];
       });
   };
@@ -132,92 +132,117 @@
 </script>
 
 {#if spotify}
-<div
-  class="overflow-hidden bg-spotify-black-2 rounded-lg shadow-lg"
->
-  <div
-    class="w-full flex gap-4 h-16 max-w-full overflow-hidden p-2 justify-between items-center {isPlaying
-      ? 'bg-spotify-green'
-      : 'bg-spotify-black-1'}"
-  >
-    <div class="h-full w-12">
-      <a href={track.album_url} target="_blank" rel="noreferrer">
-        <img
-          src={track.album_img}
-          alt=""
-          class="h-full overflow-hidden rounded-sm"
-        />
-      </a>
-    </div>
-    <div class="flex-1 flex flex-col justify-start">
-      <div
-        class="text-base font-bold {isPlaying
-          ? 'text-black'
-          : 'text-white'}"
-      >
-        <a
-          target="_blank"
-          rel="noreferrer"
-          class="hover:underline"
-          href={track.url}
-          id="track-title"
-        >
-          {track.name}
+  <div class="overflow-hidden bg-spotify-black-2 rounded-lg shadow-lg">
+    <div
+      class="w-full flex gap-4 h-16 max-w-full overflow-hidden p-2 justify-between items-center {isPlaying
+        ? 'bg-spotify-green'
+        : 'bg-spotify-black-1'}"
+    >
+      <div class="h-full w-12">
+        <a href={track.album_url} target="_blank" rel="noreferrer">
+          <img
+            src={track.album_img}
+            alt=""
+            class="h-full overflow-hidden rounded-sm"
+          />
         </a>
       </div>
-      <div class="text-sm {isPlaying ? 'text-gray-800' : 'text-white'}">
-        {#each track.artists as { external_urls, name }, i}
-          <span>
-            <a
-              target="_blank"
-              rel="noreferrer"
-              class="hover:underline truncate text-ellipsis"
-              href={external_urls.spotify}
-            >
-              {name}
-            </a>
-            {#if i + 1 !== track.artists.length}
-              ,
-            {/if}
-          </span>
-        {/each}
-      </div>
-    </div>
-    <div />
-  </div>
-  <div
-    class="text-sm text-white p-2 flex gap-0 sm:gap-3 flex-col sm:flex-row items-center justify-between"
-  >
-    <div class="w-full sm:w-auto text-left">
-      {#if device.name !== null}
-      On <span class="font-bold">{device.name}</span>
-      {/if}
-    </div>
-    <div class="flex-1 w-full flex gap-3 items-center">
-      <div class="flex-1">
+      <div class="flex-1 flex flex-col justify-start">
         <div
-          class="rounded-full h-1 w-full bg-opacity-40 overflow-hidden {isPlaying
-            ? 'bg-spotify-green'
-            : 'bg-spotify-black-1'}"
+          class="text-base font-bold {isPlaying ? 'text-black' : 'text-white'}"
         >
-          <div
-            class="h-full {isPlaying
-              ? 'bg-spotify-green'
-              : 'bg-spotify-black-1'}"
-            style="width: {track.percent}%;"
-          />
+          <a
+            target="_blank"
+            rel="noreferrer"
+            class="hover:underline"
+            href={track.url}
+            id="track-title"
+          >
+            {track.name}
+          </a>
+        </div>
+        <div class="text-sm {isPlaying ? 'text-gray-800' : 'text-white'}">
+          {#each track.artists as { external_urls, name }, i}
+            <span>
+              <a
+                target="_blank"
+                rel="noreferrer"
+                class="hover:underline truncate text-ellipsis"
+                href={external_urls.spotify}
+              >
+                {name}
+              </a>
+              {#if i + 1 !== track.artists.length}
+                ,
+              {/if}
+            </span>
+          {/each}
         </div>
       </div>
-      <div>
-        <a
-          href="https://open.spotify.com"
-          rel="noreferrer"
-          target="_blank"
-        >
-          <SpotifyLogoIcon class="h-4 w-auto text-white" />
-        </a>
+      <div />
+    </div>
+    <div
+      class="text-sm text-white p-2 flex gap-0 sm:gap-3 flex-col sm:flex-row items-center justify-between"
+    >
+      <div class="w-full sm:w-auto text-left">
+        {#if device.name !== null}
+          On <span class="font-bold">{device.name}</span>
+        {/if}
+      </div>
+      <div class="flex-1 w-full flex gap-3 items-center">
+        <div class="flex-1">
+          <div
+            class="rounded-full h-1 w-full bg-opacity-40 overflow-hidden {isPlaying
+              ? 'bg-spotify-green'
+              : 'bg-spotify-black-1'}"
+          >
+            <div
+              class="h-full {isPlaying
+                ? 'bg-spotify-green'
+                : 'bg-spotify-black-1'}"
+              style="width: {track.percent}%;"
+            />
+          </div>
+        </div>
+        <div>
+          <a href="https://open.spotify.com" rel="noreferrer" target="_blank">
+            <SpotifyLogoIcon class="h-4 w-auto text-white" />
+          </a>
+        </div>
       </div>
     </div>
   </div>
-</div>
+{:else}
+  <div
+    class="spotify-offline w-full bg-spotify-black-1 rounded-lg flex flex-col overflow-hidden"
+  >
+    <div
+      class="bg-spotify-black-2 w-full flex items-center p-2  gap-4 h-16"
+    >
+      <div class="rounded-sm w-12 h-12 animate-pulse bg-spotify-black-4">
+        
+      </div>
+      <div class="flex flex-col justify-center gap-3 flex-1">
+        <div class="w-1/2 h-4 animate-pulse bg-spotify-black-4 rounded-sm"></div>
+        <div class="w-1/3 h-4 animate-pulse bg-spotify-black-4 rounded-sm"></div>
+      </div>
+    </div>
+    <div
+      class="text-white flex-1 px-3 w-full bg-spotify-black-3 flex gap-2 justify-between items-center"
+    >
+      <div class="text-gray-300">Offline</div>
+      <a href="https://open.spotify.com" rel="noreferrer" target="_blank">
+        <SpotifyLogoIcon class="h-4 w-auto text-white" />
+      </a>
+    </div>
+  </div>
 {/if}
+
+<style scoped>
+  .spotify-offline {
+    height: 100px;
+  }
+  .spotify-skeleton-container {
+    height: 64px;
+  }
+</style>
