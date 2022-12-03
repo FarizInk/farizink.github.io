@@ -2,12 +2,23 @@
   import LoveIcon from "./components/icons/LoveIcon.svelte";
   import Thanks from "./components/Thanks.svelte";
   import Modal from "./components/Modal.svelte";
-  import photo from "./assets/me.jpg";
+  import photoOne from "./assets/me/1.jpg";
+  import photoTwo from "./assets/me/2.jpg";
   import SpotifyActivity from "./components/SpotifyActivity.svelte";
   import ConnectWithMe from "./components/ConnectWithMe.svelte";
 
   let modalThanks;
+  
   let showPhoto = false;
+  let randPhoto = null;
+  const togglePhoto = () => {
+    const photos = [photoOne, photoTwo];
+    if (!showPhoto) {
+      randPhoto = photos[Math.floor(Math.random() * photos.length)];
+      console.log(randPhoto);
+    }
+    showPhoto = !showPhoto;
+  }
 </script>
 
 <main class="flex flex-col justify-center items-center">
@@ -18,7 +29,7 @@
           class="cursor-text text-left text-black dark:text-white {showPhoto
             ? 'bg-amber-300 dark:bg-purple-800 bg-opacity-0 dark:bg-opacity-0 md:bg-opacity-50 dark:md:bg-opacity-50'
             : ''}"
-          on:click={() => (showPhoto = !showPhoto)}>Nizar Alfarizi Akbar</button
+          on:click={() => togglePhoto()}>Nizar Alfarizi Akbar</button
         >
       </h1>
       <h4 class="text-lg text-opacity-50 dark:text-opacity-50 text-black dark:text-white">
@@ -59,7 +70,7 @@
         ? 'hidden md:block absolute'
         : 'hidden'}"
     >
-      <img src={photo} alt="Fariz" />
+      <img src={randPhoto} alt="Fariz" />
     </div>
   </div>
 </main>
