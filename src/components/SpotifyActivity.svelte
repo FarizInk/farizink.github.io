@@ -242,7 +242,4 @@
   .spotify-offline {
     height: 100px;
   }
-  .spotify-skeleton-container {
-    height: 64px;
-  }
 </style>
