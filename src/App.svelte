@@ -15,7 +15,6 @@
     const photos = [photoOne, photoTwo];
     if (!showPhoto) {
       randPhoto = photos[Math.floor(Math.random() * photos.length)];
-      console.log(randPhoto);
     }
     showPhoto = !showPhoto;
   }
@@ -66,7 +65,7 @@
 
     <!-- my photo 😬 -->
     <div
-      class="w-80 rounded-xl overflow-hidden left-0 bottom-10 {showPhoto
+      class="w-80 rounded-xl overflow-hidden left-0 bottom-10 bg-gray-100 dark:bg-black {showPhoto
         ? 'hidden md:block absolute'
         : 'hidden'}"
     >
