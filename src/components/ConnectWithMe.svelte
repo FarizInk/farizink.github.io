@@ -35,18 +35,14 @@
   >
     <GithubIcon class="w-4 h-4 text-black dark:text-gray-200 group-hover:text-gray-50" />
   </a>
-  <div class="rounded-full bg-gray-100 dark:bg-gray-800 flex gap-2 justify-center items-center">
-    <div class="bg-gray-200 dark:bg-gray-700 p-3 rounded-full hover:bg-gray-900 dark:hover:bg-gray-900 border border-transparent hover:border-discord-blurple group">
-      <DiscordIcon
-        class="w-4 h-4 text-black dark:text-white group-hover:text-discord-blurple"
-      />
-    </div>
-    <div class="mr-3">
-      <span class="text-gray-700 dark:text-white">SpellsHand</span><span class="text-gray-400"
-        >#9377</span
-      >
-    </div>
-  </div>
+  <a
+    href="https://discord.com/users/383164336450830336"
+    target="_blank"
+    rel="noreferrer"
+    class="bg-gray-200 dark:bg-gray-700 p-3 rounded-full flex justify-center items-center hover:bg-gray-900 dark:hover:bg-gray-900 border border-transparent hover:border-twitter-blue-1 group"
+  >
+    <DiscordIcon class="w-4 h-4 text-black dark:text-white group-hover:text-discord-blurple"/>
+  </a>
   <a
     href="https://twitter.com/farizink"
     target="_blank"
