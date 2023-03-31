@@ -55,7 +55,7 @@
   };
 
   const refreshToken = () => {
-    fetch("https://spotapi-token.fariz.dev/refresh")
+    fetch("https://spotapi.fariz.dev/refresh")
       .then((response) => response.json())
       .then((data) => {
         if (data.data !== null) {
@@ -116,7 +116,7 @@
   };
 
   onMount(() => {
-    fetch("https://spotapi-token.fariz.dev/token")
+    fetch("https://spotapi.fariz.dev/token")
       .then((response) => response.json())
       .then((data) => {
         if (data.data !== null) {
