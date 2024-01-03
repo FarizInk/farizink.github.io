@@ -4,6 +4,7 @@
   import GithubIcon from "./icons/GithubIcon.svelte";
   import DiscordIcon from "./icons/DiscordIcon.svelte";
   import TwitterIcon from "./icons/TwitterIcon.svelte";
+  import XIcon from "./icons/XIcon.svelte";
   import SpotifyIcon from "./icons/SpotifyIcon.svelte";
 </script>
 
@@ -44,12 +45,12 @@
     <DiscordIcon class="w-4 h-4 text-black dark:text-white group-hover:text-discord-blurple"/>
   </a>
   <a
-    href="https://twitter.com/farizink"
+    href="https://x.com/farizink"
     target="_blank"
     rel="noreferrer"
-    class="bg-gray-200 dark:bg-gray-700 p-3 rounded-full flex justify-center items-center hover:bg-gray-900 dark:hover:bg-gray-900 border border-transparent hover:border-twitter-blue-1 group"
+    class="bg-gray-200 dark:bg-gray-700 p-3 rounded-full flex justify-center items-center hover:bg-gray-900 dark:hover:bg-gray-900 border border-transparent hover:border-gray-50 group"
   >
-    <TwitterIcon class="w-4 h-4 text-black dark:text-white group-hover:text-twitter-blue-1" />
+    <XIcon class="w-4 h-4 text-black dark:text-white group-hover:text-gray-50" />
   </a>
   <a
     href="https://open.spotify.com/user/ci98z18wa1ebncapbw5hq350x"

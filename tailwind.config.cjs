@@ -17,6 +17,7 @@ module.exports = {
         'gmail-red-1': '#c71610',
         'discord-blurple': '#7289DA',
         'twitter-blue-1': '#00acee',
+        'x-black-1': '#000',
         'zasifer-yellow-1': '#FFD600',
       },
     },
