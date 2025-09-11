@@ -1,6 +1,5 @@
 <script>
-  let clazz = "w-6 h-6";
-  export { clazz as class };
+  let { class: clazz = "w-6 h-6" } = $props();
 </script>
 
 <svg

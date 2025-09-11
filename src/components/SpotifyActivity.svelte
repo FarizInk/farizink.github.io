@@ -2,22 +2,22 @@
   import SpotifyLogoIcon from "./icons/SpotifyLogoIcon.svelte";
   import { onMount } from "svelte";
 
-  let spotifyToken = null;
-  let spotify = false;
-  let isPlaying = false;
-  let track = {
+  let spotifyToken = $state(null);
+  let spotify = $state(false);
+  let isPlaying = $state(false);
+  let track = $state({
     album_img: null,
     album_url: null,
     artists: [],
     url: null,
     name: null,
     percent: 0,
-  };
+  });
   const defaultDevice = {
     name: null,
     type: null,
   };
-  let device = { ...defaultDevice };
+  let device = $state({ ...defaultDevice });
 
   const getDevice = () => {
     fetch("https://api.spotify.com/v1/me/player/devices", {
@@ -179,7 +179,7 @@
           {/each}
         </div>
       </div>
-      <div />
+      <div></div>
     </div>
     <div
       class="text-sm text-white p-2 flex gap-0 sm:gap-3 flex-col sm:flex-row items-center justify-between"
@@ -201,7 +201,7 @@
                 ? 'bg-spotify-green'
                 : 'bg-spotify-black-1'}"
               style="width: {track.percent}%;"
-            />
+            ></div>
           </div>
         </div>
         <div>
