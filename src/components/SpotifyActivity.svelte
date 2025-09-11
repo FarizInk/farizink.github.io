@@ -1,11 +1,33 @@
-<script>
+<script lang="ts">
   import SpotifyLogoIcon from "./icons/SpotifyLogoIcon.svelte";
   import { onMount } from "svelte";
 
-  let spotifyToken = $state(null);
+  interface SpotifyDevice {
+    name: string | null;
+    type: string | null;
+    is_active?: boolean;
+  }
+
+  interface SpotifyArtist {
+    name: string;
+    external_urls: {
+      spotify: string;
+    };
+  }
+
+  interface SpotifyTrack {
+    album_img: string | null;
+    album_url: string | null;
+    artists: SpotifyArtist[];
+    url: string | null;
+    name: string | null;
+    percent: number;
+  }
+
+  let spotifyToken = $state<string | null>(null);
   let spotify = $state(false);
   let isPlaying = $state(false);
-  let track = $state({
+  let track = $state<SpotifyTrack>({
     album_img: null,
     album_url: null,
     artists: [],
@@ -13,11 +35,11 @@
     name: null,
     percent: 0,
   });
-  const defaultDevice = {
+  const defaultDevice: SpotifyDevice = {
     name: null,
     type: null,
   };
-  let device = $state({ ...defaultDevice });
+  let device = $state<SpotifyDevice>({ ...defaultDevice });
 
   const getDevice = () => {
     fetch("https://api.spotify.com/v1/me/player/devices", {
@@ -35,9 +57,9 @@
           return false;
         }
       })
-      .then((data) => {
+      .then((data: any) => {
         if (data.devices.length >= 1) {
-          const activeDevice = data.devices.find((device) => device.is_active);
+          const activeDevice = data.devices.find((device: SpotifyDevice) => device.is_active);
           if (activeDevice !== undefined) {
             device.name = activeDevice.name;
             device.type = activeDevice.type;

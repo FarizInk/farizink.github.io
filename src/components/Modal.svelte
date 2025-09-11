@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { fade, scale } from 'svelte/transition';
 	
 	let { isOpen = false, isRaw = false, maxW = 'max-w-full', forceClose = true, onClose = () => {}, children } = $props();
@@ -7,7 +7,7 @@
 		onClose();
 	}
 	
-	function handleKeydown(e) {
+	function handleKeydown(e: KeyboardEvent) {
 		if (forceClose && (e.key === 'Enter' || e.key === ' ')) {
 			close();
 		}

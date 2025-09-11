@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import MailIcon from "./icons/MailIcon.svelte";
   import LinkedinIcon from "./icons/LinkedinIcon.svelte";
   import GithubIcon from "./icons/GithubIcon.svelte";

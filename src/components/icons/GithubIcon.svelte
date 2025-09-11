@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   let { class: clazz = "w-6 h-6" } = $props();
 </script>
 

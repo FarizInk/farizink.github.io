@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import LoveIcon from "./components/icons/LoveIcon.svelte";
   import Thanks from "./components/Thanks.svelte";
   import Modal from "./components/Modal.svelte";
@@ -11,7 +11,7 @@
   let showThanksModal = $state(false);
 
   let showPhoto = $state(false);
-  let randPhoto = $state(null);
+  let randPhoto = $state<string | null>(null);
 
   const togglePhoto = () => {
     const photos = [photoOne, photoTwo];
