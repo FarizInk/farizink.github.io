@@ -35,18 +35,17 @@
     <div class="z-10 relative text-black">
       <h1 class="text-2xl md:text-4xl font-bold">
         <button
+          type="button"
           class="cursor-text text-left text-black dark:text-white {showPhoto
-            ? 'bg-amber-300 dark:bg-purple-800 bg-opacity-0 dark:bg-opacity-0 md:bg-opacity-50 dark:md:bg-opacity-50'
+            ? 'bg-amber-300/0 md:bg-amber-300/50 dark:bg-purple-800/0 md:dark:bg-purple-800/50'
             : ''}"
           onclick={() => togglePhoto()}>Nizar Alfarizi Akbar</button
         >
       </h1>
-      <h4
-        class="text-lg text-opacity-50 dark:text-opacity-50 text-black dark:text-white"
-      >
+      <h4 class="text-lg text-black/50 dark:text-white/50">
         <span
           class={showPhoto
-            ? "bg-amber-300 dark:bg-purple-800 bg-opacity-0 dark:bg-opacity-0 md:bg-opacity-50 dark:md:bg-opacity-50"
+            ? "bg-amber-300/0 md:bg-amber-300/50 dark:bg-purple-800/0 md:dark:bg-purple-800/50"
             : ""}>known as <span class="italic font-bold">Fariz</span></span
         >
       </h4>
@@ -54,7 +53,7 @@
       <p class="mt-4 text-black dark:text-white text-sm md:text-base">
         <span
           class={showPhoto
-            ? "bg-amber-300 dark:bg-purple-800 bg-opacity-0 dark:bg-opacity-0 md:bg-opacity-50 dark:md:bg-opacity-50"
+            ? "bg-amber-300/0 md:bg-amber-300/50 dark:bg-purple-800/0 md:dark:bg-purple-800/50"
             : ""}
           >I'm a software engineer based in Surabaya, Indonesia. Specializing in
           Backend Developer, high-quality websites and applications. Currently
@@ -93,12 +92,12 @@
 <footer
   class="flex justify-center items-center backdrop-blur-md bg-white/30 dark:bg-gray-900/30 text-black dark:text-white"
 >
-  Made with <button onclick={openThanksModal}
-    ><LoveIcon class="w-5 h-5 mx-1 text-rose-600" /></button
-  > in Surabaya.
+  Made with <button type="button" onclick={openThanksModal} class="hover:cursor-pointer">
+    <LoveIcon class="w-5 h-5 mx-1 text-rose-600" />
+  </button> in Surabaya.
 </footer>
 
-<Modal isOpen={showThanksModal} onClose={closeThanksModal}>
+<Modal isOpen={showThanksModal} onClose={closeThanksModal} maxW="max-w-2xl">
   {#snippet children()}
     <Thanks />
   {/snippet}

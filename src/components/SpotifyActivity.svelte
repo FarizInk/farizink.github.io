@@ -192,9 +192,9 @@
       <div class="flex-1 w-full flex gap-3 items-center">
         <div class="flex-1">
           <div
-            class="rounded-full h-1 w-full bg-opacity-40 overflow-hidden {isPlaying
-              ? 'bg-spotify-green'
-              : 'bg-spotify-black-1'}"
+            class="rounded-full h-1 w-full overflow-hidden {isPlaying
+              ? 'bg-spotify-green/40'
+              : 'bg-spotify-black-1/40'}"
           >
             <div
               class="h-full {isPlaying
