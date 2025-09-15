@@ -14,9 +14,9 @@
       href="mailto:me@fariz.dev"
       target="_blank"
       rel="noreferrer"
-      class="bg-gray-200 dark:bg-gray-700 p-3 rounded-full hover:bg-gray-900 dark:hover:bg-gray-90 border border-transparent hover:border-zasifer-yellow-1 group"
+      class="bg-gray-200 dark:bg-gray-700 p-3 rounded-full dark:hover:bg-gray-900 hover:bg-zasifer-yellow-1 border border-transparent hover:border-zasifer-yellow-1 group"
     >
-      <MailIcon class="w-4 h-4 text-black dark:text-white group-hover:text-zasifer-yellow-1" />
+      <MailIcon class="w-4 h-4 text-black dark:text-white dark:group-hover:text-zasifer-yellow-1" />
     </a>
     <div class="mr-3 text-gray-700 dark:text-gray-200">me@fariz.dev</div>
   </div>
@@ -24,9 +24,9 @@
     href="https://www.linkedin.com/in/farizink"
     target="_blank"
     rel="noreferrer"
-    class="bg-gray-200 dark:bg-gray-700 p-3 rounded-full flex justify-center items-center hover:bg-gray-900 dark:hover:bg-gray-900 border border-transparent hover:border-linkedin-blue-1 group"
+    class="bg-gray-200 dark:bg-gray-700 p-3 rounded-full flex justify-center items-center hover:bg-linkedin-blue-1 dark:hover:bg-gray-900 border border-transparent hover:border-linkedin-blue-1 group"
   >
-    <LinkedinIcon class="w-4 h-4 text-black dark:text-gray-200 group-hover:text-linkedin-blue-1" />
+    <LinkedinIcon class="w-4 h-4 text-black dark:text-gray-200 group-hover:text-white dark:group-hover:text-linkedin-blue-1" />
   </a>
   <a
     href="https://github.com/farizink"
@@ -40,9 +40,9 @@
     href="https://discord.com/users/383164336450830336"
     target="_blank"
     rel="noreferrer"
-    class="bg-gray-200 dark:bg-gray-700 p-3 rounded-full flex justify-center items-center hover:bg-gray-900 dark:hover:bg-gray-900 border border-transparent hover:border-discord-blurple group"
+    class="bg-gray-200 dark:bg-gray-700 p-3 rounded-full flex justify-center items-center hover:bg-discord-blurple dark:hover:bg-gray-900 border border-transparent hover:border-discord-blurple group"
   >
-    <DiscordIcon class="w-4 h-4 text-black dark:text-white group-hover:text-discord-blurple"/>
+    <DiscordIcon class="w-4 h-4 text-black dark:text-white group-hover:text-white dark:group-hover:text-discord-blurple"/>
   </a>
   <a
     href="https://x.com/farizink"

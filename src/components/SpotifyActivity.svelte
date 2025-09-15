@@ -1,6 +1,6 @@
 <script lang="ts">
   import SpotifyLogoIcon from "./icons/SpotifyLogoIcon.svelte";
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
 
   interface SpotifyDevice {
     name: string | null;
@@ -22,6 +22,8 @@
     url: string | null;
     name: string | null;
     percent: number;
+    duration_ms: number;
+    progress_ms: number;
   }
 
   let spotifyToken = $state<string | null>(null);
@@ -34,12 +36,52 @@
     url: null,
     name: null,
     percent: 0,
+    duration_ms: 0,
+    progress_ms: 0,
   });
   const defaultDevice: SpotifyDevice = {
     name: null,
     type: null,
   };
   let device = $state<SpotifyDevice>({ ...defaultDevice });
+
+  // Track timeout IDs for cleanup
+  let timeoutIds: Set<number> = new Set();
+  let isComponentMounted = false;
+
+  // Helper function to manage timeouts
+  const setManagedTimeout = (callback: () => void, delay: number): number => {
+    if (!isComponentMounted) return -1;
+    
+    const timeoutId = window.setTimeout(() => {
+      timeoutIds.delete(timeoutId);
+      if (isComponentMounted) {
+        callback();
+      }
+    }, delay);
+    
+    timeoutIds.add(timeoutId);
+    return timeoutId;
+  };
+
+  // Cleanup function
+  const cleanup = () => {
+    isComponentMounted = false;
+    timeoutIds.forEach(id => clearTimeout(id));
+    timeoutIds.clear();
+  };
+
+  // Helper function to calculate remaining time
+  const getRemainingTime = (): string => {
+    if (!track.duration_ms || !track.progress_ms) return '';
+    
+    const remainingMs = track.duration_ms - track.progress_ms;
+    const remainingMinutes = Math.ceil(remainingMs / 1000 / 60);
+    
+    if (remainingMinutes <= 0) return '';
+    if (remainingMinutes === 1) return '1 min left';
+    return `${remainingMinutes} min left`;
+  };
 
   const getDevice = () => {
     fetch("https://api.spotify.com/v1/me/player/devices", {
@@ -92,6 +134,8 @@
   };
 
   const getCurrentPlayingTrack = () => {
+    if (!isComponentMounted) return;
+    
     fetch("https://api.spotify.com/v1/me/player/currently-playing?market=ID", {
       method: "GET",
       headers: new Headers({
@@ -101,55 +145,66 @@
       }),
     })
       .then((response) => {
+        if (!isComponentMounted) return null;
+        
         if (response.status === 200) {
           return response.json();
         } else if (response.status === 401) {
           refreshToken();
+          return null;
         } else {
-          setTimeout(() => getCurrentPlayingTrack(), 3000);
-          return false;
+          setManagedTimeout(() => getCurrentPlayingTrack(), 3000);
+          return null;
         }
       })
       .then((data) => {
-        if (data) {
-          isPlaying = data.is_playing;
-          const item = data.item;
-          track.artists = item.artists;
-          track.url = item.external_urls.spotify;
-          track.name = item.name;
-          track.album_img = item?.album?.images[0]?.url;
-          track.album_url = item.album.external_urls.spotify;
-          track.percent = (data.progress_ms * 100) / item.duration_ms;
-          spotify = true;
-          // console.log("item: ", item);
-          // console.log("spotify: ", spotify);
-          // console.log("is playing: ", isPlaying);
-          // console.log("track: ", track);
-          getDevice();
-          setTimeout(() => getCurrentPlayingTrack(), 1000);
-        }
+        if (!isComponentMounted || !data) return;
+        
+        isPlaying = data.is_playing;
+        const item = data.item;
+        track.artists = item.artists;
+        track.url = item.external_urls.spotify;
+        track.name = item.name;
+        track.album_img = item?.album?.images[0]?.url;
+        track.album_url = item.album.external_urls.spotify;
+        track.duration_ms = item.duration_ms;
+        track.progress_ms = data.progress_ms;
+        track.percent = (data.progress_ms * 100) / item.duration_ms;
+        spotify = true;
+        getDevice();
+        setManagedTimeout(() => getCurrentPlayingTrack(), 1000);
       })
       .catch((error) => {
+        if (!isComponentMounted) return;
+        
         spotify = false;
         console.log(error);
-        setTimeout(() => getCurrentPlayingTrack(), 7000);
-        return [];
+        setManagedTimeout(() => getCurrentPlayingTrack(), 7000);
       });
   };
 
   onMount(() => {
+    isComponentMounted = true;
+    
     fetch("https://spotapi.fariz.dev/token")
       .then((response) => response.json())
       .then((data) => {
+        if (!isComponentMounted) return;
+        
         if (data.data !== null) {
           spotifyToken = data.data.access_token;
           getCurrentPlayingTrack();
         }
       })
       .catch((error) => {
+        if (!isComponentMounted) return;
+        
         console.log(error);
-        return [];
       });
+  });
+
+  onDestroy(() => {
+    cleanup();
   });
 </script>
 
@@ -219,13 +274,18 @@
               : 'bg-spotify-black-1/40'}"
           >
             <div
-              class="h-full {isPlaying
+              class="h-full ease-in-out duration-200 {isPlaying
                 ? 'bg-spotify-green'
                 : 'bg-spotify-black-1'}"
               style="width: {track.percent}%;"
             ></div>
           </div>
         </div>
+        {#if isPlaying && getRemainingTime()}
+          <div class="text-xs text-gray-300 whitespace-nowrap">
+            {getRemainingTime()}
+          </div>
+        {/if}
         <div>
           <a href="https://open.spotify.com" rel="noreferrer" target="_blank">
             <SpotifyLogoIcon class="h-4 w-auto text-white" />
