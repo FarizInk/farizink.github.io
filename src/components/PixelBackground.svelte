@@ -13,11 +13,12 @@
     phase: number;
   }
 
-  let canvas: HTMLCanvasElement;
-  let ctx: CanvasRenderingContext2D;
+  let canvas: HTMLCanvasElement | undefined;
+  let ctx: CanvasRenderingContext2D | null = null;
   let dots: Dot[] = [];
-  let animationId: number;
+  let animationId: number | undefined;
   let isActive = false;
+  let resizeObserver: ResizeObserver | undefined;
 
   // Configuration
   const GRID_SIZE = 15;
@@ -116,33 +117,47 @@
 
   function stopAnimation() {
     isActive = false;
-    if (animationId) {
+    if (animationId !== undefined) {
       cancelAnimationFrame(animationId);
+      animationId = undefined;
     }
   }
 
   onMount(() => {
-    if (canvas) {
-      ctx = canvas.getContext('2d')!;
-      
-      // Set up canvas
-      resizeCanvas();
-      
-      // Start animation after a short delay
-      setTimeout(startAnimation, 100);
-      
-      // Handle resize
-      const resizeObserver = new ResizeObserver(resizeCanvas);
-      resizeObserver.observe(canvas);
-      
-      return () => {
+    if (!canvas) return;
+    
+    const context = canvas.getContext('2d');
+    if (!context) return;
+    
+    ctx = context;
+    
+    // Set up canvas
+    resizeCanvas();
+    
+    // Start animation after a short delay
+    const timeoutId = setTimeout(startAnimation, 100);
+    
+    // Handle resize
+    resizeObserver = new ResizeObserver(resizeCanvas);
+    resizeObserver.observe(canvas);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      if (resizeObserver) {
         resizeObserver.disconnect();
-      };
-    }
+        resizeObserver = undefined;
+      }
+      stopAnimation();
+    };
   });
 
   onDestroy(() => {
     stopAnimation();
+    if (resizeObserver) {
+      resizeObserver.disconnect();
+      resizeObserver = undefined;
+    }
+    ctx = null;
   });
 </script>
 

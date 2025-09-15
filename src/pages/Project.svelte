@@ -94,7 +94,7 @@
     <div class="flex flex-col items-center justify-center min-h-[300px] text-gray-600 dark:text-gray-400">
       <p class="mb-4">Error: {error}</p>
       <button 
-        on:click={fetchPinnedRepos}
+        onclick={fetchPinnedRepos}
         class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors duration-200"
       >
         Try Again
