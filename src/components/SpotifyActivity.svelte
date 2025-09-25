@@ -119,7 +119,7 @@
   };
 
   const refreshToken = () => {
-    fetch("https://spotapi.fariz.dev/refresh")
+    fetch("https://core.fariz.dev/api/spotify/refresh")
       .then((response) => response.json())
       .then((data) => {
         if (data.data !== null) {
@@ -186,7 +186,7 @@
   onMount(() => {
     isComponentMounted = true;
     
-    fetch("https://spotapi.fariz.dev/token")
+    fetch("https://core.fariz.dev/api/spotify/token")
       .then((response) => response.json())
       .then((data) => {
         if (!isComponentMounted) return;
