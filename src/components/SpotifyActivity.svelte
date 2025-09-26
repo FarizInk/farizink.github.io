@@ -1,11 +1,15 @@
 <script lang="ts">
-  import SpotifyLogoIcon from "./icons/SpotifyLogoIcon.svelte";
-  import { onMount, onDestroy } from "svelte";
+  import SpotifyLogoIcon from './icons/SpotifyLogoIcon.svelte';
+  import { onMount, onDestroy } from 'svelte';
 
   interface SpotifyDevice {
     name: string | null;
     type: string | null;
     is_active?: boolean;
+  }
+
+  interface SpotifyDevicesResponse {
+    devices: SpotifyDevice[];
   }
 
   interface SpotifyArtist {
@@ -37,29 +41,29 @@
     name: null,
     percent: 0,
     duration_ms: 0,
-    progress_ms: 0,
+    progress_ms: 0
   });
   const defaultDevice: SpotifyDevice = {
     name: null,
-    type: null,
+    type: null
   };
   let device = $state<SpotifyDevice>({ ...defaultDevice });
 
   // Track timeout IDs for cleanup
-  let timeoutIds: Set<number> = new Set();
+  let timeoutIds = $state(new Set<number>());
   let isComponentMounted = false;
 
   // Helper function to manage timeouts
   const setManagedTimeout = (callback: () => void, delay: number): number => {
     if (!isComponentMounted) return -1;
-    
+
     const timeoutId = window.setTimeout(() => {
       timeoutIds.delete(timeoutId);
       if (isComponentMounted) {
         callback();
       }
     }, delay);
-    
+
     timeoutIds.add(timeoutId);
     return timeoutId;
   };
@@ -74,32 +78,32 @@
   // Helper function to calculate remaining time
   const getRemainingTime = (): string => {
     if (!track.duration_ms || !track.progress_ms) return '';
-    
+
     const remainingMs = track.duration_ms - track.progress_ms;
     const remainingMinutes = Math.ceil(remainingMs / 1000 / 60);
-    
+
     if (remainingMinutes <= 0) return '';
     if (remainingMinutes === 1) return '1 min left';
     return `${remainingMinutes} min left`;
   };
 
   const getDevice = () => {
-    fetch("https://api.spotify.com/v1/me/player/devices", {
-      method: "GET",
+    fetch('https://api.spotify.com/v1/me/player/devices', {
+      method: 'GET',
       headers: new Headers({
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + spotifyToken,
-      }),
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + spotifyToken
+      })
     })
-      .then((response) => {
+      .then(response => {
         if (response.status === 200) {
           return response.json();
         } else {
           return false;
         }
       })
-      .then((data: any) => {
+      .then((data: SpotifyDevicesResponse) => {
         if (data.devices.length >= 1) {
           const activeDevice = data.devices.find((device: SpotifyDevice) => device.is_active);
           if (activeDevice !== undefined) {
@@ -112,22 +116,22 @@
           device = { ...defaultDevice };
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
         return [];
       });
   };
 
   const refreshToken = () => {
-    fetch("https://core.fariz.dev/api/spotify/refresh")
-      .then((response) => response.json())
-      .then((data) => {
+    fetch('https://core.fariz.dev/api/spotify/refresh')
+      .then(response => response.json())
+      .then(data => {
         if (data.data !== null) {
           spotifyToken = data.data.access_token;
           getCurrentPlayingTrack();
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
         return [];
       });
@@ -135,18 +139,18 @@
 
   const getCurrentPlayingTrack = () => {
     if (!isComponentMounted) return;
-    
-    fetch("https://api.spotify.com/v1/me/player/currently-playing?market=ID", {
-      method: "GET",
+
+    fetch('https://api.spotify.com/v1/me/player/currently-playing?market=ID', {
+      method: 'GET',
       headers: new Headers({
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + spotifyToken,
-      }),
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + spotifyToken
+      })
     })
-      .then((response) => {
+      .then(response => {
         if (!isComponentMounted) return null;
-        
+
         if (response.status === 200) {
           return response.json();
         } else if (response.status === 401) {
@@ -157,9 +161,9 @@
           return null;
         }
       })
-      .then((data) => {
+      .then(data => {
         if (!isComponentMounted || !data) return;
-        
+
         isPlaying = data.is_playing;
         const item = data.item;
         track.artists = item.artists;
@@ -174,9 +178,9 @@
         getDevice();
         setManagedTimeout(() => getCurrentPlayingTrack(), 1000);
       })
-      .catch((error) => {
+      .catch(error => {
         if (!isComponentMounted) return;
-        
+
         spotify = false;
         console.log(error);
         setManagedTimeout(() => getCurrentPlayingTrack(), 7000);
@@ -185,20 +189,20 @@
 
   onMount(() => {
     isComponentMounted = true;
-    
-    fetch("https://core.fariz.dev/api/spotify/token")
-      .then((response) => response.json())
-      .then((data) => {
+
+    fetch('https://core.fariz.dev/api/spotify/token')
+      .then(response => response.json())
+      .then(data => {
         if (!isComponentMounted) return;
-        
+
         if (data.data !== null) {
           spotifyToken = data.data.access_token;
           getCurrentPlayingTrack();
         }
       })
-      .catch((error) => {
+      .catch(error => {
         if (!isComponentMounted) return;
-        
+
         console.log(error);
       });
   });
@@ -217,17 +221,11 @@
     >
       <div class="h-full w-12">
         <a href={track.album_url} target="_blank" rel="noreferrer">
-          <img
-            src={track.album_img}
-            alt=""
-            class="h-full overflow-hidden rounded-sm"
-          />
+          <img src={track.album_img} alt="" class="h-full overflow-hidden rounded-sm" />
         </a>
       </div>
       <div class="flex-1 flex flex-col justify-start">
-        <div
-          class="text-base font-bold {isPlaying ? 'text-black' : 'text-white'}"
-        >
+        <div class="text-base font-bold {isPlaying ? 'text-black' : 'text-white'}">
           <a
             target="_blank"
             rel="noreferrer"
@@ -239,7 +237,7 @@
           </a>
         </div>
         <div class="text-sm {isPlaying ? 'text-gray-800' : 'text-white'}">
-          {#each track.artists as { external_urls, name }, i}
+          {#each track.artists as { external_urls, name }, i (i)}
             <span>
               <a
                 target="_blank"
@@ -295,15 +293,9 @@
     </div>
   </div>
 {:else}
-  <div
-    class="spotify-offline w-full bg-spotify-black-1 rounded-lg flex flex-col overflow-hidden"
-  >
-    <div
-      class="bg-spotify-black-2 w-full flex items-center p-2  gap-4 h-16"
-    >
-      <div class="rounded-sm w-12 h-12 animate-pulse bg-spotify-black-4">
-        
-      </div>
+  <div class="spotify-offline w-full bg-spotify-black-1 rounded-lg flex flex-col overflow-hidden">
+    <div class="bg-spotify-black-2 w-full flex items-center p-2 gap-4 h-16">
+      <div class="rounded-sm w-12 h-12 animate-pulse bg-spotify-black-4"></div>
       <div class="flex flex-col justify-center gap-3 flex-1">
         <div class="w-1/2 h-4 animate-pulse bg-spotify-black-4 rounded-sm"></div>
         <div class="w-1/3 h-4 animate-pulse bg-spotify-black-4 rounded-sm"></div>

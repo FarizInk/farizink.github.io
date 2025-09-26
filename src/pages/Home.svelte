@@ -1,8 +1,8 @@
 <script lang="ts">
-  import photoOne from "../assets/me/1.jpg";
-  import photoTwo from "../assets/me/2.jpg";
-  import SpotifyActivity from "../components/SpotifyActivity.svelte";
-  import ConnectWithMe from "../components/ConnectWithMe.svelte";
+  import photoOne from '../assets/me/1.jpg';
+  import photoTwo from '../assets/me/2.jpg';
+  import SpotifyActivity from '../components/SpotifyActivity.svelte';
+  import ConnectWithMe from '../components/ConnectWithMe.svelte';
 
   let showPhoto = $state(false);
   let randPhoto = $state<string | null>(null);
@@ -31,20 +31,20 @@
       <h4 class="text-lg text-black/50 dark:text-white/50">
         <span
           class={showPhoto
-            ? "bg-amber-300/0 md:bg-amber-300/50 dark:bg-purple-800/0 md:dark:bg-purple-800/50"
-            : ""}>known as <span class="italic font-bold">Fariz</span></span
+            ? 'bg-amber-300/0 md:bg-amber-300/50 dark:bg-purple-800/0 md:dark:bg-purple-800/50'
+            : ''}>known as <span class="italic font-bold">Fariz</span></span
         >
       </h4>
 
       <p class="mt-4 text-black dark:text-white text-sm md:text-base">
         <span
           class={showPhoto
-            ? "bg-amber-300/0 md:bg-amber-300/50 dark:bg-purple-800/0 md:dark:bg-purple-800/50"
-            : ""}
-          >I'm a software engineer based in Surabaya, Indonesia. Specializing in
-          Backend Developer, high-quality websites and applications. Currently
-          focused on making projects <span class="italic">"gabut"</span> in my github
-          profile 🙂 and work task.</span
+            ? 'bg-amber-300/0 md:bg-amber-300/50 dark:bg-purple-800/0 md:dark:bg-purple-800/50'
+            : ''}
+          >I'm a software engineer based in Surabaya, Indonesia. Specializing in Backend Developer,
+          high-quality websites and applications. Currently focused on making projects <span
+            class="italic">"gabut"</span
+          > in my github profile 🙂 and work task.</span
         >
       </p>
 

@@ -24,10 +24,10 @@
   const GRID_SIZE = 15;
   const MAX_SIZE = 3;
   const COLORS = ['#e2e8f0', '#cbd5e1', '#94a3b8', '#64748b'];
-  
+
   function createDots() {
     if (!canvas) return;
-    
+
     dots = [];
     const cols = Math.ceil(canvas.width / GRID_SIZE);
     const rows = Math.ceil(canvas.height / GRID_SIZE);
@@ -37,7 +37,7 @@
         // Add some randomness to grid positions
         const x = i * GRID_SIZE + (Math.random() - 0.5) * 5;
         const y = j * GRID_SIZE + (Math.random() - 0.5) * 5;
-        
+
         dots.push({
           x,
           y,
@@ -57,54 +57,49 @@
     // Create blinking on-off animation
     const cycle = Math.sin(time * 0.003 + dot.phase);
     const isOn = cycle > 0;
-    
+
     // Animate size - either full size or tiny/off
     dot.targetSize = isOn ? MAX_SIZE : 0.1;
     dot.size += (dot.targetSize - dot.size) * (dot.speed * 3);
-    
+
     // Animate opacity - either visible or nearly invisible
-    dot.targetOpacity = isOn ? (Math.random() * 0.4 + 0.4) : 0.05;
+    dot.targetOpacity = isOn ? Math.random() * 0.4 + 0.4 : 0.05;
     dot.opacity += (dot.targetOpacity - dot.opacity) * (dot.speed * 4);
   }
 
   function drawDot(dot: Dot) {
     if (!ctx || dot.size < 0.1) return;
-    
+
     ctx.globalAlpha = dot.opacity;
     ctx.fillStyle = dot.color;
-    
+
     // Draw rectangle centered on the dot position
     const halfSize = dot.size / 2;
-    ctx.fillRect(
-      dot.x - halfSize,
-      dot.y - halfSize,
-      dot.size,
-      dot.size
-    );
+    ctx.fillRect(dot.x - halfSize, dot.y - halfSize, dot.size, dot.size);
   }
 
   function animate(time: number) {
     if (!isActive || !ctx || !canvas) return;
-    
+
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+
     // Update and draw all dots
     dots.forEach(dot => {
       updateDot(dot, time);
       drawDot(dot);
     });
-    
+
     animationId = requestAnimationFrame(animate);
   }
 
   function resizeCanvas() {
     if (!canvas) return;
-    
+
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width;
     canvas.height = rect.height;
-    
+
     createDots();
   }
 
@@ -125,22 +120,22 @@
 
   onMount(() => {
     if (!canvas) return;
-    
+
     const context = canvas.getContext('2d');
     if (!context) return;
-    
+
     ctx = context;
-    
+
     // Set up canvas
     resizeCanvas();
-    
+
     // Start animation after a short delay
     const timeoutId = setTimeout(startAnimation, 100);
-    
+
     // Handle resize
     resizeObserver = new ResizeObserver(resizeCanvas);
     resizeObserver.observe(canvas);
-    
+
     return () => {
       clearTimeout(timeoutId);
       if (resizeObserver) {

@@ -1,14 +1,13 @@
 <script lang="ts">
-  let count = $state(0)
+  let count = $state(0);
   const increment = () => {
-    count += 1
-  }
+    count += 1;
+  };
 </script>
 
 <button class="btn-counter" onclick={increment}>
   count is {count}
 </button>
-
 
 <style>
   button {

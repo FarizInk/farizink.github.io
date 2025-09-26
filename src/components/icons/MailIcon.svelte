@@ -1,13 +1,8 @@
 <script lang="ts">
-  let { class: clazz = "w-6 h-6" } = $props();
+  let { class: clazz = 'w-6 h-6' } = $props();
 </script>
 
-<svg
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 24 24"
-  fill="currentColor"
-  class={clazz}
->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class={clazz}>
   <path
     d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z"
   />
