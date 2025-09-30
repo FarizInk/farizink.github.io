@@ -5,7 +5,7 @@
     href: string;
     class?: string;
     activeClass?: string;
-    children?: any;
+    children?: import('svelte').Snippet;
   }
 
   let { href, class: className = '', activeClass = '', children }: Props = $props();
@@ -16,21 +16,11 @@
   }
 
   // Check if current path matches this link
-  let isActive = $state(false);
-  
-  $effect(() => {
-    isActive = window.location.pathname === href;
-  });
+  let isActive = $derived(window.location.pathname === href);
 
-  let finalClass = $derived(
-    `${className} ${isActive && activeClass ? activeClass : ''}`.trim()
-  );
+  let finalClass = $derived(`${className} ${isActive && activeClass ? activeClass : ''}`.trim());
 </script>
 
-<a 
-  {href} 
-  class={finalClass}
-  onclick={handleClick}
->
+<a {href} class={finalClass} onclick={handleClick}>
   {@render children?.()}
 </a>

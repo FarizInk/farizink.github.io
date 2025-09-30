@@ -26,9 +26,9 @@
     // Check for saved theme preference or default to light mode
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
+
     isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
-    
+
     if (isDark) {
       document.documentElement.classList.add('dark');
     } else {
@@ -41,10 +41,10 @@
   <div class="flex justify-between items-center px-6">
     <!-- Navigation Links -->
     <div class="flex space-x-6">
-      <a 
-        href="/" 
+      <a
+        href="/"
         class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors font-medium"
-        onclick={(e) => handleNavigation(e, '/')}
+        onclick={e => handleNavigation(e, '/')}
       >
         Home
       </a>
@@ -52,7 +52,7 @@
       <a
         href="/projects"
         class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors font-medium"
-        onclick={(e) => handleNavigation(e, '/projects')}
+        onclick={e => handleNavigation(e, '/projects')}
       >
         Projects
       </a>

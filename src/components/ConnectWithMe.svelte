@@ -1,11 +1,10 @@
 <script lang="ts">
-  import MailIcon from "./icons/MailIcon.svelte";
-  import LinkedinIcon from "./icons/LinkedinIcon.svelte";
-  import GithubIcon from "./icons/GithubIcon.svelte";
-  import DiscordIcon from "./icons/DiscordIcon.svelte";
-  import TwitterIcon from "./icons/TwitterIcon.svelte";
-  import XIcon from "./icons/XIcon.svelte";
-  import SpotifyIcon from "./icons/SpotifyIcon.svelte";
+  import MailIcon from './icons/MailIcon.svelte';
+  import LinkedinIcon from './icons/LinkedinIcon.svelte';
+  import GithubIcon from './icons/GithubIcon.svelte';
+  import DiscordIcon from './icons/DiscordIcon.svelte';
+  import XIcon from './icons/XIcon.svelte';
+  import SpotifyIcon from './icons/SpotifyIcon.svelte';
 </script>
 
 <div class="flex flex-wrap gap-2">
@@ -26,7 +25,9 @@
     rel="noreferrer"
     class="bg-gray-200 dark:bg-gray-700 p-3 rounded-full flex justify-center items-center hover:bg-linkedin-blue-1 dark:hover:bg-gray-900 border border-transparent hover:border-linkedin-blue-1 group"
   >
-    <LinkedinIcon class="w-4 h-4 text-black dark:text-gray-200 group-hover:text-white dark:group-hover:text-linkedin-blue-1" />
+    <LinkedinIcon
+      class="w-4 h-4 text-black dark:text-gray-200 group-hover:text-white dark:group-hover:text-linkedin-blue-1"
+    />
   </a>
   <a
     href="https://github.com/farizink"
@@ -42,7 +43,9 @@
     rel="noreferrer"
     class="bg-gray-200 dark:bg-gray-700 p-3 rounded-full flex justify-center items-center hover:bg-discord-blurple dark:hover:bg-gray-900 border border-transparent hover:border-discord-blurple group"
   >
-    <DiscordIcon class="w-4 h-4 text-black dark:text-white group-hover:text-white dark:group-hover:text-discord-blurple"/>
+    <DiscordIcon
+      class="w-4 h-4 text-black dark:text-white group-hover:text-white dark:group-hover:text-discord-blurple"
+    />
   </a>
   <a
     href="https://x.com/farizink"
