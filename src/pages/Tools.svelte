@@ -84,7 +84,7 @@
           icon: GitCompare,
           color: 'orange',
           features: ['Side by side comparison', 'Highlight differences', 'Merge suggestions'],
-          comingSoon: true
+          comingSoon: false
         },
         {
           id: 'url-parser',
@@ -93,7 +93,7 @@
           icon: Link,
           color: 'lime',
           features: ['Extract domain', 'Path analysis', 'Query parameters', 'Hash fragments'],
-          comingSoon: true
+          comingSoon: false
         }
       ]
     },
@@ -135,7 +135,7 @@
           icon: Code,
           color: 'blue',
           features: ['Minify CSS', 'Beautify CSS', 'Copy to clipboard', 'Download result'],
-          comingSoon: true
+          comingSoon: false
         },
         {
           id: 'js-minifier',
@@ -144,7 +144,7 @@
           icon: Code,
           color: 'yellow',
           features: ['Minify JS', 'Beautify JS', 'Syntax validation', 'Copy to clipboard'],
-          comingSoon: true
+          comingSoon: false
         },
         {
           id: 'html-encoder',
@@ -153,7 +153,7 @@
           icon: Code,
           color: 'rose',
           features: ['Encode HTML', 'Decode HTML', 'Special characters', 'Unicode support'],
-          comingSoon: true
+          comingSoon: false
         },
         {
           id: 'slug-generator',
@@ -162,7 +162,7 @@
           icon: Type,
           color: 'emerald',
           features: ['URL-friendly slugs', 'Custom separators', 'Lowercase conversion', 'Special character removal'],
-          comingSoon: true
+          comingSoon: false
         },
         {
           id: 'meta-tag-generator',
@@ -204,7 +204,7 @@
           icon: Hash,
           color: 'amber',
           features: ['MD5', 'SHA1', 'SHA256', 'SHA512', 'Multiple formats'],
-          comingSoon: true
+          comingSoon: false
         },
         {
           id: 'jwt-decoder',
@@ -237,7 +237,7 @@
           icon: Palette,
           color: 'pink',
           features: ['Complementary colors', 'Triadic palettes', 'Analogous colors', 'Export palettes'],
-          comingSoon: true
+          comingSoon: false
         },
         {
           id: 'gradient-generator',
@@ -246,7 +246,7 @@
           icon: Droplets,
           color: 'blue',
           features: ['Linear gradients', 'Radial gradients', 'Multiple stops', 'CSS export'],
-          comingSoon: true
+          comingSoon: false
         },
         {
           id: 'css-shadow-generator',
@@ -270,7 +270,7 @@
           icon: DollarSign,
           color: 'green',
           features: ['Tip calculation', 'Bill splitting', 'Custom percentages', 'Tax calculation'],
-          comingSoon: true
+          comingSoon: false
         },
         {
           id: 'unit-converter',
@@ -339,7 +339,7 @@
           icon: Calendar,
           color: 'orange',
           features: ['Unix timestamps', 'ISO dates', 'Multiple formats', 'Current timestamp'],
-          comingSoon: true
+          comingSoon: false
         }
       ]
     }
@@ -372,6 +372,28 @@
       navigate('/tools/password-generator');
     } else if (toolId === 'qr-code-generator') {
       navigate('/tools/qr-code-generator');
+    } else if (toolId === 'text-diff') {
+      navigate('/tools/text-diff');
+    } else if (toolId === 'url-parser') {
+      navigate('/tools/url-parser');
+    } else if (toolId === 'css-minifier') {
+      navigate('/tools/css-minifier');
+    } else if (toolId === 'js-minifier') {
+      navigate('/tools/js-minifier');
+    } else if (toolId === 'html-encoder') {
+      navigate('/tools/html-encoder');
+    } else if (toolId === 'slug-generator') {
+      navigate('/tools/slug-generator');
+    } else if (toolId === 'hash-generator') {
+      navigate('/tools/hash-generator');
+    } else if (toolId === 'color-palette') {
+      navigate('/tools/color-palette');
+    } else if (toolId === 'gradient-generator') {
+      navigate('/tools/gradient-generator');
+    } else if (toolId === 'tip-calculator') {
+      navigate('/tools/tip-calculator');
+    } else if (toolId === 'timestamp-converter') {
+      navigate('/tools/timestamp-converter');
     }
   }
 

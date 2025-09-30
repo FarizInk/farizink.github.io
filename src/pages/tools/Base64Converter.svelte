@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { navigate } from '../lib/router.js';
+  import { navigate } from '../../lib/router.js';
 import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte';
 
   let inputText = $state('');

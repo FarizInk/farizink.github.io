@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { navigate } from '../lib/router.js';
+  import { navigate } from '../../lib/router.js';
   import { ChevronLeft, Shield, Settings, Lock, Download, Settings2 } from '@lucide/svelte';
 
   let password = $state('');

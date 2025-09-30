@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { navigate } from '../lib/router.js';
+  import { navigate } from '../../lib/router.js';
 import { ChevronLeft, Code, CheckCircle, Layout, Copy } from '@lucide/svelte';
 
   let inputJson = $state('');

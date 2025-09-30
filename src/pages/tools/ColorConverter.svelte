@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { navigate } from '../lib/router.js';
+  import { navigate } from '../../lib/router.js';
 import { ChevronLeft, Palette, Zap, Calendar } from '@lucide/svelte';
 
   let hexInput = $state('#3B82F6');

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { navigate } from '../lib/router.js';
+  import { navigate } from '../../lib/router.js';
 import { ChevronLeft, FileText, Eye, Edit, Zap, Code, Download } from '@lucide/svelte';
 
   let markdownText = $state(

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { navigate } from '../lib/router.js';
+  import { navigate } from '../../lib/router.js';
   import QRCode from 'qrcode';
   import { Download, Copy, ChevronLeft } from '@lucide/svelte';
 
