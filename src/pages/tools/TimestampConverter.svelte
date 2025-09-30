@@ -72,7 +72,7 @@
       }
 
       isoString = date.toISOString();
-      formatDate();
+      formattedDate = formatDate(date, selectedFormat);
     } catch {
       formattedDate = 'Invalid timestamp';
       isoString = '';
@@ -96,54 +96,10 @@
       }
 
       unixTimestamp = Math.floor(date.getTime() / 1000).toString();
-      formatDate();
+      formattedDate = formatDate(date, selectedFormat);
     } catch {
       unixTimestamp = 'Invalid date';
       formattedDate = '';
-    }
-  }
-
-  function formatDate() {
-    if (!isoString) return;
-
-    const date = new Date(isoString);
-
-    switch (selectedFormat) {
-      case 'iso':
-        formattedDate = date.toISOString();
-        break;
-      case 'us':
-        formattedDate = date.toLocaleString('en-US');
-        break;
-      case 'european':
-        formattedDate = date.toLocaleString('en-GB');
-        break;
-      case 'readable':
-        formattedDate = date.toLocaleString('en-US', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
-        });
-        break;
-      case 'short':
-        formattedDate = date.toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric'
-        });
-        break;
-      case 'time':
-        formattedDate = date.toLocaleTimeString('en-US');
-        break;
-      case 'date':
-        formattedDate = date.toLocaleDateString('en-US');
-        break;
-      default:
-        formattedDate = date.toString();
     }
   }
 
@@ -188,7 +144,10 @@
 
   $effect(() => {
     if (isoString) {
-      formatDate();
+      const date = new Date(isoString);
+      if (!isNaN(date.getTime())) {
+        formattedDate = formatDate(date, selectedFormat);
+      }
     }
   });
 </script>

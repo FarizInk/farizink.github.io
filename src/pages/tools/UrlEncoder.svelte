@@ -373,7 +373,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
             </div>
           {:else}
             <div class="space-y-4">
-              {#each batchResults as result, index (result.input + index)}
+              {#each batchResults as result, index (result.original + index)}
                 <div class="border-b border-gray-200 dark:border-gray-700 pb-4 last:border-b-0">
                   <div class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     #{index + 1}
