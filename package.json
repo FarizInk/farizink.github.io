@@ -24,6 +24,8 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.13",
-    "gh-pages": "^4.0.0"
+    "@types/qrcode": "^1.5.5",
+    "gh-pages": "^4.0.0",
+    "qrcode": "^1.5.4"
   }
 }
