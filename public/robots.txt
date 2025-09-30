@@ -1,0 +1,89 @@
+# Robots.txt for https://farizink.github.io/
+# Generated on: 2025-01-01
+
+User-agent: *
+Allow: /
+
+# Priority pages
+Allow: /projects
+Allow: /tools
+Allow: /tools/json-parser
+Allow: /tools/color-converter
+Allow: /tools/url-encoder
+Allow: /tools/markdown-preview
+Allow: /tools/base64-converter
+Allow: /tools/password-generator
+Allow: /tools/qr-code-generator
+Allow: /tools/text-diff
+Allow: /tools/url-parser
+Allow: /tools/css-minifier
+Allow: /tools/js-minifier
+Allow: /tools/html-encoder
+Allow: /tools/slug-generator
+Allow: /tools/color-palette
+Allow: /tools/gradient-generator
+Allow: /tools/hash-generator
+Allow: /tools/jwt-decoder
+Allow: /tools/tip-calculator
+Allow: /tools/timestamp-converter
+Allow: /tools/character-counter
+Allow: /tools/text-case-converter
+Allow: /tools/lorem-ipsum-generator
+
+# Block common non-content paths
+Disallow: /node_modules/
+Disallow: /src/
+Disallow: /dist/
+Disallow: /.git/
+Disallow: /.github/
+Disallow: /*.log$
+Disallow: /*.tmp$
+Disallow: /temp/
+Disallow: /tmp/
+
+# Allow important assets
+Allow: /assets/
+Allow: /public/
+Allow: /*.css
+Allow: /*.js
+Allow: /*.png
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.gif
+Allow: /*.svg
+Allow: /*.ico
+
+# Sitemap location
+Sitemap: https://farizink.github.io/sitemap.xml
+
+# Crawl delay (optional, for friendly crawling)
+Crawl-delay: 1
+
+# Specific bot instructions
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0.5
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 1
+
+# Block unwanted bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: BacklinkCrawler
+Disallow: /
