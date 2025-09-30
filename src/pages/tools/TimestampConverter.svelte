@@ -257,10 +257,11 @@
 
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label for="unix-timestamp" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Unix Timestamp
           </label>
           <input
+            id="unix-timestamp"
             type="text"
             bind:value={unixTimestamp}
             placeholder="1704067200"
@@ -270,11 +271,12 @@
 
         {#if isoString}
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label for="iso-string" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               ISO String
             </label>
             <div class="flex gap-2">
               <input
+                id="iso-string"
                 type="text"
                 bind:value={isoString}
                 readonly
@@ -300,10 +302,11 @@
 
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label for="date-iso" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Date (ISO format)
           </label>
           <input
+            id="date-iso"
             type="datetime-local"
             bind:value={isoString}
             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -312,11 +315,12 @@
 
         {#if unixTimestamp && !isNaN(parseInt(unixTimestamp))}
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label for="unix-timestamp-result" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Unix Timestamp
             </label>
             <div class="flex gap-2">
               <input
+                id="unix-timestamp-result"
                 type="text"
                 bind:value={unixTimestamp}
                 readonly
@@ -341,10 +345,11 @@
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Formatted Results</h3>
 
       <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label for="date-format" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Date Format
         </label>
         <select
+          id="date-format"
           bind:value={selectedFormat}
           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
         >

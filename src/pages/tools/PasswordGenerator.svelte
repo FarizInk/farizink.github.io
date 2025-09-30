@@ -476,7 +476,7 @@
             Regenerate
           </button>
           <button
-            onclick={generateMultiplePasswords(5)}
+            onclick={() => generateMultiplePasswords(5)}
             class="px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
           >
             Generate 5

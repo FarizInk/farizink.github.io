@@ -167,8 +167,8 @@ import { ChevronLeft, FileText, Eye, Edit, Zap, Code, Download } from '@lucide/s
 
     // Tables (basic support)
     const tableRegex = /\|(.+)\|\n\|(.+)\|\n((?:\|.+\|\n?)*)/gim;
-    html = html.replace(tableRegex, (match, headers, separator, rows) => {
-      const headerCells = headers.split('|').map(cell => `<th class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left bg-gray-50 dark:bg-gray-800">${cell.trim()}</th>`).join('');
+    html = html.replace(tableRegex, (match: string, headers: string, separator: string, rows: string) => {
+      const headerCells = headers.split('|').map((cell: string) => `<th class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left bg-gray-50 dark:bg-gray-800">${cell.trim()}</th>`).join('');
       const rowCells = rows.split('\n').filter(row => row.trim()).map(row => {
         const cells = row.split('|').slice(1, -1).map(cell => `<td class="border border-gray-300 dark:border-gray-600 px-4 py-2">${cell.trim()}</td>`).join('');
         return `<tr>${cells}</tr>`;

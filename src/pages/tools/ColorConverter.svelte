@@ -267,14 +267,22 @@ import { ChevronLeft, Palette, Zap, Calendar } from '@lucide/svelte';
         <div class="grid grid-cols-5 gap-2">
           {#each history as item (item.timestamp.getTime())}
             <div class="group relative">
-              <div
+              <button
+                type="button"
                 class="w-full h-12 rounded-lg cursor-pointer border-2 border-gray-200 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-400 transition-colors"
                 style="background-color: {item.color}"
                 onclick={() => {
                   hexInput = item.color;
                   updateFromHex();
                 }}
-              ></div>
+                onkeydown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    hexInput = item.color;
+                    updateFromHex();
+                  }
+                }}
+                aria-label={`Select color ${item.color}`}
+              ></button>
               <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                 {item.color}
               </div>
@@ -312,8 +320,9 @@ import { ChevronLeft, Palette, Zap, Calendar } from '@lucide/svelte';
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">RGB</h3>
       <div class="space-y-3">
         <div class="flex items-center gap-2">
-          <label class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300">R:</label>
+          <label for="rgb-r" class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300">R:</label>
           <input
+            id="rgb-r"
             type="range"
             min="0"
             max="255"
@@ -331,8 +340,9 @@ import { ChevronLeft, Palette, Zap, Calendar } from '@lucide/svelte';
           />
         </div>
         <div class="flex items-center gap-2">
-          <label class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300">G:</label>
+          <label for="rgb-g" class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300">G:</label>
           <input
+            id="rgb-g"
             type="range"
             min="0"
             max="255"
@@ -350,8 +360,9 @@ import { ChevronLeft, Palette, Zap, Calendar } from '@lucide/svelte';
           />
         </div>
         <div class="flex items-center gap-2">
-          <label class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300">B:</label>
+          <label for="rgb-b" class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300">B:</label>
           <input
+            id="rgb-b"
             type="range"
             min="0"
             max="255"
@@ -382,8 +393,9 @@ import { ChevronLeft, Palette, Zap, Calendar } from '@lucide/svelte';
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">HSL</h3>
       <div class="space-y-3">
         <div class="flex items-center gap-2">
-          <label class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300">H:</label>
+          <label for="hsl-h" class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300">H:</label>
           <input
+            id="hsl-h"
             type="range"
             min="0"
             max="360"
@@ -401,8 +413,9 @@ import { ChevronLeft, Palette, Zap, Calendar } from '@lucide/svelte';
           />
         </div>
         <div class="flex items-center gap-2">
-          <label class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300">S:</label>
+          <label for="hsl-s" class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300">S:</label>
           <input
+            id="hsl-s"
             type="range"
             min="0"
             max="100"
@@ -420,8 +433,9 @@ import { ChevronLeft, Palette, Zap, Calendar } from '@lucide/svelte';
           />
         </div>
         <div class="flex items-center gap-2">
-          <label class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300">L:</label>
+          <label for="hsl-l" class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300">L:</label>
           <input
+            id="hsl-l"
             type="range"
             min="0"
             max="100"

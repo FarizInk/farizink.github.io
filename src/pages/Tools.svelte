@@ -577,7 +577,6 @@
           {@const colors = getColorClasses(tool.color)}
           <button
             type="button"
-            role="button"
             class="group relative bg-white dark:bg-gray-800 rounded-xl border {colors.border} overflow-hidden transition-all duration-300 {colors.hover} cursor-pointer text-left"
             onclick={() => handleToolClick(tool.id)}
             disabled={tool.comingSoon}

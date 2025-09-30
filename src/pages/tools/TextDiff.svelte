@@ -83,14 +83,14 @@ console.log('Result:', result);`;
 
     let diffText = '';
 
-    diffResult.removed.forEach((line, index) => {
+    diffResult.removed?.forEach((line, index) => {
       diffText += `- ${line}\n`;
-      if (diffResult.added[index]) {
+      if (diffResult?.added?.[index]) {
         diffText += `+ ${diffResult.added[index]}\n`;
       }
     });
 
-    diffResult.unchanged.forEach(line => {
+    diffResult.unchanged?.forEach(line => {
       diffText += `  ${line}\n`;
     });
 
@@ -113,14 +113,14 @@ console.log('Result:', result);`;
 
     let diffText = '';
 
-    diffResult.removed.forEach((line, index) => {
+    diffResult.removed?.forEach((line, index) => {
       diffText += `- ${line}\n`;
-      if (diffResult.added[index]) {
+      if (diffResult?.added?.[index]) {
         diffText += `+ ${diffResult.added[index]}\n`;
       }
     });
 
-    diffResult.unchanged.forEach(line => {
+    diffResult.unchanged?.forEach(line => {
       diffText += `  ${line}\n`;
     });
 

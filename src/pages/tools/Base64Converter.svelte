@@ -411,7 +411,7 @@ import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte
                 <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Base64 Data:</span>
                 <div class="flex gap-2">
                   <button
-                    onclick={() => copyToClipboard(fileResult.encoded, 'file-encoded')}
+                    onclick={() => fileResult && copyToClipboard(fileResult.encoded, 'file-encoded')}
                     class="px-3 py-1 text-sm bg-yellow-600 text-white rounded hover:bg-yellow-700 transition-colors"
                   >
                     {copiedText === 'file-encoded' ? '✓ Copied!' : 'Copy'}

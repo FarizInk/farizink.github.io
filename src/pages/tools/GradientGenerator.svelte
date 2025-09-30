@@ -1,6 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, Droplets, Copy, Download, Zap, Plus, Trash2 } from '@lucide/svelte';
+  import { ChevronLeft, Droplets, Copy, Zap, Plus, Trash2 } from '@lucide/svelte';
 
   let gradientType = $state('linear');
   let gradientDirection = $state('90deg');
@@ -226,10 +226,11 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label for="gradient-direction" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             {gradientType === 'linear' ? 'Direction' : 'Shape'}
           </label>
           <select
+            id="gradient-direction"
             bind:value={gradientDirection}
             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
@@ -293,7 +294,7 @@
               <input
                 type="range"
                 bind:value={stop.position}
-                oninput={() => updateColorStop(index, 'position', parseInt(stop.position))}
+                oninput={(e) => updateColorStop(index, 'position', parseInt((e.target as HTMLInputElement).value))}
                 min="0"
                 max="100"
                 class="w-20"

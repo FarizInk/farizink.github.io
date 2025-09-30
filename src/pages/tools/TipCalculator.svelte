@@ -153,10 +153,11 @@
     <div class="space-y-4">
       <!-- Bill Amount -->
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label for="bill-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Bill Amount ($)
         </label>
         <input
+          id="bill-amount"
           type="number"
           bind:value={billAmount}
           placeholder="0.00"
@@ -168,10 +169,11 @@
 
       <!-- Tip Percentage -->
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label for="tip-percentage" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Tip Percentage: {tipPercentage}%
         </label>
         <input
+          id="tip-percentage"
           type="range"
           bind:value={tipPercentage}
           min="0"
@@ -197,7 +199,7 @@
 
       <!-- Number of People -->
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label for="number-people" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Number of People
         </label>
         <div class="flex items-center gap-2">
@@ -208,6 +210,7 @@
             -
           </button>
           <input
+            id="number-people"
             type="number"
             bind:value={numberOfPeople}
             min="1"
@@ -239,10 +242,11 @@
 
         <div class="space-y-3">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label for="tax-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Tax Amount ($)
             </label>
             <input
+              id="tax-amount"
               type="number"
               bind:value={taxAmount}
               placeholder="0.00"
@@ -254,10 +258,11 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label for="tax-rate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Tax Rate (%)
             </label>
             <input
+              id="tax-rate"
               type="number"
               bind:value={taxRate}
               placeholder="0.00"

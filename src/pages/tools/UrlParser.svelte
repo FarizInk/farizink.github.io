@@ -182,7 +182,7 @@
             <div class="flex items-center gap-2">
               <code class="text-sm text-gray-900 dark:text-white">{parsedUrl.protocol}</code>
               <button
-                onclick={() => copyToClipboard(parsedUrl.protocol, 'protocol')}
+                onclick={() => parsedUrl && copyToClipboard(parsedUrl.protocol, 'protocol')}
                 class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
               >
                 <Copy class="w-4 h-4" />
@@ -195,7 +195,7 @@
             <div class="flex items-center gap-2">
               <code class="text-sm text-gray-900 dark:text-white">{parsedUrl.hostname}</code>
               <button
-                onclick={() => copyToClipboard(parsedUrl.hostname, 'hostname')}
+                onclick={() => parsedUrl && copyToClipboard(parsedUrl.hostname, 'hostname')}
                 class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
               >
                 <Copy class="w-4 h-4" />
@@ -208,7 +208,7 @@
             <div class="flex items-center gap-2">
               <code class="text-sm text-gray-900 dark:text-white">{parsedUrl.port}</code>
               <button
-                onclick={() => copyToClipboard(parsedUrl.port, 'port')}
+                onclick={() => parsedUrl && copyToClipboard(parsedUrl.port, 'port')}
                 class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
               >
                 <Copy class="w-4 h-4" />
@@ -221,7 +221,7 @@
             <div class="flex items-center gap-2">
               <code class="text-sm text-gray-900 dark:text-white truncate max-w-xs">{parsedUrl.pathname}</code>
               <button
-                onclick={() => copyToClipboard(parsedUrl.pathname, 'pathname')}
+                onclick={() => parsedUrl && copyToClipboard(parsedUrl.pathname, 'pathname')}
                 class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
               >
                 <Copy class="w-4 h-4" />
@@ -234,7 +234,7 @@
             <div class="flex items-center gap-2">
               <code class="text-sm text-gray-900 dark:text-white truncate max-w-xs">{parsedUrl.hash || '(none)'}</code>
               <button
-                onclick={() => copyToClipboard(parsedUrl.hash || '', 'hash')}
+                onclick={() => parsedUrl && copyToClipboard(parsedUrl.hash || '', 'hash')}
                 class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
               >
                 <Copy class="w-4 h-4" />
@@ -254,7 +254,7 @@
             <div class="flex items-center gap-2">
               <code class="text-sm text-gray-900 dark:text-white truncate max-w-xs">{parsedUrl.origin}</code>
               <button
-                onclick={() => copyToClipboard(parsedUrl.origin, 'origin')}
+                onclick={() => parsedUrl && copyToClipboard(parsedUrl.origin, 'origin')}
                 class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
               >
                 <Copy class="w-4 h-4" />
@@ -267,7 +267,7 @@
             <div class="flex items-center gap-2">
               <code class="text-sm text-gray-900 dark:text-white truncate max-w-xs">{parsedUrl.host}</code>
               <button
-                onclick={() => copyToClipboard(parsedUrl.host, 'host')}
+                onclick={() => parsedUrl && copyToClipboard(parsedUrl.host, 'host')}
                 class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
               >
                 <Copy class="w-4 h-4" />
@@ -280,7 +280,7 @@
             <div class="flex items-center gap-2">
               <code class="text-sm text-gray-900 dark:text-white truncate max-w-xs">{parsedUrl.search || '(none)'}</code>
               <button
-                onclick={() => copyToClipboard(parsedUrl.search || '', 'search')}
+                onclick={() => parsedUrl && copyToClipboard(parsedUrl.search || '', 'search')}
                 class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
               >
                 <Copy class="w-4 h-4" />
