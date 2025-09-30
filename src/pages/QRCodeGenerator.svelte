@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { navigate } from '../lib/router.js';
   import QRCode from 'qrcode';
+  import { Download, Copy, ChevronLeft } from '@lucide/svelte';
 
   let text = $state('');
   let qrDataUrl = $state('');
@@ -77,6 +79,10 @@
     includeMargin = true;
   }
 
+  function handleBackToTools() {
+    navigate('/tools');
+  }
+
   onMount(() => {
     // Generate initial QR code with example text
     text = 'https://farizink.dev';
@@ -87,12 +93,24 @@
 <div class="max-w-4xl mx-auto p-6">
   <!-- Header -->
   <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-      QR Code Generator
-    </h1>
-    <p class="text-gray-600 dark:text-gray-400">
-      Generate custom QR codes for URLs, text, or any data
-    </p>
+    <div class="flex items-center gap-4 mb-4">
+      <button
+        onclick={handleBackToTools}
+        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+      >
+        <ChevronLeft class="w-5 h-5" />
+        Back to Tools
+      </button>
+    </div>
+
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+        QR Code Generator
+      </h1>
+      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+        Generate custom QR codes for URLs, text, or any data with customizable options.
+      </p>
+    </div>
   </div>
 
   <!-- Breadcrumb -->
@@ -261,18 +279,14 @@
                 onclick={downloadQRCode}
                 class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center"
               >
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
+                <Download class="w-4 h-4 mr-2" />
                 Download
               </button>
               <button
                 onclick={copyToClipboard}
                 class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center"
               >
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
+                <Copy class="w-4 h-4 mr-2" />
                 Copy
               </button>
             </div>

@@ -23,6 +23,7 @@
     "vite": "^7.1.5"
   },
   "dependencies": {
+    "@lucide/svelte": "^0.544.0",
     "@tailwindcss/postcss": "^4.1.13",
     "@types/qrcode": "^1.5.5",
     "gh-pages": "^4.0.0",

@@ -1,5 +1,38 @@
 <script lang="ts">
   import { navigate } from '../lib/router.js';
+  import {
+    Search,
+    X,
+    Braces,
+    FileText,
+    Hash,
+    Type,
+    GitCompare,
+    Link,
+    Code,
+    Minus,
+    FileJson,
+    Palette,
+    GraduationCap,
+    Shield,
+    Lock,
+    Calculator,
+    Calendar,
+    DollarSign,
+    ArrowRight,
+    Check,
+    Zap,
+    Key,
+    Package,
+    QrCode,
+    Droplets,
+    Box,
+    Timer,
+    Users,
+    ArrowUpDown,
+    Percent,
+    Activity,
+  } from '@lucide/svelte';
 
   let searchQuery = $state('');
 
@@ -12,9 +45,7 @@
           id: 'json-parser',
           name: 'JSON Parser & Formatter',
           description: 'Format, validate, and minify JSON data with ease',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-          </svg>`,
+          icon: FileJson,
           color: 'blue',
           features: ['Validate JSON', 'Format with custom indentation', 'Minify JSON', 'Copy to clipboard'],
           comingSoon: false
@@ -23,9 +54,7 @@
           id: 'text-case-converter',
           name: 'Text Case Converter',
           description: 'Convert between different text cases',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-          </svg>`,
+          icon: Type,
           color: 'cyan',
           features: ['UPPERCASE', 'lowercase', 'Title Case', 'camelCase', 'snake_case', 'kebab-case'],
           comingSoon: true
@@ -34,9 +63,7 @@
           id: 'lorem-ipsum-generator',
           name: 'Lorem Ipsum Generator',
           description: 'Generate placeholder text for design and testing',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>`,
+          icon: FileText,
           color: 'indigo',
           features: ['Multiple variations', 'Custom length', 'Paragraphs', 'Sentences', 'Words'],
           comingSoon: true
@@ -45,9 +72,7 @@
           id: 'character-counter',
           name: 'Character Counter',
           description: 'Count characters, words, and analyze text',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-          </svg>`,
+          icon: Calculator,
           color: 'purple',
           features: ['Character count', 'Word count', 'Reading time', 'Sentences', 'Paragraphs'],
           comingSoon: true
@@ -56,9 +81,7 @@
           id: 'text-diff',
           name: 'Text Diff Tool',
           description: 'Compare two text blocks and highlight differences',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>`,
+          icon: GitCompare,
           color: 'orange',
           features: ['Side by side comparison', 'Highlight differences', 'Merge suggestions'],
           comingSoon: true
@@ -67,9 +90,7 @@
           id: 'url-parser',
           name: 'URL Parser/Analyzer',
           description: 'Parse URLs and extract components',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-          </svg>`,
+          icon: Link,
           color: 'lime',
           features: ['Extract domain', 'Path analysis', 'Query parameters', 'Hash fragments'],
           comingSoon: true
@@ -84,9 +105,7 @@
           id: 'url-encoder',
           name: 'URL Encoder/Decoder',
           description: 'Encode and decode URLs safely',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-          </svg>`,
+          icon: Link,
           color: 'green',
           features: ['URL encode', 'URL decode', 'Batch processing', 'Safe for special characters'],
           comingSoon: false
@@ -95,9 +114,7 @@
           id: 'markdown-preview',
           name: 'Markdown Preview',
           description: 'Preview and write markdown with live formatting',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>`,
+          icon: FileText,
           color: 'indigo',
           features: ['Live preview', 'Syntax highlighting', 'Export to HTML', 'CommonMark support'],
           comingSoon: false
@@ -106,9 +123,7 @@
           id: 'base64-converter',
           name: 'Base64 Converter',
           description: 'Encode and decode Base64 strings',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>`,
+          icon: Hash,
           color: 'yellow',
           features: ['String to Base64', 'Base64 to string', 'File support', 'Batch conversion'],
           comingSoon: false
@@ -117,9 +132,7 @@
           id: 'css-minifier',
           name: 'CSS Minifier/Beautifier',
           description: 'Minify and format CSS code',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-          </svg>`,
+          icon: Code,
           color: 'blue',
           features: ['Minify CSS', 'Beautify CSS', 'Copy to clipboard', 'Download result'],
           comingSoon: true
@@ -128,9 +141,7 @@
           id: 'js-minifier',
           name: 'JavaScript Minifier/Beautifier',
           description: 'Minify and format JavaScript code',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-          </svg>`,
+          icon: Code,
           color: 'yellow',
           features: ['Minify JS', 'Beautify JS', 'Syntax validation', 'Copy to clipboard'],
           comingSoon: true
@@ -139,9 +150,7 @@
           id: 'html-encoder',
           name: 'HTML Entity Encoder/Decoder',
           description: 'Convert HTML entities and special characters',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-          </svg>`,
+          icon: Code,
           color: 'rose',
           features: ['Encode HTML', 'Decode HTML', 'Special characters', 'Unicode support'],
           comingSoon: true
@@ -150,9 +159,7 @@
           id: 'slug-generator',
           name: 'URL Slug Generator',
           description: 'Create URL-friendly slugs from text',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-          </svg>`,
+          icon: Type,
           color: 'emerald',
           features: ['URL-friendly slugs', 'Custom separators', 'Lowercase conversion', 'Special character removal'],
           comingSoon: true
@@ -161,9 +168,7 @@
           id: 'meta-tag-generator',
           name: 'Meta Tag Generator',
           description: 'Generate SEO meta tags for websites',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-          </svg>`,
+          icon: Code,
           color: 'violet',
           features: ['SEO tags', 'Open Graph', 'Twitter Cards', 'JSON-LD structured data'],
           comingSoon: true
@@ -178,9 +183,7 @@
           id: 'password-generator',
           name: 'Password Generator',
           description: 'Generate secure and random passwords',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-          </svg>`,
+          icon: Lock,
           color: 'red',
           features: ['Customizable length', 'Character sets', 'Password strength', 'Copy to clipboard'],
           comingSoon: false
@@ -189,9 +192,7 @@
           id: 'qr-code-generator',
           name: 'QR Code Generator',
           description: 'Generate custom QR codes for URLs and text',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-          </svg>`,
+          icon: QrCode,
           color: 'teal',
           features: ['Custom size and colors', 'Error correction levels', 'Download as image', 'Copy to clipboard'],
           comingSoon: false
@@ -200,9 +201,7 @@
           id: 'hash-generator',
           name: 'Hash Generator',
           description: 'Generate MD5, SHA1, SHA256 hashes',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>`,
+          icon: Hash,
           color: 'amber',
           features: ['MD5', 'SHA1', 'SHA256', 'SHA512', 'Multiple formats'],
           comingSoon: true
@@ -211,9 +210,7 @@
           id: 'jwt-decoder',
           name: 'JWT Decoder',
           description: 'Decode JWT tokens safely',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>`,
+          icon: Key,
           color: 'slate',
           features: ['Header decoding', 'Payload decoding', 'Signature validation', 'Pretty print'],
           comingSoon: true
@@ -228,9 +225,7 @@
           id: 'color-converter',
           name: 'Color Converter',
           description: 'Convert between different color formats',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-          </svg>`,
+          icon: Palette,
           color: 'purple',
           features: ['HEX to RGB', 'RGB to HEX', 'HSL support', 'Color picker'],
           comingSoon: false
@@ -239,9 +234,7 @@
           id: 'color-palette',
           name: 'Color Palette Generator',
           description: 'Generate harmonious color palettes',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-          </svg>`,
+          icon: Palette,
           color: 'pink',
           features: ['Complementary colors', 'Triadic palettes', 'Analogous colors', 'Export palettes'],
           comingSoon: true
@@ -250,9 +243,7 @@
           id: 'gradient-generator',
           name: 'CSS Gradient Generator',
           description: 'Create CSS gradients with preview',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-          </svg>`,
+          icon: Droplets,
           color: 'blue',
           features: ['Linear gradients', 'Radial gradients', 'Multiple stops', 'CSS export'],
           comingSoon: true
@@ -261,9 +252,7 @@
           id: 'css-shadow-generator',
           name: 'CSS Shadow Generator',
           description: 'Generate box-shadow and text-shadow CSS',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-          </svg>`,
+          icon: Box,
           color: 'gray',
           features: ['Box shadows', 'Text shadows', 'Multiple shadows', 'CSS export'],
           comingSoon: true
@@ -278,9 +267,7 @@
           id: 'tip-calculator',
           name: 'Tip Calculator',
           description: 'Calculate tips and split bills',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>`,
+          icon: DollarSign,
           color: 'green',
           features: ['Tip calculation', 'Bill splitting', 'Custom percentages', 'Tax calculation'],
           comingSoon: true
@@ -289,9 +276,7 @@
           id: 'unit-converter',
           name: 'Unit Converter',
           description: 'Convert between metric and imperial units',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-          </svg>`,
+          icon: ArrowUpDown,
           color: 'blue',
           features: ['Length conversion', 'Weight conversion', 'Temperature', 'Volume conversion'],
           comingSoon: true
@@ -300,9 +285,7 @@
           id: 'percentage-calculator',
           name: 'Percentage Calculator',
           description: 'Calculate percentages and discounts',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-          </svg>`,
+          icon: Percent,
           color: 'purple',
           features: ['Percentage calculation', 'Discount calculator', 'Tax calculator', 'Tip calculator'],
           comingSoon: true
@@ -311,9 +294,7 @@
           id: 'bmi-calculator',
           name: 'BMI Calculator',
           description: 'Calculate Body Mass Index',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>`,
+          icon: Users,
           color: 'red',
           features: ['BMI calculation', 'Health indicators', 'Weight categories', 'Ideal weight range'],
           comingSoon: true
@@ -322,9 +303,7 @@
           id: 'age-calculator',
           name: 'Age Calculator',
           description: 'Calculate exact age from birth date',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>`,
+          icon: Calendar,
           color: 'indigo',
           features: ['Exact age', 'Years, months, days', 'Next birthday countdown', 'Zodiac sign'],
           comingSoon: true
@@ -339,9 +318,7 @@
           id: 'random-picker',
           name: 'Random Picker',
           description: 'Random item picker from lists',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>`,
+          icon: Zap,
           color: 'yellow',
           features: ['Random selection', 'Weighted picks', 'Multiple items', 'History tracking'],
           comingSoon: true
@@ -350,9 +327,7 @@
           id: 'cron-generator',
           name: 'Cron Expression Generator',
           description: 'Generate and test cron expressions',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>`,
+          icon: Timer,
           color: 'teal',
           features: ['Visual cron builder', 'Expression testing', 'Next run times', 'Presets'],
           comingSoon: true
@@ -361,9 +336,7 @@
           id: 'timestamp-converter',
           name: 'Unix Timestamp Converter',
           description: 'Convert timestamps to human-readable dates',
-          icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>`,
+          icon: Calendar,
           color: 'orange',
           features: ['Unix timestamps', 'ISO dates', 'Multiple formats', 'Current timestamp'],
           comingSoon: true
@@ -525,9 +498,7 @@
     <div class="max-w-2xl mx-auto mb-8">
       <div class="relative">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+          <Search class="h-5 w-5 text-gray-400" />
         </div>
         <input
           type="text"
@@ -540,9 +511,7 @@
             onclick={() => searchQuery = ''}
             class="absolute inset-y-0 right-0 pr-3 flex items-center"
           >
-            <svg class="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X class="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
           </button>
         {/if}
       </div>
@@ -595,7 +564,12 @@
             <div class="p-6">
               <!-- Icon -->
               <div class="w-16 h-16 {colors.bg} rounded-lg flex items-center justify-center mb-4 {colors.text}">
-                {@html tool.icon}
+                {#if typeof tool.icon === 'string'}
+                  {@html tool.icon}
+                {:else}
+                  {@const IconComponent = tool.icon}
+                  <IconComponent class="w-8 h-8" />
+                {/if}
               </div>
 
               <!-- Title and Status -->
@@ -619,9 +593,7 @@
               <div class="space-y-2">
                 {#each tool.features.slice(0, 3) as feature}
                   <div class="flex items-center text-sm text-gray-500 dark:text-gray-500">
-                    <svg class="w-4 h-4 mr-2 {colors.text}" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                    </svg>
+                    <Check class="w-4 h-4 mr-2 {colors.text}" />
                     {feature}
                   </div>
                 {/each}
@@ -630,13 +602,23 @@
 
             <!-- Hover Effect Overlay -->
             {#if !tool.comingSoon}
-              <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                <div class="absolute bottom-4 left-6 right-6">
-                  <div class="flex items-center text-white text-sm font-medium">
-                    Open Tool
-                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+                <div class="absolute inset-0 flex flex-col justify-end p-6">
+                  <div class="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                    <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm rounded-lg px-4 py-3 shadow-xl border border-white/20 dark:border-gray-700/20">
+                      <div class="flex items-center justify-between">
+                        <span class="text-gray-900 dark:text-white font-semibold text-sm">
+                          Open Tool
+                        </span>
+                        <div class="flex items-center gap-1 text-blue-600 dark:text-blue-400">
+                          <span class="text-xs font-medium">Launch</span>
+                          <ArrowRight class="w-4 h-4" />
+                        </div>
+                      </div>
+                      <div class="mt-1 text-xs text-gray-600 dark:text-gray-400">
+                        {tool.features.slice(0, 2).join(' • ')}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

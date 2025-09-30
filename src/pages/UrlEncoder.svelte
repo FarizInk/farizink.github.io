@@ -1,5 +1,6 @@
 <script lang="ts">
   import { navigate } from '../lib/router.js';
+import { ChevronLeft, Link, Shield, Zap, CreditCard } from '@lucide/svelte';
 
   let inputText = $state('');
   let encodedText = $state('');
@@ -99,18 +100,14 @@ https://demo.com/search?query=测试&lang=zh-CN`;
         onclick={handleBackToTools}
         class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
+        <ChevronLeft class="w-5 h-5" />
         Back to Tools
       </button>
     </div>
 
     <div class="text-center mb-8">
       <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl mb-4">
-        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-        </svg>
+        <Link class="w-10 h-10 text-white" />
       </div>
       <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
         URL Encoder/Decoder
@@ -408,9 +405,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4">
-        <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-        </svg>
+        <Shield class="w-6 h-6 text-green-600 dark:text-green-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
         Safe Encoding
@@ -422,9 +417,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
 
     <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4">
-        <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
+        <Zap class="w-6 h-6 text-green-600 dark:text-green-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
         Batch Processing
@@ -436,9 +429,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
 
     <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4">
-        <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-        </svg>
+        <CreditCard class="w-6 h-6 text-green-600 dark:text-green-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
         Round-trip Testing

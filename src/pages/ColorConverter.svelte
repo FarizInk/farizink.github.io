@@ -1,5 +1,6 @@
 <script lang="ts">
   import { navigate } from '../lib/router.js';
+import { ChevronLeft, Palette, Zap, Calendar } from '@lucide/svelte';
 
   let hexInput = $state('#3B82F6');
   let rgbInput = $state({ r: 59, g: 130, b: 246 });
@@ -190,18 +191,14 @@
         onclick={handleBackToTools}
         class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
+        <ChevronLeft class="w-5 h-5" />
         Back to Tools
       </button>
     </div>
 
     <div class="text-center mb-8">
       <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl mb-4">
-        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-        </svg>
+        <Palette class="w-10 h-10 text-white" />
       </div>
       <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
         Color Converter
@@ -509,9 +506,7 @@
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4">
-        <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-        </svg>
+        <Palette class="w-6 h-6 text-purple-600 dark:text-purple-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
         Multiple Formats
@@ -523,9 +518,7 @@
 
     <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4">
-        <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
+        <Zap class="w-6 h-6 text-purple-600 dark:text-purple-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
         Live Conversion
@@ -537,9 +530,7 @@
 
     <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4">
-        <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
+        <Calendar class="w-6 h-6 text-purple-600 dark:text-purple-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
         Color History

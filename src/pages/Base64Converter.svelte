@@ -1,5 +1,6 @@
 <script lang="ts">
   import { navigate } from '../lib/router.js';
+import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte';
 
   let inputText = $state('');
   let encodedText = $state('');
@@ -132,18 +133,14 @@
         onclick={handleBackToTools}
         class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
+        <ChevronLeft class="w-5 h-5" />
         Back to Tools
       </button>
     </div>
 
     <div class="text-center mb-8">
       <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-2xl mb-4">
-        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-        </svg>
+        <Lock class="w-10 h-10 text-white" />
       </div>
       <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
         Base64 Converter
@@ -339,9 +336,7 @@
         </h2>
 
         <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center">
-          <svg class="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-          </svg>
+          <Upload class="w-12 h-12 mx-auto mb-4 text-gray-400" />
 
           <label for="file-upload" class="cursor-pointer">
             <span class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
@@ -445,9 +440,7 @@
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center mb-4">
-        <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-        </svg>
+        <Shield class="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
         Secure Encoding
@@ -459,9 +452,7 @@
 
     <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center mb-4">
-        <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-        </svg>
+        <FileText class="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
         File Support
@@ -473,9 +464,7 @@
 
     <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center mb-4">
-        <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
+        <Zap class="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
         Fast Processing

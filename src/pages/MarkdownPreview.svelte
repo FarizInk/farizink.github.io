@@ -1,5 +1,6 @@
 <script lang="ts">
   import { navigate } from '../lib/router.js';
+import { ChevronLeft, FileText, Eye, Edit, Zap, Code, Download } from '@lucide/svelte';
 
   let markdownText = $state(
   "# Welcome to Markdown Preview" +
@@ -348,18 +349,14 @@
         onclick={handleBackToTools}
         class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
+        <ChevronLeft class="w-5 h-5" />
         Back to Tools
       </button>
     </div>
 
     <div class="text-center mb-8">
       <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl mb-4">
-        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
+        <FileText class="w-10 h-10 text-white" />
       </div>
       <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
         Markdown Preview
@@ -426,21 +423,15 @@
   <!-- Stats -->
   <div class="mb-6 flex justify-center gap-6 text-sm text-gray-600 dark:text-gray-400">
     <div class="flex items-center gap-1">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
+      <FileText class="w-4 h-4" />
       <span>{wordCount} words</span>
     </div>
     <div class="flex items-center gap-1">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
+      <FileText class="w-4 h-4" />
       <span>{charCount} characters</span>
     </div>
     <div class="flex items-center gap-1">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-      </svg>
+      <FileText class="w-4 h-4" />
       <span>{lineCount} lines</span>
     </div>
   </div>
@@ -452,9 +443,7 @@
       <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
         <div class="flex items-center justify-between">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
+            <Edit class="w-5 h-5" />
             Markdown Editor
           </h2>
           <span class="text-sm text-gray-500 dark:text-gray-400">.md</span>
@@ -474,10 +463,7 @@
       <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
         <div class="flex items-center justify-between">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
+            <Eye class="w-5 h-5" />
             Live Preview
           </h2>
           <span class="text-sm text-gray-500 dark:text-gray-400">HTML</span>
@@ -495,9 +481,7 @@
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center mb-4">
-        <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
+        <Zap class="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
         Live Preview
@@ -509,9 +493,7 @@
 
     <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center mb-4">
-        <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-        </svg>
+        <Code class="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
         Syntax Highlighting
@@ -523,9 +505,7 @@
 
     <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center mb-4">
-        <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-        </svg>
+        <Download class="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
         Export Options

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { navigate } from '../lib/router.js';
+import { ChevronLeft, Code, CheckCircle, Layout, Copy } from '@lucide/svelte';
 
   let inputJson = $state('');
   let outputJson = $state('');
@@ -75,18 +76,14 @@
         onclick={handleBackToTools}
         class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
+        <ChevronLeft class="w-5 h-5" />
         Back to Tools
       </button>
     </div>
 
     <div class="text-center mb-8">
       <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-4">
-        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-        </svg>
+        <Code class="w-10 h-10 text-white" />
       </div>
       <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
         JSON Parser & Formatter
@@ -231,9 +228,7 @@
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4">
-        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
+        <CheckCircle class="w-6 h-6 text-blue-600 dark:text-blue-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
         Validate JSON
@@ -245,9 +240,7 @@
 
     <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4">
-        <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-        </svg>
+        <Layout class="w-6 h-6 text-green-600 dark:text-green-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
         Format & Minify
@@ -259,9 +252,7 @@
 
     <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
       <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4">
-        <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-        </svg>
+        <Copy class="w-6 h-6 text-purple-600 dark:text-purple-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
         Copy Results
