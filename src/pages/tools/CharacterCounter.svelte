@@ -47,7 +47,7 @@ ${inputText}
 
     navigator.clipboard.writeText(text);
     copied = 'success';
-    setTimeout(() => copied = '', 2000);
+    setTimeout(() => (copied = ''), 2000);
   }
 
   function clearAll() {
@@ -78,14 +78,15 @@ ${inputText}
     </div>
 
     <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl mb-4">
+      <div
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl mb-4"
+      >
         <Calculator class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        Character Counter
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Character Counter</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Count characters, words, and analyze text with real-time statistics and reading time estimation.
+        Count characters, words, and analyze text with real-time statistics and reading time
+        estimation.
       </p>
     </div>
   </div>
@@ -94,13 +95,19 @@ ${inputText}
   <nav class="mb-8">
     <ol class="flex items-center justify-center space-x-2 text-sm">
       <li>
-        <a href="/" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Home
         </a>
       </li>
       <li class="text-gray-300 dark:text-gray-600">/</li>
       <li>
-        <a href="/tools" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/tools"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Tools
         </a>
       </li>
@@ -111,85 +118,83 @@ ${inputText}
 
   <!-- Stats Overview -->
   <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center"
+    >
       <div class="flex items-center justify-center mb-2">
         <FileText class="w-6 h-6 text-purple-600 dark:text-purple-400" />
       </div>
       <div class="text-2xl font-bold text-gray-900 dark:text-white">
         {stats.characters.toLocaleString()}
       </div>
-      <div class="text-sm text-gray-600 dark:text-gray-400">
-        Characters
-      </div>
+      <div class="text-sm text-gray-600 dark:text-gray-400">Characters</div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center"
+    >
       <div class="flex items-center justify-center mb-2">
         <Hash class="w-6 h-6 text-purple-600 dark:text-purple-400" />
       </div>
       <div class="text-2xl font-bold text-gray-900 dark:text-white">
         {stats.charactersNoSpaces.toLocaleString()}
       </div>
-      <div class="text-sm text-gray-600 dark:text-gray-400">
-        No Spaces
-      </div>
+      <div class="text-sm text-gray-600 dark:text-gray-400">No Spaces</div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center"
+    >
       <div class="flex items-center justify-center mb-2">
         <FileText class="w-6 h-6 text-purple-600 dark:text-purple-400" />
       </div>
       <div class="text-2xl font-bold text-gray-900 dark:text-white">
         {stats.words.toLocaleString()}
       </div>
-      <div class="text-sm text-gray-600 dark:text-gray-400">
-        Words
-      </div>
+      <div class="text-sm text-gray-600 dark:text-gray-400">Words</div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center"
+    >
       <div class="flex items-center justify-center mb-2">
         <FileText class="w-6 h-6 text-purple-600 dark:text-purple-400" />
       </div>
       <div class="text-2xl font-bold text-gray-900 dark:text-white">
         {stats.sentences.toLocaleString()}
       </div>
-      <div class="text-sm text-gray-600 dark:text-gray-400">
-        Sentences
-      </div>
+      <div class="text-sm text-gray-600 dark:text-gray-400">Sentences</div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center"
+    >
       <div class="flex items-center justify-center mb-2">
         <FileText class="w-6 h-6 text-purple-600 dark:text-purple-400" />
       </div>
       <div class="text-2xl font-bold text-gray-900 dark:text-white">
         {stats.paragraphs.toLocaleString()}
       </div>
-      <div class="text-sm text-gray-600 dark:text-gray-400">
-        Paragraphs
-      </div>
+      <div class="text-sm text-gray-600 dark:text-gray-400">Paragraphs</div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center"
+    >
       <div class="flex items-center justify-center mb-2">
         <Clock class="w-6 h-6 text-purple-600 dark:text-purple-400" />
       </div>
       <div class="text-2xl font-bold text-gray-900 dark:text-white">
         {stats.readingTime}
       </div>
-      <div class="text-sm text-gray-600 dark:text-gray-400">
-        Min Read
-      </div>
+      <div class="text-sm text-gray-600 dark:text-gray-400">Min Read</div>
     </div>
   </div>
 
   <!-- Text Input Area -->
   <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
     <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
-        Input Text
-      </h2>
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Input Text</h2>
       <div class="flex gap-2">
         <button
           onclick={copyToClipboard}
@@ -198,7 +203,12 @@ ${inputText}
         >
           {#if copied === 'success'}
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
             </svg>
             Copied!
           {:else}
@@ -222,15 +232,16 @@ ${inputText}
     ></textarea>
 
     <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-      Lines: {stats.lines} • {stats.characters} characters • {stats.words} words • {stats.sentences} sentences
+      Lines: {stats.lines} • {stats.characters} characters • {stats.words} words • {stats.sentences}
+      sentences
     </div>
   </div>
 
   <!-- Sample Text -->
-  <div class="mt-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-      Sample Text
-    </h3>
+  <div
+    class="mt-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700"
+  >
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sample Text</h3>
     <p class="text-gray-600 dark:text-gray-400 mb-4">
       Click below to load a sample text for testing:
     </p>
@@ -251,25 +262,31 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
   <!-- Detailed Statistics -->
   <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
     <!-- Text Analysis -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-        Text Analysis
-      </h3>
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+    >
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Text Analysis</h3>
 
       <div class="space-y-4">
         <div class="flex justify-between">
           <span class="text-gray-600 dark:text-gray-400">Total Characters:</span>
-          <span class="font-medium text-gray-900 dark:text-white">{stats.characters.toLocaleString()}</span>
+          <span class="font-medium text-gray-900 dark:text-white"
+            >{stats.characters.toLocaleString()}</span
+          >
         </div>
 
         <div class="flex justify-between">
           <span class="text-gray-600 dark:text-gray-400">Characters (no spaces):</span>
-          <span class="font-medium text-gray-900 dark:text-white">{stats.charactersNoSpaces.toLocaleString()}</span>
+          <span class="font-medium text-gray-900 dark:text-white"
+            >{stats.charactersNoSpaces.toLocaleString()}</span
+          >
         </div>
 
         <div class="flex justify-between">
           <span class="text-gray-600 dark:text-gray-400">Total Words:</span>
-          <span class="font-medium text-gray-900 dark:text-white">{stats.words.toLocaleString()}</span>
+          <span class="font-medium text-gray-900 dark:text-white"
+            >{stats.words.toLocaleString()}</span
+          >
         </div>
 
         <div class="flex justify-between">
@@ -281,21 +298,25 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
 
         <div class="flex justify-between">
           <span class="text-gray-600 dark:text-gray-400">Total Sentences:</span>
-          <span class="font-medium text-gray-900 dark:text-white">{stats.sentences.toLocaleString()}</span>
+          <span class="font-medium text-gray-900 dark:text-white"
+            >{stats.sentences.toLocaleString()}</span
+          >
         </div>
 
         <div class="flex justify-between">
           <span class="text-gray-600 dark:text-gray-400">Total Paragraphs:</span>
-          <span class="font-medium text-gray-900 dark:text-white">{stats.paragraphs.toLocaleString()}</span>
+          <span class="font-medium text-gray-900 dark:text-white"
+            >{stats.paragraphs.toLocaleString()}</span
+          >
         </div>
       </div>
     </div>
 
     <!-- Reading Metrics -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-        Reading Metrics
-      </h3>
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+    >
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Reading Metrics</h3>
 
       <div class="space-y-4">
         <div class="flex justify-between">
@@ -329,40 +350,42 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
 
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Calculator class="w-6 h-6 text-purple-600 dark:text-purple-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Real-time Analysis
-      </h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        Instant character and word count as you type
-      </p>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Real-time Analysis</h3>
+      <p class="text-gray-600 dark:text-gray-400">Instant character and word count as you type</p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Clock class="w-6 h-6 text-purple-600 dark:text-purple-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Reading Time
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Reading Time</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Estimate reading time based on average reading speed
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Copy class="w-6 h-6 text-purple-600 dark:text-purple-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Export Stats
-      </h3>
-      <p class="text-color-600 dark:text-gray-400">
-        Copy analysis results with one click
-      </p>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Export Stats</h3>
+      <p class="text-color-600 dark:text-gray-400">Copy analysis results with one click</p>
     </div>
   </div>
 </div>

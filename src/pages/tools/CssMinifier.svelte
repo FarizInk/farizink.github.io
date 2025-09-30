@@ -1,6 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, Code, Zap, Download, Copy, FileText } from '@lucide/svelte';
+  import { ChevronLeft, Code, Zap, Download, FileText } from '@lucide/svelte';
 
   let cssInput = $state('');
   let cssOutput = $state('');
@@ -79,7 +79,8 @@
       minifiedSize = new Blob([processed]).size;
     }
 
-    compressionRatio = originalSize > 0 ? Math.round(((originalSize - minifiedSize) / originalSize) * 100) : 0;
+    compressionRatio =
+      originalSize > 0 ? Math.round(((originalSize - minifiedSize) / originalSize) * 100) : 0;
   }
 
   function loadSampleCss() {
@@ -193,12 +194,12 @@
     </div>
 
     <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-4">
+      <div
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-4"
+      >
         <Code class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        CSS Minifier/Beautifier
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">CSS Minifier/Beautifier</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
         Minify and format CSS code to optimize performance and improve readability.
       </p>
@@ -209,13 +210,19 @@
   <nav class="mb-8">
     <ol class="flex items-center justify-center space-x-2 text-sm">
       <li>
-        <a href="/" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Home
         </a>
       </li>
       <li class="text-gray-300 dark:text-gray-600">/</li>
       <li>
-        <a href="/tools" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/tools"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Tools
         </a>
       </li>
@@ -226,24 +233,22 @@
 
   <!-- Mode Toggle -->
   <div class="mb-6 flex justify-center">
-    <div class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1">
+    <div
+      class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1"
+    >
       <button
-        onclick={() => minified = false}
-        class="px-4 py-2 rounded-md text-sm font-medium transition-colors {
-          !minified
-            ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
-            : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-        }"
+        onclick={() => (minified = false)}
+        class="px-4 py-2 rounded-md text-sm font-medium transition-colors {!minified
+          ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
+          : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
       >
         Beautify CSS
       </button>
       <button
-        onclick={() => minified = true}
-        class="px-4 py-2 rounded-md text-sm font-medium transition-colors {
-          minified
-            ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
-            : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-        }"
+        onclick={() => (minified = true)}
+        class="px-4 py-2 rounded-md text-sm font-medium transition-colors {minified
+          ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
+          : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
       >
         Minify CSS
       </button>
@@ -282,20 +287,32 @@
 
   <!-- Statistics -->
   {#if originalSize > 0}
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 mb-6">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 mb-6"
+    >
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
         <div>
           <p class="text-sm text-gray-600 dark:text-gray-400">Original Size</p>
-          <p class="text-lg font-semibold text-gray-900 dark:text-white">{formatFileSize(originalSize)}</p>
+          <p class="text-lg font-semibold text-gray-900 dark:text-white">
+            {formatFileSize(originalSize)}
+          </p>
         </div>
         <div>
           <p class="text-sm text-gray-600 dark:text-gray-400">Processed Size</p>
-          <p class="text-lg font-semibold text-gray-900 dark:text-white">{formatFileSize(minifiedSize)}</p>
+          <p class="text-lg font-semibold text-gray-900 dark:text-white">
+            {formatFileSize(minifiedSize)}
+          </p>
         </div>
         <div>
           <p class="text-sm text-gray-600 dark:text-gray-400">Size Change</p>
-          <p class="text-lg font-semibold {minifiedSize < originalSize ? 'text-green-600' : 'text-red-600'} dark:text-{minifiedSize < originalSize ? 'green-400' : 'red-400'}">
-            {minifiedSize < originalSize ? '-' : '+'}{formatFileSize(Math.abs(minifiedSize - originalSize))}
+          <p
+            class="text-lg font-semibold {minifiedSize < originalSize
+              ? 'text-green-600'
+              : 'text-red-600'} dark:text-{minifiedSize < originalSize ? 'green-400' : 'red-400'}"
+          >
+            {minifiedSize < originalSize ? '-' : '+'}{formatFileSize(
+              Math.abs(minifiedSize - originalSize)
+            )}
           </p>
         </div>
         <div>
@@ -311,9 +328,7 @@
     <!-- Input Section -->
     <div>
       <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-          Input CSS
-        </h2>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input CSS</h2>
         <span class="text-sm text-gray-500 dark:text-gray-400">
           {cssInput.length} characters
         </span>
@@ -355,37 +370,43 @@
 
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Zap class="w-6 h-6 text-blue-600 dark:text-blue-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Minify CSS
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Minify CSS</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Reduce file size by removing whitespace, comments, and unnecessary characters
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <FileText class="w-6 h-6 text-blue-600 dark:text-blue-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Beautify CSS
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Beautify CSS</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Format CSS with proper indentation and line breaks for better readability
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Download class="w-6 h-6 text-blue-600 dark:text-blue-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Export Results
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Export Results</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Copy to clipboard or download processed CSS as a file for immediate use
       </p>

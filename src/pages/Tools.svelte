@@ -3,18 +3,14 @@
   import {
     Search,
     X,
-    Braces,
     FileText,
     Hash,
     Type,
     GitCompare,
     Link,
     Code,
-    Minus,
     FileJson,
     Palette,
-    GraduationCap,
-    Shield,
     Lock,
     Calculator,
     Calendar,
@@ -23,15 +19,13 @@
     Check,
     Zap,
     Key,
-    Package,
     QrCode,
     Droplets,
     Box,
     Timer,
     Users,
     ArrowUpDown,
-    Percent,
-    Activity,
+    Percent
   } from '@lucide/svelte';
 
   let searchQuery = $state('');
@@ -47,7 +41,12 @@
           description: 'Format, validate, and minify JSON data with ease',
           icon: FileJson,
           color: 'blue',
-          features: ['Validate JSON', 'Format with custom indentation', 'Minify JSON', 'Copy to clipboard'],
+          features: [
+            'Validate JSON',
+            'Format with custom indentation',
+            'Minify JSON',
+            'Copy to clipboard'
+          ],
           comingSoon: false
         },
         {
@@ -56,7 +55,14 @@
           description: 'Convert between different text cases',
           icon: Type,
           color: 'cyan',
-          features: ['UPPERCASE', 'lowercase', 'Title Case', 'camelCase', 'snake_case', 'kebab-case'],
+          features: [
+            'UPPERCASE',
+            'lowercase',
+            'Title Case',
+            'camelCase',
+            'snake_case',
+            'kebab-case'
+          ],
           comingSoon: true
         },
         {
@@ -161,7 +167,12 @@
           description: 'Create URL-friendly slugs from text',
           icon: Type,
           color: 'emerald',
-          features: ['URL-friendly slugs', 'Custom separators', 'Lowercase conversion', 'Special character removal'],
+          features: [
+            'URL-friendly slugs',
+            'Custom separators',
+            'Lowercase conversion',
+            'Special character removal'
+          ],
           comingSoon: false
         },
         {
@@ -185,7 +196,12 @@
           description: 'Generate secure and random passwords',
           icon: Lock,
           color: 'red',
-          features: ['Customizable length', 'Character sets', 'Password strength', 'Copy to clipboard'],
+          features: [
+            'Customizable length',
+            'Character sets',
+            'Password strength',
+            'Copy to clipboard'
+          ],
           comingSoon: false
         },
         {
@@ -194,7 +210,12 @@
           description: 'Generate custom QR codes for URLs and text',
           icon: QrCode,
           color: 'teal',
-          features: ['Custom size and colors', 'Error correction levels', 'Download as image', 'Copy to clipboard'],
+          features: [
+            'Custom size and colors',
+            'Error correction levels',
+            'Download as image',
+            'Copy to clipboard'
+          ],
           comingSoon: false
         },
         {
@@ -236,7 +257,12 @@
           description: 'Generate harmonious color palettes',
           icon: Palette,
           color: 'pink',
-          features: ['Complementary colors', 'Triadic palettes', 'Analogous colors', 'Export palettes'],
+          features: [
+            'Complementary colors',
+            'Triadic palettes',
+            'Analogous colors',
+            'Export palettes'
+          ],
           comingSoon: false
         },
         {
@@ -287,7 +313,12 @@
           description: 'Calculate percentages and discounts',
           icon: Percent,
           color: 'purple',
-          features: ['Percentage calculation', 'Discount calculator', 'Tax calculator', 'Tip calculator'],
+          features: [
+            'Percentage calculation',
+            'Discount calculator',
+            'Tax calculator',
+            'Tip calculator'
+          ],
           comingSoon: true
         },
         {
@@ -296,7 +327,12 @@
           description: 'Calculate Body Mass Index',
           icon: Users,
           color: 'red',
-          features: ['BMI calculation', 'Health indicators', 'Weight categories', 'Ideal weight range'],
+          features: [
+            'BMI calculation',
+            'Health indicators',
+            'Weight categories',
+            'Ideal weight range'
+          ],
           comingSoon: true
         },
         {
@@ -346,16 +382,23 @@
   ];
 
   // Filter tools based on search query
-  const filteredTools = $derived(searchQuery
-    ? toolsByCategory.map(category => ({
-        ...category,
-        tools: category.tools.filter(tool =>
-          tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          tool.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          tool.features.some(feature => feature.toLowerCase().includes(searchQuery.toLowerCase()))
-        )
-      })).filter(category => category.tools.length > 0)
-    : toolsByCategory);
+  const filteredTools = $derived(
+    searchQuery
+      ? toolsByCategory
+          .map(category => ({
+            ...category,
+            tools: category.tools.filter(
+              tool =>
+                tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                tool.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                tool.features.some(feature =>
+                  feature.toLowerCase().includes(searchQuery.toLowerCase())
+                )
+            )
+          }))
+          .filter(category => category.tools.length > 0)
+      : toolsByCategory
+  );
 
   function handleToolClick(toolId: string) {
     if (toolId === 'json-parser') {
@@ -509,9 +552,7 @@
 
 <div class="max-w-7xl mx-auto p-6">
   <div class="mb-8">
-    <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-      Developer Tools
-    </h1>
+    <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Developer Tools</h1>
     <p class="text-lg text-gray-600 dark:text-gray-400 mb-6">
       A comprehensive collection of useful tools for developers, designers, and everyday tasks
     </p>
@@ -530,7 +571,7 @@
         />
         {#if searchQuery}
           <button
-            onclick={() => searchQuery = ''}
+            onclick={() => (searchQuery = '')}
             class="absolute inset-y-0 right-0 pr-3 flex items-center"
           >
             <X class="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
@@ -549,7 +590,10 @@
   <nav class="mb-8">
     <ol class="flex items-center justify-center space-x-2 text-sm">
       <li>
-        <a href="/" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Home
         </a>
       </li>
@@ -584,8 +628,11 @@
             <!-- Tool Content -->
             <div class="p-6">
               <!-- Icon -->
-              <div class="w-16 h-16 {colors.bg} rounded-lg flex items-center justify-center mb-4 {colors.text}">
+              <div
+                class="w-16 h-16 {colors.bg} rounded-lg flex items-center justify-center mb-4 {colors.text}"
+              >
                 {#if typeof tool.icon === 'string'}
+                  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
                   {@html tool.icon}
                 {:else}
                   {@const IconComponent = tool.icon}
@@ -599,7 +646,9 @@
                   {tool.name}
                 </h3>
                 {#if tool.comingSoon}
-                  <span class="px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full">
+                  <span
+                    class="px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full"
+                  >
                     Coming Soon
                   </span>
                 {/if}
@@ -612,7 +661,7 @@
 
               <!-- Features -->
               <div class="space-y-2">
-                {#each tool.features.slice(0, 3) as feature}
+                {#each tool.features.slice(0, 3) as feature, i (feature + i)}
                   <div class="flex items-center text-sm text-gray-500 dark:text-gray-500">
                     <Check class="w-4 h-4 mr-2 {colors.text}" />
                     {feature}
@@ -623,10 +672,16 @@
 
             <!-- Hover Effect Overlay -->
             {#if !tool.comingSoon}
-              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none"
+              >
                 <div class="absolute inset-0 flex flex-col justify-end p-6">
-                  <div class="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                    <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm rounded-lg px-4 py-3 shadow-xl border border-white/20 dark:border-gray-700/20">
+                  <div
+                    class="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
+                  >
+                    <div
+                      class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm rounded-lg px-4 py-3 shadow-xl border border-white/20 dark:border-gray-700/20"
+                    >
                       <div class="flex items-center justify-between">
                         <span class="text-gray-900 dark:text-white font-semibold text-sm">
                           Open Tool
@@ -651,14 +706,14 @@
   {/each}
 
   <!-- Call to Action -->
-  <div class="mt-12 p-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+  <div
+    class="mt-12 p-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800"
+  >
     <div class="text-center">
-      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-        More Tools Coming Soon
-      </h2>
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">More Tools Coming Soon</h2>
       <p class="text-gray-600 dark:text-gray-400 mb-6">
-        I'm constantly adding new tools to make your development workflow easier.
-        Check back regularly for updates!
+        I'm constantly adding new tools to make your development workflow easier. Check back
+        regularly for updates!
       </p>
       <div class="flex justify-center space-x-4">
         <a
@@ -668,7 +723,9 @@
           class="inline-flex items-center px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
         >
           <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            <path
+              d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+            />
           </svg>
           Follow on GitHub
         </a>

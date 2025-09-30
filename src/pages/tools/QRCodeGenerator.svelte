@@ -23,10 +23,10 @@
     try {
       // Convert error correction level string to qrcode library format
       const errorCorrectionMap: Record<string, 'L' | 'M' | 'Q' | 'H'> = {
-        'L': 'L',     // Low
-        'M': 'M',     // Medium
-        'Q': 'Q',     // Quartile
-        'H': 'H'      // High
+        L: 'L', // Low
+        M: 'M', // Medium
+        Q: 'Q', // Quartile
+        H: 'H' // High
       };
 
       const options = {
@@ -104,9 +104,7 @@
     </div>
 
     <div class="text-center mb-8">
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        QR Code Generator
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">QR Code Generator</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
         Generate custom QR codes for URLs, text, or any data with customizable options.
       </p>
@@ -117,13 +115,19 @@
   <nav class="mb-8">
     <ol class="flex items-center space-x-2 text-sm">
       <li>
-        <a href="/" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Home
         </a>
       </li>
       <li class="text-gray-300 dark:text-gray-600">/</li>
       <li>
-        <a href="/tools" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/tools"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Tools
         </a>
       </li>
@@ -137,7 +141,10 @@
     <div class="space-y-6">
       <!-- Text Input -->
       <div>
-        <label for="text-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label
+          for="text-input"
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
           Text or URL
         </label>
         <textarea
@@ -172,16 +179,14 @@
         <!-- Colors -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label for="bg-color" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="bg-color"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Background Color
             </label>
             <div class="flex items-center space-x-2">
-              <input
-                id="bg-color"
-                type="color"
-                bind:value={bgColor}
-                class="h-10 w-full"
-              />
+              <input id="bg-color" type="color" bind:value={bgColor} class="h-10 w-full" />
               <input
                 type="text"
                 bind:value={bgColor}
@@ -191,16 +196,14 @@
           </div>
 
           <div>
-            <label for="fg-color" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="fg-color"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Foreground Color
             </label>
             <div class="flex items-center space-x-2">
-              <input
-                id="fg-color"
-                type="color"
-                bind:value={fgColor}
-                class="h-10 w-full"
-              />
+              <input id="fg-color" type="color" bind:value={fgColor} class="h-10 w-full" />
               <input
                 type="text"
                 bind:value={fgColor}
@@ -212,7 +215,10 @@
 
         <!-- Error Correction Level -->
         <div>
-          <label for="error-correction" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label
+            for="error-correction"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
             Error Correction Level
           </label>
           <select
@@ -235,7 +241,10 @@
             bind:checked={includeMargin}
             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
           />
-          <label for="include-margin" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label
+            for="include-margin"
+            class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
             Include margin
           </label>
         </div>
@@ -264,7 +273,9 @@
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Generated QR Code</h3>
 
         {#if qrDataUrl}
-          <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+          <div
+            class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700"
+          >
             <div class="flex justify-center mb-4">
               <img
                 src={qrDataUrl}
@@ -292,13 +303,17 @@
             </div>
           </div>
         {:else if error}
-          <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
+          <div
+            class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6"
+          >
             <p class="text-red-600 dark:text-red-400 text-center">
               {error}
             </p>
           </div>
         {:else}
-          <div class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-12">
+          <div
+            class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-12"
+          >
             <p class="text-gray-500 dark:text-gray-400 text-center">
               Enter text and click "Generate QR Code" to create your QR code
             </p>
@@ -307,10 +322,10 @@
       </div>
 
       <!-- Info Section -->
-      <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-        <h4 class="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2">
-          💡 Tips
-        </h4>
+      <div
+        class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4"
+      >
+        <h4 class="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2">💡 Tips</h4>
         <ul class="text-sm text-blue-700 dark:text-blue-300 space-y-1">
           <li>• QR codes can store up to 4,296 alphanumeric characters</li>
           <li>• Higher error correction levels create more complex but more robust codes</li>

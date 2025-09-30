@@ -58,9 +58,7 @@
   ];
 
   function generateCssCode() {
-    const stops = sortedGradientStops
-      .map(stop => `${stop.color} ${stop.position}%`)
-      .join(', ');
+    const stops = sortedGradientStops.map(stop => `${stop.color} ${stop.position}%`).join(', ');
 
     if (gradientType === 'linear') {
       cssCode = `background: linear-gradient(${gradientDirection}, ${stops});`;
@@ -72,11 +70,17 @@
   }
 
   function addColorStop() {
-    const newPosition = gradientStops.length > 0
-      ? Math.round((gradientStops[gradientStops.length - 1].position + gradientStops[0].position) / 2)
-      : 50;
+    const newPosition =
+      gradientStops.length > 0
+        ? Math.round(
+            (gradientStops[gradientStops.length - 1].position + gradientStops[0].position) / 2
+          )
+        : 50;
 
-    gradientStops = [...gradientStops, { color: '#000000', position: Math.min(100, Math.max(0, newPosition)) }];
+    gradientStops = [
+      ...gradientStops,
+      { color: '#000000', position: Math.min(100, Math.max(0, newPosition)) }
+    ];
     generateCssCode();
   }
 
@@ -128,9 +132,7 @@
   }
 
   // Create a derived value for sorted gradient stops
-  const sortedGradientStops = $derived(
-    [...gradientStops].sort((a, b) => a.position - b.position)
-  );
+  const sortedGradientStops = $derived([...gradientStops].sort((a, b) => a.position - b.position));
 
   // Create a derived value for the gradient style
   const gradientStyle = $derived(() => {
@@ -164,12 +166,12 @@
     </div>
 
     <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl mb-4">
+      <div
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl mb-4"
+      >
         <Droplets class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        CSS Gradient Generator
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">CSS Gradient Generator</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
         Create beautiful CSS gradients with live preview and easy customization.
       </p>
@@ -180,13 +182,19 @@
   <nav class="mb-8">
     <ol class="flex items-center justify-center space-x-2 text-sm">
       <li>
-        <a href="/" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Home
         </a>
       </li>
       <li class="text-gray-300 dark:text-gray-600">/</li>
       <li>
-        <a href="/tools" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/tools"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Tools
         </a>
       </li>
@@ -196,18 +204,19 @@
   </nav>
 
   <!-- Gradient Preview -->
-  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+  >
     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Preview</h3>
-    <div
-      class="h-48 w-full rounded-lg shadow-inner"
-      style="background: {gradientStyle()}"
-    ></div>
+    <div class="h-48 w-full rounded-lg shadow-inner" style="background: {gradientStyle()}"></div>
   </div>
 
   <!-- Controls -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
     <!-- Gradient Settings -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+    >
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Gradient Settings</h3>
 
       <div class="space-y-4">
@@ -226,7 +235,10 @@
         </div>
 
         <div>
-          <label for="gradient-direction" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label
+            for="gradient-direction"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
             {gradientType === 'linear' ? 'Direction' : 'Shape'}
           </label>
           <select
@@ -262,7 +274,9 @@
     </div>
 
     <!-- Color Stops -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+    >
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Color Stops</h3>
         <button
@@ -275,7 +289,7 @@
       </div>
 
       <div class="space-y-3">
-        {#each gradientStops as stop, index}
+        {#each gradientStops as stop, index (stop.color + index)}
           <div class="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
             <input
               type="color"
@@ -294,7 +308,12 @@
               <input
                 type="range"
                 bind:value={stop.position}
-                oninput={(e) => updateColorStop(index, 'position', parseInt((e.target as HTMLInputElement).value))}
+                oninput={e =>
+                  updateColorStop(
+                    index,
+                    'position',
+                    parseInt((e.target as HTMLInputElement).value)
+                  )}
                 min="0"
                 max="100"
                 class="w-20"
@@ -316,7 +335,9 @@
   </div>
 
   <!-- CSS Output -->
-  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+  >
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white">CSS Code</h3>
       <div class="flex gap-2">
@@ -334,14 +355,17 @@
         </button>
       </div>
     </div>
-    <pre class="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg font-mono text-sm text-gray-900 dark:text-white overflow-x-auto">{cssCode}</pre>
+    <pre
+      class="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg font-mono text-sm text-gray-900 dark:text-white overflow-x-auto">{cssCode}</pre>
   </div>
 
   <!-- Preset Gradients -->
-  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+  >
     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Preset Gradients</h3>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {#each presetGradients as preset}
+      {#each presetGradients as preset, i (preset.name + i)}
         <button
           onclick={() => loadPreset(preset)}
           class="p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
@@ -360,8 +384,12 @@
 
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Droplets class="w-6 h-6 text-blue-600 dark:text-blue-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -372,25 +400,29 @@
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Copy class="w-6 h-6 text-blue-600 dark:text-blue-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Live Preview
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Live Preview</h3>
       <p class="text-gray-600 dark:text-gray-400">
         See your gradient in real-time as you adjust colors and positions
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Zap class="w-6 h-6 text-blue-600 dark:text-blue-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        CSS Export
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">CSS Export</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Copy clean CSS code or download as a file for immediate use
       </p>

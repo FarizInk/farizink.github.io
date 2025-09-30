@@ -9,13 +9,25 @@
   const caseTypes = [
     { id: 'uppercase', name: 'UPPERCASE', description: 'Convert all letters to uppercase' },
     { id: 'lowercase', name: 'lowercase', description: 'Convert all letters to lowercase' },
-    { id: 'titlecase', name: 'Title Case', description: 'Capitalize The First Letter Of Each Word' },
-    { id: 'sentencecase', name: 'Sentence case', description: 'Capitalize the first letter of each sentence' },
+    {
+      id: 'titlecase',
+      name: 'Title Case',
+      description: 'Capitalize The First Letter Of Each Word'
+    },
+    {
+      id: 'sentencecase',
+      name: 'Sentence case',
+      description: 'Capitalize the first letter of each sentence'
+    },
     { id: 'camelcase', name: 'camelCase', description: 'Convert to camelCase notation' },
     { id: 'pascalcase', name: 'PascalCase', description: 'Convert to PascalCase notation' },
     { id: 'snakecase', name: 'snake_case', description: 'Convert to snake_case notation' },
     { id: 'kebabcase', name: 'kebab-case', description: 'Convert to kebab-case notation' },
-    { id: 'alternatingcase', name: 'AlTeRnAtInG CaSe', description: 'Convert to alternating letter case' },
+    {
+      id: 'alternatingcase',
+      name: 'AlTeRnAtInG CaSe',
+      description: 'Convert to alternating letter case'
+    },
     { id: 'inversecase', name: 'iNVERSE cASE', description: 'Invert the case of each letter' }
   ];
 
@@ -33,13 +45,18 @@
         outputText = inputText.toLowerCase();
         break;
       case 'titlecase':
-        outputText = inputText.replace(/\w\S*/g, (txt) =>
-          txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+        outputText = inputText.replace(
+          /\w\S*/g,
+          txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
         );
         break;
       case 'sentencecase':
-        outputText = inputText.charAt(0).toUpperCase() +
-          inputText.slice(1).toLowerCase().replace(/[.!?]\s*/g, (match) => match.toUpperCase());
+        outputText =
+          inputText.charAt(0).toUpperCase() +
+          inputText
+            .slice(1)
+            .toLowerCase()
+            .replace(/[.!?]\s*/g, match => match.toUpperCase());
         break;
       case 'camelcase':
         outputText = inputText
@@ -66,14 +83,16 @@
           .replace(/[^a-z0-9-]/g, '');
         break;
       case 'alternatingcase':
-        outputText = inputText.split('').map((char, index) =>
-          index % 2 === 0 ? char.toLowerCase() : char.toUpperCase()
-        ).join('');
+        outputText = inputText
+          .split('')
+          .map((char, index) => (index % 2 === 0 ? char.toLowerCase() : char.toUpperCase()))
+          .join('');
         break;
       case 'inversecase':
-        outputText = inputText.split('').map(char =>
-          char === char.toUpperCase() ? char.toLowerCase() : char.toUpperCase()
-        ).join('');
+        outputText = inputText
+          .split('')
+          .map(char => (char === char.toUpperCase() ? char.toLowerCase() : char.toUpperCase()))
+          .join('');
         break;
       default:
         outputText = inputText;
@@ -84,7 +103,7 @@
     if (outputText) {
       navigator.clipboard.writeText(outputText);
       copied = 'success';
-      setTimeout(() => copied = '', 2000);
+      setTimeout(() => (copied = ''), 2000);
     }
   }
 
@@ -120,14 +139,15 @@
     </div>
 
     <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl mb-4">
+      <div
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl mb-4"
+      >
         <Type class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        Text Case Converter
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Text Case Converter</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Convert text between different case formats with ease. Perfect for developers and content creators.
+        Convert text between different case formats with ease. Perfect for developers and content
+        creators.
       </p>
     </div>
   </div>
@@ -136,13 +156,19 @@
   <nav class="mb-8">
     <ol class="flex items-center justify-center space-x-2 text-sm">
       <li>
-        <a href="/" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Home
         </a>
       </li>
       <li class="text-gray-300 dark:text-gray-600">/</li>
       <li>
-        <a href="/tools" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/tools"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Tools
         </a>
       </li>
@@ -154,10 +180,10 @@
   <!-- Main Content -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
     <!-- Input Section -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-        Input Text
-      </h2>
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+    >
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Input Text</h2>
       <textarea
         bind:value={inputText}
         placeholder="Enter your text here..."
@@ -181,10 +207,10 @@
     </div>
 
     <!-- Output Section -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-        Converted Text
-      </h2>
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+    >
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Converted Text</h2>
       <div class="relative">
         <textarea
           bind:value={outputText}
@@ -194,9 +220,7 @@
         ></textarea>
         {#if !outputText}
           <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <p class="text-gray-400 dark:text-gray-600">
-              Converted text will appear here...
-            </p>
+            <p class="text-gray-400 dark:text-gray-600">Converted text will appear here...</p>
           </div>
         {/if}
       </div>
@@ -212,7 +236,12 @@
         >
           {#if copied === 'success'}
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
             </svg>
             Copied!
           {:else}
@@ -226,9 +255,7 @@
 
   <!-- Case Selection -->
   <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-      Select Case Type
-    </h2>
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">Select Case Type</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {#each caseTypes as caseType (caseType.id)}
@@ -237,7 +264,10 @@
             selectedCase = caseType.id;
             convertText(caseType.id);
           }}
-          class="text-left p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-cyan-500 dark:hover:border-cyan-400 transition-colors {selectedCase === caseType.id ? 'bg-cyan-50 dark:bg-cyan-900/20 border-cyan-500 dark:border-cyan-400' : ''}"
+          class="text-left p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-cyan-500 dark:hover:border-cyan-400 transition-colors {selectedCase ===
+          caseType.id
+            ? 'bg-cyan-50 dark:bg-cyan-900/20 border-cyan-500 dark:border-cyan-400'
+            : ''}"
         >
           <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
             {caseType.name}
@@ -251,16 +281,17 @@
   </div>
 
   <!-- Sample Text -->
-  <div class="mt-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-      Sample Text
-    </h3>
+  <div
+    class="mt-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700"
+  >
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sample Text</h3>
     <p class="text-gray-600 dark:text-gray-400 mb-4">
       Click below to load a sample text for testing:
     </p>
     <button
       onclick={() => {
-        inputText = "This is a SAMPLE text for DEMONSTRATION purposes. You can try different CASE conversions to see how they work!";
+        inputText =
+          'This is a SAMPLE text for DEMONSTRATION purposes. You can try different CASE conversions to see how they work!';
         convertText(selectedCase);
       }}
       class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -271,37 +302,41 @@
 
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-cyan-100 dark:bg-cyan-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-cyan-100 dark:bg-cyan-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Type class="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Multiple Cases
-      </h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        Support for 10 different text case formats
-      </p>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Multiple Cases</h3>
+      <p class="text-gray-600 dark:text-gray-400">Support for 10 different text case formats</p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-cyan-100 dark:bg-cyan-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-cyan-100 dark:bg-cyan-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <RotateCcw class="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Real-time Conversion
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Real-time Conversion</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Instant conversion as you type or change case type
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-cyan-100 dark:bg-cyan-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-cyan-100 dark:bg-cyan-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Copy class="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Easy Copy
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Easy Copy</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Copy converted text to clipboard with one click
       </p>

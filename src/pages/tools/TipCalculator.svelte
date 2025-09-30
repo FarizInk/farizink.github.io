@@ -1,6 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, DollarSign, Calculator, Users, Copy, Zap } from '@lucide/svelte';
+  import { ChevronLeft, DollarSign, Calculator, Users, Copy } from '@lucide/svelte';
 
   let billAmount = $state('');
   let tipPercentage = $state(15);
@@ -11,7 +11,6 @@
   let tipAmount = $state(0);
   let totalAmount = $state(0);
   let amountPerPerson = $state(0);
-  let copiedText = $state('');
 
   const tipPresets = [10, 15, 18, 20, 25];
 
@@ -55,12 +54,8 @@
     calculateTip();
   }
 
-  function copyToClipboard(text: string, field: string) {
+  function copyToClipboard(text: string) {
     navigator.clipboard.writeText(text);
-    copiedText = field;
-    setTimeout(() => {
-      copiedText = '';
-    }, 2000);
   }
 
   function clearAll() {
@@ -101,12 +96,12 @@
     </div>
 
     <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl mb-4">
+      <div
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl mb-4"
+      >
         <DollarSign class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        Tip Calculator
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Tip Calculator</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
         Calculate tips and split bills easily with support for tax and multiple people.
       </p>
@@ -117,13 +112,19 @@
   <nav class="mb-8">
     <ol class="flex items-center justify-center space-x-2 text-sm">
       <li>
-        <a href="/" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Home
         </a>
       </li>
       <li class="text-gray-300 dark:text-gray-600">/</li>
       <li>
-        <a href="/tools" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/tools"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Tools
         </a>
       </li>
@@ -152,8 +153,13 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
     <div class="space-y-4">
       <!-- Bill Amount -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <label for="bill-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      >
+        <label
+          for="bill-amount"
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
           Bill Amount ($)
         </label>
         <input
@@ -168,8 +174,13 @@
       </div>
 
       <!-- Tip Percentage -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <label for="tip-percentage" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      >
+        <label
+          for="tip-percentage"
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
           Tip Percentage: {tipPercentage}%
         </label>
         <input
@@ -182,14 +193,12 @@
           class="w-full mb-3"
         />
         <div class="grid grid-cols-5 gap-2">
-          {#each tipPresets as preset}
+          {#each tipPresets as preset (preset)}
             <button
-              onclick={() => tipPercentage = preset}
-              class="px-3 py-2 text-sm rounded-lg border transition-colors {
-                tipPercentage === preset
-                  ? 'bg-green-100 dark:bg-green-900/20 border-green-500 text-green-700 dark:text-green-300'
-                  : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-green-400'
-              }"
+              onclick={() => (tipPercentage = preset)}
+              class="px-3 py-2 text-sm rounded-lg border transition-colors {tipPercentage === preset
+                ? 'bg-green-100 dark:bg-green-900/20 border-green-500 text-green-700 dark:text-green-300'
+                : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-green-400'}"
             >
               {preset}%
             </button>
@@ -198,13 +207,18 @@
       </div>
 
       <!-- Number of People -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <label for="number-people" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      >
+        <label
+          for="number-people"
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
           Number of People
         </label>
         <div class="flex items-center gap-2">
           <button
-            onclick={() => numberOfPeople = Math.max(1, numberOfPeople - 1)}
+            onclick={() => (numberOfPeople = Math.max(1, numberOfPeople - 1))}
             class="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
           >
             -
@@ -217,7 +231,7 @@
             class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-center focus:ring-2 focus:ring-green-500 focus:border-transparent"
           />
           <button
-            onclick={() => numberOfPeople = numberOfPeople + 1}
+            onclick={() => (numberOfPeople = numberOfPeople + 1)}
             class="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
           >
             +
@@ -228,7 +242,9 @@
 
     <div class="space-y-4">
       <!-- Tax Options -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      >
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tax Options</h3>
 
         <label class="flex items-center gap-2 cursor-pointer mb-4">
@@ -242,7 +258,10 @@
 
         <div class="space-y-3">
           <div>
-            <label for="tax-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="tax-amount"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Tax Amount ($)
             </label>
             <input
@@ -258,7 +277,10 @@
           </div>
 
           <div>
-            <label for="tax-rate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="tax-rate"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Tax Rate (%)
             </label>
             <input
@@ -276,16 +298,22 @@
       </div>
 
       <!-- Results -->
-      <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-200 dark:border-green-800 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Calculation Results</h3>
+      <div
+        class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-200 dark:border-green-800 p-6"
+      >
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Calculation Results
+        </h3>
 
         <div class="space-y-3">
           <div class="flex justify-between items-center">
             <span class="text-gray-600 dark:text-gray-400">Tip Amount:</span>
             <div class="flex items-center gap-2">
-              <span class="text-xl font-semibold text-gray-900 dark:text-white">${tipAmount.toFixed(2)}</span>
+              <span class="text-xl font-semibold text-gray-900 dark:text-white"
+                >${tipAmount.toFixed(2)}</span
+              >
               <button
-                onclick={() => copyToClipboard(tipAmount.toFixed(2), 'tip')}
+                onclick={() => copyToClipboard(tipAmount.toFixed(2))}
                 class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
               >
                 <Copy class="w-4 h-4" />
@@ -296,9 +324,11 @@
           <div class="flex justify-between items-center">
             <span class="text-gray-600 dark:text-gray-400">Total Amount:</span>
             <div class="flex items-center gap-2">
-              <span class="text-xl font-semibold text-gray-900 dark:text-white">${totalAmount.toFixed(2)}</span>
+              <span class="text-xl font-semibold text-gray-900 dark:text-white"
+                >${totalAmount.toFixed(2)}</span
+              >
               <button
-                onclick={() => copyToClipboard(totalAmount.toFixed(2), 'total')}
+                onclick={() => copyToClipboard(totalAmount.toFixed(2))}
                 class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
               >
                 <Copy class="w-4 h-4" />
@@ -310,9 +340,11 @@
             <div class="flex justify-between items-center">
               <span class="text-gray-600 dark:text-gray-400">Per Person:</span>
               <div class="flex items-center gap-2">
-                <span class="text-2xl font-bold text-green-600 dark:text-green-400">${amountPerPerson.toFixed(2)}</span>
+                <span class="text-2xl font-bold text-green-600 dark:text-green-400"
+                  >${amountPerPerson.toFixed(2)}</span
+                >
                 <button
-                  onclick={() => copyToClipboard(amountPerPerson.toFixed(2), 'per-person')}
+                  onclick={() => copyToClipboard(amountPerPerson.toFixed(2))}
                   class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                 >
                   <Copy class="w-4 h-4" />
@@ -327,37 +359,43 @@
 
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Calculator class="w-6 h-6 text-green-600 dark:text-green-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Tip Calculation
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Tip Calculation</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Calculate tips with customizable percentages and preset options
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Users class="w-6 h-6 text-green-600 dark:text-green-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Bill Splitting
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Bill Splitting</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Split bills easily among multiple people with fair distribution
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <DollarSign class="w-6 h-6 text-green-600 dark:text-green-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Tax Support
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Tax Support</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Include tax calculations by amount or percentage for accurate totals
       </p>

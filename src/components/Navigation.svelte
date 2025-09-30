@@ -48,7 +48,7 @@
       >
         Home
       </a>
-      
+
       <a
         href="/projects"
         class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors font-medium"
@@ -60,7 +60,7 @@
       <a
         href="/tools"
         class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors font-medium"
-        onclick={(e) => handleNavigation(e, '/tools')}
+        onclick={e => handleNavigation(e, '/tools')}
       >
         Tools
       </a>

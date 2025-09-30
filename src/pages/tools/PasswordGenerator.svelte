@@ -1,6 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, Shield, Settings, Lock, Download, Settings2 } from '@lucide/svelte';
+  import { ChevronLeft, Shield, Lock, Settings2 } from '@lucide/svelte';
 
   let password = $state('');
   let passwordLength = $state(16);
@@ -32,11 +32,17 @@
     if (useCustomCharacters) charset += customCharacters;
 
     if (excludeSimilar) {
-      charset = charset.split('').filter(char => !similarChars.includes(char)).join('');
+      charset = charset
+        .split('')
+        .filter(char => !similarChars.includes(char))
+        .join('');
     }
 
     if (excludeAmbiguous) {
-      charset = charset.split('').filter(char => !ambiguousChars.includes(char)).join('');
+      charset = charset
+        .split('')
+        .filter(char => !ambiguousChars.includes(char))
+        .join('');
     }
 
     if (charset === '') {
@@ -89,21 +95,31 @@
 
   function getStrengthColor(strength: string): string {
     switch (strength) {
-      case 'weak': return 'text-red-600 dark:text-red-400';
-      case 'medium': return 'text-yellow-600 dark:text-yellow-400';
-      case 'strong': return 'text-green-600 dark:text-green-400';
-      case 'very-strong': return 'text-emerald-600 dark:text-emerald-400';
-      default: return 'text-gray-600 dark:text-gray-400';
+      case 'weak':
+        return 'text-red-600 dark:text-red-400';
+      case 'medium':
+        return 'text-yellow-600 dark:text-yellow-400';
+      case 'strong':
+        return 'text-green-600 dark:text-green-400';
+      case 'very-strong':
+        return 'text-emerald-600 dark:text-emerald-400';
+      default:
+        return 'text-gray-600 dark:text-gray-400';
     }
   }
 
   function getStrengthBgColor(strength: string): string {
     switch (strength) {
-      case 'weak': return 'bg-red-100 dark:bg-red-900/20';
-      case 'medium': return 'bg-yellow-100 dark:bg-yellow-900/20';
-      case 'strong': return 'bg-green-100 dark:bg-green-900/20';
-      case 'very-strong': return 'bg-emerald-100 dark:bg-emerald-900/20';
-      default: return 'bg-gray-100 dark:bg-gray-700';
+      case 'weak':
+        return 'bg-red-100 dark:bg-red-900/20';
+      case 'medium':
+        return 'bg-yellow-100 dark:bg-yellow-900/20';
+      case 'strong':
+        return 'bg-green-100 dark:bg-green-900/20';
+      case 'very-strong':
+        return 'bg-emerald-100 dark:bg-emerald-900/20';
+      default:
+        return 'bg-gray-100 dark:bg-gray-700';
     }
   }
 
@@ -134,11 +150,16 @@
 
   function getStrengthText(strength: string): string {
     switch (strength) {
-      case 'weak': return 'Weak';
-      case 'medium': return 'Medium';
-      case 'strong': return 'Strong';
-      case 'very-strong': return 'Very Strong';
-      default: return 'No Password';
+      case 'weak':
+        return 'Weak';
+      case 'medium':
+        return 'Medium';
+      case 'strong':
+        return 'Strong';
+      case 'very-strong':
+        return 'Very Strong';
+      default:
+        return 'No Password';
     }
   }
 
@@ -213,12 +234,12 @@
     </div>
 
     <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl mb-4">
+      <div
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl mb-4"
+      >
         <Lock class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        Password Generator
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Password Generator</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
         Generate secure and random passwords with customizable options for maximum security.
       </p>
@@ -229,13 +250,19 @@
   <nav class="mb-8">
     <ol class="flex items-center justify-center space-x-2 text-sm">
       <li>
-        <a href="/" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Home
         </a>
       </li>
       <li class="text-gray-300 dark:text-gray-600">/</li>
       <li>
-        <a href="/tools" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/tools"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Tools
         </a>
       </li>
@@ -247,7 +274,9 @@
   <!-- Presets -->
   <div class="mb-6">
     <div class="flex justify-center">
-      <div class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1">
+      <div
+        class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1"
+      >
         <button
           onclick={() => usePreset('strong')}
           class="px-4 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -277,11 +306,11 @@
   </div>
 
   <!-- Main Password Display -->
-  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+  >
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-        Generated Password
-      </h2>
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Generated Password</h2>
       <div class="flex items-center gap-2">
         {#if password}
           <span class="text-sm font-medium {getStrengthColor(calculatePasswordStrength(password))}">
@@ -325,12 +354,15 @@
         </div>
         <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
           <div
-            class="h-2 rounded-full transition-all duration-300 {
-              calculatePasswordStrength(password) === 'weak' ? 'w-1/4 bg-red-500' :
-              calculatePasswordStrength(password) === 'medium' ? 'w-2/4 bg-yellow-500' :
-              calculatePasswordStrength(password) === 'strong' ? 'w-3/4 bg-green-500' :
-              'w-full bg-emerald-500'
-            }"
+            class="h-2 rounded-full transition-all duration-300 {calculatePasswordStrength(
+              password
+            ) === 'weak'
+              ? 'w-1/4 bg-red-500'
+              : calculatePasswordStrength(password) === 'medium'
+                ? 'w-2/4 bg-yellow-500'
+                : calculatePasswordStrength(password) === 'strong'
+                  ? 'w-3/4 bg-green-500'
+                  : 'w-full bg-emerald-500'}"
           ></div>
         </div>
       </div>
@@ -340,10 +372,10 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Settings Panel -->
     <div class="lg:col-span-2">
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-          Password Settings
-        </h2>
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      >
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Password Settings</h2>
 
         <!-- Length Slider -->
         <div class="mb-6">
@@ -456,7 +488,8 @@
               class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500"
             />
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Exclude Ambiguous Characters (&lbrace; &rbrace; &lsqb; &rsqb; &lpar; &rpar; / \ ' " ` ~ , ; . &lt; &gt;)
+              Exclude Ambiguous Characters (&lbrace; &rbrace; &lsqb; &rsqb; &lpar; &rpar; / \ ' " `
+              ~ , ; . &lt; &gt;)
             </span>
           </label>
         </div>
@@ -493,11 +526,11 @@
 
     <!-- Password History -->
     <div>
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      >
         <div class="flex justify-between items-center mb-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Recent Passwords
-          </h2>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Passwords</h2>
           {#if passwordHistory.length > 0}
             <button
               onclick={clearAll}
@@ -526,7 +559,11 @@
                         {item.timestamp.toLocaleTimeString()}
                       </span>
                       <div class="flex items-center gap-2">
-                        <span class="text-xs px-2 py-1 rounded-full {getStrengthBgColor(item.strength)} {getStrengthColor(item.strength)}">
+                        <span
+                          class="text-xs px-2 py-1 rounded-full {getStrengthBgColor(
+                            item.strength
+                          )} {getStrengthColor(item.strength)}"
+                        >
                           {getStrengthText(item.strength)}
                         </span>
                         <button
@@ -549,37 +586,43 @@
 
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Shield class="w-6 h-6 text-red-600 dark:text-red-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Strong Security
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Strong Security</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Generate cryptographically secure passwords with customizable complexity
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Settings2 class="w-6 h-6 text-red-600 dark:text-red-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Customizable Options
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Customizable Options</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Fine-tune character sets, length, and exclusions for your specific needs
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Lock class="w-6 h-6 text-red-600 dark:text-red-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Password History
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Password History</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Keep track of generated passwords with strength analysis
       </p>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
-import { ChevronLeft, Link, Shield, Zap, CreditCard } from '@lucide/svelte';
+  import { ChevronLeft, Link, Shield, Zap, CreditCard } from '@lucide/svelte';
 
   let inputText = $state('');
   let encodedText = $state('');
@@ -15,7 +15,7 @@ import { ChevronLeft, Link, Shield, Zap, CreditCard } from '@lucide/svelte';
       encodedText = encodeURIComponent(inputText);
       // Auto decode to show round-trip
       decodedText = decodeURIComponent(encodedText);
-    } catch (e) {
+    } catch {
       encodedText = '';
       decodedText = '';
     }
@@ -26,7 +26,7 @@ import { ChevronLeft, Link, Shield, Zap, CreditCard } from '@lucide/svelte';
       decodedText = decodeURIComponent(inputText);
       // Auto encode to show round-trip
       encodedText = encodeURIComponent(decodedText);
-    } catch (e) {
+    } catch {
       decodedText = 'Error: Invalid URL encoding';
       encodedText = '';
     }
@@ -40,11 +40,15 @@ import { ChevronLeft, Link, Shield, Zap, CreditCard } from '@lucide/svelte';
           const encoded = encodeURIComponent(line);
           const decoded = decodeURIComponent(encoded);
           return { original: line, encoded, decoded };
-        } catch (e) {
-          return { original: line, encoded: 'Error: Invalid characters', decoded: 'Error: Invalid characters' };
+        } catch {
+          return {
+            original: line,
+            encoded: 'Error: Invalid characters',
+            decoded: 'Error: Invalid characters'
+          };
         }
       });
-    } catch (e) {
+    } catch {
       batchResults = [];
     }
   }
@@ -66,9 +70,12 @@ import { ChevronLeft, Link, Shield, Zap, CreditCard } from '@lucide/svelte';
   }
 
   function copyBatchResults() {
-    const results = batchResults.map(result =>
-      `Original: ${result.original}\nEncoded: ${result.encoded}\nDecoded: ${result.decoded}\n`
-    ).join('\n');
+    const results = batchResults
+      .map(
+        result =>
+          `Original: ${result.original}\nEncoded: ${result.encoded}\nDecoded: ${result.decoded}\n`
+      )
+      .join('\n');
     copyToClipboard(results, 'batch');
   }
 
@@ -106,14 +113,15 @@ https://demo.com/search?query=测试&lang=zh-CN`;
     </div>
 
     <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl mb-4">
+      <div
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl mb-4"
+      >
         <Link class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        URL Encoder/Decoder
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">URL Encoder/Decoder</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Encode and decode URLs safely. Perfect for handling special characters and international content.
+        Encode and decode URLs safely. Perfect for handling special characters and international
+        content.
       </p>
     </div>
   </div>
@@ -122,13 +130,19 @@ https://demo.com/search?query=测试&lang=zh-CN`;
   <nav class="mb-8">
     <ol class="flex items-center justify-center space-x-2 text-sm">
       <li>
-        <a href="/" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Home
         </a>
       </li>
       <li class="text-gray-300 dark:text-gray-600">/</li>
       <li>
-        <a href="/tools" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/tools"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Tools
         </a>
       </li>
@@ -140,24 +154,22 @@ https://demo.com/search?query=测试&lang=zh-CN`;
   <!-- Tab Navigation -->
   <div class="mb-6">
     <div class="flex justify-center">
-      <div class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1">
+      <div
+        class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1"
+      >
         <button
-          onclick={() => activeTab = 'single'}
-          class="px-4 py-2 rounded-md text-sm font-medium transition-colors {
-            activeTab === 'single'
-              ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-300'
-              : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-          }"
+          onclick={() => (activeTab = 'single')}
+          class="px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'single'
+            ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-300'
+            : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
         >
           Single URL
         </button>
         <button
-          onclick={() => activeTab = 'batch'}
-          class="px-4 py-2 rounded-md text-sm font-medium transition-colors {
-            activeTab === 'batch'
-              ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-300'
-              : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-          }"
+          onclick={() => (activeTab = 'batch')}
+          class="px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'batch'
+            ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-300'
+            : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
         >
           Batch Processing
         </button>
@@ -208,9 +220,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
       <!-- Input Section -->
       <div>
         <div class="flex justify-between items-center mb-2">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Input Text / URL
-          </h2>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input Text / URL</h2>
           <span class="text-sm text-gray-500 dark:text-gray-400">
             {inputText.length} characters
           </span>
@@ -261,9 +271,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
         <!-- Encoded Result -->
         <div class="mb-4">
           <div class="flex justify-between items-center mb-2">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-              Encoded URL
-            </h2>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Encoded URL</h2>
             {#if encodedText}
               <button
                 onclick={() => copyToClipboard(encodedText, 'encoded')}
@@ -346,9 +354,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
       <!-- Batch Results -->
       <div>
         <div class="flex justify-between items-center mb-2">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Batch Results
-          </h2>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Batch Results</h2>
           {#if batchResults.length > 0}
             <button
               onclick={copyBatchResults}
@@ -358,35 +364,41 @@ https://demo.com/search?query=测试&lang=zh-CN`;
             </button>
           {/if}
         </div>
-        <div class="h-96 overflow-y-auto border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 p-4">
+        <div
+          class="h-96 overflow-y-auto border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 p-4"
+        >
           {#if batchResults.length === 0}
             <div class="flex items-center justify-center h-full">
-              <p class="text-gray-400 dark:text-gray-600">
-                Process batch URLs to see results
-              </p>
+              <p class="text-gray-400 dark:text-gray-600">Process batch URLs to see results</p>
             </div>
           {:else}
             <div class="space-y-4">
-              {#each batchResults as result, index}
+              {#each batchResults as result, index (result.input + index)}
                 <div class="border-b border-gray-200 dark:border-gray-700 pb-4 last:border-b-0">
                   <div class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     #{index + 1}
                   </div>
                   <div class="space-y-2">
                     <div>
-                      <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Original:</span>
+                      <span class="text-xs font-medium text-gray-500 dark:text-gray-400"
+                        >Original:</span
+                      >
                       <div class="font-mono text-xs text-gray-900 dark:text-white break-all">
                         {result.original}
                       </div>
                     </div>
                     <div>
-                      <span class="text-xs font-medium text-green-600 dark:text-green-400">Encoded:</span>
+                      <span class="text-xs font-medium text-green-600 dark:text-green-400"
+                        >Encoded:</span
+                      >
                       <div class="font-mono text-xs text-green-700 dark:text-green-300 break-all">
                         {result.encoded}
                       </div>
                     </div>
                     <div>
-                      <span class="text-xs font-medium text-blue-600 dark:text-blue-400">Decoded:</span>
+                      <span class="text-xs font-medium text-blue-600 dark:text-blue-400"
+                        >Decoded:</span
+                      >
                       <div class="font-mono text-xs text-blue-700 dark:text-blue-300 break-all">
                         {result.decoded}
                       </div>
@@ -403,37 +415,44 @@ https://demo.com/search?query=测试&lang=zh-CN`;
 
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Shield class="w-6 h-6 text-green-600 dark:text-green-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Safe Encoding
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Safe Encoding</h3>
       <p class="text-gray-600 dark:text-gray-400">
-        Properly encodes special characters, spaces, and international characters for safe URL transmission
+        Properly encodes special characters, spaces, and international characters for safe URL
+        transmission
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Zap class="w-6 h-6 text-green-600 dark:text-green-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Batch Processing
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Batch Processing</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Process multiple URLs at once with batch mode for efficient workflow
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <CreditCard class="w-6 h-6 text-green-600 dark:text-green-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Round-trip Testing
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Round-trip Testing</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Automatic round-trip testing ensures your URLs decode back to the original text
       </p>

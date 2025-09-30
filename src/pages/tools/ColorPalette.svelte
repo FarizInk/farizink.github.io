@@ -5,15 +5,16 @@
   let baseColor = $state('#3B82F6');
   let paletteType = $state('complementary');
   let palette = $state<Array<{ hex: string; name: string; hsl: string; rgb: string }>>([]);
-  let copiedColor = $state('');
 
   function hexToRgb(hex: string): { r: number; g: number; b: number } {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
-    } : { r: 0, g: 0, b: 0 };
+    return result
+      ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16)
+        }
+      : { r: 0, g: 0, b: 0 };
   }
 
   function rgbToHsl(r: number, g: number, b: number): { h: number; s: number; l: number } {
@@ -23,15 +24,23 @@
 
     const max = Math.max(r, g, b);
     const min = Math.min(r, g, b);
-    let h = 0, s = 0, l = (max + min) / 2;
+    let h = 0,
+      s = 0,
+      l = (max + min) / 2;
 
     if (max !== min) {
       const d = max - min;
       s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
       switch (max) {
-        case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
-        case g: h = ((b - r) / d + 2) / 6; break;
-        case b: h = ((r - g) / d + 4) / 6; break;
+        case r:
+          h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+          break;
+        case g:
+          h = ((b - r) / d + 2) / 6;
+          break;
+        case b:
+          h = ((r - g) / d + 4) / 6;
+          break;
       }
     }
 
@@ -51,17 +60,17 @@
       const hue2rgb = (p: number, q: number, t: number) => {
         if (t < 0) t += 1;
         if (t > 1) t -= 1;
-        if (t < 1/6) return p + (q - p) * 6 * t;
-        if (t < 1/2) return q;
-        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 1 / 2) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
         return p;
       };
 
       const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
       const p = 2 * l - q;
-      r = hue2rgb(p, q, h + 1/3);
+      r = hue2rgb(p, q, h + 1 / 3);
       g = hue2rgb(p, q, h);
-      b = hue2rgb(p, q, h - 1/3);
+      b = hue2rgb(p, q, h - 1 / 3);
     }
 
     const toHex = (x: number) => {
@@ -81,34 +90,99 @@
     switch (paletteType) {
       case 'complementary':
         newPalette = [
-          { hex: baseColor, name: 'Base', hsl: `${hsl.h}, ${hsl.s}%, ${hsl.l}%`, rgb: `${rgb.r}, ${rgb.g}, ${rgb.b}` },
-          { hex: hslToHex((hsl.h + 180) % 360, hsl.s, hsl.l), name: 'Complementary', hsl: `${(hsl.h + 180) % 360}, ${hsl.s}%, ${hsl.l}%`, rgb: '' }
+          {
+            hex: baseColor,
+            name: 'Base',
+            hsl: `${hsl.h}, ${hsl.s}%, ${hsl.l}%`,
+            rgb: `${rgb.r}, ${rgb.g}, ${rgb.b}`
+          },
+          {
+            hex: hslToHex((hsl.h + 180) % 360, hsl.s, hsl.l),
+            name: 'Complementary',
+            hsl: `${(hsl.h + 180) % 360}, ${hsl.s}%, ${hsl.l}%`,
+            rgb: ''
+          }
         ];
         break;
 
       case 'triadic':
         newPalette = [
-          { hex: baseColor, name: 'Base', hsl: `${hsl.h}, ${hsl.s}%, ${hsl.l}%`, rgb: `${rgb.r}, ${rgb.g}, ${rgb.b}` },
-          { hex: hslToHex((hsl.h + 120) % 360, hsl.s, hsl.l), name: 'Triadic 1', hsl: `${(hsl.h + 120) % 360}, ${hsl.s}%, ${hsl.l}%`, rgb: '' },
-          { hex: hslToHex((hsl.h + 240) % 360, hsl.s, hsl.l), name: 'Triadic 2', hsl: `${(hsl.h + 240) % 360}, ${hsl.s}%, ${hsl.l}%`, rgb: '' }
+          {
+            hex: baseColor,
+            name: 'Base',
+            hsl: `${hsl.h}, ${hsl.s}%, ${hsl.l}%`,
+            rgb: `${rgb.r}, ${rgb.g}, ${rgb.b}`
+          },
+          {
+            hex: hslToHex((hsl.h + 120) % 360, hsl.s, hsl.l),
+            name: 'Triadic 1',
+            hsl: `${(hsl.h + 120) % 360}, ${hsl.s}%, ${hsl.l}%`,
+            rgb: ''
+          },
+          {
+            hex: hslToHex((hsl.h + 240) % 360, hsl.s, hsl.l),
+            name: 'Triadic 2',
+            hsl: `${(hsl.h + 240) % 360}, ${hsl.s}%, ${hsl.l}%`,
+            rgb: ''
+          }
         ];
         break;
 
       case 'analogous':
         newPalette = [
-          { hex: hslToHex((hsl.h - 30 + 360) % 360, hsl.s, hsl.l), name: 'Analogous 1', hsl: `${(hsl.h - 30 + 360) % 360}, ${hsl.s}%, ${hsl.l}%`, rgb: '' },
-          { hex: baseColor, name: 'Base', hsl: `${hsl.h}, ${hsl.s}%, ${hsl.l}%`, rgb: `${rgb.r}, ${rgb.g}, ${rgb.b}` },
-          { hex: hslToHex((hsl.h + 30) % 360, hsl.s, hsl.l), name: 'Analogous 2', hsl: `${(hsl.h + 30) % 360}, ${hsl.s}%, ${hsl.l}%`, rgb: '' }
+          {
+            hex: hslToHex((hsl.h - 30 + 360) % 360, hsl.s, hsl.l),
+            name: 'Analogous 1',
+            hsl: `${(hsl.h - 30 + 360) % 360}, ${hsl.s}%, ${hsl.l}%`,
+            rgb: ''
+          },
+          {
+            hex: baseColor,
+            name: 'Base',
+            hsl: `${hsl.h}, ${hsl.s}%, ${hsl.l}%`,
+            rgb: `${rgb.r}, ${rgb.g}, ${rgb.b}`
+          },
+          {
+            hex: hslToHex((hsl.h + 30) % 360, hsl.s, hsl.l),
+            name: 'Analogous 2',
+            hsl: `${(hsl.h + 30) % 360}, ${hsl.s}%, ${hsl.l}%`,
+            rgb: ''
+          }
         ];
         break;
 
       case 'monochromatic':
         newPalette = [
-          { hex: hslToHex(hsl.h, hsl.s, 20), name: 'Dark', hsl: `${hsl.h}, ${hsl.s}%, 20%`, rgb: '' },
-          { hex: hslToHex(hsl.h, hsl.s, 40), name: 'Dark Medium', hsl: `${hsl.h}, ${hsl.s}%, 40%`, rgb: '' },
-          { hex: hslToHex(hsl.h, hsl.s, 60), name: 'Medium', hsl: `${hsl.h}, ${hsl.s}%, 60%`, rgb: '' },
-          { hex: hslToHex(hsl.h, hsl.s, 80), name: 'Light Medium', hsl: `${hsl.h}, ${hsl.s}%, 80%`, rgb: '' },
-          { hex: hslToHex(hsl.h, hsl.s, 95), name: 'Light', hsl: `${hsl.h}, ${hsl.s}%, 95%`, rgb: '' }
+          {
+            hex: hslToHex(hsl.h, hsl.s, 20),
+            name: 'Dark',
+            hsl: `${hsl.h}, ${hsl.s}%, 20%`,
+            rgb: ''
+          },
+          {
+            hex: hslToHex(hsl.h, hsl.s, 40),
+            name: 'Dark Medium',
+            hsl: `${hsl.h}, ${hsl.s}%, 40%`,
+            rgb: ''
+          },
+          {
+            hex: hslToHex(hsl.h, hsl.s, 60),
+            name: 'Medium',
+            hsl: `${hsl.h}, ${hsl.s}%, 60%`,
+            rgb: ''
+          },
+          {
+            hex: hslToHex(hsl.h, hsl.s, 80),
+            name: 'Light Medium',
+            hsl: `${hsl.h}, ${hsl.s}%, 80%`,
+            rgb: ''
+          },
+          {
+            hex: hslToHex(hsl.h, hsl.s, 95),
+            name: 'Light',
+            hsl: `${hsl.h}, ${hsl.s}%, 95%`,
+            rgb: ''
+          }
         ];
         break;
     }
@@ -134,12 +208,8 @@
     baseColor = color;
   }
 
-  function copyToClipboard(color: string, format: string) {
+  function copyToClipboard(color: string) {
     navigator.clipboard.writeText(color);
-    copiedColor = format;
-    setTimeout(() => {
-      copiedColor = '';
-    }, 2000);
   }
 
   function loadSamplePalette() {
@@ -174,12 +244,12 @@
     </div>
 
     <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl mb-4">
+      <div
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl mb-4"
+      >
         <Palette class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        Color Palette Generator
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Color Palette Generator</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
         Generate harmonious color palettes with complementary, triadic, and analogous colors.
       </p>
@@ -190,13 +260,19 @@
   <nav class="mb-8">
     <ol class="flex items-center justify-center space-x-2 text-sm">
       <li>
-        <a href="/" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Home
         </a>
       </li>
       <li class="text-gray-300 dark:text-gray-600">/</li>
       <li>
-        <a href="/tools" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/tools"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Tools
         </a>
       </li>
@@ -206,7 +282,9 @@
   </nav>
 
   <!-- Controls -->
-  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+  >
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
       <div>
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -261,22 +339,23 @@
 
   <!-- Color Palette -->
   {#if palette.length > 0}
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+    >
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Generated Palette</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-        {#each palette as color}
-          <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div
-              class="h-24 w-full"
-              style="background-color: {color.hex}"
-            ></div>
+        {#each palette as color, i (color.hex + i)}
+          <div
+            class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
+          >
+            <div class="h-24 w-full" style="background-color: {color.hex}"></div>
             <div class="p-3">
               <h4 class="font-medium text-gray-900 dark:text-white mb-2">{color.name}</h4>
               <div class="space-y-1 text-xs">
                 <div class="flex justify-between items-center">
                   <span class="text-gray-600 dark:text-gray-400">HEX:</span>
                   <button
-                    onclick={() => copyToClipboard(color.hex, `${color.name}-hex`)}
+                    onclick={() => copyToClipboard(color.hex)}
                     class="font-mono text-gray-900 dark:text-white hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
                     title="Copy HEX"
                   >
@@ -286,7 +365,7 @@
                 <div class="flex justify-between items-center">
                   <span class="text-gray-600 dark:text-gray-400">HSL:</span>
                   <button
-                    onclick={() => copyToClipboard(`hsl(${color.hsl})`, `${color.name}-hsl`)}
+                    onclick={() => copyToClipboard(`hsl(${color.hsl})`)}
                     class="font-mono text-gray-900 dark:text-white hover:text-pink-600 dark:hover:text-pink-400 transition-colors text-xs"
                     title="Copy HSL"
                   >
@@ -296,7 +375,7 @@
                 <div class="flex justify-between items-center">
                   <span class="text-gray-600 dark:text-gray-400">RGB:</span>
                   <button
-                    onclick={() => copyToClipboard(`rgb(${color.rgb})`, `${color.name}-rgb`)}
+                    onclick={() => copyToClipboard(`rgb(${color.rgb})`)}
                     class="font-mono text-gray-900 dark:text-white hover:text-pink-600 dark:hover:text-pink-400 transition-colors text-xs"
                     title="Copy RGB"
                   >
@@ -312,13 +391,16 @@
   {/if}
 
   <!-- Palette Types Information -->
-  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+  >
     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Palette Types</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
         <h4 class="font-medium text-gray-900 dark:text-white mb-2">Complementary</h4>
         <p class="text-sm text-gray-600 dark:text-gray-400">
-          Two colors opposite each other on the color wheel. Creates high contrast and visual interest.
+          Two colors opposite each other on the color wheel. Creates high contrast and visual
+          interest.
         </p>
       </div>
       <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
@@ -330,13 +412,15 @@
       <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
         <h4 class="font-medium text-gray-900 dark:text-white mb-2">Analogous</h4>
         <p class="text-sm text-gray-600 dark:text-gray-400">
-          Colors adjacent to each other on the color wheel. Creates harmonious and pleasing combinations.
+          Colors adjacent to each other on the color wheel. Creates harmonious and pleasing
+          combinations.
         </p>
       </div>
       <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
         <h4 class="font-medium text-gray-900 dark:text-white mb-2">Monochromatic</h4>
         <p class="text-sm text-gray-600 dark:text-gray-400">
-          Variations of a single color with different lightness values. Creates subtle and sophisticated looks.
+          Variations of a single color with different lightness values. Creates subtle and
+          sophisticated looks.
         </p>
       </div>
     </div>
@@ -344,37 +428,43 @@
 
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-pink-100 dark:bg-pink-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-pink-100 dark:bg-pink-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Palette class="w-6 h-6 text-pink-600 dark:text-pink-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Color Harmony
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Color Harmony</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Generate color schemes based on color theory principles for professional designs
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-pink-100 dark:bg-pink-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-pink-100 dark:bg-pink-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Copy class="w-6 h-6 text-pink-600 dark:text-pink-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Multiple Formats
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Multiple Formats</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Export colors in HEX, RGB, and HSL formats for use in any design tool
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-pink-100 dark:bg-pink-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-pink-100 dark:bg-pink-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Zap class="w-6 h-6 text-pink-600 dark:text-pink-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Instant Preview
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Instant Preview</h3>
       <p class="text-gray-600 dark:text-gray-400">
         See your color palette in real-time as you adjust settings
       </p>

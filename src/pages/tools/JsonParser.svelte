@@ -1,6 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
-import { ChevronLeft, Code, CheckCircle, Layout, Copy } from '@lucide/svelte';
+  import { ChevronLeft, Code, CheckCircle, Layout, Copy } from '@lucide/svelte';
 
   let inputJson = $state('');
   let outputJson = $state('');
@@ -82,14 +82,15 @@ import { ChevronLeft, Code, CheckCircle, Layout, Copy } from '@lucide/svelte';
     </div>
 
     <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-4">
+      <div
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-4"
+      >
         <Code class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        JSON Parser & Formatter
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">JSON Parser & Formatter</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Format, validate, and minify JSON data with ease. Perfect for developers working with APIs and configuration files.
+        Format, validate, and minify JSON data with ease. Perfect for developers working with APIs
+        and configuration files.
       </p>
     </div>
   </div>
@@ -98,13 +99,19 @@ import { ChevronLeft, Code, CheckCircle, Layout, Copy } from '@lucide/svelte';
   <nav class="mb-8">
     <ol class="flex items-center justify-center space-x-2 text-sm">
       <li>
-        <a href="/" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Home
         </a>
       </li>
       <li class="text-gray-300 dark:text-gray-600">/</li>
       <li>
-        <a href="/tools" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/tools"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Tools
         </a>
       </li>
@@ -154,21 +161,25 @@ import { ChevronLeft, Code, CheckCircle, Layout, Copy } from '@lucide/svelte';
       >
         <option value={2}>2 spaces</option>
         <option value={4}>4 spaces</option>
-        <option value={"\\t"}>Tab</option>
+        <option value="\t">Tab</option>
       </select>
     </div>
   </div>
 
   <!-- Error Display -->
   {#if error}
-    <div class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+    <div
+      class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+    >
       <p class="text-red-700 dark:text-red-400 font-medium">Error: {error}</p>
     </div>
   {/if}
 
   <!-- Success Message -->
   {#if isValid && !error}
-    <div class="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+    <div
+      class="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg"
+    >
       <p class="text-green-700 dark:text-green-400 font-medium">✓ Valid JSON</p>
     </div>
   {/if}
@@ -177,9 +188,7 @@ import { ChevronLeft, Code, CheckCircle, Layout, Copy } from '@lucide/svelte';
     <!-- Input Section -->
     <div>
       <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-          Input JSON
-        </h2>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input JSON</h2>
         <span class="text-sm text-gray-500 dark:text-gray-400">
           {inputJson.length} characters
         </span>
@@ -194,9 +203,7 @@ import { ChevronLeft, Code, CheckCircle, Layout, Copy } from '@lucide/svelte';
     <!-- Output Section -->
     <div>
       <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-          Output
-        </h2>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Output</h2>
         {#if outputJson}
           <button
             onclick={copyToClipboard}
@@ -226,37 +233,43 @@ import { ChevronLeft, Code, CheckCircle, Layout, Copy } from '@lucide/svelte';
 
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <CheckCircle class="w-6 h-6 text-blue-600 dark:text-blue-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Validate JSON
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Validate JSON</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Instant validation with detailed error messages for malformed JSON
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Layout class="w-6 h-6 text-green-600 dark:text-green-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Format & Minify
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Format & Minify</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Pretty print with custom indentation or compress to minified format
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Copy class="w-6 h-6 text-purple-600 dark:text-purple-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Copy Results
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Copy Results</h3>
       <p class="text-gray-600 dark:text-gray-400">
         One-click copy to clipboard for easy sharing and pasting
       </p>

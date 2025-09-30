@@ -1,6 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, FileText, Copy, RotateCcw, FilePlus, FileMinus } from '@lucide/svelte';
+  import { ChevronLeft, FileText, Copy, RotateCcw, FilePlus } from '@lucide/svelte';
 
   let loremText = $state('');
   let wordCount = $state(50);
@@ -10,20 +10,127 @@
   let copied = $state('');
 
   const loremWords = [
-    'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit',
-    'sed', 'do', 'eiusmod', 'tempor', 'incididunt', 'ut', 'labore', 'et', 'dolore',
-    'magna', 'aliqua', 'enim', 'ad', 'minim', 'veniam', 'quis', 'nostrud', 'exercitation',
-    'ullamco', 'laboris', 'nisi', 'aliquip', 'ex', 'ea', 'commodo', 'consequat', 'duis',
-    'aute', 'irure', 'dolor', 'in', 'reprehenderit', 'in', 'voluptate', 'velit', 'esse',
-    'cillum', 'dolore', 'eu', 'fugiat', 'nulla', 'pariatur', 'excepteur', 'sint', 'occaecat',
-    'cupidatat', 'non', 'proident', 'sunt', 'in', 'culpa', 'qui', 'officia', 'deserunt',
-    'mollit', 'anim', 'id', 'est', 'laborum', 'dolorum', 'fugiat', 'veniam', 'aliqua',
-    'ut', 'enim', 'ad', 'minim', 'veniam', 'quis', 'nostrud', 'exercitation', 'ullamco',
-    'laboris', 'nisi', 'ut', 'aliquip', 'ex', 'ea', 'commodo', 'consequat', 'duis',
-    'aute', 'irure', 'dolor', 'in', 'reprehenderit', 'in', 'voluptate', 'velit', 'esse',
-    'cillum', 'dolore', 'eu', 'fugiat', 'nulla', 'pariatur', 'excepteur', 'sint', 'occaecat',
-    'cupidatat', 'non', 'proident', 'sunt', 'in', 'culpa', 'qui', 'officia', 'deserunt',
-    'mollit', 'anim', 'id', 'est', 'laborum'
+    'lorem',
+    'ipsum',
+    'dolor',
+    'sit',
+    'amet',
+    'consectetur',
+    'adipiscing',
+    'elit',
+    'sed',
+    'do',
+    'eiusmod',
+    'tempor',
+    'incididunt',
+    'ut',
+    'labore',
+    'et',
+    'dolore',
+    'magna',
+    'aliqua',
+    'enim',
+    'ad',
+    'minim',
+    'veniam',
+    'quis',
+    'nostrud',
+    'exercitation',
+    'ullamco',
+    'laboris',
+    'nisi',
+    'aliquip',
+    'ex',
+    'ea',
+    'commodo',
+    'consequat',
+    'duis',
+    'aute',
+    'irure',
+    'dolor',
+    'in',
+    'reprehenderit',
+    'in',
+    'voluptate',
+    'velit',
+    'esse',
+    'cillum',
+    'dolore',
+    'eu',
+    'fugiat',
+    'nulla',
+    'pariatur',
+    'excepteur',
+    'sint',
+    'occaecat',
+    'cupidatat',
+    'non',
+    'proident',
+    'sunt',
+    'in',
+    'culpa',
+    'qui',
+    'officia',
+    'deserunt',
+    'mollit',
+    'anim',
+    'id',
+    'est',
+    'laborum',
+    'dolorum',
+    'fugiat',
+    'veniam',
+    'aliqua',
+    'ut',
+    'enim',
+    'ad',
+    'minim',
+    'veniam',
+    'quis',
+    'nostrud',
+    'exercitation',
+    'ullamco',
+    'laboris',
+    'nisi',
+    'ut',
+    'aliquip',
+    'ex',
+    'ea',
+    'commodo',
+    'consequat',
+    'duis',
+    'aute',
+    'irure',
+    'dolor',
+    'in',
+    'reprehenderit',
+    'in',
+    'voluptate',
+    'velit',
+    'esse',
+    'cillum',
+    'dolore',
+    'eu',
+    'fugiat',
+    'nulla',
+    'pariatur',
+    'excepteur',
+    'sint',
+    'occaecat',
+    'cupidatat',
+    'non',
+    'proident',
+    'sunt',
+    'in',
+    'culpa',
+    'qui',
+    'officia',
+    'deserunt',
+    'mollit',
+    'anim',
+    'id',
+    'est',
+    'laborum'
   ];
 
   function generateLorem() {
@@ -82,7 +189,7 @@
     if (loremText) {
       navigator.clipboard.writeText(loremText);
       copied = 'success';
-      setTimeout(() => copied = '', 2000);
+      setTimeout(() => (copied = ''), 2000);
     }
   }
 
@@ -117,12 +224,12 @@
     </div>
 
     <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl mb-4">
+      <div
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl mb-4"
+      >
         <FileText class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        Lorem Ipsum Generator
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Lorem Ipsum Generator</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
         Generate placeholder text for design and testing purposes with customizable options.
       </p>
@@ -133,13 +240,19 @@
   <nav class="mb-8">
     <ol class="flex items-center justify-center space-x-2 text-sm">
       <li>
-        <a href="/" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Home
         </a>
       </li>
       <li class="text-gray-300 dark:text-gray-600">/</li>
       <li>
-        <a href="/tools" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/tools"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Tools
         </a>
       </li>
@@ -149,15 +262,18 @@
   </nav>
 
   <!-- Controls -->
-  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-8">
-    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-      Generator Settings
-    </h2>
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-8"
+  >
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">Generator Settings</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <!-- Word Count -->
       <div>
-        <label for="wordCount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label
+          for="wordCount"
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
           Word Count: {wordCount}
         </label>
         <input
@@ -177,7 +293,10 @@
 
       <!-- Sentence Count -->
       <div>
-        <label for="sentenceCount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label
+          for="sentenceCount"
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
           Sentence Count: {sentenceCount}
         </label>
         <input
@@ -197,7 +316,10 @@
 
       <!-- Paragraph Count -->
       <div>
-        <label for="paragraphCount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label
+          for="paragraphCount"
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
           Paragraph Count: {paragraphCount}
         </label>
         <input
@@ -249,11 +371,11 @@
   </div>
 
   <!-- Output -->
-  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-8">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-8"
+  >
     <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
-        Generated Text
-      </h2>
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Generated Text</h2>
       <div class="flex gap-2">
         <button
           onclick={copyToClipboard}
@@ -262,7 +384,12 @@
         >
           {#if copied === 'success'}
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
             </svg>
             Copied!
           {:else}
@@ -290,15 +417,15 @@
     </div>
 
     <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-      {loremText.split(/\s+/).length} words • {loremText.split('.').length - 1} sentences • {loremText.split(/\n\n/).filter(p => p.trim()).length} paragraphs
+      {loremText.split(/\s+/).length} words • {loremText.split('.').length - 1} sentences • {loremText
+        .split(/\n\n/)
+        .filter(p => p.trim()).length} paragraphs
     </div>
   </div>
 
   <!-- Quick Presets -->
   <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-      Quick Presets
-    </h2>
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Quick Presets</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <button
         onclick={() => {
@@ -309,12 +436,8 @@
         }}
         class="p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors text-left"
       >
-        <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
-          Short Text
-        </h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
-          50 words, 2 paragraphs
-        </p>
+        <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Short Text</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400">50 words, 2 paragraphs</p>
       </button>
 
       <button
@@ -326,12 +449,8 @@
         }}
         class="p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors text-left"
       >
-        <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
-          Medium Text
-        </h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
-          100 words, 3 paragraphs
-        </p>
+        <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Medium Text</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400">100 words, 3 paragraphs</p>
       </button>
 
       <button
@@ -343,52 +462,50 @@
         }}
         class="p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors text-left"
       >
-        <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
-          Long Text
-        </h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
-          250 words, 5 paragraphs
-        </p>
+        <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Long Text</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400">250 words, 5 paragraphs</p>
       </button>
     </div>
   </div>
 
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <FilePlus class="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Customizable Length
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Customizable Length</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Adjust word, sentence, and paragraph counts to your needs
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <RotateCcw class="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Regenerate Instantly
-      </h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        Create new variations with a single click
-      </p>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Regenerate Instantly</h3>
+      <p class="text-gray-600 dark:text-gray-400">Create new variations with a single click</p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Copy class="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Easy Copy
-      </h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        Copy generated text with one click
-      </p>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Easy Copy</h3>
+      <p class="text-gray-600 dark:text-gray-400">Copy generated text with one click</p>
     </div>
   </div>
 </div>

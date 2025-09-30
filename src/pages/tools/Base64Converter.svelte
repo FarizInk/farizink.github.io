@@ -1,6 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
-import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte';
+  import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte';
 
   let inputText = $state('');
   let encodedText = $state('');
@@ -17,7 +17,7 @@ import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte
       encodedText = btoa(unescape(encodeURIComponent(inputText)));
       decodedText = '';
       error = '';
-    } catch (e) {
+    } catch {
       error = 'Failed to encode text. Please check your input.';
       encodedText = '';
     }
@@ -28,7 +28,7 @@ import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte
       decodedText = decodeURIComponent(escape(atob(inputText)));
       encodedText = '';
       error = '';
-    } catch (e) {
+    } catch {
       error = 'Invalid Base64 string. Please check your input.';
       decodedText = '';
     }
@@ -49,7 +49,7 @@ import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte
     error = '';
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = e => {
       try {
         const result = e.target?.result as string;
         const base64 = result.split(',')[1]; // Remove data URL prefix
@@ -61,7 +61,7 @@ import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte
         };
 
         isProcessing = false;
-      } catch (e) {
+      } catch {
         error = 'Failed to process file.';
         isProcessing = false;
       }
@@ -139,12 +139,12 @@ import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte
     </div>
 
     <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-2xl mb-4">
+      <div
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-2xl mb-4"
+      >
         <Lock class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        Base64 Converter
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Base64 Converter</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
         Encode and decode Base64 strings with support for text and file conversion.
       </p>
@@ -155,13 +155,19 @@ import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte
   <nav class="mb-8">
     <ol class="flex items-center justify-center space-x-2 text-sm">
       <li>
-        <a href="/" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Home
         </a>
       </li>
       <li class="text-gray-300 dark:text-gray-600">/</li>
       <li>
-        <a href="/tools" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/tools"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Tools
         </a>
       </li>
@@ -173,24 +179,22 @@ import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte
   <!-- Tab Navigation -->
   <div class="mb-6">
     <div class="flex justify-center">
-      <div class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1">
+      <div
+        class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1"
+      >
         <button
-          onclick={() => activeTab = 'text'}
-          class="px-4 py-2 rounded-md text-sm font-medium transition-colors {
-            activeTab === 'text'
-              ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300'
-              : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-          }"
+          onclick={() => (activeTab = 'text')}
+          class="px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'text'
+            ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300'
+            : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
         >
           Text Converter
         </button>
         <button
-          onclick={() => activeTab = 'file'}
-          class="px-4 py-2 rounded-md text-sm font-medium transition-colors {
-            activeTab === 'file'
-              ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300'
-              : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-          }"
+          onclick={() => (activeTab = 'file')}
+          class="px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'file'
+            ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300'
+            : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
         >
           File Converter
         </button>
@@ -236,7 +240,9 @@ import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte
 
     <!-- Error Display -->
     {#if error}
-      <div class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+      <div
+        class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+      >
         <p class="text-red-700 dark:text-red-400 font-medium">Error: {error}</p>
       </div>
     {/if}
@@ -245,9 +251,7 @@ import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte
       <!-- Input Section -->
       <div>
         <div class="flex justify-between items-center mb-2">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Input
-          </h2>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input</h2>
           <span class="text-sm text-gray-500 dark:text-gray-400">
             {inputText.length} characters
           </span>
@@ -264,9 +268,7 @@ import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte
         <!-- Encoded Result -->
         <div class="mb-4">
           <div class="flex justify-between items-center mb-2">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-              Base64 Result
-            </h2>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Base64 Result</h2>
             {#if encodedText}
               <button
                 onclick={() => copyToClipboard(encodedText, 'encoded')}
@@ -296,9 +298,7 @@ import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte
         <!-- Decoded Result -->
         <div>
           <div class="flex justify-between items-center mb-2">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-              Decoded Result
-            </h2>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Decoded Result</h2>
             {#if decodedText}
               <button
                 onclick={() => copyToClipboard(decodedText, 'decoded')}
@@ -330,31 +330,26 @@ import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte
     <!-- File Converter -->
     <div class="max-w-2xl mx-auto">
       <!-- File Upload -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+      >
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Upload File for Base64 Conversion
         </h2>
 
-        <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center">
+        <div
+          class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center"
+        >
           <Upload class="w-12 h-12 mx-auto mb-4 text-gray-400" />
 
           <label for="file-upload" class="cursor-pointer">
             <span class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
               Click to upload
             </span>
-            <span class="text-gray-600 dark:text-gray-400">
-              or drag and drop
-            </span>
+            <span class="text-gray-600 dark:text-gray-400"> or drag and drop </span>
           </label>
-          <input
-            id="file-upload"
-            type="file"
-            onchange={handleFileSelect}
-            class="hidden"
-          />
-          <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-            Supports any file type
-          </p>
+          <input id="file-upload" type="file" onchange={handleFileSelect} class="hidden" />
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Supports any file type</p>
         </div>
 
         {#if fileName}
@@ -370,7 +365,9 @@ import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte
       {#if isProcessing}
         <div class="text-center py-8">
           <div class="inline-flex items-center gap-2">
-            <div class="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            <div
+              class="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"
+            ></div>
             <span class="text-gray-600 dark:text-gray-400">Processing file...</span>
           </div>
         </div>
@@ -378,14 +375,18 @@ import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte
 
       <!-- Error Display -->
       {#if error}
-        <div class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+        <div
+          class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+        >
           <p class="text-red-700 dark:text-red-400 font-medium">Error: {error}</p>
         </div>
       {/if}
 
       <!-- File Result -->
       {#if fileResult}
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+        >
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Conversion Result
           </h3>
@@ -397,21 +398,28 @@ import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte
             </div>
 
             <div>
-              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Original Size:</span>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Original Size:</span
+              >
               <p class="text-gray-900 dark:text-white">{formatFileSize(fileResult.size)}</p>
             </div>
 
             <div>
-              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Base64 Length:</span>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Base64 Length:</span
+              >
               <p class="text-gray-900 dark:text-white">{fileResult.encoded.length} characters</p>
             </div>
 
             <div>
               <div class="flex justify-between items-center mb-2">
-                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Base64 Data:</span>
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >Base64 Data:</span
+                >
                 <div class="flex gap-2">
                   <button
-                    onclick={() => fileResult && copyToClipboard(fileResult.encoded, 'file-encoded')}
+                    onclick={() =>
+                      fileResult && copyToClipboard(fileResult.encoded, 'file-encoded')}
                     class="px-3 py-1 text-sm bg-yellow-600 text-white rounded hover:bg-yellow-700 transition-colors"
                   >
                     {copiedText === 'file-encoded' ? '✓ Copied!' : 'Copy'}
@@ -438,37 +446,44 @@ import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte
 
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Shield class="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Secure Encoding
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Secure Encoding</h3>
       <p class="text-gray-600 dark:text-gray-400">
-        Encode text and files to Base64 format with proper UTF-8 handling for international characters
+        Encode text and files to Base64 format with proper UTF-8 handling for international
+        characters
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <FileText class="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        File Support
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">File Support</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Convert any file type to Base64 and download the encoded data for easy sharing
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Zap class="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Fast Processing
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Fast Processing</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Instant encoding and decoding with efficient algorithms for both text and binary data
       </p>

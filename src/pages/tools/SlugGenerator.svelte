@@ -1,6 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, Type, Copy, Zap, FileText } from '@lucide/svelte';
+  import { ChevronLeft, Type, Zap, FileText } from '@lucide/svelte';
 
   let inputText = $state('');
   let generatedSlug = $state('');
@@ -11,9 +11,45 @@
   let copiedText = $state('');
 
   const stopWords = new Set([
-    'a', 'an', 'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by',
-    'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did',
-    'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those'
+    'a',
+    'an',
+    'the',
+    'and',
+    'or',
+    'but',
+    'in',
+    'on',
+    'at',
+    'to',
+    'for',
+    'of',
+    'with',
+    'by',
+    'is',
+    'are',
+    'was',
+    'were',
+    'be',
+    'been',
+    'being',
+    'have',
+    'has',
+    'had',
+    'do',
+    'does',
+    'did',
+    'will',
+    'would',
+    'could',
+    'should',
+    'may',
+    'might',
+    'must',
+    'can',
+    'this',
+    'that',
+    'these',
+    'those'
   ]);
 
   function generateSlug() {
@@ -103,12 +139,12 @@
     </div>
 
     <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl mb-4">
+      <div
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl mb-4"
+      >
         <Type class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        URL Slug Generator
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">URL Slug Generator</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
         Create URL-friendly slugs from text with customizable separators and options.
       </p>
@@ -119,13 +155,19 @@
   <nav class="mb-8">
     <ol class="flex items-center justify-center space-x-2 text-sm">
       <li>
-        <a href="/" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Home
         </a>
       </li>
       <li class="text-gray-300 dark:text-gray-600">/</li>
       <li>
-        <a href="/tools" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+        <a
+          href="/tools"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
           Tools
         </a>
       </li>
@@ -135,7 +177,9 @@
   </nav>
 
   <!-- Options -->
-  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+  >
     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Slug Options</h3>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
@@ -215,9 +259,7 @@
     <!-- Input Section -->
     <div>
       <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-          Input Text
-        </h2>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input Text</h2>
         <span class="text-sm text-gray-500 dark:text-gray-400">
           {inputText.length} characters
         </span>
@@ -232,9 +274,7 @@
     <!-- Output Section -->
     <div>
       <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-          Generated Slug
-        </h2>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Generated Slug</h2>
         {#if generatedSlug}
           <button
             onclick={() => copyToClipboard(generatedSlug)}
@@ -254,9 +294,7 @@
         />
         {#if !generatedSlug}
           <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <p class="text-gray-400 dark:text-gray-600">
-              Enter text above to generate slug
-            </p>
+            <p class="text-gray-400 dark:text-gray-600">Enter text above to generate slug</p>
           </div>
         {/if}
       </div>
@@ -264,62 +302,82 @@
   </div>
 
   <!-- Slug Examples -->
-  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+  >
     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Common Examples</h3>
     <div class="space-y-3">
       <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
         <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Blog Post Title</p>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">"How to Create Amazing URL Slugs for Your Blog Posts"</p>
-        <p class="font-mono text-sm text-emerald-600 dark:text-emerald-400">how-to-create-amazing-url-slugs-for-your-blog-posts</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
+          "How to Create Amazing URL Slugs for Your Blog Posts"
+        </p>
+        <p class="font-mono text-sm text-emerald-600 dark:text-emerald-400">
+          how-to-create-amazing-url-slugs-for-your-blog-posts
+        </p>
       </div>
 
       <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
         <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Product Name</p>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">"Super Pro Max 3000 Widget with Advanced Features"</p>
-        <p class="font-mono text-sm text-emerald-600 dark:text-emerald-400">super-pro-max-3000-widget-with-advanced-features</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
+          "Super Pro Max 3000 Widget with Advanced Features"
+        </p>
+        <p class="font-mono text-sm text-emerald-600 dark:text-emerald-400">
+          super-pro-max-3000-widget-with-advanced-features
+        </p>
       </div>
 
       <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
         <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Article Title</p>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">"The Ultimate Guide to Web Development in 2024"</p>
-        <p class="font-mono text-sm text-emerald-600 dark:text-emerald-400">ultimate-guide-web-development-2024</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
+          "The Ultimate Guide to Web Development in 2024"
+        </p>
+        <p class="font-mono text-sm text-emerald-600 dark:text-emerald-400">
+          ultimate-guide-web-development-2024
+        </p>
       </div>
     </div>
   </div>
 
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Type class="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        URL-Friendly Slugs
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">URL-Friendly Slugs</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Create clean, readable URLs that are SEO-friendly and user-friendly
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <FileText class="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Custom Separators
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Custom Separators</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Choose between hyphens, underscores, or no separators for your slugs
       </p>
     </div>
 
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-      <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center mb-4">
+    <div
+      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+    >
+      <div
+        class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center mb-4"
+      >
         <Zap class="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Smart Processing
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Smart Processing</h3>
       <p class="text-gray-600 dark:text-gray-400">
         Remove special characters, stop words, and apply length limits automatically
       </p>
