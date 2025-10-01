@@ -39,14 +39,60 @@ export function navigate(path) {
 function getCurrentPath() {
     return window.location.pathname;
 }
+// Update meta tags for social media sharing and SEO
+function updateMetaTags(route) {
+    if (route?.title) {
+        document.title = route.title;
+        // Update Open Graph tags
+        const ogTitle = document.querySelector('meta[property="og:title"]');
+        const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+        if (ogTitle)
+            ogTitle.setAttribute('content', route.title);
+        if (twitterTitle)
+            twitterTitle.setAttribute('content', route.title);
+    }
+    if (route?.description) {
+        const ogDescription = document.querySelector('meta[property="og:description"]');
+        const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (ogDescription)
+            ogDescription.setAttribute('content', route.description);
+        if (twitterDescription)
+            twitterDescription.setAttribute('content', route.description);
+        if (metaDescription)
+            metaDescription.setAttribute('content', route.description);
+    }
+    // Update keywords
+    if (route?.keywords) {
+        const metaKeywords = document.querySelector('meta[name="keywords"]');
+        if (metaKeywords)
+            metaKeywords.setAttribute('content', route.keywords);
+    }
+    // Update robots directive
+    if (route?.robots) {
+        const metaRobots = document.querySelector('meta[name="robots"]');
+        if (metaRobots)
+            metaRobots.setAttribute('content', route.robots);
+    }
+    // Update canonical URL
+    const canonicalLink = document.querySelector('link[rel="canonical"]');
+    if (canonicalLink) {
+        canonicalLink.setAttribute('href', `https://farizink.github.io${route.path}`);
+    }
+    // Update Open Graph URL
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) {
+        ogUrl.setAttribute('content', `https://farizink.github.io${route.path}`);
+    }
+}
 // Handle location changes
 function handleLocationChange() {
     const currentPath = getCurrentPath();
     const matchedRoute = findMatchingRoute(currentPath);
     const params = extractParams(currentPath, matchedRoute);
-    // Update document title if route has one
-    if (matchedRoute?.title) {
-        document.title = matchedRoute.title;
+    // Update document title and meta tags if route has them
+    if (matchedRoute) {
+        updateMetaTags(matchedRoute);
     }
     router.set({
         currentPath,

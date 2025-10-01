@@ -45,9 +45,30 @@
 
   // Define routes
   const routes = [
-    { path: '/', component: Home, title: 'Fariz - Software Engineer' },
-    { path: '/projects', component: Project, title: 'Project - Fariz' },
-    { path: '/tools', component: Tools, title: 'Tools - Fariz' },
+        { 
+      path: '/', 
+      component: Home, 
+      title: 'Fariz - Software Engineer & Developer Tools Creator',
+      description: 'Software engineer passionate about building innovative solutions and developer tools. Explore my projects and free online utilities.',
+      keywords: 'fariz, software engineer, developer tools, web development, programming, javascript, typescript, svelte',
+      robots: 'index, follow'
+    },
+    { 
+      path: '/projects', 
+      component: Project, 
+      title: 'Projects - Fariz',
+      description: 'Explore my software development projects and open-source contributions. Building innovative solutions with modern technologies.',
+      keywords: 'software projects, web development projects, open source, programming portfolio, github projects',
+      robots: 'index, follow'
+    },
+    { 
+      path: '/tools', 
+      component: Tools, 
+      title: 'Developer Tools - Fariz',
+      description: 'Free online developer tools and utilities. JSON parser, color converter, URL encoder, and more productivity tools for developers.',
+      keywords: 'developer tools, online tools, web tools, json parser, color converter, url encoder, productivity tools',
+      robots: 'index, follow'
+    },
     { path: '/tools/json-parser', component: JsonParser, title: 'JSON Parser - Fariz' },
     { path: '/tools/color-converter', component: ColorConverter, title: 'Color Converter - Fariz' },
     { path: '/tools/url-encoder', component: UrlEncoder, title: 'URL Encoder/Decoder - Fariz' },
