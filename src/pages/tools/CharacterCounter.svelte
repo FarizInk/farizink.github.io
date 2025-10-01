@@ -1,45 +1,61 @@
 <script lang="ts">
-  import { Copy, RefreshCw, FileText, Calculator, Hash, Clock, Type, BarChart3, ChevronLeft } from '@lucide/svelte';
+  import {
+    Copy,
+    FileText,
+    Calculator,
+    Hash,
+    Clock,
+    Type,
+    BarChart3,
+    ChevronLeft
+  } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
 
   // Component state
   let inputText = $state('');
-  let copied = $state(false);
-  let wordCountEnabled = $state(true);
-  let charCountEnabled = $state(true);
-  let readingTimeEnabled = $state(true);
 
   // Calculate text statistics
-  const stats = $derived(inputText ? {
-    // Character counts
-    totalChars: inputText.length,
-    charsNoSpaces: inputText.replace(/\s/g, '').length,
-    charsIncludingSpaces: inputText.length,
+  const stats = $derived(
+    inputText
+      ? {
+          // Character counts
+          totalChars: inputText.length,
+          charsNoSpaces: inputText.replace(/\s/g, '').length,
+          charsIncludingSpaces: inputText.length,
 
-    // Word counts
-    words: inputText.trim() ? inputText.trim().split(/\s+/).length : 0,
-    uniqueWords: inputText.trim() ? new Set(inputText.toLowerCase().trim().split(/\s+/)).size : 0,
+          // Word counts
+          words: inputText.trim() ? inputText.trim().split(/\s+/).length : 0,
+          uniqueWords: inputText.trim()
+            ? new Set(inputText.toLowerCase().trim().split(/\s+/)).size
+            : 0,
 
-    // Sentence and paragraph counts
-    sentences: inputText.trim() ? inputText.split(/[.!?]+/).filter(s => s.trim().length > 0).length : 0,
-    paragraphs: inputText.trim() ? inputText.split(/\n\n+/).filter(p => p.trim().length > 0).length : 0,
-    lines: inputText.split('\n').length,
+          // Sentence and paragraph counts
+          sentences: inputText.trim()
+            ? inputText.split(/[\\.!?]+/).filter(s => s.trim().length > 0).length
+            : 0,
+          paragraphs: inputText.trim()
+            ? inputText.split(/\n\n+/).filter(p => p.trim().length > 0).length
+            : 0,
+          lines: inputText.split('\n').length,
 
-    // Reading time calculations
-    readingTimeSlow: Math.ceil(inputText.trim().split(/\s+/).length / 130), // 130 WPM (slow)
-    readingTimeAvg: Math.ceil(inputText.trim().split(/\s+/).length / 200), // 200 WPM (average)
-    readingTimeFast: Math.ceil(inputText.trim().split(/\s+/).length / 300), // 300 WPM (fast)
+          // Reading time calculations
+          readingTimeSlow: Math.ceil(inputText.trim().split(/\s+/).length / 130), // 130 WPM (slow)
+          readingTimeAvg: Math.ceil(inputText.trim().split(/\s+/).length / 200), // 200 WPM (average)
+          readingTimeFast: Math.ceil(inputText.trim().split(/\s+/).length / 300), // 300 WPM (fast)
 
-    // Character type breakdown
-    letters: (inputText.match(/[a-zA-Z]/g) || []).length,
-    numbers: (inputText.match(/[0-9]/g) || []).length,
-    spaces: (inputText.match(/\s/g) || []).length,
-    punctuation: (inputText.match(/[.,!?;:'"\-\(\)\[\]{}]/g) || []).length,
-    specialChars: inputText.length - (inputText.match(/[a-zA-Z0-9\s.,!?;:'"\-\(\)\[\]{}]/g) || []).length,
+          // Character type breakdown
+          letters: (inputText.match(/[a-zA-Z]/g) || []).length,
+          numbers: (inputText.match(/[0-9]/g) || []).length,
+          spaces: (inputText.match(/\s/g) || []).length,
+          punctuation: (inputText.match(/[.,!?;:'"\-()[\]{}]/g) || []).length,
+          specialChars:
+            inputText.length - (inputText.match(/[a-zA-Z0-9\s.,!?;:'"\-()[\]{}]/g) || []).length,
 
-    // Most frequent words
-    wordFrequency: inputText.trim() ? getWordFrequency(inputText.toLowerCase()) : {}
-  } : null);
+          // Most frequent words
+          wordFrequency: inputText.trim() ? getWordFrequency(inputText.toLowerCase()) : {}
+        }
+      : null
+  );
 
   function getWordFrequency(text: string): Record<string, number> {
     const words = text.split(/\s+/);
@@ -47,7 +63,7 @@
 
     words.forEach(word => {
       // Clean word from punctuation
-      const cleanWord = word.replace(/[.,!?;:'"\(\)\[\]{}]/g, '');
+      const cleanWord = word.replace(/[.,!?;:'"()[\]{}]/g, '');
       if (cleanWord.length > 0) {
         frequency[cleanWord] = (frequency[cleanWord] || 0) + 1;
       }
@@ -62,12 +78,7 @@
   }
 
   function copyToClipboard(text: string) {
-    navigator.clipboard.writeText(text).then(() => {
-      copied = true;
-      setTimeout(() => {
-        copied = false;
-      }, 2000);
-    });
+    navigator.clipboard.writeText(text);
   }
 
   function clearAll() {
@@ -109,10 +120,16 @@ Reading Time:
 - Average reader (200 WPM): ${stats.readingTimeAvg} minutes
 - Fast reader (300 WPM): ${stats.readingTimeFast} minutes
 
-${Object.keys(stats.wordFrequency).length > 0 ? `
+${
+  Object.keys(stats.wordFrequency).length > 0
+    ? `
 Top 10 Most Frequent Words:
-${Object.entries(stats.wordFrequency).map(([word, count]) => `- ${word}: ${count} times`).join('\n')}
-` : ''}
+${Object.entries(stats.wordFrequency)
+  .map(([word, count]) => `- ${word}: ${count} times`)
+  .join('\n')}
+`
+    : ''
+}
 
 Original Text:
 ${inputText}
@@ -145,7 +162,10 @@ ${inputText}
 
 <svelte:head>
   <title>Character Counter - Developer Tools</title>
-  <meta name="description" content="Count characters, words, and analyze text with detailed statistics including reading time and frequency analysis" />
+  <meta
+    name="description"
+    content="Count characters, words, and analyze text with detailed statistics including reading time and frequency analysis"
+  />
 </svelte:head>
 
 <div class="max-w-6xl mx-auto p-6">
@@ -167,9 +187,7 @@ ${inputText}
       >
         <Calculator class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        Character Counter
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Character Counter</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
         Count characters, words, and analyze text with detailed statistics
       </p>
@@ -205,11 +223,11 @@ ${inputText}
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Text Input Area -->
     <div class="lg:col-span-2">
-      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+      >
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
-            Input Text
-          </h2>
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Input Text</h2>
           <div class="flex items-center gap-2">
             <button
               onclick={loadSampleText}
@@ -235,14 +253,18 @@ ${inputText}
         <!-- Character Limit Indicators -->
         {#if stats && stats.totalChars > 0}
           <div class="mt-4 space-y-2">
-            {#each commonLimits as limit}
+            {#each commonLimits as limit (limit.name)}
               {@const percentage = (stats.totalChars / limit.limit) * 100}
               <div class="flex items-center justify-between text-sm">
                 <span class="text-gray-600 dark:text-gray-400">{limit.name}</span>
                 <div class="flex items-center gap-2">
                   <div class="w-32 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                     <div
-                      class="h-2 rounded-full transition-all {percentage > 100 ? 'bg-red-500' : percentage > 80 ? 'bg-yellow-500' : 'bg-green-500'}"
+                      class="h-2 rounded-full transition-all {percentage > 100
+                        ? 'bg-red-500'
+                        : percentage > 80
+                          ? 'bg-yellow-500'
+                          : 'bg-green-500'}"
                       style="width: {Math.min(percentage, 100)}%"
                     ></div>
                   </div>
@@ -260,14 +282,16 @@ ${inputText}
     <!-- Statistics Panel -->
     <div class="space-y-6">
       <!-- Quick Stats -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-          Quick Stats
-        </h2>
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+      >
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Quick Stats</h2>
 
         {#if stats}
           <div class="space-y-3">
-            <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <div
+              class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg"
+            >
               <div class="flex items-center">
                 <Type class="w-5 h-5 text-blue-600 dark:text-blue-400 mr-2" />
                 <span class="text-sm font-medium text-gray-900 dark:text-white">Characters</span>
@@ -277,7 +301,9 @@ ${inputText}
               </span>
             </div>
 
-            <div class="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+            <div
+              class="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg"
+            >
               <div class="flex items-center">
                 <FileText class="w-5 h-5 text-green-600 dark:text-green-400 mr-2" />
                 <span class="text-sm font-medium text-gray-900 dark:text-white">Words</span>
@@ -287,7 +313,9 @@ ${inputText}
               </span>
             </div>
 
-            <div class="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+            <div
+              class="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg"
+            >
               <div class="flex items-center">
                 <Hash class="w-5 h-5 text-purple-600 dark:text-purple-400 mr-2" />
                 <span class="text-sm font-medium text-gray-900 dark:text-white">Sentences</span>
@@ -297,7 +325,9 @@ ${inputText}
               </span>
             </div>
 
-            <div class="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+            <div
+              class="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg"
+            >
               <div class="flex items-center">
                 <Clock class="w-5 h-5 text-orange-600 dark:text-orange-400 mr-2" />
                 <span class="text-sm font-medium text-gray-900 dark:text-white">Reading Time</span>
@@ -315,10 +345,10 @@ ${inputText}
       </div>
 
       <!-- Action Buttons -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-          Actions
-        </h2>
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+      >
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Actions</h2>
 
         <div class="space-y-3">
           <button
@@ -347,7 +377,9 @@ ${inputText}
   {#if stats}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
       <!-- Character Breakdown -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+      >
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Character Breakdown
         </h3>
@@ -376,40 +408,45 @@ ${inputText}
       </div>
 
       <!-- Reading Time -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Reading Time
-        </h3>
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+      >
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Reading Time</h3>
         <div class="space-y-3">
           <div class="flex items-center justify-between">
             <div class="flex items-center">
               <Clock class="w-4 h-4 text-gray-400 mr-2" />
               <span class="text-sm text-gray-600 dark:text-gray-400">Slow (130 WPM)</span>
             </div>
-            <span class="font-medium text-gray-900 dark:text-white">{stats.readingTimeSlow} min</span>
+            <span class="font-medium text-gray-900 dark:text-white"
+              >{stats.readingTimeSlow} min</span
+            >
           </div>
           <div class="flex items-center justify-between">
             <div class="flex items-center">
               <Clock class="w-4 h-4 text-gray-400 mr-2" />
               <span class="text-sm text-gray-600 dark:text-gray-400">Average (200 WPM)</span>
             </div>
-            <span class="font-medium text-gray-900 dark:text-white">{stats.readingTimeAvg} min</span>
+            <span class="font-medium text-gray-900 dark:text-white">{stats.readingTimeAvg} min</span
+            >
           </div>
           <div class="flex items-center justify-between">
             <div class="flex items-center">
               <Clock class="w-4 h-4 text-gray-400 mr-2" />
               <span class="text-sm text-gray-600 dark:text-gray-400">Fast (300 WPM)</span>
             </div>
-            <span class="font-medium text-gray-900 dark:text-white">{stats.readingTimeFast} min</span>
+            <span class="font-medium text-gray-900 dark:text-white"
+              >{stats.readingTimeFast} min</span
+            >
           </div>
         </div>
       </div>
 
       <!-- Structure Analysis -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Structure Analysis
-        </h3>
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+      >
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Structure Analysis</h3>
         <div class="space-y-2">
           <div class="flex justify-between text-sm">
             <span class="text-gray-600 dark:text-gray-400">Paragraphs</span>
@@ -435,17 +472,19 @@ ${inputText}
 
     <!-- Word Frequency -->
     {#if Object.keys(stats.wordFrequency).length > 0}
-      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mt-6">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mt-6"
+      >
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Most Frequent Words
-          </h3>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Most Frequent Words</h3>
           <BarChart3 class="w-5 h-5 text-gray-400" />
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {#each Object.entries(stats.wordFrequency) as [word, count], index}
-            <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          {#each Object.entries(stats.wordFrequency) as [word, count] (word)}
+            <div
+              class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+            >
               <span class="text-sm font-medium text-gray-900 dark:text-white capitalize">
                 {word}
               </span>

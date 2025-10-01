@@ -84,7 +84,10 @@
       if (mon === '*') {
         // Continue
       } else if (mon.includes(',')) {
-        const months = mon.split(',').map(m => getMonthName(parseInt(m))).join(', ');
+        const months = mon
+          .split(',')
+          .map(m => getMonthName(parseInt(m)))
+          .join(', ');
         description += ` in ${months}`;
       } else {
         description += ` in ${getMonthName(parseInt(mon))}`;
@@ -94,20 +97,36 @@
       if (dow === '*') {
         // Continue
       } else if (dow.includes(',')) {
-        const days = dow.split(',').map(d => getDayName(parseInt(d))).join(', ');
+        const days = dow
+          .split(',')
+          .map(d => getDayName(parseInt(d)))
+          .join(', ');
         description += ` on ${days}`;
       } else {
         description += ` on ${getDayName(parseInt(dow))}`;
       }
 
       return description;
-    } catch (error) {
+    } catch {
       return 'Invalid cron expression';
     }
   }
 
   function getMonthName(month: number): string {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
     return months[month - 1] || month.toString();
   }
 
@@ -126,13 +145,14 @@
 
       // Simple approximation - this is not perfectly accurate but gives a good estimate
       for (let i = 0; i < count; i++) {
+        // eslint-disable-next-line svelte/prefer-svelte-reactivity
         const nextRun = new Date(now);
         nextRun.setMinutes(nextRun.getMinutes() + (i + 1) * 5); // Simplified calculation
         runs.push(nextRun.toLocaleString());
       }
 
       return runs;
-    } catch (error) {
+    } catch {
       return [];
     }
   }
@@ -191,7 +211,10 @@
 
 <svelte:head>
   <title>Cron Expression Generator - Developer Tools</title>
-  <meta name="description" content="Generate and test cron expressions with visual builder and next run times" />
+  <meta
+    name="description"
+    content="Generate and test cron expressions with visual builder and next run times"
+  />
 </svelte:head>
 
 <div class="max-w-6xl mx-auto p-6">
@@ -252,7 +275,9 @@
     <!-- Left Column: Expression Builder -->
     <div class="space-y-6">
       <!-- Current Expression -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      >
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Cron Expression</h2>
           <div class="flex items-center gap-2">
@@ -305,12 +330,19 @@
       </div>
 
       <!-- Manual Components -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      >
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Manual Builder</h3>
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Minute (0-59)</label>
+            <label
+              for="minute"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Minute (0-59)</label
+            >
             <input
+              id="minute"
               type="text"
               bind:value={minute}
               oninput={updateFromComponents}
@@ -320,8 +352,13 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Hour (0-23)</label>
+            <label
+              for="hour"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Hour (0-23)</label
+            >
             <input
+              id="hour"
               type="text"
               bind:value={hour}
               oninput={updateFromComponents}
@@ -331,8 +368,13 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Day of Month (1-31)</label>
+            <label
+              for="day-of-month"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Day of Month (1-31)</label
+            >
             <input
+              id="day-of-month"
               type="text"
               bind:value={dayOfMonth}
               oninput={updateFromComponents}
@@ -342,8 +384,13 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Month (1-12)</label>
+            <label
+              for="month"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Month (1-12)</label
+            >
             <input
+              id="month"
               type="text"
               bind:value={month}
               oninput={updateFromComponents}
@@ -353,8 +400,13 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Day of Week (0-6, 0=Sunday)</label>
+            <label
+              for="day-of-week"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Day of Week (0-6, 0=Sunday)</label
+            >
             <input
+              id="day-of-week"
               type="text"
               bind:value={dayOfWeek}
               oninput={updateFromComponents}
@@ -370,8 +422,12 @@
     <div class="space-y-6">
       <!-- Description -->
       {#if isValidCron}
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+        >
+          <h3
+            class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2"
+          >
             <Info class="w-5 h-5" />
             Description
           </h3>
@@ -383,13 +439,17 @@
 
       <!-- Next Run Times -->
       {#if isValidCron && nextRunTimes.length > 0}
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+        >
+          <h3
+            class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2"
+          >
             <Calendar class="w-5 h-5" />
             Next Run Times
           </h3>
           <div class="space-y-2">
-            {#each nextRunTimes.slice(0, 5) as time}
+            {#each nextRunTimes.slice(0, 5) as time (time)}
               <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                 <Clock class="w-4 h-4" />
                 {time}
@@ -400,10 +460,12 @@
       {/if}
 
       <!-- Presets -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      >
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Common Presets</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {#each presets as preset}
+          {#each presets as preset (preset.name)}
             <button
               onclick={() => applyPreset(preset.expression)}
               class="text-left p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors group"
@@ -418,8 +480,12 @@
       </div>
 
       <!-- Help Information -->
-      <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800 p-6">
-        <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-400 mb-4 flex items-center gap-2">
+      <div
+        class="bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800 p-6"
+      >
+        <h3
+          class="text-lg font-semibold text-blue-900 dark:text-blue-400 mb-4 flex items-center gap-2"
+        >
           <Info class="w-5 h-5" />
           Cron Syntax Help
         </h3>
@@ -439,9 +505,18 @@
           <div>
             <strong class="font-semibold">Examples:</strong>
             <ul class="mt-2 space-y-1 ml-4">
-              <li>• <code class="bg-blue-100 dark:bg-blue-900/30 px-1 rounded">*/15 * * * *</code> - Every 15 minutes</li>
-              <li>• <code class="bg-blue-100 dark:bg-blue-900/30 px-1 rounded">0 9 * * 1-5</code> - Weekdays at 9 AM</li>
-              <li>• <code class="bg-blue-100 dark:bg-blue-900/30 px-1 rounded">0 0 1 * *</code> - First day of every month</li>
+              <li>
+                • <code class="bg-blue-100 dark:bg-blue-900/30 px-1 rounded">*/15 * * * *</code> - Every
+                15 minutes
+              </li>
+              <li>
+                • <code class="bg-blue-100 dark:bg-blue-900/30 px-1 rounded">0 9 * * 1-5</code> - Weekdays
+                at 9 AM
+              </li>
+              <li>
+                • <code class="bg-blue-100 dark:bg-blue-900/30 px-1 rounded">0 0 1 * *</code> - First
+                day of every month
+              </li>
             </ul>
           </div>
         </div>

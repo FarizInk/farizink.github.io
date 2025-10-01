@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Copy, Box, Download, Code, Sun, Moon, Move, Plus, X, ChevronLeft } from '@lucide/svelte';
+  import { Copy, Box, Download, Plus, X, ChevronLeft } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
 
   // Shadow properties
@@ -39,13 +39,16 @@
 
   // UI state
   let copied = $state(false);
-  let isDark = $state(false);
 
   // Derived CSS output
   const boxShadowCSS = $derived(() => {
     return shadows
       .map(shadow => {
-        const colorHex = shadow.color + Math.round(shadow.opacity * 2.55).toString(16).padStart(2, '0');
+        const colorHex =
+          shadow.color +
+          Math.round(shadow.opacity * 2.55)
+            .toString(16)
+            .padStart(2, '0');
         const values = [shadow.x + 'px', shadow.y + 'px', shadow.blur + 'px'];
         if (shadow.spread !== 0) values.push(shadow.spread + 'px');
         if (shadow.inset) values.push('inset');
@@ -57,7 +60,11 @@
   const textShadowCSS = $derived(() => {
     return textShadows
       .map(shadow => {
-        const colorHex = shadow.color + Math.round(shadow.opacity * 2.55).toString(16).padStart(2, '0');
+        const colorHex =
+          shadow.color +
+          Math.round(shadow.opacity * 2.55)
+            .toString(16)
+            .padStart(2, '0');
         return `${shadow.x}px ${shadow.y}px ${shadow.blur}px ${colorHex}`;
       })
       .join(', ');
@@ -65,16 +72,19 @@
 
   function addBoxShadow() {
     const newId = Math.max(...shadows.map(s => s.id)) + 1;
-    shadows = [...shadows, {
-      id: newId,
-      x: 0,
-      y: 4,
-      blur: 6,
-      spread: -1,
-      color: '#000000',
-      opacity: 20,
-      inset: false
-    }];
+    shadows = [
+      ...shadows,
+      {
+        id: newId,
+        x: 0,
+        y: 4,
+        blur: 6,
+        spread: -1,
+        color: '#000000',
+        opacity: 20,
+        inset: false
+      }
+    ];
   }
 
   function removeBoxShadow(id: number) {
@@ -85,14 +95,17 @@
 
   function addTextShadow() {
     const newId = Math.max(...textShadows.map(s => s.id)) + 1;
-    textShadows = [...textShadows, {
-      id: newId,
-      x: 2,
-      y: 2,
-      blur: 4,
-      color: '#000000',
-      opacity: 50
-    }];
+    textShadows = [
+      ...textShadows,
+      {
+        id: newId,
+        x: 2,
+        y: 2,
+        blur: 4,
+        color: '#000000',
+        opacity: 50
+      }
+    ];
   }
 
   function removeTextShadow(id: number) {
@@ -127,16 +140,18 @@
   function loadPreset(type: string) {
     switch (type) {
       case 'card':
-        shadows = [{
-          id: 1,
-          x: 0,
-          y: 10,
-          blur: 15,
-          spread: -3,
-          color: '#000000',
-          opacity: 10,
-          inset: false
-        }];
+        shadows = [
+          {
+            id: 1,
+            x: 0,
+            y: 10,
+            blur: 15,
+            spread: -3,
+            color: '#000000',
+            opacity: 10,
+            inset: false
+          }
+        ];
         borderRadius = 12;
         break;
       case 'button':
@@ -187,26 +202,30 @@
             inset: false
           }
         ];
-        textShadows = [{
-          id: 1,
-          x: 0,
-          y: 0,
-          blur: 10,
-          color: '#3b82f6',
-          opacity: 80
-        }];
+        textShadows = [
+          {
+            id: 1,
+            x: 0,
+            y: 0,
+            blur: 10,
+            color: '#3b82f6',
+            opacity: 80
+          }
+        ];
         break;
       case 'inset':
-        shadows = [{
-          id: 1,
-          x: 2,
-          y: 2,
-          blur: 4,
-          spread: 0,
-          color: '#000000',
-          opacity: 15,
-          inset: true
-        }];
+        shadows = [
+          {
+            id: 1,
+            x: 2,
+            y: 2,
+            blur: 4,
+            spread: 0,
+            color: '#000000',
+            opacity: 15,
+            inset: true
+          }
+        ];
         break;
     }
   }
@@ -214,29 +233,37 @@
   function randomizeColor() {
     shadows = shadows.map(shadow => ({
       ...shadow,
-      color: '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')
+      color:
+        '#' +
+        Math.floor(Math.random() * 16777215)
+          .toString(16)
+          .padStart(6, '0')
     }));
   }
 
   function resetAll() {
-    shadows = [{
-      id: 1,
-      x: 0,
-      y: 4,
-      blur: 6,
-      spread: -1,
-      color: '#000000',
-      opacity: 20,
-      inset: false
-    }];
-    textShadows = [{
-      id: 1,
-      x: 2,
-      y: 2,
-      blur: 4,
-      color: '#000000',
-      opacity: 50
-    }];
+    shadows = [
+      {
+        id: 1,
+        x: 0,
+        y: 4,
+        blur: 6,
+        spread: -1,
+        color: '#000000',
+        opacity: 20,
+        inset: false
+      }
+    ];
+    textShadows = [
+      {
+        id: 1,
+        x: 2,
+        y: 2,
+        blur: 4,
+        color: '#000000',
+        opacity: 50
+      }
+    ];
     showText = true;
     showBox = true;
     backgroundColor = '#ffffff';
@@ -252,7 +279,10 @@
 
 <svelte:head>
   <title>CSS Shadow Generator - Developer Tools</title>
-  <meta name="description" content="Generate beautiful CSS box-shadow and text-shadow effects with real-time preview" />
+  <meta
+    name="description"
+    content="Generate beautiful CSS box-shadow and text-shadow effects with real-time preview"
+  />
 </svelte:head>
 
 <div class="max-w-6xl mx-auto p-6">
@@ -274,9 +304,7 @@
       >
         <Box class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        CSS Shadow Generator
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">CSS Shadow Generator</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
         Create beautiful box-shadow and text-shadow effects with real-time preview
       </p>
@@ -309,7 +337,9 @@
   </nav>
 
   <!-- Presets -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6"
+  >
     <div class="p-6">
       <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Presets</h2>
       <div class="flex flex-wrap gap-2">
@@ -360,22 +390,20 @@
       <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
         <div class="flex">
           <button
-            onclick={() => activeTab = 'box'}
-            class="flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors {
-              activeTab === 'box'
-                ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/10'
-                : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-            }"
+            onclick={() => (activeTab = 'box')}
+            class="flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors {activeTab ===
+            'box'
+              ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/10'
+              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
           >
             Box Shadow
           </button>
           <button
-            onclick={() => activeTab = 'text'}
-            class="flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors {
-              activeTab === 'text'
-                ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/10'
-                : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-            }"
+            onclick={() => (activeTab = 'text')}
+            class="flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors {activeTab ===
+            'text'
+              ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/10'
+              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
           >
             Text Shadow
           </button>
@@ -403,10 +431,14 @@
 
                   <div class="grid grid-cols-2 gap-4">
                     <div>
-                      <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        for="xoffset-{index}"
+                        class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         X Offset
                       </label>
                       <input
+                        id="xoffset-{index}"
                         type="range"
                         bind:value={shadow.x}
                         min="-50"
@@ -417,10 +449,14 @@
                     </div>
 
                     <div>
-                      <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        for="box-yoffset-{index}"
+                        class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         Y Offset
                       </label>
                       <input
+                        id="box-yoffset-{index}"
                         type="range"
                         bind:value={shadow.y}
                         min="-50"
@@ -431,10 +467,14 @@
                     </div>
 
                     <div>
-                      <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        for="box-blur-{index}"
+                        class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         Blur
                       </label>
                       <input
+                        id="box-blur-{index}"
                         type="range"
                         bind:value={shadow.blur}
                         min="0"
@@ -445,25 +485,34 @@
                     </div>
 
                     <div>
-                      <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        for="box-spread-{index}"
+                        class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         Spread
                       </label>
                       <input
+                        id="box-spread-{index}"
                         type="range"
                         bind:value={shadow.spread}
                         min="-50"
                         max="50"
                         class="w-full"
                       />
-                      <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.spread}px</span>
+                      <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.spread}px</span
+                      >
                     </div>
 
                     <div>
-                      <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        for="box-color-{index}"
+                        class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         Color
                       </label>
                       <div class="flex gap-2">
                         <input
+                          id="box-color-{index}"
                           type="color"
                           bind:value={shadow.color}
                           class="w-12 h-8 rounded"
@@ -477,27 +526,36 @@
                     </div>
 
                     <div>
-                      <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        for="box-opacity-{index}"
+                        class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         Opacity
                       </label>
                       <input
+                        id="box-opacity-{index}"
                         type="range"
                         bind:value={shadow.opacity}
                         min="0"
                         max="100"
                         class="w-full"
                       />
-                      <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.opacity}%</span>
+                      <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.opacity}%</span
+                      >
                     </div>
                   </div>
 
                   <div class="flex items-center mt-4">
                     <input
+                      id="box-inset-{index}"
                       type="checkbox"
                       bind:checked={shadow.inset}
                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                     />
-                    <label class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                    <label
+                      for="box-inset-{index}"
+                      class="ml-2 text-sm text-gray-700 dark:text-gray-300"
+                    >
                       Inset Shadow
                     </label>
                   </div>
@@ -535,10 +593,14 @@
 
                   <div class="grid grid-cols-3 gap-4">
                     <div>
-                      <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        for="text-xoffset-{index}"
+                        class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         X Offset
                       </label>
                       <input
+                        id="text-xoffset-{index}"
                         type="range"
                         bind:value={shadow.x}
                         min="-50"
@@ -549,10 +611,14 @@
                     </div>
 
                     <div>
-                      <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        for="text-yoffset-{index}"
+                        class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         Y Offset
                       </label>
                       <input
+                        id="text-yoffset-{index}"
                         type="range"
                         bind:value={shadow.y}
                         min="-50"
@@ -563,10 +629,14 @@
                     </div>
 
                     <div>
-                      <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        for="text-blur-{index}"
+                        class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         Blur
                       </label>
                       <input
+                        id="text-blur-{index}"
                         type="range"
                         bind:value={shadow.blur}
                         min="0"
@@ -577,11 +647,15 @@
                     </div>
 
                     <div class="col-span-3">
-                      <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      <label
+                        for="text-color-{index}"
+                        class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                      >
                         Color
                       </label>
                       <div class="flex gap-2">
                         <input
+                          id="text-color-{index}"
                           type="color"
                           bind:value={shadow.color}
                           class="w-12 h-8 rounded"
@@ -598,7 +672,9 @@
                           max="100"
                           class="w-24"
                         />
-                        <span class="text-xs text-gray-500 dark:text-gray-400 w-12">{shadow.opacity}%</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400 w-12"
+                          >{shadow.opacity}%</span
+                        >
                       </div>
                     </div>
                   </div>
@@ -618,25 +694,35 @@
       </div>
 
       <!-- Preview Settings -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+      >
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Preview Settings</h2>
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label
+                for="background-color"
+                class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
                 Background
               </label>
               <input
+                id="background-color"
                 type="color"
                 bind:value={backgroundColor}
                 class="w-full h-8 rounded"
               />
             </div>
             <div>
-              <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label
+                for="text-color"
+                class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
                 Text Color
               </label>
               <input
+                id="text-color"
                 type="color"
                 bind:value={textColor}
                 class="w-full h-8 rounded"
@@ -645,10 +731,14 @@
           </div>
 
           <div>
-            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label
+              for="border-radius"
+              class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
               Border Radius: {borderRadius}px
             </label>
             <input
+              id="border-radius"
               type="range"
               bind:value={borderRadius}
               min="0"
@@ -658,10 +748,14 @@
           </div>
 
           <div>
-            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label
+              for="preview-text"
+              class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
               Preview Text
             </label>
             <input
+              id="preview-text"
               type="text"
               bind:value={previewText}
               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
@@ -693,7 +787,9 @@
     <!-- Preview Panel -->
     <div class="space-y-6">
       <!-- Live Preview -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+      >
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Live Preview</h2>
         <div
           class="p-8 rounded-lg flex items-center justify-center min-h-[200px] transition-all duration-200"
@@ -726,7 +822,9 @@
 
       <!-- CSS Output -->
       <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-        <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+        <div
+          class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700"
+        >
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">CSS Code</h2>
           <div class="flex gap-2">
             <button
@@ -756,12 +854,18 @@
         <div class="p-6 space-y-4">
           <div>
             <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Box Shadow</h3>
-            <pre class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm text-gray-700 dark:text-gray-300"><code>box-shadow: {boxShadowCSS};</code></pre>
+            <pre
+              class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm text-gray-700 dark:text-gray-300"><code
+                >box-shadow: {boxShadowCSS};</code
+              ></pre>
           </div>
 
           <div>
             <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Text Shadow</h3>
-            <pre class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm text-gray-700 dark:text-gray-300"><code>text-shadow: {textShadowCSS};</code></pre>
+            <pre
+              class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm text-gray-700 dark:text-gray-300"><code
+                >text-shadow: {textShadowCSS};</code
+              ></pre>
           </div>
         </div>
       </div>

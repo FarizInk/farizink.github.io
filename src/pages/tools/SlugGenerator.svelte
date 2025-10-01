@@ -184,10 +184,14 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label
+          for="separator-select"
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
           Separator
         </label>
         <select
+          id="separator-select"
           bind:value={separator}
           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
         >
@@ -198,10 +202,14 @@
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label
+          for="max-length-input"
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
           Max Length
         </label>
         <input
+          id="max-length-input"
           type="number"
           bind:value={maxLength}
           min="0"

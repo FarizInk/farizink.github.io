@@ -1,24 +1,63 @@
 <script lang="ts">
-  import { ChevronLeft, Shuffle, Plus, X, Dices, RotateCcw, Copy, List, Star, Zap, Gift, Utensils, Users } from '@lucide/svelte';
+  import {
+    ChevronLeft,
+    Shuffle,
+    Plus,
+    X,
+    Dices,
+    RotateCcw,
+    Copy,
+    List,
+    Star,
+    Zap,
+    Gift,
+    Utensils,
+    Users
+  } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
 
+  // Types
+  interface PickerItem {
+    id: number;
+    text: string;
+    weight: number;
+  }
+
+  interface SelectedResult {
+    text: string;
+    type: 'success' | 'error' | 'animating';
+    items?: PickerItem[];
+  }
+
+  interface HistoryEntry {
+    id: number;
+    items: string[];
+    timestamp: Date;
+    totalItems: number;
+  }
+
+  interface Preset {
+    name: string;
+    icon: typeof Dices; // Use the type of a Lucide icon
+    items: { text: string; weight: number }[];
+  }
+
   // State
-  let items = $state([
+  let items = $state<PickerItem[]>([
     { id: 1, text: '', weight: 1 },
     { id: 2, text: '', weight: 1 },
     { id: 3, text: '', weight: 1 }
   ]);
-  let selectedItem = $state(null);
-  let history = $state([]);
+  let selectedItem = $state<SelectedResult | null>(null);
+  let history = $state<HistoryEntry[]>([]);
   let isSpinning = $state(false);
   let numberOfPicks = $state(1);
   let allowDuplicates = $state(false);
   let showWeights = $state(false);
   let animationDuration = $state(2000);
-  let pickedItems = $state([]);
 
   // Presets
-  const presets = [
+  const presets: Preset[] = [
     {
       name: 'Decision Maker',
       icon: Dices,
@@ -69,14 +108,14 @@
   }
 
   // Remove item
-  function removeItem(id) {
+  function removeItem(id: number) {
     if (items.length > 1) {
       items = items.filter(item => item.id !== id);
     }
   }
 
   // Load preset
-  function loadPreset(preset) {
+  function loadPreset(preset: Preset) {
     items = preset.items.map((item, index) => ({
       id: index + 1,
       text: item.text,
@@ -86,19 +125,18 @@
   }
 
   // Random pick function
-  function pickRandom() {
+  function pickRandom(): PickerItem[] {
     const validItems = items.filter(item => item.text.trim() !== '');
 
     if (validItems.length === 0) {
-      selectedItem = { text: 'Please add some items first!', type: 'error' };
-      return;
+      return [];
     }
 
     // Calculate total weight
     const totalWeight = validItems.reduce((sum, item) => sum + item.weight, 0);
 
     // Pick items
-    const results = [];
+    const results: PickerItem[] = [];
     const availableItems = [...validItems];
 
     for (let i = 0; i < Math.min(numberOfPicks, availableItems.length); i++) {
@@ -137,7 +175,6 @@
 
     isSpinning = true;
     selectedItem = null;
-    pickedItems = [];
 
     // Create animation effect
     const animationSteps = 20;
@@ -152,7 +189,12 @@
 
     // Final selection
     const results = pickRandom();
-    pickedItems = results;
+    if (results.length === 0) {
+      selectedItem = { text: 'Please add some items first!', type: 'error' };
+      isSpinning = false;
+      return;
+    }
+
     selectedItem = {
       text: results.length === 1 ? results[0].text : `${results.length} items selected`,
       type: 'success',
@@ -160,7 +202,7 @@
     };
 
     // Add to history
-    const historyEntry = {
+    const historyEntry: HistoryEntry = {
       id: Date.now(),
       items: results.map(r => r.text),
       timestamp: new Date(),
@@ -174,7 +216,6 @@
   // Reset picker
   function resetPicker() {
     selectedItem = null;
-    pickedItems = [];
     isSpinning = false;
   }
 
@@ -182,7 +223,6 @@
   function clearAll() {
     items = [{ id: 1, text: '', weight: 1 }];
     selectedItem = null;
-    pickedItems = [];
     history = [];
     resetPicker();
   }
@@ -190,7 +230,7 @@
   // Copy result
   function copyResult() {
     if (selectedItem && selectedItem.items) {
-      const text = selectedItem.items.map(item => item.text).join(', ');
+      const text = selectedItem.items.map((item: PickerItem) => item.text).join(', ');
       navigator.clipboard.writeText(text);
     } else if (selectedItem) {
       navigator.clipboard.writeText(selectedItem.text);
@@ -198,7 +238,7 @@
   }
 
   // Load from history
-  function loadFromHistory(entry) {
+  function loadFromHistory(entry: HistoryEntry) {
     // Convert history items back to picker items
     items = entry.items.map((text, index) => ({
       id: index + 1,
@@ -208,20 +248,18 @@
     resetPicker();
   }
 
-  // Get dice icon for animation
-  function getDiceIcon() {
-    return Dices;
-  }
-
   // Calculate total weight
   const totalWeight = $derived(
-    items.reduce((sum, item) => sum + (parseFloat(item.weight) || 1), 0)
+    items.reduce((sum, item) => sum + (parseFloat(String(item.weight)) || 1), 0)
   );
 </script>
 
 <svelte:head>
   <title>Random Picker - Developer Tools</title>
-  <meta name="description" content="Random item picker with weighted selections, multiple picks, and history tracking" />
+  <meta
+    name="description"
+    content="Random item picker with weighted selections, multiple picks, and history tracking"
+  />
 </svelte:head>
 
 <div class="max-w-6xl mx-auto p-6">
@@ -243,9 +281,7 @@
       >
         <Shuffle class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        Random Picker
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Random Picker</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
         Make random selections with weighted options and multiple picks
       </p>
@@ -278,7 +314,9 @@
   </nav>
 
   <!-- Presets -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6"
+  >
     <div class="p-6">
       <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Presets</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -300,7 +338,9 @@
     <!-- Main Picker -->
     <div class="lg:col-span-2 space-y-6">
       <!-- Items Input -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+      >
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
             <List class="w-5 h-5 mr-2" />
@@ -335,8 +375,11 @@
 
               {#if showWeights}
                 <div class="flex items-center gap-1">
-                  <label class="text-sm text-gray-600 dark:text-gray-400">Weight:</label>
+                  <label for="weight-{item.id}" class="text-sm text-gray-600 dark:text-gray-400"
+                    >Weight:</label
+                  >
                   <input
+                    id="weight-{item.id}"
                     type="number"
                     bind:value={item.weight}
                     min="0.1"
@@ -376,15 +419,21 @@
       </div>
 
       <!-- Picker Controls -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+      >
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Picker Settings</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="number-of-picks"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Number of Picks
             </label>
             <input
+              id="number-of-picks"
               type="number"
               bind:value={numberOfPicks}
               min="1"
@@ -394,10 +443,14 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="animation-speed"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Animation Speed (ms)
             </label>
             <input
+              id="animation-speed"
               type="range"
               bind:value={animationDuration}
               min="500"
@@ -411,11 +464,12 @@
 
         <div class="flex items-center mb-6">
           <input
+            id="allow-duplicates"
             type="checkbox"
             bind:checked={allowDuplicates}
             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
           />
-          <label class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+          <label for="allow-duplicates" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
             Allow Duplicates (when picking multiple items)
           </label>
         </div>
@@ -441,7 +495,9 @@
 
       <!-- Result Display -->
       {#if selectedItem}
-        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <div
+          class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+        >
           <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
               <Gift class="w-5 h-5 mr-2" />
@@ -465,7 +521,9 @@
           </div>
 
           {#if selectedItem.type === 'error'}
-            <div class="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <div
+              class="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+            >
               <p class="text-red-700 dark:text-red-300 text-center">{selectedItem.text}</p>
             </div>
           {:else if selectedItem.type === 'animating'}
@@ -477,15 +535,19 @@
             </div>
           {:else}
             <div class="text-center py-8">
-              <div class="inline-block p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg border-2 border-green-200 dark:border-green-800">
+              <div
+                class="inline-block p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg border-2 border-green-200 dark:border-green-800"
+              >
                 <Star class="w-12 h-12 text-green-600 dark:text-green-400 mx-auto mb-3" />
                 <h3 class="text-2xl font-bold text-green-700 dark:text-green-300 mb-2">
                   {selectedItem.text}
                 </h3>
                 {#if selectedItem.items && selectedItem.items.length > 1}
                   <div class="mt-4 space-y-2">
-                    {#each selectedItem.items as item}
-                      <div class="px-3 py-1 bg-white dark:bg-gray-800 rounded-full border border-green-200 dark:border-green-700">
+                    {#each selectedItem.items as item (item.text)}
+                      <div
+                        class="px-3 py-1 bg-white dark:bg-gray-800 rounded-full border border-green-200 dark:border-green-700"
+                      >
                         {item.text}
                       </div>
                     {/each}
@@ -501,7 +563,9 @@
     <!-- Sidebar -->
     <div class="space-y-6">
       <!-- History -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+      >
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">History</h3>
 
         {#if history.length === 0}
@@ -529,7 +593,9 @@
       </div>
 
       <!-- Tips -->
-      <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-800 p-6">
+      <div
+        class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-800 p-6"
+      >
         <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-4 flex items-center">
           <Zap class="w-5 h-5 mr-2" />
           Pro Tips

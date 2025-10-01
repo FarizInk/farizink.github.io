@@ -380,7 +380,10 @@
         <!-- Length Slider -->
         <div class="mb-6">
           <div class="flex justify-between items-center mb-2">
-            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label
+              for="password-length-slider"
+              class="text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Password Length
             </label>
             <span class="text-sm font-semibold text-gray-900 dark:text-white">
@@ -388,6 +391,7 @@
             </span>
           </div>
           <input
+            id="password-length-slider"
             type="range"
             min="4"
             max="64"

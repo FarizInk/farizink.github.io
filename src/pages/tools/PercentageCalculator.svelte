@@ -1,20 +1,59 @@
 <script lang="ts">
-  import { Percent, Calculator, TrendingUp, TrendingDown, DollarSign, Tag, ShoppingCart, CreditCard, Copy, RotateCcw, ChevronLeft } from '@lucide/svelte';
+  import {
+    Percent,
+    Calculator,
+    TrendingUp,
+    TrendingDown,
+    DollarSign,
+    Tag,
+    Copy,
+    RotateCcw,
+    ChevronLeft
+  } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
 
   // Calculator modes
   const modes = [
-    { id: 'basic', name: 'Basic %', icon: Percent, description: 'Calculate percentage of a number' },
-    { id: 'increase', name: 'Increase', icon: TrendingUp, description: 'Increase number by percentage' },
-    { id: 'decrease', name: 'Decrease', icon: TrendingDown, description: 'Decrease number by percentage' },
-    { id: 'difference', name: 'Difference', icon: Percent, description: 'Percentage difference between numbers' },
-    { id: 'discount', name: 'Discount', icon: Tag, description: 'Calculate discount and final price' },
-    { id: 'tip', name: 'Tip Calculator', icon: DollarSign, description: 'Calculate tip and split bill' }
+    {
+      id: 'basic',
+      name: 'Basic %',
+      icon: Percent,
+      description: 'Calculate percentage of a number'
+    },
+    {
+      id: 'increase',
+      name: 'Increase',
+      icon: TrendingUp,
+      description: 'Increase number by percentage'
+    },
+    {
+      id: 'decrease',
+      name: 'Decrease',
+      icon: TrendingDown,
+      description: 'Decrease number by percentage'
+    },
+    {
+      id: 'difference',
+      name: 'Difference',
+      icon: Percent,
+      description: 'Percentage difference between numbers'
+    },
+    {
+      id: 'discount',
+      name: 'Discount',
+      icon: Tag,
+      description: 'Calculate discount and final price'
+    },
+    {
+      id: 'tip',
+      name: 'Tip Calculator',
+      icon: DollarSign,
+      description: 'Calculate tip and split bill'
+    }
   ];
 
   // State
   let activeMode = $state('basic');
-  let copied = $state(false);
 
   // Basic percentage calculator
   let percentage = $state('');
@@ -62,14 +101,19 @@
 
   // Calculate increase/decrease
   $effect(() => {
-    if (originalValue && changePercentage && !isNaN(parseFloat(originalValue)) && !isNaN(parseFloat(changePercentage))) {
+    if (
+      originalValue &&
+      changePercentage &&
+      !isNaN(parseFloat(originalValue)) &&
+      !isNaN(parseFloat(changePercentage))
+    ) {
       const original = parseFloat(originalValue);
       const change = parseFloat(changePercentage) / 100;
 
       if (activeMode === 'increase') {
-        changedResult = (original + (original * change)).toFixed(2);
+        changedResult = (original + original * change).toFixed(2);
       } else if (activeMode === 'decrease') {
-        changedResult = (original - (original * change)).toFixed(2);
+        changedResult = (original - original * change).toFixed(2);
       }
     } else {
       changedResult = '';
@@ -91,7 +135,12 @@
 
   // Calculate discount
   $effect(() => {
-    if (originalPrice && discountPercent && !isNaN(parseFloat(originalPrice)) && !isNaN(parseFloat(discountPercent))) {
+    if (
+      originalPrice &&
+      discountPercent &&
+      !isNaN(parseFloat(originalPrice)) &&
+      !isNaN(parseFloat(discountPercent))
+    ) {
       const price = parseFloat(originalPrice);
       const discount = parseFloat(discountPercent) / 100;
       const saved = price * discount;
@@ -107,7 +156,12 @@
 
   // Calculate tip
   $effect(() => {
-    if (billAmount && tipPercentage && !isNaN(parseFloat(billAmount)) && !isNaN(parseFloat(tipPercentage))) {
+    if (
+      billAmount &&
+      tipPercentage &&
+      !isNaN(parseFloat(billAmount)) &&
+      !isNaN(parseFloat(tipPercentage))
+    ) {
       const bill = parseFloat(billAmount);
       const tip = parseFloat(tipPercentage) / 100;
       const people = parseInt(numberOfPeople) || 1;
@@ -127,12 +181,7 @@
   });
 
   function copyToClipboard(text: string) {
-    navigator.clipboard.writeText(text).then(() => {
-      copied = true;
-      setTimeout(() => {
-        copied = false;
-      }, 2000);
-    });
+    navigator.clipboard.writeText(text);
   }
 
   function setPercentage(value: string) {
@@ -215,7 +264,10 @@
 
 <svelte:head>
   <title>Percentage Calculator - Developer Tools</title>
-  <meta name="description" content="Calculate percentages, discounts, tips, and percentage differences with ease" />
+  <meta
+    name="description"
+    content="Calculate percentages, discounts, tips, and percentage differences with ease"
+  />
 </svelte:head>
 
 <div class="max-w-6xl mx-auto p-6">
@@ -237,9 +289,7 @@
       >
         <Percent class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        Percentage Calculator
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Percentage Calculator</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
         Calculate percentages, discounts, tips, and more with precision
       </p>
@@ -272,7 +322,9 @@
   </nav>
 
   <!-- Mode Selection -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6"
+  >
     <div class="p-6">
       <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Choose Calculator</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -282,11 +334,9 @@
               activeMode = mode.id;
               resetCurrentMode();
             }}
-            class="p-4 rounded-lg border-2 transition-all text-left {
-              activeMode === mode.id
-                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
-            }"
+            class="p-4 rounded-lg border-2 transition-all text-left {activeMode === mode.id
+              ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+              : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'}"
           >
             <mode.icon class="w-6 h-6 mb-2 text-blue-600 dark:text-blue-400" />
             <h3 class="font-medium text-gray-900 dark:text-white mb-1">{mode.name}</h3>
@@ -301,10 +351,12 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Main Calculator -->
     <div class="lg:col-span-2">
-      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+      >
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
-            {#each modes as mode}
+            {#each modes as mode (mode.id)}
               {#if mode.id === activeMode}
                 <mode.icon class="w-6 h-6 mr-2" />
                 {mode.name}
@@ -332,15 +384,23 @@
           <div class="space-y-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                What is <input type="number" bind:value={percentage} class="w-20 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded mx-2" />% of
-                <input type="number" bind:value={number} class="w-24 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded mx-2" />?
+                What is <input
+                  type="number"
+                  bind:value={percentage}
+                  class="w-20 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded mx-2"
+                />% of
+                <input
+                  type="number"
+                  bind:value={number}
+                  class="w-24 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded mx-2"
+                />?
               </label>
             </div>
 
             <!-- Quick percentages -->
             <div class="flex flex-wrap gap-2">
               <span class="text-sm text-gray-600 dark:text-gray-400">Quick:</span>
-              {#each commonPercentages as percent}
+              {#each commonPercentages as percent (percent)}
                 <button
                   onclick={() => setPercentage(percent.toString())}
                   class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
@@ -351,7 +411,9 @@
             </div>
 
             {#if result}
-              <div class="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+              <div
+                class="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg"
+              >
                 <div class="flex items-center justify-between">
                   <div>
                     <p class="text-sm text-blue-600 dark:text-blue-400 mb-1">Result</p>
@@ -374,19 +436,36 @@
           <div class="space-y-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Increase <input type="number" bind:value={originalValue} class="w-24 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded mx-2" /> by
-                <input type="number" bind:value={changePercentage} class="w-20 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded mx-2" />%
+                Increase <input
+                  type="number"
+                  bind:value={originalValue}
+                  class="w-24 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded mx-2"
+                />
+                by
+                <input
+                  type="number"
+                  bind:value={changePercentage}
+                  class="w-20 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded mx-2"
+                />%
               </label>
             </div>
 
             {#if changedResult}
-              <div class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+              <div
+                class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg"
+              >
                 <div class="flex items-center justify-between">
                   <div>
                     <p class="text-sm text-green-600 dark:text-green-400 mb-1">New Value</p>
-                    <p class="text-2xl font-bold text-green-700 dark:text-green-300">{changedResult}</p>
+                    <p class="text-2xl font-bold text-green-700 dark:text-green-300">
+                      {changedResult}
+                    </p>
                     <p class="text-sm text-green-600 dark:text-green-400 mt-1">
-                      (+{((parseFloat(changedResult) - parseFloat(originalValue)) / parseFloat(originalValue) * 100).toFixed(2)}%)
+                      (+{(
+                        ((parseFloat(changedResult) - parseFloat(originalValue)) /
+                          parseFloat(originalValue)) *
+                        100
+                      ).toFixed(2)}%)
                     </p>
                   </div>
                   <button
@@ -406,19 +485,36 @@
           <div class="space-y-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Decrease <input type="number" bind:value={originalValue} class="w-24 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded mx-2" /> by
-                <input type="number" bind:value={changePercentage} class="w-20 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded mx-2" />%
+                Decrease <input
+                  type="number"
+                  bind:value={originalValue}
+                  class="w-24 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded mx-2"
+                />
+                by
+                <input
+                  type="number"
+                  bind:value={changePercentage}
+                  class="w-20 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded mx-2"
+                />%
               </label>
             </div>
 
             {#if changedResult}
-              <div class="p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg">
+              <div
+                class="p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg"
+              >
                 <div class="flex items-center justify-between">
                   <div>
                     <p class="text-sm text-orange-600 dark:text-orange-400 mb-1">New Value</p>
-                    <p class="text-2xl font-bold text-orange-700 dark:text-orange-300">{changedResult}</p>
+                    <p class="text-2xl font-bold text-orange-700 dark:text-orange-300">
+                      {changedResult}
+                    </p>
                     <p class="text-sm text-orange-600 dark:text-orange-400 mt-1">
-                      (-{((parseFloat(originalValue) - parseFloat(changedResult)) / parseFloat(originalValue) * 100).toFixed(2)}%)
+                      (-{(
+                        ((parseFloat(originalValue) - parseFloat(changedResult)) /
+                          parseFloat(originalValue)) *
+                        100
+                      ).toFixed(2)}%)
                     </p>
                   </div>
                   <button
@@ -438,20 +534,28 @@
           <div class="space-y-6">
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  for="first-value"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   First Value
                 </label>
                 <input
+                  id="first-value"
                   type="number"
                   bind:value={value1}
                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  for="second-value"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Second Value
                 </label>
                 <input
+                  id="second-value"
                   type="number"
                   bind:value={value2}
                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
@@ -460,11 +564,17 @@
             </div>
 
             {#if differenceResult}
-              <div class="p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg">
+              <div
+                class="p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg"
+              >
                 <div class="flex items-center justify-between">
                   <div>
-                    <p class="text-sm text-purple-600 dark:text-purple-400 mb-1">Percentage Difference</p>
-                    <p class="text-2xl font-bold text-purple-700 dark:text-purple-300">{differenceResult}%</p>
+                    <p class="text-sm text-purple-600 dark:text-purple-400 mb-1">
+                      Percentage Difference
+                    </p>
+                    <p class="text-2xl font-bold text-purple-700 dark:text-purple-300">
+                      {differenceResult}%
+                    </p>
                   </div>
                   <button
                     onclick={() => copyToClipboard(differenceResult + '%')}
@@ -483,12 +593,16 @@
           <div class="space-y-6">
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  for="original-price"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Original Price
                 </label>
                 <div class="relative">
                   <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
                   <input
+                    id="original-price"
                     type="number"
                     bind:value={originalPrice}
                     class="w-full pl-8 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
@@ -496,10 +610,14 @@
                 </div>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  for="discount-percent"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Discount (%)
                 </label>
                 <input
+                  id="discount-percent"
                   type="number"
                   bind:value={discountPercent}
                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
@@ -509,11 +627,15 @@
 
             {#if discountedPrice}
               <div class="space-y-4">
-                <div class="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                <div
+                  class="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+                >
                   <div class="flex items-center justify-between">
                     <div>
                       <p class="text-sm text-red-600 dark:text-red-400 mb-1">Final Price</p>
-                      <p class="text-2xl font-bold text-red-700 dark:text-red-300">{formatCurrency(discountedPrice)}</p>
+                      <p class="text-2xl font-bold text-red-700 dark:text-red-300">
+                        {formatCurrency(discountedPrice)}
+                      </p>
                     </div>
                     <button
                       onclick={() => copyToClipboard(discountedPrice)}
@@ -524,9 +646,13 @@
                   </div>
                 </div>
 
-                <div class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                <div
+                  class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg"
+                >
                   <p class="text-sm text-green-600 dark:text-green-400 mb-1">You Save</p>
-                  <p class="text-xl font-bold text-green-700 dark:text-green-300">{formatCurrency(savedAmount)}</p>
+                  <p class="text-xl font-bold text-green-700 dark:text-green-300">
+                    {formatCurrency(savedAmount)}
+                  </p>
                 </div>
               </div>
             {/if}
@@ -537,12 +663,16 @@
         {#if activeMode === 'tip'}
           <div class="space-y-6">
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                for="bill-amount"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Bill Amount
               </label>
               <div class="relative">
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
                 <input
+                  id="bill-amount"
                   type="number"
                   bind:value={billAmount}
                   class="w-full pl-8 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
@@ -552,17 +682,21 @@
 
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  for="tip-percentage"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Tip Percentage
                 </label>
                 <input
+                  id="tip-percentage"
                   type="number"
                   bind:value={tipPercentage}
                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
                 <!-- Quick tip percentages -->
                 <div class="flex flex-wrap gap-2 mt-2">
-                  {#each commonTips as tip}
+                  {#each commonTips as tip (tip)}
                     <button
                       onclick={() => setTipPercentage(tip.toString())}
                       class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
@@ -573,10 +707,14 @@
                 </div>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  for="number-of-people"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Number of People
                 </label>
                 <input
+                  id="number-of-people"
                   type="number"
                   bind:value={numberOfPeople}
                   min="1"
@@ -588,22 +726,34 @@
             {#if tipAmount}
               <div class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
-                  <div class="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                  <div
+                    class="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg"
+                  >
                     <p class="text-sm text-blue-600 dark:text-blue-400 mb-1">Tip Amount</p>
-                    <p class="text-xl font-bold text-blue-700 dark:text-blue-300">{formatCurrency(tipAmount)}</p>
+                    <p class="text-xl font-bold text-blue-700 dark:text-blue-300">
+                      {formatCurrency(tipAmount)}
+                    </p>
                   </div>
-                  <div class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                  <div
+                    class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg"
+                  >
                     <p class="text-sm text-green-600 dark:text-green-400 mb-1">Total with Tip</p>
-                    <p class="text-xl font-bold text-green-700 dark:text-green-300">{formatCurrency(totalWithTip)}</p>
+                    <p class="text-xl font-bold text-green-700 dark:text-green-300">
+                      {formatCurrency(totalWithTip)}
+                    </p>
                   </div>
                 </div>
 
                 {#if parseInt(numberOfPeople) > 1}
-                  <div class="p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg">
+                  <div
+                    class="p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg"
+                  >
                     <div class="flex items-center justify-between">
                       <div>
                         <p class="text-sm text-purple-600 dark:text-purple-400 mb-1">Per Person</p>
-                        <p class="text-2xl font-bold text-purple-700 dark:text-purple-300">{formatCurrency(amountPerPerson)}</p>
+                        <p class="text-2xl font-bold text-purple-700 dark:text-purple-300">
+                          {formatCurrency(amountPerPerson)}
+                        </p>
                       </div>
                       <button
                         onclick={() => copyToClipboard(amountPerPerson)}
@@ -624,7 +774,9 @@
     <!-- Sidebar -->
     <div class="space-y-6">
       <!-- Formulas -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+      >
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
           <Calculator class="w-5 h-5 mr-2" />
           Formulas
@@ -638,17 +790,23 @@
         {:else if activeMode === 'increase'}
           <div class="space-y-2 text-sm">
             <p class="font-medium text-gray-900 dark:text-white">Increase</p>
-            <p class="text-gray-600 dark:text-gray-400">New = Original + (Original × Percentage ÷ 100)</p>
+            <p class="text-gray-600 dark:text-gray-400">
+              New = Original + (Original × Percentage ÷ 100)
+            </p>
           </div>
         {:else if activeMode === 'decrease'}
           <div class="space-y-2 text-sm">
             <p class="font-medium text-gray-900 dark:text-white">Decrease</p>
-            <p class="text-gray-600 dark:text-gray-400">New = Original - (Original × Percentage ÷ 100)</p>
+            <p class="text-gray-600 dark:text-gray-400">
+              New = Original - (Original × Percentage ÷ 100)
+            </p>
           </div>
         {:else if activeMode === 'difference'}
           <div class="space-y-2 text-sm">
             <p class="font-medium text-gray-900 dark:text-white">Percentage Difference</p>
-            <p class="text-gray-600 dark:text-gray-400">Diff = |Value2 - Value1| ÷ ((Value1 + Value2) ÷ 2) × 100</p>
+            <p class="text-gray-600 dark:text-gray-400">
+              Diff = |Value2 - Value1| ÷ ((Value1 + Value2) ÷ 2) × 100
+            </p>
           </div>
         {:else if activeMode === 'discount'}
           <div class="space-y-2 text-sm">
@@ -667,7 +825,9 @@
       </div>
 
       <!-- Tips -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+      >
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Tips</h3>
         <div class="space-y-3 text-sm text-gray-600 dark:text-gray-400">
           <div class="flex items-start">

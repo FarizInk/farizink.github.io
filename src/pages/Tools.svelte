@@ -26,7 +26,7 @@
     Activity,
     ArrowUpDown,
     Percent,
-    Globe,
+    Globe
   } from '@lucide/svelte';
 
   let searchQuery = $state('');

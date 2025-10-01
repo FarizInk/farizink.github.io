@@ -287,16 +287,21 @@
   >
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label
+          for="base-color-picker"
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
           Base Color
         </label>
         <div class="flex gap-2">
           <input
+            id="base-color-picker"
             type="color"
             bind:value={baseColor}
             class="h-10 w-20 border border-gray-300 dark:border-gray-600 rounded cursor-pointer"
           />
           <input
+            id="base-color-text"
             type="text"
             bind:value={baseColor}
             placeholder="#000000"
@@ -312,10 +317,14 @@
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label
+          for="palette-type-select"
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
           Palette Type
         </label>
         <select
+          id="palette-type-select"
           bind:value={paletteType}
           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
         >

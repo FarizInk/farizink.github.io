@@ -1,5 +1,14 @@
 <script lang="ts">
-  import { Copy, RefreshCw, Code, Globe, Twitter, Facebook, Search, FileText, Image, Users, Calendar, ChevronLeft } from '@lucide/svelte';
+  import {
+    Copy,
+    RefreshCw,
+    Code,
+    Globe,
+    Twitter,
+    Search,
+    FileText,
+    ChevronLeft
+  } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
 
   // Basic SEO Meta Tags
@@ -160,13 +169,20 @@
 
     // Article specific tags
     if (ogType === 'article') {
-      tags += String.fromCharCode(10) + '<!-- Article Specific Meta Tags -->' + String.fromCharCode(10);
+      tags +=
+        String.fromCharCode(10) + '<!-- Article Specific Meta Tags -->' + String.fromCharCode(10);
       if (articlePublishedTime) {
-        tags += '<meta property="article:published_time" content="' + escapeHtml(articlePublishedTime) + '">';
+        tags +=
+          '<meta property="article:published_time" content="' +
+          escapeHtml(articlePublishedTime) +
+          '">';
         tags += String.fromCharCode(10);
       }
       if (articleModifiedTime) {
-        tags += '<meta property="article:modified_time" content="' + escapeHtml(articleModifiedTime) + '">';
+        tags +=
+          '<meta property="article:modified_time" content="' +
+          escapeHtml(articleModifiedTime) +
+          '">';
         tags += String.fromCharCode(10);
       }
       if (articleAuthor) {
@@ -206,7 +222,8 @@
 
     // JSON-LD Structured Data
     if (enableJsonLd) {
-      tags += String.fromCharCode(10) + '<!-- JSON-LD Structured Data -->' + String.fromCharCode(10);
+      tags +=
+        String.fromCharCode(10) + '<!-- JSON-LD Structured Data -->' + String.fromCharCode(10);
       const jsonLd = generateJsonLd();
       tags += '<script type="application/ld+json">' + jsonLd + '</scr' + 'ipt>';
       tags += String.fromCharCode(10);
@@ -216,9 +233,9 @@
   }
 
   function generateJsonLd() {
-    const jsonLd: Record<string, any> = {
-      "@context": "https://schema.org",
-      "@type": jsonLdType
+    const jsonLd: Record<string, unknown> = {
+      '@context': 'https://schema.org',
+      '@type': jsonLdType
     };
 
     if (jsonLdName) jsonLd.name = jsonLdName;
@@ -287,7 +304,8 @@
 
   function loadExample() {
     title = 'My Awesome Website - Home Page';
-    description = 'Welcome to my awesome website! Discover amazing content, services, and resources that will help you achieve your goals.';
+    description =
+      'Welcome to my awesome website! Discover amazing content, services, and resources that will help you achieve your goals.';
     keywords = 'awesome website, web development, technology, innovation, digital solutions';
     author = 'John Doe';
     canonicalUrl = 'https://myawesomewebsite.com';
@@ -310,16 +328,32 @@
   function downloadAsHtml() {
     if (!generatedTags) return;
 
-    const htmlContent = '<!DOCTYPE html>' + String.fromCharCode(10) +
-      '<html lang="' + language + '">' + String.fromCharCode(10) +
-      '<head>' + String.fromCharCode(10) +
+    const htmlContent =
+      '<!DOCTYPE html>' +
+      String.fromCharCode(10) +
+      '<html lang="' +
+      language +
+      '">' +
+      String.fromCharCode(10) +
+      '<head>' +
+      String.fromCharCode(10) +
       generatedTags +
-      '</head>' + String.fromCharCode(10) +
-      '<body>' + String.fromCharCode(10) +
-      '  <!-- Your content goes here -->' + String.fromCharCode(10) +
-      '  <h1>Welcome to ' + (title || 'Your Website') + '</h1>' + String.fromCharCode(10) +
-      '  <p>' + (description || 'Your description here.') + '</p>' + String.fromCharCode(10) +
-      '</body>' + String.fromCharCode(10) +
+      '</head>' +
+      String.fromCharCode(10) +
+      '<body>' +
+      String.fromCharCode(10) +
+      '  <!-- Your content goes here -->' +
+      String.fromCharCode(10) +
+      '  <h1>Welcome to ' +
+      (title || 'Your Website') +
+      '</h1>' +
+      String.fromCharCode(10) +
+      '  <p>' +
+      (description || 'Your description here.') +
+      '</p>' +
+      String.fromCharCode(10) +
+      '</body>' +
+      String.fromCharCode(10) +
       '</html>';
 
     const blob = new Blob([htmlContent], { type: 'text/html' });
@@ -345,7 +379,10 @@
 
 <svelte:head>
   <title>Meta Tag Generator - Developer Tools</title>
-  <meta name="description" content="Generate SEO meta tags, Open Graph tags, Twitter cards, and JSON-LD structured data for better search engine optimization" />
+  <meta
+    name="description"
+    content="Generate SEO meta tags, Open Graph tags, Twitter cards, and JSON-LD structured data for better search engine optimization"
+  />
 </svelte:head>
 
 <div class="max-w-6xl mx-auto p-6">
@@ -367,9 +404,7 @@
       >
         <Globe class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        Meta Tag Generator
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Meta Tag Generator</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
         Generate SEO meta tags, Open Graph tags, Twitter cards, and structured data
       </p>
@@ -402,22 +437,17 @@
   </nav>
 
   <!-- Tab Navigation -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6"
+  >
     <div class="flex flex-wrap border-b border-gray-200 dark:border-gray-700">
-      {#each [
-        { id: 'basic', label: 'Basic SEO', icon: Search },
-        { id: 'opengraph', label: 'Open Graph', icon: Globe },
-        { id: 'twitter', label: 'Twitter Cards', icon: Twitter },
-        { id: 'additional', label: 'Additional', icon: Code },
-        { id: 'jsonld', label: 'JSON-LD', icon: FileText }
-      ] as tab, i}
+      {#each [{ id: 'basic', label: 'Basic SEO', icon: Search }, { id: 'opengraph', label: 'Open Graph', icon: Globe }, { id: 'twitter', label: 'Twitter Cards', icon: Twitter }, { id: 'additional', label: 'Additional', icon: Code }, { id: 'jsonld', label: 'JSON-LD', icon: FileText }] as tab (tab.id)}
         <button
-          onclick={() => activeTab = tab.id}
-          class="flex items-center px-4 py-3 text-sm font-medium border-b-2 transition-colors {
-            activeTab === tab.id
-              ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-          }"
+          onclick={() => (activeTab = tab.id)}
+          class="flex items-center px-4 py-3 text-sm font-medium border-b-2 transition-colors {activeTab ===
+          tab.id
+            ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+            : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
         >
           <tab.icon class="w-4 h-4 mr-2" />
           {tab.label}
@@ -430,7 +460,10 @@
       {#if activeTab === 'basic'}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Page Title *
             </label>
             <input
@@ -445,7 +478,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Meta Description *
             </label>
             <textarea
@@ -460,7 +496,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Keywords
             </label>
             <input
@@ -472,7 +511,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Author
             </label>
             <input
@@ -484,7 +526,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Canonical URL
             </label>
             <input
@@ -496,7 +541,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Robots
             </label>
             <select
@@ -516,7 +564,10 @@
       {#if activeTab === 'opengraph'}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               OG Title
             </label>
             <input
@@ -528,7 +579,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               OG Description
             </label>
             <textarea
@@ -540,7 +594,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               OG Image URL
             </label>
             <input
@@ -552,7 +609,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               OG Image Alt
             </label>
             <input
@@ -564,7 +624,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               OG URL
             </label>
             <input
@@ -576,7 +639,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               OG Type
             </label>
             <select
@@ -593,7 +659,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               OG Site Name
             </label>
             <input
@@ -605,7 +674,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               OG Locale
             </label>
             <input
@@ -620,10 +692,15 @@
         <!-- Article specific fields -->
         {#if ogType === 'article'}
           <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Article Specific Tags</h3>
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+              Article Specific Tags
+            </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Published Time
                 </label>
                 <input
@@ -634,7 +711,10 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Modified Time
                 </label>
                 <input
@@ -645,7 +725,10 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Article Author
                 </label>
                 <input
@@ -657,7 +740,10 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Article Section
                 </label>
                 <input
@@ -669,7 +755,10 @@
               </div>
 
               <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Article Tags
                 </label>
                 <input
@@ -688,7 +777,10 @@
       {#if activeTab === 'twitter'}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Twitter Card Type
             </label>
             <select
@@ -703,7 +795,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Twitter Title
             </label>
             <input
@@ -715,7 +810,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Twitter Description
             </label>
             <textarea
@@ -727,7 +825,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Twitter Image URL
             </label>
             <input
@@ -739,7 +840,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Twitter Image Alt
             </label>
             <input
@@ -751,7 +855,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Twitter Site
             </label>
             <input
@@ -763,7 +870,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Twitter Creator
             </label>
             <input
@@ -780,7 +890,10 @@
       {#if activeTab === 'additional'}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Theme Color
             </label>
             <input
@@ -791,7 +904,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Language
             </label>
             <input
@@ -803,7 +919,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Viewport
             </label>
             <input
@@ -815,7 +934,10 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Favicon
             </label>
             <input
@@ -833,11 +955,15 @@
         <div class="space-y-6">
           <div class="flex items-center">
             <input
+              id="enable-jsonld"
               type="checkbox"
               bind:checked={enableJsonLd}
               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
-            <label class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label
+              for="enable-jsonld"
+              class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Enable JSON-LD Structured Data
             </label>
           </div>
@@ -845,7 +971,10 @@
           {#if enableJsonLd}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   JSON-LD Type
                 </label>
                 <select
@@ -863,7 +992,10 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Name
                 </label>
                 <input
@@ -875,7 +1007,10 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Description
                 </label>
                 <textarea
@@ -887,7 +1022,10 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   URL
                 </label>
                 <input
@@ -899,7 +1037,10 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Image
                 </label>
                 <input
@@ -935,10 +1076,10 @@
 
   <!-- Generated Output -->
   <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-    <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
-        Generated Meta Tags
-      </h2>
+    <div
+      class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700"
+    >
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Generated Meta Tags</h2>
       <div class="flex gap-2">
         <button
           onclick={copyToClipboard}
@@ -959,7 +1100,10 @@
     </div>
 
     <div class="p-6">
-      <pre class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm text-gray-700 dark:text-gray-300"><code>{generatedTags || 'Fill in the form above to generate meta tags...'}</code></pre>
+      <pre
+        class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm text-gray-700 dark:text-gray-300"><code
+          >{generatedTags || 'Fill in the form above to generate meta tags...'}</code
+        ></pre>
     </div>
   </div>
 </div>

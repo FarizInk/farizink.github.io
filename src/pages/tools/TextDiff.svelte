@@ -1,11 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
-  import {
-    ChevronLeft,
-    GitCompare,
-    FileText,
-    Zap
-  } from '@lucide/svelte';
+  import { ChevronLeft, GitCompare, FileText, Zap } from '@lucide/svelte';
 
   let text1 = $state('');
   let text2 = $state('');

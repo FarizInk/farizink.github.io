@@ -11,31 +11,187 @@
 
   // Lorem ipsum word pool
   const words = [
-    'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit',
-    'sed', 'do', 'eiusmod', 'tempor', 'incididunt', 'ut', 'labore', 'et', 'dolore',
-    'magna', 'aliqua', 'enim', 'ad', 'minim', 'veniam', 'quis', 'nostrud',
-    'exercitation', 'ullamco', 'laboris', 'nisi', 'ut', 'aliquip', 'ex', 'ea',
-    'commodo', 'consequat', 'duis', 'aute', 'irure', 'dolor', 'in', 'reprehenderit',
-    'voluptate', 'velit', 'esse', 'cillum', 'fugiat', 'nulla', 'pariatur',
-    'excepteur', 'sint', 'occaecat', 'cupidatat', 'non', 'proident', 'sunt', 'in',
-    'culpa', 'qui', 'officia', 'deserunt', 'mollit', 'anim', 'id', 'est', 'laborum'
+    'lorem',
+    'ipsum',
+    'dolor',
+    'sit',
+    'amet',
+    'consectetur',
+    'adipiscing',
+    'elit',
+    'sed',
+    'do',
+    'eiusmod',
+    'tempor',
+    'incididunt',
+    'ut',
+    'labore',
+    'et',
+    'dolore',
+    'magna',
+    'aliqua',
+    'enim',
+    'ad',
+    'minim',
+    'veniam',
+    'quis',
+    'nostrud',
+    'exercitation',
+    'ullamco',
+    'laboris',
+    'nisi',
+    'ut',
+    'aliquip',
+    'ex',
+    'ea',
+    'commodo',
+    'consequat',
+    'duis',
+    'aute',
+    'irure',
+    'dolor',
+    'in',
+    'reprehenderit',
+    'voluptate',
+    'velit',
+    'esse',
+    'cillum',
+    'fugiat',
+    'nulla',
+    'pariatur',
+    'excepteur',
+    'sint',
+    'occaecat',
+    'cupidatat',
+    'non',
+    'proident',
+    'sunt',
+    'in',
+    'culpa',
+    'qui',
+    'officia',
+    'deserunt',
+    'mollit',
+    'anim',
+    'id',
+    'est',
+    'laborum'
   ];
 
   const sentenceWords = [
-    'at', 'vero', 'eos', 'et', 'accusamus', 'et', 'iusto', 'odio', 'dignissimos',
-    'ducimus', 'qui', 'blanditiis', 'praesentium', 'voluptatum', 'deleniti', 'atque',
-    'corrupti', 'quos', 'dolores', 'et', 'quas', 'molestias', 'excepturi', 'sint',
-    'obcaecati', 'cupiditate', 'non', 'provident', 'similique', 'sunt', 'in', 'culpa',
-    'qui', 'officia', 'deserunt', 'mollitia', 'animi', 'id', 'est', 'laborum', 'et',
-    'dolorum', 'fuga', 'et', 'harum', 'quidem', 'rerum', 'facilis', 'est', 'et',
-    'expedita', 'distinctio', 'nam', 'libero', 'tempore', 'cum', 'soluta', 'nobis',
-    'est', 'eligendi', 'optio', 'cumque', 'nihil', 'impedit', 'quo', 'porro',
-    'quisquam', 'est', 'qui', 'minus', 'id', 'quod', 'maxime', 'placeat', 'facere',
-    'possimus', 'omnis', 'voluptas', 'assumenda', 'est', 'omnis', 'dolor',
-    'repellendus', 'temporibus', 'autem', 'quibusdam', 'et', 'aut', 'consequatur',
-    'vel', 'illum', 'qui', 'dolorem', 'eum', 'fugiat', 'quo', 'voluptas', 'nulla',
-    'pariatur', 'at', 'vero', 'eos', 'et', 'accusamus', 'et', 'iusto', 'odio',
-    'dignissimos', 'ducimus', 'qui', 'blanditiis', 'praesentium', 'voluptatum'
+    'at',
+    'vero',
+    'eos',
+    'et',
+    'accusamus',
+    'et',
+    'iusto',
+    'odio',
+    'dignissimos',
+    'ducimus',
+    'qui',
+    'blanditiis',
+    'praesentium',
+    'voluptatum',
+    'deleniti',
+    'atque',
+    'corrupti',
+    'quos',
+    'dolores',
+    'et',
+    'quas',
+    'molestias',
+    'excepturi',
+    'sint',
+    'obcaecati',
+    'cupiditate',
+    'non',
+    'provident',
+    'similique',
+    'sunt',
+    'in',
+    'culpa',
+    'qui',
+    'officia',
+    'deserunt',
+    'mollitia',
+    'animi',
+    'id',
+    'est',
+    'laborum',
+    'et',
+    'dolorum',
+    'fuga',
+    'et',
+    'harum',
+    'quidem',
+    'rerum',
+    'facilis',
+    'est',
+    'et',
+    'expedita',
+    'distinctio',
+    'nam',
+    'libero',
+    'tempore',
+    'cum',
+    'soluta',
+    'nobis',
+    'est',
+    'eligendi',
+    'optio',
+    'cumque',
+    'nihil',
+    'impedit',
+    'quo',
+    'porro',
+    'quisquam',
+    'est',
+    'qui',
+    'minus',
+    'id',
+    'quod',
+    'maxime',
+    'placeat',
+    'facere',
+    'possimus',
+    'omnis',
+    'voluptas',
+    'assumenda',
+    'est',
+    'omnis',
+    'dolor',
+    'repellendus',
+    'temporibus',
+    'autem',
+    'quibusdam',
+    'et',
+    'aut',
+    'consequatur',
+    'vel',
+    'illum',
+    'qui',
+    'dolorem',
+    'eum',
+    'fugiat',
+    'quo',
+    'voluptas',
+    'nulla',
+    'pariatur',
+    'at',
+    'vero',
+    'eos',
+    'et',
+    'accusamus',
+    'et',
+    'iusto',
+    'odio',
+    'dignissimos',
+    'ducimus',
+    'qui',
+    'blanditiis',
+    'praesentium',
+    'voluptatum'
   ];
 
   function getRandomWord() {
@@ -70,7 +226,8 @@
     let result = '';
 
     if (startWithLorem && unit !== 'words') {
-      result = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n';
+      result =
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n';
 
       // Adjust amount since we already generated one paragraph
       const adjustedAmount = Math.max(0, amount - 1);
@@ -153,7 +310,10 @@
 
 <svelte:head>
   <title>Lorem Ipsum Generator - Developer Tools</title>
-  <meta name="description" content="Generate Lorem Ipsum placeholder text for design and testing purposes" />
+  <meta
+    name="description"
+    content="Generate Lorem Ipsum placeholder text for design and testing purposes"
+  />
 </svelte:head>
 
 <div class="max-w-6xl mx-auto p-6">
@@ -175,9 +335,7 @@
       >
         <FileText class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        Lorem Ipsum Generator
-      </h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Lorem Ipsum Generator</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
         Generate placeholder text for your designs and prototypes
       </p>
@@ -210,14 +368,20 @@
   </nav>
 
   <!-- Controls -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6"
+  >
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       <!-- Amount Input -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label
+          for="amount-input"
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
           Amount
         </label>
         <input
+          id="amount-input"
           type="number"
           bind:value={amount}
           min="1"
@@ -228,10 +392,14 @@
 
       <!-- Unit Selector -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label
+          for="unit-select"
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
           Unit
         </label>
         <select
+          id="unit-select"
           bind:value={unit}
           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
@@ -275,11 +443,15 @@
       </div>
       <div class="flex items-center">
         <Type class="w-4 h-4 mr-1" />
-        <span>{generatedText.split(/[.!?]+/).filter(sentence => sentence.trim().length > 0).length} sentences</span>
+        <span
+          >{generatedText.split(/[.!?]+/).filter(sentence => sentence.trim().length > 0).length} sentences</span
+        >
       </div>
       <div class="flex items-center">
         <Hash class="w-4 h-4 mr-1" />
-        <span>{generatedText.split(/\n\n+/).filter(paragraph => paragraph.trim().length > 0).length} paragraphs</span>
+        <span
+          >{generatedText.split(/\n\n+/).filter(paragraph => paragraph.trim().length > 0).length} paragraphs</span
+        >
       </div>
     </div>
   </div>
@@ -287,9 +459,7 @@
   <!-- Generated Text -->
   <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
-        Generated Text
-      </h2>
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Generated Text</h2>
       <div class="flex gap-2">
         <button
           onclick={copyToClipboard}
