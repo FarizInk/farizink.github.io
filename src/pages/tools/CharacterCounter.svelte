@@ -1,68 +1,152 @@
 <script lang="ts">
+  import { Copy, RefreshCw, FileText, Calculator, Hash, Clock, Type, BarChart3, ChevronLeft } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, Calculator, Copy, FileText, Hash, Clock } from '@lucide/svelte';
 
+  // Component state
   let inputText = $state('');
-  let copied = $state('');
+  let copied = $state(false);
+  let wordCountEnabled = $state(true);
+  let charCountEnabled = $state(true);
+  let readingTimeEnabled = $state(true);
 
-  function calculateStats() {
-    const text = inputText;
-    const words = text.trim() ? text.trim().split(/\s+/) : [];
-    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-    const paragraphs = text.split(/\n\n+/).filter(p => p.trim().length > 0);
-    const characters = text.length;
-    const charactersNoSpaces = text.replace(/\s/g, '').length;
-    const readingTime = Math.ceil(words.length / 200); // Average 200 words per minute
+  // Calculate text statistics
+  const stats = $derived(inputText ? {
+    // Character counts
+    totalChars: inputText.length,
+    charsNoSpaces: inputText.replace(/\s/g, '').length,
+    charsIncludingSpaces: inputText.length,
 
-    return {
-      characters,
-      charactersNoSpaces,
-      words: words.length,
-      sentences: sentences.length,
-      paragraphs: paragraphs.length,
-      readingTime,
-      lines: text.split('\n').length
-    };
+    // Word counts
+    words: inputText.trim() ? inputText.trim().split(/\s+/).length : 0,
+    uniqueWords: inputText.trim() ? new Set(inputText.toLowerCase().trim().split(/\s+/)).size : 0,
+
+    // Sentence and paragraph counts
+    sentences: inputText.trim() ? inputText.split(/[.!?]+/).filter(s => s.trim().length > 0).length : 0,
+    paragraphs: inputText.trim() ? inputText.split(/\n\n+/).filter(p => p.trim().length > 0).length : 0,
+    lines: inputText.split('\n').length,
+
+    // Reading time calculations
+    readingTimeSlow: Math.ceil(inputText.trim().split(/\s+/).length / 130), // 130 WPM (slow)
+    readingTimeAvg: Math.ceil(inputText.trim().split(/\s+/).length / 200), // 200 WPM (average)
+    readingTimeFast: Math.ceil(inputText.trim().split(/\s+/).length / 300), // 300 WPM (fast)
+
+    // Character type breakdown
+    letters: (inputText.match(/[a-zA-Z]/g) || []).length,
+    numbers: (inputText.match(/[0-9]/g) || []).length,
+    spaces: (inputText.match(/\s/g) || []).length,
+    punctuation: (inputText.match(/[.,!?;:'"\-\(\)\[\]{}]/g) || []).length,
+    specialChars: inputText.length - (inputText.match(/[a-zA-Z0-9\s.,!?;:'"\-\(\)\[\]{}]/g) || []).length,
+
+    // Most frequent words
+    wordFrequency: inputText.trim() ? getWordFrequency(inputText.toLowerCase()) : {}
+  } : null);
+
+  function getWordFrequency(text: string): Record<string, number> {
+    const words = text.split(/\s+/);
+    const frequency: Record<string, number> = {};
+
+    words.forEach(word => {
+      // Clean word from punctuation
+      const cleanWord = word.replace(/[.,!?;:'"\(\)\[\]{}]/g, '');
+      if (cleanWord.length > 0) {
+        frequency[cleanWord] = (frequency[cleanWord] || 0) + 1;
+      }
+    });
+
+    // Sort by frequency and return top 10
+    const sorted = Object.entries(frequency)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10);
+
+    return Object.fromEntries(sorted);
   }
 
-  // Reactive stats calculation
-  const stats = $derived(calculateStats());
-
-  function copyToClipboard() {
-    const text = `
-Character Count Tool Analysis
-========================
-
-Characters (with spaces): ${stats.characters}
-Characters (no spaces): ${stats.charactersNoSpaces}
-Words: ${stats.words}
-Sentences: ${stats.sentences}
-Paragraphs: ${stats.paragraphs}
-Lines: ${stats.lines}
-Reading Time: ${stats.readingTime} minute${stats.readingTime !== 1 ? 's' : ''}
-
-Original Text:
-${inputText}
-    `.trim();
-
-    navigator.clipboard.writeText(text);
-    copied = 'success';
-    setTimeout(() => (copied = ''), 2000);
+  function copyToClipboard(text: string) {
+    navigator.clipboard.writeText(text).then(() => {
+      copied = true;
+      setTimeout(() => {
+        copied = false;
+      }, 2000);
+    });
   }
 
   function clearAll() {
     inputText = '';
   }
 
+  function loadSampleText() {
+    inputText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+This sample text contains 123 numbers and various punctuation marks! It's designed to test the character counter functionality comprehensively.`;
+  }
+
+  function downloadReport() {
+    if (!stats) return;
+
+    const report = `Character Counter Report
+====================
+
+Text Length: ${stats.totalChars} characters
+Words: ${stats.words} words
+Sentences: ${stats.sentences} sentences
+Paragraphs: ${stats.paragraphs} paragraphs
+
+Detailed Breakdown:
+- Characters (with spaces): ${stats.charsIncludingSpaces}
+- Characters (no spaces): ${stats.charsNoSpaces}
+- Letters: ${stats.letters}
+- Numbers: ${stats.numbers}
+- Spaces: ${stats.spaces}
+- Punctuation: ${stats.punctuation}
+- Special characters: ${stats.specialChars}
+- Lines: ${stats.lines}
+- Unique words: ${stats.uniqueWords}
+
+Reading Time:
+- Slow reader (130 WPM): ${stats.readingTimeSlow} minutes
+- Average reader (200 WPM): ${stats.readingTimeAvg} minutes
+- Fast reader (300 WPM): ${stats.readingTimeFast} minutes
+
+${Object.keys(stats.wordFrequency).length > 0 ? `
+Top 10 Most Frequent Words:
+${Object.entries(stats.wordFrequency).map(([word, count]) => `- ${word}: ${count} times`).join('\n')}
+` : ''}
+
+Original Text:
+${inputText}
+`;
+
+    const blob = new Blob([report], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'character-counter-report.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
   function handleBackToTools() {
     navigate('/tools');
   }
 
-  // Update stats whenever text changes
-  $effect(() => {
-    calculateStats();
-  });
+  // Character limit indicators
+  const commonLimits = [
+    { name: 'Twitter', limit: 280 },
+    { name: 'SMS', limit: 160 },
+    { name: 'LinkedIn Post', limit: 3000 },
+    { name: 'Facebook Post', limit: 63206 },
+    { name: 'Instagram Caption', limit: 2200 }
+  ];
 </script>
+
+<svelte:head>
+  <title>Character Counter - Developer Tools</title>
+  <meta name="description" content="Count characters, words, and analyze text with detailed statistics including reading time and frequency analysis" />
+</svelte:head>
 
 <div class="max-w-6xl mx-auto p-6">
   <!-- Header -->
@@ -83,10 +167,11 @@ ${inputText}
       >
         <Calculator class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Character Counter</h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+        Character Counter
+      </h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Count characters, words, and analyze text with real-time statistics and reading time
-        estimation.
+        Count characters, words, and analyze text with detailed statistics
       </p>
     </div>
   </div>
@@ -116,276 +201,261 @@ ${inputText}
     </ol>
   </nav>
 
-  <!-- Stats Overview -->
-  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-    <div
-      class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center"
-    >
-      <div class="flex items-center justify-center mb-2">
-        <FileText class="w-6 h-6 text-purple-600 dark:text-purple-400" />
-      </div>
-      <div class="text-2xl font-bold text-gray-900 dark:text-white">
-        {stats.characters.toLocaleString()}
-      </div>
-      <div class="text-sm text-gray-600 dark:text-gray-400">Characters</div>
-    </div>
+  <!-- Main Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Text Input Area -->
+    <div class="lg:col-span-2">
+      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+            Input Text
+          </h2>
+          <div class="flex items-center gap-2">
+            <button
+              onclick={loadSampleText}
+              class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+            >
+              Load Sample
+            </button>
+            <button
+              onclick={clearAll}
+              class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
 
-    <div
-      class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center"
-    >
-      <div class="flex items-center justify-center mb-2">
-        <Hash class="w-6 h-6 text-purple-600 dark:text-purple-400" />
-      </div>
-      <div class="text-2xl font-bold text-gray-900 dark:text-white">
-        {stats.charactersNoSpaces.toLocaleString()}
-      </div>
-      <div class="text-sm text-gray-600 dark:text-gray-400">No Spaces</div>
-    </div>
+        <textarea
+          bind:value={inputText}
+          placeholder="Enter your text here to count characters, words, and analyze..."
+          class="w-full h-64 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+        ></textarea>
 
-    <div
-      class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center"
-    >
-      <div class="flex items-center justify-center mb-2">
-        <FileText class="w-6 h-6 text-purple-600 dark:text-purple-400" />
-      </div>
-      <div class="text-2xl font-bold text-gray-900 dark:text-white">
-        {stats.words.toLocaleString()}
-      </div>
-      <div class="text-sm text-gray-600 dark:text-gray-400">Words</div>
-    </div>
-
-    <div
-      class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center"
-    >
-      <div class="flex items-center justify-center mb-2">
-        <FileText class="w-6 h-6 text-purple-600 dark:text-purple-400" />
-      </div>
-      <div class="text-2xl font-bold text-gray-900 dark:text-white">
-        {stats.sentences.toLocaleString()}
-      </div>
-      <div class="text-sm text-gray-600 dark:text-gray-400">Sentences</div>
-    </div>
-
-    <div
-      class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center"
-    >
-      <div class="flex items-center justify-center mb-2">
-        <FileText class="w-6 h-6 text-purple-600 dark:text-purple-400" />
-      </div>
-      <div class="text-2xl font-bold text-gray-900 dark:text-white">
-        {stats.paragraphs.toLocaleString()}
-      </div>
-      <div class="text-sm text-gray-600 dark:text-gray-400">Paragraphs</div>
-    </div>
-
-    <div
-      class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center"
-    >
-      <div class="flex items-center justify-center mb-2">
-        <Clock class="w-6 h-6 text-purple-600 dark:text-purple-400" />
-      </div>
-      <div class="text-2xl font-bold text-gray-900 dark:text-white">
-        {stats.readingTime}
-      </div>
-      <div class="text-sm text-gray-600 dark:text-gray-400">Min Read</div>
-    </div>
-  </div>
-
-  <!-- Text Input Area -->
-  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Input Text</h2>
-      <div class="flex gap-2">
-        <button
-          onclick={copyToClipboard}
-          class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={!inputText}
-        >
-          {#if copied === 'success'}
-            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-            Copied!
-          {:else}
-            <Copy class="w-4 h-4 mr-1" />
-            Copy Stats
-          {/if}
-        </button>
-        <button
-          onclick={clearAll}
-          class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-        >
-          Clear
-        </button>
+        <!-- Character Limit Indicators -->
+        {#if stats && stats.totalChars > 0}
+          <div class="mt-4 space-y-2">
+            {#each commonLimits as limit}
+              {@const percentage = (stats.totalChars / limit.limit) * 100}
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-gray-600 dark:text-gray-400">{limit.name}</span>
+                <div class="flex items-center gap-2">
+                  <div class="w-32 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div
+                      class="h-2 rounded-full transition-all {percentage > 100 ? 'bg-red-500' : percentage > 80 ? 'bg-yellow-500' : 'bg-green-500'}"
+                      style="width: {Math.min(percentage, 100)}%"
+                    ></div>
+                  </div>
+                  <span class="text-gray-600 dark:text-gray-400 min-w-[60px] text-right">
+                    {stats.totalChars}/{limit.limit}
+                  </span>
+                </div>
+              </div>
+            {/each}
+          </div>
+        {/if}
       </div>
     </div>
 
-    <textarea
-      bind:value={inputText}
-      placeholder="Type or paste your text here to see real-time character count, word count, and more..."
-      class="w-full h-64 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-    ></textarea>
+    <!-- Statistics Panel -->
+    <div class="space-y-6">
+      <!-- Quick Stats -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+          Quick Stats
+        </h2>
 
-    <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-      Lines: {stats.lines} • {stats.characters} characters • {stats.words} words • {stats.sentences}
-      sentences
+        {#if stats}
+          <div class="space-y-3">
+            <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+              <div class="flex items-center">
+                <Type class="w-5 h-5 text-blue-600 dark:text-blue-400 mr-2" />
+                <span class="text-sm font-medium text-gray-900 dark:text-white">Characters</span>
+              </div>
+              <span class="text-lg font-bold text-blue-600 dark:text-blue-400">
+                {stats.totalChars}
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+              <div class="flex items-center">
+                <FileText class="w-5 h-5 text-green-600 dark:text-green-400 mr-2" />
+                <span class="text-sm font-medium text-gray-900 dark:text-white">Words</span>
+              </div>
+              <span class="text-lg font-bold text-green-600 dark:text-green-400">
+                {stats.words}
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+              <div class="flex items-center">
+                <Hash class="w-5 h-5 text-purple-600 dark:text-purple-400 mr-2" />
+                <span class="text-sm font-medium text-gray-900 dark:text-white">Sentences</span>
+              </div>
+              <span class="text-lg font-bold text-purple-600 dark:text-purple-400">
+                {stats.sentences}
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+              <div class="flex items-center">
+                <Clock class="w-5 h-5 text-orange-600 dark:text-orange-400 mr-2" />
+                <span class="text-sm font-medium text-gray-900 dark:text-white">Reading Time</span>
+              </div>
+              <span class="text-lg font-bold text-orange-600 dark:text-orange-400">
+                {stats.readingTimeAvg}m
+              </span>
+            </div>
+          </div>
+        {:else}
+          <p class="text-gray-500 dark:text-gray-400 text-center py-8">
+            Enter text to see statistics
+          </p>
+        {/if}
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+          Actions
+        </h2>
+
+        <div class="space-y-3">
+          <button
+            onclick={() => copyToClipboard(inputText)}
+            disabled={!inputText}
+            class="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <Copy class="w-4 h-4 mr-2" />
+            Copy Text
+          </button>
+
+          <button
+            onclick={downloadReport}
+            disabled={!stats}
+            class="w-full flex items-center justify-center px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <Calculator class="w-4 h-4 mr-2" />
+            Download Report
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-
-  <!-- Sample Text -->
-  <div
-    class="mt-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700"
-  >
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sample Text</h3>
-    <p class="text-gray-600 dark:text-gray-400 mb-4">
-      Click below to load a sample text for testing:
-    </p>
-    <button
-      onclick={() => {
-        inputText = `The quick brown fox jumps over the lazy dog. This pangram contains all letters of the alphabet and is commonly used for testing purposes.
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`;
-      }}
-      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-    >
-      Load Sample Text
-    </button>
   </div>
 
   <!-- Detailed Statistics -->
-  <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-    <!-- Text Analysis -->
-    <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
-    >
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Text Analysis</h3>
-
-      <div class="space-y-4">
-        <div class="flex justify-between">
-          <span class="text-gray-600 dark:text-gray-400">Total Characters:</span>
-          <span class="font-medium text-gray-900 dark:text-white"
-            >{stats.characters.toLocaleString()}</span
-          >
+  {#if stats}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+      <!-- Character Breakdown -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Character Breakdown
+        </h3>
+        <div class="space-y-2">
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600 dark:text-gray-400">Letters</span>
+            <span class="font-medium text-gray-900 dark:text-white">{stats.letters}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600 dark:text-gray-400">Numbers</span>
+            <span class="font-medium text-gray-900 dark:text-white">{stats.numbers}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600 dark:text-gray-400">Spaces</span>
+            <span class="font-medium text-gray-900 dark:text-white">{stats.spaces}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600 dark:text-gray-400">Punctuation</span>
+            <span class="font-medium text-gray-900 dark:text-white">{stats.punctuation}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600 dark:text-gray-400">Special chars</span>
+            <span class="font-medium text-gray-900 dark:text-white">{stats.specialChars}</span>
+          </div>
         </div>
+      </div>
 
-        <div class="flex justify-between">
-          <span class="text-gray-600 dark:text-gray-400">Characters (no spaces):</span>
-          <span class="font-medium text-gray-900 dark:text-white"
-            >{stats.charactersNoSpaces.toLocaleString()}</span
-          >
+      <!-- Reading Time -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Reading Time
+        </h3>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <Clock class="w-4 h-4 text-gray-400 mr-2" />
+              <span class="text-sm text-gray-600 dark:text-gray-400">Slow (130 WPM)</span>
+            </div>
+            <span class="font-medium text-gray-900 dark:text-white">{stats.readingTimeSlow} min</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <Clock class="w-4 h-4 text-gray-400 mr-2" />
+              <span class="text-sm text-gray-600 dark:text-gray-400">Average (200 WPM)</span>
+            </div>
+            <span class="font-medium text-gray-900 dark:text-white">{stats.readingTimeAvg} min</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <Clock class="w-4 h-4 text-gray-400 mr-2" />
+              <span class="text-sm text-gray-600 dark:text-gray-400">Fast (300 WPM)</span>
+            </div>
+            <span class="font-medium text-gray-900 dark:text-white">{stats.readingTimeFast} min</span>
+          </div>
         </div>
+      </div>
 
-        <div class="flex justify-between">
-          <span class="text-gray-600 dark:text-gray-400">Total Words:</span>
-          <span class="font-medium text-gray-900 dark:text-white"
-            >{stats.words.toLocaleString()}</span
-          >
-        </div>
-
-        <div class="flex justify-between">
-          <span class="text-gray-600 dark:text-gray-400">Average Word Length:</span>
-          <span class="font-medium text-gray-900 dark:text-white">
-            {stats.words > 0 ? (stats.charactersNoSpaces / stats.words).toFixed(1) : '0'}
-          </span>
-        </div>
-
-        <div class="flex justify-between">
-          <span class="text-gray-600 dark:text-gray-400">Total Sentences:</span>
-          <span class="font-medium text-gray-900 dark:text-white"
-            >{stats.sentences.toLocaleString()}</span
-          >
-        </div>
-
-        <div class="flex justify-between">
-          <span class="text-gray-600 dark:text-gray-400">Total Paragraphs:</span>
-          <span class="font-medium text-gray-900 dark:text-white"
-            >{stats.paragraphs.toLocaleString()}</span
-          >
+      <!-- Structure Analysis -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Structure Analysis
+        </h3>
+        <div class="space-y-2">
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600 dark:text-gray-400">Paragraphs</span>
+            <span class="font-medium text-gray-900 dark:text-white">{stats.paragraphs}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600 dark:text-gray-400">Lines</span>
+            <span class="font-medium text-gray-900 dark:text-white">{stats.lines}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600 dark:text-gray-400">Unique words</span>
+            <span class="font-medium text-gray-900 dark:text-white">{stats.uniqueWords}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600 dark:text-gray-400">Avg word length</span>
+            <span class="font-medium text-gray-900 dark:text-white">
+              {stats.words > 0 ? (stats.charsNoSpaces / stats.words).toFixed(1) : 0}
+            </span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Reading Metrics -->
-    <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
-    >
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Reading Metrics</h3>
-
-      <div class="space-y-4">
-        <div class="flex justify-between">
-          <span class="text-gray-600 dark:text-gray-400">Reading Time:</span>
-          <span class="font-medium text-gray-900 dark:text-white">
-            {stats.readingTime} minute{stats.readingTime !== 1 ? 's' : ''}
-          </span>
+    <!-- Word Frequency -->
+    {#if Object.keys(stats.wordFrequency).length > 0}
+      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mt-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+            Most Frequent Words
+          </h3>
+          <BarChart3 class="w-5 h-5 text-gray-400" />
         </div>
 
-        <div class="flex justify-between">
-          <span class="text-gray-600 dark:text-gray-400">Reading Speed:</span>
-          <span class="font-medium text-gray-900 dark:text-white">~200 wpm</span>
-        </div>
-
-        <div class="flex justify-between">
-          <span class="text-gray-600 dark:text-gray-400">Words per Line:</span>
-          <span class="font-medium text-gray-900 dark:text-white">
-            {stats.lines > 0 ? Math.round(stats.words / stats.lines) : 0}
-          </span>
-        </div>
-
-        <div class="flex justify-between">
-          <span class="text-gray-600 dark:text-gray-400">Characters per Line:</span>
-          <span class="font-medium text-gray-900 dark:text-white">
-            {stats.lines > 0 ? Math.round(stats.characters / stats.lines) : 0}
-          </span>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {#each Object.entries(stats.wordFrequency) as [word, count], index}
+            <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <span class="text-sm font-medium text-gray-900 dark:text-white capitalize">
+                {word}
+              </span>
+              <span class="text-sm text-gray-600 dark:text-gray-400">
+                {count}x
+              </span>
+            </div>
+          {/each}
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Features Section -->
-  <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <Calculator class="w-6 h-6 text-purple-600 dark:text-purple-400" />
-      </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Real-time Analysis</h3>
-      <p class="text-gray-600 dark:text-gray-400">Instant character and word count as you type</p>
-    </div>
-
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <Clock class="w-6 h-6 text-purple-600 dark:text-purple-400" />
-      </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Reading Time</h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        Estimate reading time based on average reading speed
-      </p>
-    </div>
-
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <Copy class="w-6 h-6 text-purple-600 dark:text-purple-400" />
-      </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Export Stats</h3>
-      <p class="text-color-600 dark:text-gray-400">Copy analysis results with one click</p>
-    </div>
-  </div>
+    {/if}
+  {/if}
 </div>

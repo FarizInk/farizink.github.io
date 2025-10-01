@@ -1,119 +1,149 @@
 <script lang="ts">
+  import { Copy, AlertCircle, Eye, EyeOff, RefreshCw, Check, X, Info, ChevronLeft } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
-  import {
-    ChevronLeft,
-    Shield,
-    AlertCircle,
-    CheckCircle,
-    Clock,
-    Eye,
-    EyeOff
-  } from '@lucide/svelte';
 
   let jwtToken = $state('');
+  let showPassword = $state(false);
+  let showToken = $state(false);
   let decodedHeader = $state('');
   let decodedPayload = $state('');
-  let signatureInfo = $state('');
-  let error = $state('');
-  let copiedText = $state('');
-  let showSignature = $state(false);
+  let signature = $state('');
+  let isValid = $state<boolean | null>(null);
+  let errorMessage = $state('');
+  let copied = $state(false);
+  let activeTab = $state('header');
+
+  $effect(() => {
+    if (jwtToken) {
+      decodeJWT();
+    } else {
+      clearDecoded();
+    }
+  });
 
   function decodeJWT() {
     try {
-      error = '';
-      decodedHeader = '';
-      decodedPayload = '';
-      signatureInfo = '';
-
-      if (!jwtToken.trim()) {
-        error = 'Please enter a JWT token to decode.';
-        return;
-      }
-
       const parts = jwtToken.split('.');
 
       if (parts.length !== 3) {
-        error = 'Invalid JWT format. A JWT should have 3 parts separated by dots.';
-        return;
+        throw new Error('Invalid JWT format. JWT must have 3 parts separated by dots.');
       }
 
       // Decode header
       try {
-        const headerData = JSON.parse(atob(parts[0]));
-        decodedHeader = JSON.stringify(headerData, null, 2);
-      } catch {
-        error = 'Failed to decode JWT header. The token may be corrupted.';
-        return;
+        const headerJson = atob(parts[0]);
+        const header = JSON.parse(headerJson);
+        decodedHeader = JSON.stringify(header, null, 2);
+      } catch (error) {
+        throw new Error('Invalid header format. Cannot decode base64 or parse JSON.');
       }
 
       // Decode payload
       try {
-        const payloadData = JSON.parse(atob(parts[1]));
-        decodedPayload = JSON.stringify(payloadData, null, 2);
+        const payloadJson = atob(parts[1]);
+        const payload = JSON.parse(payloadJson);
+        decodedPayload = JSON.stringify(payload, null, 2);
 
         // Check if token is expired
-        if (payloadData.exp) {
-          const expirationTime = new Date(payloadData.exp * 1000);
-          const currentTime = new Date();
-          const isExpired = currentTime > expirationTime;
-
-          if (isExpired) {
-            signatureInfo = `⚠️ Token expired on ${expirationTime.toLocaleString()}`;
+        if (payload.exp) {
+          const currentTime = Math.floor(Date.now() / 1000);
+          if (currentTime > payload.exp) {
+            errorMessage = 'Warning: This token has expired!';
           } else {
-            signatureInfo = `✅ Token expires on ${expirationTime.toLocaleString()}`;
+            errorMessage = '';
           }
-        } else {
-          signatureInfo = 'ℹ️ No expiration time (exp claim) found in token';
         }
-      } catch {
-        error = 'Failed to decode JWT payload. The token may be corrupted.';
-        return;
+      } catch (error) {
+        throw new Error('Invalid payload format. Cannot decode base64 or parse JSON.');
       }
 
-      // Store signature info
-      if (parts[2]) {
-        signatureInfo +=
-          (signatureInfo ? '\n' : '') +
-          `🔐 Signature: ${parts[2].substring(0, 20)}... (${parts[2].length} characters)`;
-      }
-    } catch {
-      error = 'Failed to decode JWT token. Please check if the token is valid.';
+      signature = parts[2];
+      isValid = true;
+
+    } catch (error) {
+      errorMessage = error instanceof Error ? error.message : 'Failed to decode JWT token';
+      clearDecoded();
+      isValid = false;
     }
   }
 
-  function copyToClipboard(text: string, format: string) {
-    navigator.clipboard.writeText(text);
-    copiedText = format;
-    setTimeout(() => {
-      copiedText = '';
-    }, 2000);
+  function clearDecoded() {
+    decodedHeader = '';
+    decodedPayload = '';
+    signature = '';
+    isValid = null;
+  }
+
+  function copyToClipboard(text: string) {
+    navigator.clipboard.writeText(text).then(() => {
+      copied = true;
+      setTimeout(() => {
+        copied = false;
+      }, 2000);
+    });
   }
 
   function clearAll() {
     jwtToken = '';
-    decodedHeader = '';
-    decodedPayload = '';
-    signatureInfo = '';
-    error = '';
-    copiedText = '';
-    showSignature = false;
+    clearDecoded();
+    errorMessage = '';
+    isValid = null;
+    activeTab = 'header';
   }
 
-  function loadSampleToken() {
-    // This is a sample JWT token for demonstration purposes
-    jwtToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjk5OTk5OTk5OTl9.example_signature';
-    decodeJWT();
+  function loadExample() {
+    jwtToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE3MTYyMzkwMjJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+  }
+
+  function getPayloadInfo() {
+    if (!decodedPayload) return null;
+
+    try {
+      const payload = JSON.parse(decodedPayload);
+      return payload;
+    } catch {
+      return null;
+    }
+  }
+
+  function formatTimestamp(timestamp: number): string {
+    return new Date(timestamp * 1000).toLocaleString();
+  }
+
+  function isTokenExpired(): boolean {
+    const payload = getPayloadInfo();
+    if (!payload || !payload.exp) return false;
+
+    return Math.floor(Date.now() / 1000) > payload.exp;
+  }
+
+  function getTokenValidityTime(): string {
+    const payload = getPayloadInfo();
+    if (!payload || !payload.exp) return 'N/A';
+
+    const currentTime = Math.floor(Date.now() / 1000);
+    const timeLeft = payload.exp - currentTime;
+
+    if (timeLeft <= 0) return 'Expired';
+
+    const days = Math.floor(timeLeft / 86400);
+    const hours = Math.floor((timeLeft % 86400) / 3600);
+    const minutes = Math.floor((timeLeft % 3600) / 60);
+
+    if (days > 0) return `${days}d ${hours}h ${minutes}m`;
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    return `${minutes}m`;
   }
 
   function handleBackToTools() {
     navigate('/tools');
   }
-
-  function toggleSignature() {
-    showSignature = !showSignature;
-  }
 </script>
+
+<svelte:head>
+  <title>JWT Decoder - Developer Tools</title>
+  <meta name="description" content="Securely decode and analyze JWT tokens. View header, payload, and check token validity" />
+</svelte:head>
 
 <div class="max-w-6xl mx-auto p-6">
   <!-- Header -->
@@ -130,14 +160,15 @@
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-slate-500 to-gray-600 rounded-2xl mb-4"
       >
-        <Shield class="w-10 h-10 text-white" />
+        <AlertCircle class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">JWT Decoder</h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+        JWT Decoder
+      </h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Decode and analyze JSON Web Tokens (JWT) to view headers, payloads, and signature
-        information.
+        Decode and analyze JSON Web Tokens (JWT) safely in your browser
       </p>
     </div>
   </div>
@@ -167,202 +198,210 @@
     </ol>
   </nav>
 
-  <!-- Controls -->
-  <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
-    <button
-      onclick={decodeJWT}
-      class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-    >
-      Decode JWT
-    </button>
-    <button
-      onclick={loadSampleToken}
-      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-    >
-      Load Sample Token
-    </button>
-    <button
-      onclick={clearAll}
-      class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-    >
-      Clear All
-    </button>
-  </div>
-
-  <!-- Error Display -->
-  {#if error}
-    <div
-      class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
-    >
-      <div class="flex items-start gap-3">
-        <AlertCircle class="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5" />
-        <div>
-          <p class="text-red-700 dark:text-red-400 font-medium">Error</p>
-          <p class="text-red-600 dark:text-red-300 text-sm">{error}</p>
-        </div>
-      </div>
-    </div>
-  {/if}
-
   <!-- Input Section -->
-  <div class="mb-6">
-    <div class="flex justify-between items-center mb-2">
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">JWT Token</h2>
-      <span class="text-sm text-gray-500 dark:text-gray-400">
-        {jwtToken.length} characters
-      </span>
-    </div>
-    <textarea
-      bind:value={jwtToken}
-      placeholder="Enter your JWT token here (e.g., eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)"
-      class="w-full h-32 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-    ></textarea>
-    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-      JWT tokens are typically in the format: header.payload.signature
-    </p>
-  </div>
-
-  <!-- Results Section -->
-  {#if decodedHeader || decodedPayload}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <!-- Header Section -->
-      <div>
-        <div class="flex justify-between items-center mb-2">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Header</h2>
-          {#if decodedHeader}
-            <button
-              onclick={() => copyToClipboard(decodedHeader, 'header')}
-              class="px-3 py-1 text-sm bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
-            >
-              {copiedText === 'header' ? '✓ Copied!' : 'Copy'}
-            </button>
-          {/if}
-        </div>
+  <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6">
+    <div class="p-6">
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          JWT Token
+        </label>
         <div class="relative">
-          <pre
-            class="w-full h-48 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white overflow-auto whitespace-pre-wrap">{decodedHeader}</pre>
-        </div>
-      </div>
-
-      <!-- Payload Section -->
-      <div>
-        <div class="flex justify-between items-center mb-2">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Payload</h2>
-          {#if decodedPayload}
-            <button
-              onclick={() => copyToClipboard(decodedPayload, 'payload')}
-              class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-            >
-              {copiedText === 'payload' ? '✓ Copied!' : 'Copy'}
-            </button>
-          {/if}
-        </div>
-        <div class="relative">
-          <pre
-            class="w-full h-48 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white overflow-auto whitespace-pre-wrap">{decodedPayload}</pre>
-        </div>
-      </div>
-    </div>
-
-    <!-- Signature Information -->
-    {#if signatureInfo}
-      <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
-      >
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Signature Information</h2>
+          <textarea
+            bind:value={jwtToken}
+            placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+            rows={showToken ? 4 : 1}
+            class="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm resize-none"
+          ></textarea>
           <button
-            onclick={toggleSignature}
-            class="flex items-center gap-2 px-3 py-1 text-sm bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+            onclick={() => showToken = !showToken}
+            class="absolute right-2 top-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
           >
-            {#if showSignature}
-              <EyeOff class="w-4 h-4" />
+            {#if showToken}
+              <EyeOff class="w-5 h-5" />
             {:else}
-              <Eye class="w-4 h-4" />
+              <Eye class="w-5 h-5" />
             {/if}
-            {showSignature ? 'Hide' : 'Show'} Full Signature
           </button>
         </div>
-        <div class="space-y-2">
-          <p class="text-gray-700 dark:text-gray-300 whitespace-pre-line">{signatureInfo}</p>
-          {#if showSignature && jwtToken.includes('.')}
-            <div class="mt-4">
-              <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
-                >Full Signature:</span
-              >
-              <div class="mt-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
-                <code class="text-xs font-mono text-gray-900 dark:text-white break-all">
-                  {jwtToken.split('.')[2]}
-                </code>
-              </div>
-            </div>
-          {/if}
+        <div class="flex items-center justify-between mt-2">
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            Token will be decoded in real-time. No data is sent to any server.
+          </p>
+          <div class="flex gap-2">
+            <button
+              onclick={loadExample}
+              class="flex items-center px-3 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              <RefreshCw class="w-3 h-3 mr-1" />
+              Load Example
+            </button>
+            <button
+              onclick={clearAll}
+              class="flex items-center px-3 py-1 text-xs bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded hover:bg-red-200 dark:hover:bg-red-900/30 transition-colors"
+            >
+              Clear
+            </button>
+          </div>
         </div>
       </div>
-    {/if}
+
+      <!-- Validation Status -->
+      {#if isValid !== null}
+        <div class="flex items-center p-3 rounded-md {isValid ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'}">
+          {#if isValid}
+            <Check class="w-5 h-5 text-green-600 dark:text-green-400 mr-2" />
+            <span class="text-sm text-green-700 dark:text-green-300">Valid JWT format</span>
+          {:else}
+            <X class="w-5 h-5 text-red-600 dark:text-red-400 mr-2" />
+            <span class="text-sm text-red-700 dark:text-red-300">Invalid JWT format</span>
+          {/if}
+        </div>
+      {/if}
+
+      {#if errorMessage}
+        <div class="flex items-start p-3 mt-3 rounded-md bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
+          <AlertCircle class="w-5 h-5 text-yellow-600 dark:text-yellow-400 mr-2 mt-0.5" />
+          <span class="text-sm text-yellow-700 dark:text-yellow-300">{errorMessage}</span>
+        </div>
+      {/if}
+    </div>
+  </div>
+
+  <!-- Token Info Card -->
+  {#if isValid && getPayloadInfo()}
+    {@const payload = getPayloadInfo()}
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6">
+      <div class="p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+          <Info class="w-5 h-5 mr-2" />
+          Token Information
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-md">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Subject</p>
+            <p class="text-sm font-medium text-gray-900 dark:text-white">
+              {payload.sub || 'N/A'}
+            </p>
+          </div>
+          <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-md">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Issued At</p>
+            <p class="text-sm font-medium text-gray-900 dark:text-white">
+              {payload.iat ? formatTimestamp(payload.iat) : 'N/A'}
+            </p>
+          </div>
+          <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-md">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Expires At</p>
+            <p class="text-sm font-medium text-gray-900 dark:text-white">
+              {payload.exp ? formatTimestamp(payload.exp) : 'N/A'}
+            </p>
+          </div>
+          <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-md">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Status</p>
+            <p class="text-sm font-medium {isTokenExpired() ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}">
+              {isTokenExpired() ? 'Expired' : `Valid (${getTokenValidityTime()})`}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   {/if}
 
-  <!-- Features Section -->
-  <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <Shield class="w-6 h-6 text-purple-600 dark:text-purple-400" />
+  <!-- Decoded Sections -->
+  {#if isValid}
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+      <!-- Tab Navigation -->
+      <div class="flex flex-wrap border-b border-gray-200 dark:border-gray-700">
+        <button
+          onclick={() => activeTab = 'header'}
+          class="px-4 py-3 text-sm font-medium border-b-2 transition-colors {
+            activeTab === 'header'
+              ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+          }"
+        >
+          Header
+        </button>
+        <button
+          onclick={() => activeTab = 'payload'}
+          class="px-4 py-3 text-sm font-medium border-b-2 transition-colors {
+            activeTab === 'payload'
+              ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+          }"
+        >
+          Payload
+        </button>
+        <button
+          onclick={() => activeTab = 'signature'}
+          class="px-4 py-3 text-sm font-medium border-b-2 transition-colors {
+            activeTab === 'signature'
+              ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+          }"
+        >
+          Signature
+        </button>
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Secure Decoding</h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        Decode JWT tokens locally in your browser without sending them to any server, ensuring
-        complete security
-      </p>
-    </div>
 
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <Clock class="w-6 h-6 text-purple-600 dark:text-purple-400" />
-      </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Expiration Check</h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        Automatically check if tokens are expired and display expiration times in your local
-        timezone
-      </p>
-    </div>
+      <div class="p-6">
+        <!-- Header Tab -->
+        {#if activeTab === 'header'}
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Decoded Header</h3>
+            <button
+              onclick={() => copyToClipboard(decodedHeader)}
+              class="flex items-center px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              <Copy class="w-4 h-4 mr-1" />
+              {copied ? 'Copied!' : 'Copy'}
+            </button>
+          </div>
+          <pre class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm text-gray-700 dark:text-gray-300"><code>{decodedHeader}</code></pre>
+        {/if}
 
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <CheckCircle class="w-6 h-6 text-purple-600 dark:text-purple-400" />
-      </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Formatted Output</h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        View decoded JWT components in beautifully formatted JSON with proper indentation and syntax
-        highlighting
-      </p>
-    </div>
-  </div>
+        <!-- Payload Tab -->
+        {#if activeTab === 'payload'}
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Decoded Payload</h3>
+            <button
+              onclick={() => copyToClipboard(decodedPayload)}
+              class="flex items-center px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              <Copy class="w-4 h-4 mr-1" />
+              {copied ? 'Copied!' : 'Copy'}
+            </button>
+          </div>
+          <pre class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm text-gray-700 dark:text-gray-300"><code>{decodedPayload}</code></pre>
+        {/if}
 
-  <!-- Security Notice -->
-  <div
-    class="mt-8 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg"
-  >
-    <div class="flex items-start gap-3">
-      <AlertCircle class="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5" />
-      <div>
-        <h3 class="text-yellow-800 dark:text-yellow-200 font-medium mb-1">Security Notice</h3>
-        <p class="text-yellow-700 dark:text-yellow-300 text-sm">
-          JWT tokens are decoded locally in your browser and are never sent to any server. However,
-          be cautious when decoding tokens containing sensitive information.
-        </p>
+        <!-- Signature Tab -->
+        {#if activeTab === 'signature'}
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Signature</h3>
+            <button
+              onclick={() => copyToClipboard(signature)}
+              class="flex items-center px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              <Copy class="w-4 h-4 mr-1" />
+              {copied ? 'Copied!' : 'Copy'}
+            </button>
+          </div>
+          <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-4">
+            <div class="flex items-start">
+              <Info class="w-5 h-5 text-yellow-600 dark:text-yellow-400 mr-2 mt-0.5" />
+              <div>
+                <p class="text-sm text-yellow-700 dark:text-yellow-300 font-medium mb-1">
+                  Security Note
+                </p>
+                <p class="text-xs text-yellow-600 dark:text-yellow-400">
+                  The signature cannot be verified in the browser for security reasons. Always verify JWT signatures on your server using a proper secret key.
+                </p>
+              </div>
+            </div>
+          </div>
+          <pre class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm text-gray-700 dark:text-gray-300 break-all"><code>{signature}</code></pre>
+        {/if}
       </div>
     </div>
-  </div>
+  {/if}
 </div>

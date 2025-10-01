@@ -1,214 +1,160 @@
 <script lang="ts">
+  import { Copy, RefreshCw, FileText, Hash, Type, ChevronLeft } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, FileText, Copy, RotateCcw, FilePlus } from '@lucide/svelte';
 
-  let loremText = $state('');
-  let wordCount = $state(50);
-  let sentenceCount = $state(5);
-  let paragraphCount = $state(3);
+  // Component state
+  let amount = $state(5);
+  let unit = $state('paragraphs');
   let startWithLorem = $state(true);
-  let copied = $state('');
+  let generatedText = $state('');
+  let copied = $state(false);
 
-  const loremWords = [
-    'lorem',
-    'ipsum',
-    'dolor',
-    'sit',
-    'amet',
-    'consectetur',
-    'adipiscing',
-    'elit',
-    'sed',
-    'do',
-    'eiusmod',
-    'tempor',
-    'incididunt',
-    'ut',
-    'labore',
-    'et',
-    'dolore',
-    'magna',
-    'aliqua',
-    'enim',
-    'ad',
-    'minim',
-    'veniam',
-    'quis',
-    'nostrud',
-    'exercitation',
-    'ullamco',
-    'laboris',
-    'nisi',
-    'aliquip',
-    'ex',
-    'ea',
-    'commodo',
-    'consequat',
-    'duis',
-    'aute',
-    'irure',
-    'dolor',
-    'in',
-    'reprehenderit',
-    'in',
-    'voluptate',
-    'velit',
-    'esse',
-    'cillum',
-    'dolore',
-    'eu',
-    'fugiat',
-    'nulla',
-    'pariatur',
-    'excepteur',
-    'sint',
-    'occaecat',
-    'cupidatat',
-    'non',
-    'proident',
-    'sunt',
-    'in',
-    'culpa',
-    'qui',
-    'officia',
-    'deserunt',
-    'mollit',
-    'anim',
-    'id',
-    'est',
-    'laborum',
-    'dolorum',
-    'fugiat',
-    'veniam',
-    'aliqua',
-    'ut',
-    'enim',
-    'ad',
-    'minim',
-    'veniam',
-    'quis',
-    'nostrud',
-    'exercitation',
-    'ullamco',
-    'laboris',
-    'nisi',
-    'ut',
-    'aliquip',
-    'ex',
-    'ea',
-    'commodo',
-    'consequat',
-    'duis',
-    'aute',
-    'irure',
-    'dolor',
-    'in',
-    'reprehenderit',
-    'in',
-    'voluptate',
-    'velit',
-    'esse',
-    'cillum',
-    'dolore',
-    'eu',
-    'fugiat',
-    'nulla',
-    'pariatur',
-    'excepteur',
-    'sint',
-    'occaecat',
-    'cupidatat',
-    'non',
-    'proident',
-    'sunt',
-    'in',
-    'culpa',
-    'qui',
-    'officia',
-    'deserunt',
-    'mollit',
-    'anim',
-    'id',
-    'est',
-    'laborum'
+  // Lorem ipsum word pool
+  const words = [
+    'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit',
+    'sed', 'do', 'eiusmod', 'tempor', 'incididunt', 'ut', 'labore', 'et', 'dolore',
+    'magna', 'aliqua', 'enim', 'ad', 'minim', 'veniam', 'quis', 'nostrud',
+    'exercitation', 'ullamco', 'laboris', 'nisi', 'ut', 'aliquip', 'ex', 'ea',
+    'commodo', 'consequat', 'duis', 'aute', 'irure', 'dolor', 'in', 'reprehenderit',
+    'voluptate', 'velit', 'esse', 'cillum', 'fugiat', 'nulla', 'pariatur',
+    'excepteur', 'sint', 'occaecat', 'cupidatat', 'non', 'proident', 'sunt', 'in',
+    'culpa', 'qui', 'officia', 'deserunt', 'mollit', 'anim', 'id', 'est', 'laborum'
   ];
 
-  function generateLorem() {
-    let result = [];
+  const sentenceWords = [
+    'at', 'vero', 'eos', 'et', 'accusamus', 'et', 'iusto', 'odio', 'dignissimos',
+    'ducimus', 'qui', 'blanditiis', 'praesentium', 'voluptatum', 'deleniti', 'atque',
+    'corrupti', 'quos', 'dolores', 'et', 'quas', 'molestias', 'excepturi', 'sint',
+    'obcaecati', 'cupiditate', 'non', 'provident', 'similique', 'sunt', 'in', 'culpa',
+    'qui', 'officia', 'deserunt', 'mollitia', 'animi', 'id', 'est', 'laborum', 'et',
+    'dolorum', 'fuga', 'et', 'harum', 'quidem', 'rerum', 'facilis', 'est', 'et',
+    'expedita', 'distinctio', 'nam', 'libero', 'tempore', 'cum', 'soluta', 'nobis',
+    'est', 'eligendi', 'optio', 'cumque', 'nihil', 'impedit', 'quo', 'porro',
+    'quisquam', 'est', 'qui', 'minus', 'id', 'quod', 'maxime', 'placeat', 'facere',
+    'possimus', 'omnis', 'voluptas', 'assumenda', 'est', 'omnis', 'dolor',
+    'repellendus', 'temporibus', 'autem', 'quibusdam', 'et', 'aut', 'consequatur',
+    'vel', 'illum', 'qui', 'dolorem', 'eum', 'fugiat', 'quo', 'voluptas', 'nulla',
+    'pariatur', 'at', 'vero', 'eos', 'et', 'accusamus', 'et', 'iusto', 'odio',
+    'dignissimos', 'ducimus', 'qui', 'blanditiis', 'praesentium', 'voluptatum'
+  ];
 
-    // Always start with "Lorem ipsum dolor sit amet"
-    if (startWithLorem) {
-      result.push('Lorem', 'ipsum', 'dolor', 'sit', 'amet');
+  function getRandomWord() {
+    const allWords = [...words, ...sentenceWords];
+    return allWords[Math.floor(Math.random() * allWords.length)];
+  }
+
+  function generateSentence() {
+    const sentenceLength = Math.floor(Math.random() * 10) + 5; // 5-15 words
+    const sentence = [];
+
+    for (let i = 0; i < sentenceLength; i++) {
+      const word = getRandomWord();
+      sentence.push(i === 0 ? word.charAt(0).toUpperCase() + word.slice(1) : word);
     }
 
-    // Generate remaining words
-    const remainingWords = Math.max(0, wordCount - (startWithLorem ? 5 : 0));
-    for (let i = 0; i < remainingWords; i++) {
-      const randomIndex = Math.floor(Math.random() * loremWords.length);
-      result.push(loremWords[randomIndex]);
+    return sentence.join(' ') + '.';
+  }
+
+  function generateParagraph() {
+    const paragraphLength = Math.floor(Math.random() * 5) + 3; // 3-8 sentences
+    const paragraph = [];
+
+    for (let i = 0; i < paragraphLength; i++) {
+      paragraph.push(generateSentence());
     }
 
-    // Create sentences
-    let sentences = [];
-    let currentSentence = [];
+    return paragraph.join(' ');
+  }
 
-    for (const word of result) {
-      currentSentence.push(word);
+  function generateLoremText() {
+    let result = '';
 
-      // End sentence randomly every 5-15 words
-      if (Math.random() < 0.15 || currentSentence.length >= 15) {
-        sentences.push(currentSentence.join(' ') + '.');
-        currentSentence = [];
+    if (startWithLorem && unit !== 'words') {
+      result = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n';
+
+      // Adjust amount since we already generated one paragraph
+      const adjustedAmount = Math.max(0, amount - 1);
+
+      switch (unit) {
+        case 'paragraphs':
+          for (let i = 0; i < adjustedAmount; i++) {
+            result += generateParagraph() + '\n\n';
+          }
+          break;
+        case 'sentences':
+          for (let i = 0; i < adjustedAmount; i++) {
+            result += generateSentence() + ' ';
+          }
+          break;
+        case 'words':
+          // Handle words case separately
+          result = generateWords(amount);
+          break;
+      }
+    } else {
+      switch (unit) {
+        case 'paragraphs':
+          for (let i = 0; i < amount; i++) {
+            result += generateParagraph() + '\n\n';
+          }
+          break;
+        case 'sentences':
+          for (let i = 0; i < amount; i++) {
+            result += generateSentence() + ' ';
+          }
+          break;
+        case 'words':
+          result = generateWords(amount);
+          break;
       }
     }
 
-    // Add final sentence if needed
-    if (currentSentence.length > 0) {
-      sentences.push(currentSentence.join(' ') + '.');
+    // Clean up trailing whitespace
+    generatedText = result.trim();
+  }
+
+  function generateWords(count: number) {
+    const wordList = [];
+    for (let i = 0; i < count; i++) {
+      const word = getRandomWord();
+      wordList.push(i === 0 ? word.charAt(0).toUpperCase() + word.slice(1) : word);
     }
-
-    // Limit to requested sentence count
-    sentences = sentences.slice(0, sentenceCount);
-
-    // Create paragraphs
-    let paragraphs = [];
-    const wordsPerParagraph = Math.ceil(sentences.length / paragraphCount);
-
-    for (let i = 0; i < paragraphCount; i++) {
-      const startIdx = i * wordsPerParagraph;
-      const endIdx = Math.min(startIdx + wordsPerParagraph, sentences.length);
-      if (startIdx < sentences.length) {
-        paragraphs.push(sentences.slice(startIdx, endIdx).join(' '));
-      }
-    }
-
-    loremText = paragraphs.join('\n\n');
+    return wordList.join(' ') + '.';
   }
 
   function copyToClipboard() {
-    if (loremText) {
-      navigator.clipboard.writeText(loremText);
-      copied = 'success';
-      setTimeout(() => (copied = ''), 2000);
-    }
+    navigator.clipboard.writeText(generatedText).then(() => {
+      copied = true;
+      setTimeout(() => {
+        copied = false;
+      }, 2000);
+    });
   }
 
-  function clearAll() {
-    loremText = '';
+  function downloadAsFile() {
+    const blob = new Blob([generatedText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'lorem-ipsum.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   function handleBackToTools() {
     navigate('/tools');
   }
 
-  // Auto-generate when parameters change
-  $effect(() => {
-    generateLorem();
-  });
-
-  // Generate initial lorem text
-  generateLorem();
+  // Generate initial text
+  generateLoremText();
 </script>
+
+<svelte:head>
+  <title>Lorem Ipsum Generator - Developer Tools</title>
+  <meta name="description" content="Generate Lorem Ipsum placeholder text for design and testing purposes" />
+</svelte:head>
 
 <div class="max-w-6xl mx-auto p-6">
   <!-- Header -->
@@ -229,9 +175,11 @@
       >
         <FileText class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Lorem Ipsum Generator</h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+        Lorem Ipsum Generator
+      </h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Generate placeholder text for design and testing purposes with customizable options.
+        Generate placeholder text for your designs and prototypes
       </p>
     </div>
   </div>
@@ -262,250 +210,107 @@
   </nav>
 
   <!-- Controls -->
-  <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-8"
-  >
-    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">Generator Settings</h2>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <!-- Word Count -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <!-- Amount Input -->
       <div>
-        <label
-          for="wordCount"
-          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-        >
-          Word Count: {wordCount}
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Amount
         </label>
         <input
-          id="wordCount"
-          type="range"
-          min="10"
-          max="500"
-          step="10"
-          bind:value={wordCount}
-          class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
+          type="number"
+          bind:value={amount}
+          min="1"
+          max="100"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
-        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-          <span>10</span>
-          <span>500</span>
-        </div>
       </div>
 
-      <!-- Sentence Count -->
+      <!-- Unit Selector -->
       <div>
-        <label
-          for="sentenceCount"
-          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-        >
-          Sentence Count: {sentenceCount}
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Unit
         </label>
-        <input
-          id="sentenceCount"
-          type="range"
-          min="1"
-          max="50"
-          step="1"
-          bind:value={sentenceCount}
-          class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
-        />
-        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-          <span>1</span>
-          <span>50</span>
-        </div>
-      </div>
-
-      <!-- Paragraph Count -->
-      <div>
-        <label
-          for="paragraphCount"
-          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        <select
+          bind:value={unit}
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
-          Paragraph Count: {paragraphCount}
-        </label>
-        <input
-          id="paragraphCount"
-          type="range"
-          min="1"
-          max="20"
-          step="1"
-          bind:value={paragraphCount}
-          class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
-        />
-        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-          <span>1</span>
-          <span>20</span>
-        </div>
+          <option value="paragraphs">Paragraphs</option>
+          <option value="sentences">Sentences</option>
+          <option value="words">Words</option>
+        </select>
       </div>
 
       <!-- Start with Lorem -->
-      <div>
-        <label class="flex items-center space-x-3 cursor-pointer">
+      <div class="flex items-end">
+        <label class="flex items-center cursor-pointer">
           <input
             type="checkbox"
             bind:checked={startWithLorem}
-            class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500"
+            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
-          <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             Start with "Lorem ipsum"
           </span>
         </label>
       </div>
-    </div>
 
-    <!-- Action Buttons -->
-    <div class="flex flex-wrap gap-3 mt-6">
-      <button
-        onclick={generateLorem}
-        class="px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
-      >
-        Generate Text
-      </button>
-      <button
-        onclick={clearAll}
-        class="px-4 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium"
-      >
-        <RotateCcw class="w-4 h-4 mr-1" />
-        Clear
-      </button>
-    </div>
-  </div>
-
-  <!-- Output -->
-  <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-8"
-  >
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Generated Text</h2>
-      <div class="flex gap-2">
+      <!-- Generate Button -->
+      <div class="flex items-end">
         <button
-          onclick={copyToClipboard}
-          class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={!loremText}
+          onclick={generateLoremText}
+          class="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
         >
-          {#if copied === 'success'}
-            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-            Copied!
-          {:else}
-            <Copy class="w-4 h-4 mr-1" />
-            Copy
-          {/if}
+          <RefreshCw class="w-4 h-4 mr-2" />
+          Generate
         </button>
       </div>
     </div>
 
-    <div class="relative">
-      <textarea
-        bind:value={loremText}
-        readonly
-        placeholder="Generated Lorem ipsum text will appear here..."
-        class="w-full h-96 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none font-serif"
-      ></textarea>
-      {#if !loremText}
-        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <p class="text-gray-400 dark:text-gray-600">
-            Click "Generate Text" to create Lorem ipsum text
-          </p>
-        </div>
-      {/if}
-    </div>
-
-    <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-      {loremText.split(/\s+/).length} words • {loremText.split('.').length - 1} sentences • {loremText
-        .split(/\n\n/)
-        .filter(p => p.trim()).length} paragraphs
+    <!-- Statistics -->
+    <div class="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400">
+      <div class="flex items-center">
+        <FileText class="w-4 h-4 mr-1" />
+        <span>{generatedText.split(/\s+/).filter(word => word.length > 0).length} words</span>
+      </div>
+      <div class="flex items-center">
+        <Type class="w-4 h-4 mr-1" />
+        <span>{generatedText.split(/[.!?]+/).filter(sentence => sentence.trim().length > 0).length} sentences</span>
+      </div>
+      <div class="flex items-center">
+        <Hash class="w-4 h-4 mr-1" />
+        <span>{generatedText.split(/\n\n+/).filter(paragraph => paragraph.trim().length > 0).length} paragraphs</span>
+      </div>
     </div>
   </div>
 
-  <!-- Quick Presets -->
-  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Quick Presets</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <button
-        onclick={() => {
-          wordCount = 50;
-          sentenceCount = 5;
-          paragraphCount = 2;
-          generateLorem();
-        }}
-        class="p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors text-left"
-      >
-        <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Short Text</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400">50 words, 2 paragraphs</p>
-      </button>
-
-      <button
-        onclick={() => {
-          wordCount = 100;
-          sentenceCount = 8;
-          paragraphCount = 3;
-          generateLorem();
-        }}
-        class="p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors text-left"
-      >
-        <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Medium Text</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400">100 words, 3 paragraphs</p>
-      </button>
-
-      <button
-        onclick={() => {
-          wordCount = 250;
-          sentenceCount = 20;
-          paragraphCount = 5;
-          generateLorem();
-        }}
-        class="p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors text-left"
-      >
-        <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Long Text</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400">250 words, 5 paragraphs</p>
-      </button>
-    </div>
-  </div>
-
-  <!-- Features Section -->
-  <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <FilePlus class="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+  <!-- Generated Text -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+        Generated Text
+      </h2>
+      <div class="flex gap-2">
+        <button
+          onclick={copyToClipboard}
+          class="flex items-center px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+        >
+          <Copy class="w-4 h-4 mr-1" />
+          {copied ? 'Copied!' : 'Copy'}
+        </button>
+        <button
+          onclick={downloadAsFile}
+          class="flex items-center px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+        >
+          Download
+        </button>
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Customizable Length</h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        Adjust word, sentence, and paragraph counts to your needs
-      </p>
     </div>
 
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <RotateCcw class="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+    <div class="prose prose-gray dark:prose-invert max-w-none">
+      <div class="whitespace-pre-wrap text-gray-700 dark:text-gray-300 leading-relaxed">
+        {generatedText}
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Regenerate Instantly</h3>
-      <p class="text-gray-600 dark:text-gray-400">Create new variations with a single click</p>
-    </div>
-
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <Copy class="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-      </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Easy Copy</h3>
-      <p class="text-gray-600 dark:text-gray-400">Copy generated text with one click</p>
     </div>
   </div>
 </div>

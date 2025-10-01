@@ -34,6 +34,14 @@
   import JwtDecoder from './pages/tools/JwtDecoder.svelte';
   import TipCalculator from './pages/tools/TipCalculator.svelte';
   import TimestampConverter from './pages/tools/TimestampConverter.svelte';
+  import MetaTagGenerator from './pages/tools/MetaTagGenerator.svelte';
+  import CssShadowGenerator from './pages/tools/CssShadowGenerator.svelte';
+  import UnitConverter from './pages/tools/UnitConverter.svelte';
+  import PercentageCalculator from './pages/tools/PercentageCalculator.svelte';
+  import BmiCalculator from './pages/tools/BmiCalculator.svelte';
+  import AgeCalculator from './pages/tools/AgeCalculator.svelte';
+  import RandomPicker from './pages/tools/RandomPicker.svelte';
+  import CronGenerator from './pages/tools/CronGenerator.svelte';
 
   // Define routes
   const routes = [
@@ -117,6 +125,46 @@
       path: '/tools/timestamp-converter',
       component: TimestampConverter,
       title: 'Unix Timestamp Converter - Fariz'
+    },
+    {
+      path: '/tools/meta-tag-generator',
+      component: MetaTagGenerator,
+      title: 'Meta Tag Generator - Fariz'
+    },
+    {
+      path: '/tools/css-shadow-generator',
+      component: CssShadowGenerator,
+      title: 'CSS Shadow Generator - Fariz'
+    },
+    {
+      path: '/tools/unit-converter',
+      component: UnitConverter,
+      title: 'Unit Converter - Fariz'
+    },
+    {
+      path: '/tools/percentage-calculator',
+      component: PercentageCalculator,
+      title: 'Percentage Calculator - Fariz'
+    },
+    {
+      path: '/tools/bmi-calculator',
+      component: BmiCalculator,
+      title: 'BMI Calculator - Fariz'
+    },
+    {
+      path: '/tools/age-calculator',
+      component: AgeCalculator,
+      title: 'Age Calculator - Fariz'
+    },
+    {
+      path: '/tools/random-picker',
+      component: RandomPicker,
+      title: 'Random Picker - Fariz'
+    },
+    {
+      path: '/tools/cron-generator',
+      component: CronGenerator,
+      title: 'Cron Expression Generator - Fariz'
     }
   ];
 

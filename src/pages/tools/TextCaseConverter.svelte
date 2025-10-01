@@ -1,129 +1,122 @@
 <script lang="ts">
+  import { Copy, RefreshCw, Type, ArrowRight, ChevronLeft } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, Type, Copy, RotateCcw } from '@lucide/svelte';
 
+  // Component state
   let inputText = $state('');
-  let outputText = $state('');
-  let copied = $state('');
+  let convertedText = $state('');
+  let copied = $state(false);
+  let activeCase = $state('uppercase');
 
-  const caseTypes = [
-    { id: 'uppercase', name: 'UPPERCASE', description: 'Convert all letters to uppercase' },
-    { id: 'lowercase', name: 'lowercase', description: 'Convert all letters to lowercase' },
-    {
-      id: 'titlecase',
-      name: 'Title Case',
-      description: 'Capitalize The First Letter Of Each Word'
+  // Case conversion functions
+  const caseConversions = {
+    uppercase: (text: string) => text.toUpperCase(),
+    lowercase: (text: string) => text.toLowerCase(),
+    title: (text: string) => {
+      return text.replace(/\w\S*/g, (txt) =>
+        txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+      );
     },
-    {
-      id: 'sentencecase',
-      name: 'Sentence case',
-      description: 'Capitalize the first letter of each sentence'
+    camelCase: (text: string) => {
+      return text.replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
+        return index === 0 ? word.toLowerCase() : word.toUpperCase();
+      }).replace(/\s+/g, '');
     },
-    { id: 'camelcase', name: 'camelCase', description: 'Convert to camelCase notation' },
-    { id: 'pascalcase', name: 'PascalCase', description: 'Convert to PascalCase notation' },
-    { id: 'snakecase', name: 'snake_case', description: 'Convert to snake_case notation' },
-    { id: 'kebabcase', name: 'kebab-case', description: 'Convert to kebab-case notation' },
-    {
-      id: 'alternatingcase',
-      name: 'AlTeRnAtInG CaSe',
-      description: 'Convert to alternating letter case'
+    snakeCase: (text: string) => {
+      return text.toLowerCase().replace(/\W+/g, ' ').split(/ |\B(?=[A-Z])/).join('_');
     },
-    { id: 'inversecase', name: 'iNVERSE cASE', description: 'Invert the case of each letter' }
-  ];
+    kebabCase: (text: string) => {
+      return text.toLowerCase().replace(/\W+/g, ' ').split(/ |\B(?=[A-Z])/).join('-');
+    },
+    pascalCase: (text: string) => {
+      return text.replace(/(?:^\w|[A-Z]|\b\w)/g, (word) => {
+        return word.toUpperCase();
+      }).replace(/\s+/g, '');
+    },
+    sentence: (text: string) => {
+      return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+    },
+    alternating: (text: string) => {
+      return text.split('').map((char, index) => {
+        return index % 2 === 0 ? char.toLowerCase() : char.toUpperCase();
+      }).join('');
+    },
+    inverse: (text: string) => {
+      return text.split('').map(char => {
+        return char === char.toUpperCase() ? char.toLowerCase() : char.toUpperCase();
+      }).join('');
+    }
+  };
 
-  function convertText(caseType: string) {
+  // Convert text based on selected case
+  function convertText() {
     if (!inputText.trim()) {
-      outputText = '';
+      convertedText = '';
       return;
     }
 
-    switch (caseType) {
-      case 'uppercase':
-        outputText = inputText.toUpperCase();
-        break;
-      case 'lowercase':
-        outputText = inputText.toLowerCase();
-        break;
-      case 'titlecase':
-        outputText = inputText.replace(
-          /\w\S*/g,
-          txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-        );
-        break;
-      case 'sentencecase':
-        outputText =
-          inputText.charAt(0).toUpperCase() +
-          inputText
-            .slice(1)
-            .toLowerCase()
-            .replace(/[.!?]\s*/g, match => match.toUpperCase());
-        break;
-      case 'camelcase':
-        outputText = inputText
-          .toLowerCase()
-          .replace(/[^a-zA-Z0-9]+(.)/g, (match, letter, offset) =>
-            offset === 0 ? letter.toLowerCase() : letter.toUpperCase()
-          );
-        break;
-      case 'pascalcase':
-        outputText = inputText
-          .toLowerCase()
-          .replace(/[^a-zA-Z0-9]+(.)/g, (match, letter) => letter.toUpperCase());
-        break;
-      case 'snakecase':
-        outputText = inputText
-          .toLowerCase()
-          .replace(/\s+/g, '_')
-          .replace(/[^a-z0-9_]/g, '');
-        break;
-      case 'kebabcase':
-        outputText = inputText
-          .toLowerCase()
-          .replace(/\s+/g, '-')
-          .replace(/[^a-z0-9-]/g, '');
-        break;
-      case 'alternatingcase':
-        outputText = inputText
-          .split('')
-          .map((char, index) => (index % 2 === 0 ? char.toLowerCase() : char.toUpperCase()))
-          .join('');
-        break;
-      case 'inversecase':
-        outputText = inputText
-          .split('')
-          .map(char => (char === char.toUpperCase() ? char.toLowerCase() : char.toUpperCase()))
-          .join('');
-        break;
-      default:
-        outputText = inputText;
-    }
+    const converter = caseConversions[activeCase as keyof typeof caseConversions];
+    convertedText = converter(inputText);
   }
 
-  function copyToClipboard() {
-    if (outputText) {
-      navigator.clipboard.writeText(outputText);
-      copied = 'success';
-      setTimeout(() => (copied = ''), 2000);
+  // Auto-convert when input or case changes
+  $effect(() => {
+    if (inputText) {
+      convertText();
+    } else {
+      convertedText = '';
     }
+  });
+
+  function copyToClipboard() {
+    navigator.clipboard.writeText(convertedText).then(() => {
+      copied = true;
+      setTimeout(() => {
+        copied = false;
+      }, 2000);
+    });
   }
 
   function clearAll() {
     inputText = '';
-    outputText = '';
+    convertedText = '';
+  }
+
+  function swapTexts() {
+    const temp = inputText;
+    inputText = convertedText;
+  }
+
+  function downloadAsFile() {
+    const blob = new Blob([convertedText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `text-${activeCase}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   function handleBackToTools() {
     navigate('/tools');
   }
 
-  // Update output when input or case changes
-  let selectedCase = $state('uppercase');
-  $effect(() => {
-    if (inputText && selectedCase) {
-      convertText(selectedCase);
-    }
-  });
+  // Get text statistics
+  const textStats = $derived(inputText ? {
+    characters: inputText.length,
+    charactersNoSpaces: inputText.replace(/\s/g, '').length,
+    words: inputText.trim() ? inputText.trim().split(/\s+/).length : 0,
+    sentences: inputText.trim() ? inputText.split(/[.!?]+/).filter(s => s.trim().length > 0).length : 0,
+    lines: inputText.split('\n').length
+  } : null);
 </script>
+
+<svelte:head>
+  <title>Text Case Converter - Developer Tools</title>
+  <meta name="description" content="Convert text between different cases: uppercase, lowercase, title case, camelCase, snake_case, kebab-case, and more" />
+</svelte:head>
 
 <div class="max-w-6xl mx-auto p-6">
   <!-- Header -->
@@ -144,10 +137,11 @@
       >
         <Type class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Text Case Converter</h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+        Text Case Converter
+      </h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Convert text between different case formats with ease. Perfect for developers and content
-        creators.
+        Convert text between different case formats with ease
       </p>
     </div>
   </div>
@@ -177,169 +171,184 @@
     </ol>
   </nav>
 
-  <!-- Main Content -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-    <!-- Input Section -->
-    <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
-    >
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Input Text</h2>
-      <textarea
-        bind:value={inputText}
-        placeholder="Enter your text here..."
-        class="w-full h-64 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-      ></textarea>
-
-      <div class="mt-4 flex justify-between items-center">
-        <div class="text-sm text-gray-600 dark:text-gray-400">
-          {inputText.length} characters
-        </div>
-        <div class="flex gap-2">
-          <button
-            onclick={clearAll}
-            class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-          >
-            <RotateCcw class="w-4 h-4 mr-1" />
-            Clear
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Output Section -->
-    <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
-    >
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Converted Text</h2>
-      <div class="relative">
-        <textarea
-          bind:value={outputText}
-          readonly
-          placeholder="Converted text will appear here..."
-          class="w-full h-64 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none"
-        ></textarea>
-        {#if !outputText}
-          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <p class="text-gray-400 dark:text-gray-600">Converted text will appear here...</p>
-          </div>
-        {/if}
-      </div>
-
-      <div class="mt-4 flex justify-between items-center">
-        <div class="text-sm text-gray-600 dark:text-gray-400">
-          {outputText.length} characters
-        </div>
-        <button
-          onclick={copyToClipboard}
-          class="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={!outputText}
-        >
-          {#if copied === 'success'}
-            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-            Copied!
-          {:else}
-            <Copy class="w-4 h-4 mr-1" />
-            Copy
-          {/if}
-        </button>
-      </div>
-    </div>
-  </div>
-
   <!-- Case Selection -->
-  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">Select Case Type</h2>
+  <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+      Select Case Type
+    </h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {#each caseTypes as caseType (caseType.id)}
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+      {#each Object.entries(caseConversions) as [caseType, converter]}
+        {@const examples = {
+          uppercase: 'HELLO WORLD',
+          lowercase: 'hello world',
+          title: 'Hello World',
+          camelCase: 'helloWorld',
+          snakeCase: 'hello_world',
+          kebabCase: 'hello-world',
+          pascalCase: 'HelloWorld',
+          sentence: 'Hello world',
+          alternating: 'hElLo wOrLd',
+          inverse: 'HELLO WORLD'
+        }}
+
         <button
-          onclick={() => {
-            selectedCase = caseType.id;
-            convertText(caseType.id);
-          }}
-          class="text-left p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-cyan-500 dark:hover:border-cyan-400 transition-colors {selectedCase ===
-          caseType.id
-            ? 'bg-cyan-50 dark:bg-cyan-900/20 border-cyan-500 dark:border-cyan-400'
-            : ''}"
+          type="button"
+          onclick={() => activeCase = caseType}
+          class="relative p-3 rounded-lg border-2 transition-all {activeCase === caseType
+            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+            : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+          }"
         >
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-1">
-            {caseType.name}
-          </h3>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            {caseType.description}
-          </p>
+          <div class="flex items-center justify-center mb-2">
+            <Type class="w-5 h-5 {activeCase === caseType ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'}" />
+          </div>
+
+          <div class="text-sm font-medium text-gray-900 dark:text-white capitalize mb-1">
+            {caseType.replace(/([A-Z])/g, ' $1').trim()}
+          </div>
+
+          <div class="text-xs text-gray-500 dark:text-gray-400 font-mono text-center">
+            {examples[caseType as keyof typeof examples]}
+          </div>
+
+          {#if activeCase === caseType}
+            <div class="absolute top-1 right-1">
+              <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+            </div>
+          {/if}
         </button>
       {/each}
     </div>
   </div>
 
-  <!-- Sample Text -->
-  <div
-    class="mt-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700"
-  >
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sample Text</h3>
-    <p class="text-gray-600 dark:text-gray-400 mb-4">
-      Click below to load a sample text for testing:
-    </p>
-    <button
-      onclick={() => {
-        inputText =
-          'This is a SAMPLE text for DEMONSTRATION purposes. You can try different CASE conversions to see how they work!';
-        convertText(selectedCase);
-      }}
-      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-    >
-      Load Sample Text
-    </button>
+  <!-- Main Content -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+    <!-- Input Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+          Input Text
+        </h2>
+        <button
+          onclick={clearAll}
+          class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+        >
+          Clear
+        </button>
+      </div>
+
+      <textarea
+        bind:value={inputText}
+        placeholder="Enter your text here..."
+        class="w-full h-64 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+      ></textarea>
+
+      {#if textStats}
+        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm text-gray-600 dark:text-gray-400">
+            <div>
+              <span class="font-medium">Characters:</span> {textStats.characters}
+            </div>
+            <div>
+              <span class="font-medium">No spaces:</span> {textStats.charactersNoSpaces}
+            </div>
+            <div>
+              <span class="font-medium">Words:</span> {textStats.words}
+            </div>
+            <div>
+              <span class="font-medium">Sentences:</span> {textStats.sentences}
+            </div>
+            <div>
+              <span class="font-medium">Lines:</span> {textStats.lines}
+            </div>
+          </div>
+        </div>
+      {/if}
+    </div>
+
+    <!-- Output Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+          Converted Text
+        </h2>
+        <div class="flex items-center gap-2">
+          <button
+            onclick={swapTexts}
+            disabled={!inputText || !convertedText}
+            class="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            title="Swap input and output"
+          >
+            <ArrowRight class="w-4 h-4 rotate-180" />
+          </button>
+          <button
+            onclick={copyToClipboard}
+            disabled={!convertedText}
+            class="flex items-center px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <Copy class="w-4 h-4 mr-1" />
+            {copied ? 'Copied!' : 'Copy'}
+          </button>
+        </div>
+      </div>
+
+      <textarea
+        bind:value={convertedText}
+        readonly
+        placeholder="Converted text will appear here..."
+        class="w-full h-64 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none"
+      ></textarea>
+
+      <div class="mt-4 flex gap-2">
+        <button
+          onclick={downloadAsFile}
+          disabled={!convertedText}
+          class="flex-1 flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          Download as File
+        </button>
+      </div>
+    </div>
   </div>
 
-  <!-- Features Section -->
-  <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-cyan-100 dark:bg-cyan-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <Type class="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
-      </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Multiple Cases</h3>
-      <p class="text-gray-600 dark:text-gray-400">Support for 10 different text case formats</p>
-    </div>
+  <!-- Quick Actions -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+      Quick Actions
+    </h2>
 
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-cyan-100 dark:bg-cyan-900/20 rounded-lg flex items-center justify-center mb-4"
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <button
+        onclick={() => {
+          inputText = 'Hello World! This is a SAMPLE text for TESTING.';
+          activeCase = 'uppercase';
+        }}
+        class="p-3 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
       >
-        <RotateCcw class="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
-      </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Real-time Conversion</h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        Instant conversion as you type or change case type
-      </p>
-    </div>
+        Load Sample Text
+      </button>
 
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-cyan-100 dark:bg-cyan-900/20 rounded-lg flex items-center justify-center mb-4"
+      <button
+        onclick={() => activeCase = 'uppercase'}
+        class="p-3 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
       >
-        <Copy class="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
-      </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Easy Copy</h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        Copy converted text to clipboard with one click
-      </p>
+        UPPERCASE
+      </button>
+
+      <button
+        onclick={() => activeCase = 'lowercase'}
+        class="p-3 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+      >
+        lowercase
+      </button>
+
+      <button
+        onclick={() => activeCase = 'title'}
+        class="p-3 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+      >
+        Title Case
+      </button>
     </div>
   </div>
 </div>

@@ -63,7 +63,7 @@
             'snake_case',
             'kebab-case'
           ],
-          comingSoon: true
+          comingSoon: false
         },
         {
           id: 'lorem-ipsum-generator',
@@ -72,7 +72,7 @@
           icon: FileText,
           color: 'indigo',
           features: ['Multiple variations', 'Custom length', 'Paragraphs', 'Sentences', 'Words'],
-          comingSoon: true
+          comingSoon: false
         },
         {
           id: 'character-counter',
@@ -81,7 +81,7 @@
           icon: Calculator,
           color: 'purple',
           features: ['Character count', 'Word count', 'Reading time', 'Sentences', 'Paragraphs'],
-          comingSoon: true
+          comingSoon: false
         },
         {
           id: 'text-diff',
@@ -182,7 +182,7 @@
           icon: Code,
           color: 'violet',
           features: ['SEO tags', 'Open Graph', 'Twitter Cards', 'JSON-LD structured data'],
-          comingSoon: true
+          comingSoon: false
         }
       ]
     },
@@ -234,7 +234,7 @@
           icon: Key,
           color: 'slate',
           features: ['Header decoding', 'Payload decoding', 'Signature validation', 'Pretty print'],
-          comingSoon: true
+          comingSoon: false
         }
       ]
     },
@@ -281,7 +281,7 @@
           icon: Box,
           color: 'gray',
           features: ['Box shadows', 'Text shadows', 'Multiple shadows', 'CSS export'],
-          comingSoon: true
+          comingSoon: false
         }
       ]
     },
@@ -305,7 +305,7 @@
           icon: ArrowUpDown,
           color: 'blue',
           features: ['Length conversion', 'Weight conversion', 'Temperature', 'Volume conversion'],
-          comingSoon: true
+          comingSoon: false
         },
         {
           id: 'percentage-calculator',
@@ -319,7 +319,7 @@
             'Tax calculator',
             'Tip calculator'
           ],
-          comingSoon: true
+          comingSoon: false
         },
         {
           id: 'bmi-calculator',
@@ -333,7 +333,7 @@
             'Weight categories',
             'Ideal weight range'
           ],
-          comingSoon: true
+          comingSoon: false
         },
         {
           id: 'age-calculator',
@@ -342,7 +342,7 @@
           icon: Calendar,
           color: 'indigo',
           features: ['Exact age', 'Years, months, days', 'Next birthday countdown', 'Zodiac sign'],
-          comingSoon: true
+          comingSoon: false
         }
       ]
     },
@@ -357,7 +357,7 @@
           icon: Zap,
           color: 'yellow',
           features: ['Random selection', 'Weighted picks', 'Multiple items', 'History tracking'],
-          comingSoon: true
+          comingSoon: false
         },
         {
           id: 'cron-generator',
@@ -366,7 +366,7 @@
           icon: Timer,
           color: 'teal',
           features: ['Visual cron builder', 'Expression testing', 'Next run times', 'Presets'],
-          comingSoon: true
+          comingSoon: false
         },
         {
           id: 'timestamp-converter',
@@ -437,6 +437,30 @@
       navigate('/tools/tip-calculator');
     } else if (toolId === 'timestamp-converter') {
       navigate('/tools/timestamp-converter');
+    } else if (toolId === 'lorem-ipsum-generator') {
+      navigate('/tools/lorem-ipsum-generator');
+    } else if (toolId === 'text-case-converter') {
+      navigate('/tools/text-case-converter');
+    } else if (toolId === 'character-counter') {
+      navigate('/tools/character-counter');
+    } else if (toolId === 'meta-tag-generator') {
+      navigate('/tools/meta-tag-generator');
+    } else if (toolId === 'jwt-decoder') {
+      navigate('/tools/jwt-decoder');
+    } else if (toolId === 'css-shadow-generator') {
+      navigate('/tools/css-shadow-generator');
+    } else if (toolId === 'unit-converter') {
+      navigate('/tools/unit-converter');
+    } else if (toolId === 'percentage-calculator') {
+      navigate('/tools/percentage-calculator');
+    } else if (toolId === 'bmi-calculator') {
+      navigate('/tools/bmi-calculator');
+    } else if (toolId === 'age-calculator') {
+      navigate('/tools/age-calculator');
+    } else if (toolId === 'random-picker') {
+      navigate('/tools/random-picker');
+    } else if (toolId === 'cron-generator') {
+      navigate('/tools/cron-generator');
     }
   }
 
