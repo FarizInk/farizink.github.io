@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Copy, AlertCircle, Eye, EyeOff, RefreshCw, Check, X, Info, ChevronLeft } from '@lucide/svelte';
+  import { Copy, Key, Eye, EyeOff, RefreshCw, Check, X, Info, ChevronLeft } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
 
   let jwtToken = $state('');
@@ -160,9 +160,9 @@
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-slate-500 to-gray-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-slate-400 to-slate-600 rounded-2xl mb-4"
       >
-        <AlertCircle class="w-10 h-10 text-white" />
+        <Key class="w-10 h-10 text-white" />
       </div>
       <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
         JWT Decoder

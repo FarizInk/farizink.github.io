@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Copy, RefreshCw, Download, Code, Sun, Moon, Move, Plus, X, ChevronLeft } from '@lucide/svelte';
+  import { Copy, Box, Download, Code, Sun, Moon, Move, Plus, X, ChevronLeft } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
 
   // Shadow properties
@@ -270,9 +270,9 @@
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-gray-500 to-slate-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-gray-400 to-gray-600 rounded-2xl mb-4"
       >
-        <Code class="w-10 h-10 text-white" />
+        <Box class="w-10 h-10 text-white" />
       </div>
       <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
         CSS Shadow Generator

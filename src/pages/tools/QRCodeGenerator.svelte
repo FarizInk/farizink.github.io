@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { navigate } from '../../lib/router.js';
   import QRCode from 'qrcode';
-  import { Download, Copy, ChevronLeft } from '@lucide/svelte';
+  import { Download, Copy, ChevronLeft, QrCode } from '@lucide/svelte';
 
   let text = $state('');
   let qrDataUrl = $state('');
@@ -104,6 +104,11 @@
     </div>
 
     <div class="text-center mb-8">
+      <div
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-teal-400 to-teal-600 rounded-2xl mb-4"
+      >
+        <QrCode class="w-10 h-10 text-white" />
+      </div>
       <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">QR Code Generator</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
         Generate custom QR codes for URLs, text, or any data with customizable options.

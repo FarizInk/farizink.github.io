@@ -17,15 +17,16 @@
     DollarSign,
     ArrowRight,
     Check,
-    Zap,
+    Shuffle,
     Key,
     QrCode,
     Droplets,
     Box,
     Timer,
-    Users,
+    Activity,
     ArrowUpDown,
-    Percent
+    Percent,
+    Globe,
   } from '@lucide/svelte';
 
   let searchQuery = $state('');
@@ -179,7 +180,7 @@
           id: 'meta-tag-generator',
           name: 'Meta Tag Generator',
           description: 'Generate SEO meta tags for websites',
-          icon: Code,
+          icon: Globe,
           color: 'violet',
           features: ['SEO tags', 'Open Graph', 'Twitter Cards', 'JSON-LD structured data'],
           comingSoon: false
@@ -325,7 +326,7 @@
           id: 'bmi-calculator',
           name: 'BMI Calculator',
           description: 'Calculate Body Mass Index',
-          icon: Users,
+          icon: Activity,
           color: 'red',
           features: [
             'BMI calculation',
@@ -354,7 +355,7 @@
           id: 'random-picker',
           name: 'Random Picker',
           description: 'Random item picker from lists',
-          icon: Zap,
+          icon: Shuffle,
           color: 'yellow',
           features: ['Random selection', 'Weighted picks', 'Multiple items', 'History tracking'],
           comingSoon: false

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, Code, CheckCircle, Layout, Copy } from '@lucide/svelte';
+  import { ChevronLeft, FileJson, CheckCircle, Layout, Copy } from '@lucide/svelte';
 
   let inputJson = $state('');
   let outputJson = $state('');
@@ -83,9 +83,9 @@
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl mb-4"
       >
-        <Code class="w-10 h-10 text-white" />
+        <FileJson class="w-10 h-10 text-white" />
       </div>
       <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">JSON Parser & Formatter</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">

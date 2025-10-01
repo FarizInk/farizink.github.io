@@ -1,6 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, Lock, Upload, Shield, FileText, Zap } from '@lucide/svelte';
+  import { ChevronLeft, Hash, Upload, Shield, FileText, Zap } from '@lucide/svelte';
 
   let inputText = $state('');
   let encodedText = $state('');
@@ -140,9 +140,9 @@
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl mb-4"
       >
-        <Lock class="w-10 h-10 text-white" />
+        <Hash class="w-10 h-10 text-white" />
       </div>
       <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Base64 Converter</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
