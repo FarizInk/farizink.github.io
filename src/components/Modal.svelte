@@ -23,7 +23,7 @@
 
 {#if isOpen}
   <div
-    class="fixed inset-0 z-10 overflow-y-auto flex items-center justify-center"
+    class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center"
     aria-labelledby="modal-title"
     role="dialog"
     aria-modal="true"

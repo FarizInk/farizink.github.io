@@ -16,68 +16,112 @@
   };
 </script>
 
-<main class="flex flex-col justify-center items-center">
-  <div class="p-4 relative max-w-4xl">
-    <div class="z-10 relative text-black">
-      <h1 class="text-2xl md:text-4xl font-bold">
-        <button
-          type="button"
-          class="cursor-text text-left text-black dark:text-white {showPhoto
-            ? 'bg-amber-300/0 md:bg-amber-300/50 dark:bg-purple-800/0 md:dark:bg-purple-800/50'
-            : ''}"
-          onclick={() => togglePhoto()}>Nizar Alfarizi Akbar</button
-        >
-      </h1>
-      <h4 class="text-lg text-black/50 dark:text-white/50">
-        <span
-          class={showPhoto
-            ? 'bg-amber-300/0 md:bg-amber-300/50 dark:bg-purple-800/0 md:dark:bg-purple-800/50'
-            : ''}>known as <span class="italic font-bold">Fariz</span></span
-        >
-      </h4>
+<main class="min-h-screen flex items-center justify-center px-4 py-8 relative">
 
-      <p class="mt-4 text-black dark:text-white text-sm md:text-base">
-        <span
-          class={showPhoto
-            ? 'bg-amber-300/0 md:bg-amber-300/50 dark:bg-purple-800/0 md:dark:bg-purple-800/50'
-            : ''}
-          >I'm a software engineer based in Surabaya, Indonesia. Specializing in Backend Developer,
-          high-quality websites and applications. Currently focused on making projects <span
-            class="italic">"gabut"</span
-          > in my github profile 🙂 and work task.</span
-        >
-      </p>
+  <!-- Main Content -->
+  <div class="max-w-4xl w-full">
+    <div class="text-left">
+      <!-- Name with hidden photo toggle -->
+      <div class="mb-3">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+          <button
+            type="button"
+            onclick={() => togglePhoto()}
+            class="cursor-text text-left w-full bg-gradient-to-r from-gray-900 via-blue-800 to-purple-900 bg-clip-text text-transparent dark:from-white dark:via-blue-200 dark:to-purple-200 dark:text-transparent animate-gradient"
+          >
+            Nizar Alfarizi Akbar
+          </button>
+        </h1>
+      </div>
 
-      <div class="mt-5">
+      <!-- Nickname -->
+      <div class="mb-6">
+        <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400">
+          known as <span class="font-bold text-blue-600 dark:text-blue-400 italic">Fariz</span>
+        </p>
+      </div>
+
+      <!-- Description -->
+      <div class="mb-8">
+        <p class="text-gray-700 dark:text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl">
+          Software engineer based in Surabaya, Indonesia. Specializing in backend development and high-quality web applications. Currently building <span class="italic text-blue-600 dark:text-blue-400">"gabut"</span> projects and crushing work tasks 🙂
+        </p>
+      </div>
+
+      <!-- Connect Section -->
+      <div class="mb-12">
         <ConnectWithMe />
       </div>
-      <!-- <p class="mt-1 truncate">
-        The longest word in any of the major English language dictionaries is <span
-          class="text-slate-900 font-medium"
-          >pneumonoultramicroscopicsilicovolcanoconiosis,</span
-        > a word that refers to a lung disease contracted from the inhalation of
-        very fine silica particles, specifically from a volcano; medically, it is
-        the same as silicosis.
-      </p> -->
-      <div class="mt-10">
+
+      <!-- Spotify Widget -->
+      <div>
         <SpotifyActivity />
       </div>
     </div>
-
-    <!-- my photo 😬 -->
-    <div
-      class="w-80 rounded-xl overflow-hidden left-0 bottom-10 bg-gray-100 dark:bg-black {showPhoto
-        ? 'hidden md:block absolute'
-        : 'hidden'}"
-    >
-      <img src={randPhoto} alt="Fariz" />
-    </div>
   </div>
+
+  <!-- Floating Photo Card -->
+  {#if showPhoto && randPhoto}
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
+      onclick={() => showPhoto = false}
+    >
+      <div
+        class="relative group animate-in zoom-in duration-300"
+        onclick={(e) => e.stopPropagation()}
+      >
+        <!-- Close button -->
+        <button
+          onclick={() => showPhoto = false}
+          class="absolute hover:cursor-pointer -top-3 -right-3 z-10 w-10 h-10 bg-gray-900 dark:bg-white rounded-full flex items-center justify-center text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-200 transition-all duration-200 shadow-lg hover:scale-110"
+        >
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+          </svg>
+        </button>
+
+        <!-- Photo card with natural ratio -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden max-w-sm md:max-w-md lg:max-w-lg">
+          <img
+            src={randPhoto}
+            alt="Fariz"
+            class="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        </div>
+
+        <!-- Subtle shadow effect -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-2xl pointer-events-none"></div>
+      </div>
+    </div>
+  {/if}
+
+  <!-- Subtle hint about the hidden feature -->
+  {#if !showPhoto}
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+      <p class="text-xs text-gray-400 dark:text-gray-600 italic">Click my name for a surprise</p>
+    </div>
+  {/if}
 </main>
 
 <style>
   main {
-    width: 100%;
-    height: calc(100vh - (40px + 56px));
+    min-height: calc(100vh - (40px + 56px));
+  }
+
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient 3s ease infinite;
   }
 </style>

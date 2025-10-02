@@ -84,11 +84,7 @@
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-screen">
   <div class="text-center mb-12">
-    <div class="inline-flex items-center gap-2 mb-4">
-      <div class="w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full"></div>
-      <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Projects</h1>
-      <div class="w-1 h-8 bg-gradient-to-b from-purple-600 to-blue-500 rounded-full"></div>
-    </div>
+    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Projects</h1>
     <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
       Explore my latest work and open-source contributions on GitHub
     </p>

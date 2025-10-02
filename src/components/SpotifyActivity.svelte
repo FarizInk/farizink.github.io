@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { MonitorSmartphone, Play, Pause, X } from '@lucide/svelte';
   import SpotifyLogoIcon from './icons/SpotifyLogoIcon.svelte';
   import { onMount, onDestroy } from 'svelte';
 
@@ -213,101 +214,169 @@
 </script>
 
 {#if spotify}
-  <div class="overflow-hidden bg-spotify-black-2 rounded-lg shadow-lg">
-    <div
-      class="w-full flex gap-4 h-16 max-w-full overflow-hidden p-2 justify-between items-center {isPlaying
-        ? 'bg-spotify-green'
-        : 'bg-spotify-black-1'}"
-    >
-      <div class="h-full w-12">
-        <a href={track.album_url} target="_blank" rel="noreferrer">
-          <img src={track.album_img} alt="" class="h-full overflow-hidden rounded-sm" />
-        </a>
-      </div>
-      <div class="flex-1 flex flex-col justify-start">
-        <div class="text-base font-bold {isPlaying ? 'text-black' : 'text-white'}">
-          <a
-            target="_blank"
-            rel="noreferrer"
-            class="hover:underline"
-            href={track.url}
-            id="track-title"
-          >
-            {track.name}
+  <div class="group relative bg-gradient-to-br from-spotify-black-2 to-spotify-black-1 rounded-2xl shadow-xl border {isPlaying ? 'border-spotify-green/50 shadow-spotify-green/20' : 'border-spotify-black-3/50'} overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-spotify-green/30">
+
+    <!-- Main content -->
+    <div class="p-4">
+      <!-- Header with album and track info -->
+      <div class="flex items-center gap-4 mb-4">
+        <!-- Album art -->
+        <div class="relative">
+          <a href={track.album_url} target="_blank" rel="noreferrer" class="block">
+            <img
+              src={track.album_img}
+              alt=""
+              class="w-16 h-16 rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105 object-cover"
+            />
+            {#if isPlaying}
+              <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-spotify-green rounded-full flex items-center justify-center shadow-lg">
+                <Play class="w-2.5 h-2.5 text-white" />
+              </div>
+            {/if}
           </a>
         </div>
-        <div class="text-sm {isPlaying ? 'text-gray-800' : 'text-white'}">
-          {#each track.artists as { external_urls, name }, i (i)}
-            <span>
-              <a
-                target="_blank"
-                rel="noreferrer"
-                class="hover:underline truncate text-ellipsis"
-                href={external_urls.spotify}
-              >
-                {name}
-              </a>
-              {#if i + 1 !== track.artists.length}
-                ,
-              {/if}
-            </span>
-          {/each}
+
+        <!-- Track information -->
+        <div class="flex-1 min-w-0">
+          <div class="font-bold text-white text-base mb-1 truncate group-hover:text-spotify-green transition-colors duration-200">
+            <a
+              target="_blank"
+              rel="noreferrer"
+              class="hover:underline"
+              href={track.url}
+            >
+              {track.name}
+            </a>
+          </div>
+          <div class="text-sm text-gray-300 truncate">
+            {#each track.artists as { external_urls, name }, i (i)}
+              <span>
+                <a
+                  target="_blank"
+                  rel="noreferrer"
+                  class="hover:text-white hover:underline transition-colors duration-200"
+                  href={external_urls.spotify}
+                >
+                  {name}
+                </a>
+                {#if i + 1 !== track.artists.length}
+                  <span class="text-gray-500 mx-1">•</span>
+                {/if}
+              </span>
+            {/each}
+          </div>
+        </div>
+
+        <!-- Spotify logo -->
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <a href="https://open.spotify.com" rel="noreferrer" target="_blank" class="block">
+            <SpotifyLogoIcon class="h-5 w-auto text-spotify-green hover:scale-110 transition-transform duration-200" />
+          </a>
         </div>
       </div>
-      <div></div>
-    </div>
-    <div
-      class="text-sm text-white p-2 flex gap-0 sm:gap-3 flex-col sm:flex-row items-center justify-between"
-    >
-      <div class="w-full sm:w-auto text-left">
-        {#if device.name !== null}
-          On <span class="font-bold">{device.name}</span>
-        {/if}
-      </div>
-      <div class="flex-1 w-full flex gap-3 items-center">
-        <div class="flex-1">
+
+      <!-- Progress bar section -->
+      <div class="space-y-3">
+        <!-- Progress bar -->
+        <div class="relative">
           <div
-            class="rounded-full h-1 w-full overflow-hidden {isPlaying
-              ? 'bg-spotify-green/40'
-              : 'bg-spotify-black-1/40'}"
+            class="h-2 rounded-full overflow-hidden {isPlaying
+              ? 'bg-spotify-black-4'
+              : 'bg-spotify-black-3/50'}"
           >
             <div
-              class="h-full ease-in-out duration-200 {isPlaying
-                ? 'bg-spotify-green'
-                : 'bg-spotify-black-1'}"
+              class="h-full rounded-full transition-all duration-300 ease-out {isPlaying
+                ? 'bg-gradient-to-r from-spotify-green to-spotify-green/80'
+                : 'bg-gradient-to-r from-gray-400 to-gray-500'}"
               style="width: {track.percent}%;"
+            >
+              {#if isPlaying}
+                <div class="h-full rounded-full animate-pulse bg-white/20"></div>
+              {/if}
+            </div>
+          </div>
+          {#if isPlaying}
+            <div
+              class="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-lg transition-all duration-300"
+              style="left: calc({track.percent}% - 6px);"
             ></div>
-          </div>
+          {/if}
         </div>
-        {#if isPlaying && getRemainingTime()}
-          <div class="text-xs text-gray-300 whitespace-nowrap">
-            {getRemainingTime()}
+
+        <!-- Bottom info -->
+        <div class="flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            {#if device.name !== null}
+              <div class="flex items-center gap-1 text-gray-400">
+                <MonitorSmartphone class="w-3 h-3 opacity-70" />
+                <span class="font-medium text-gray-300">{device.name}</span>
+              </div>
+            {/if}
           </div>
-        {/if}
-        <div>
-          <a href="https://open.spotify.com" rel="noreferrer" target="_blank">
-            <SpotifyLogoIcon class="h-4 w-auto text-white" />
-          </a>
+
+          <div class="flex items-center gap-3">
+            {#if isPlaying && getRemainingTime()}
+              <span class="text-gray-400 font-medium">
+                {getRemainingTime()}
+              </span>
+            {/if}
+            <div class="flex items-center gap-1">
+              {#if isPlaying}
+                <div class="w-2 h-2 bg-spotify-green rounded-full animate-pulse"></div>
+                <span class="text-spotify-green font-medium">LIVE</span>
+              {:else}
+                <Pause class="w-3 h-3 text-gray-400" />
+                <span class="text-gray-400">PAUSED</span>
+              {/if}
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 {:else}
-  <div class="spotify-offline w-full bg-spotify-black-1 rounded-lg flex flex-col overflow-hidden">
-    <div class="bg-spotify-black-2 w-full flex items-center p-2 gap-4 h-16">
-      <div class="rounded-sm w-12 h-12 animate-pulse bg-spotify-black-4"></div>
-      <div class="flex flex-col justify-center gap-3 flex-1">
-        <div class="w-1/2 h-4 animate-pulse bg-spotify-black-4 rounded-sm"></div>
-        <div class="w-1/3 h-4 animate-pulse bg-spotify-black-4 rounded-sm"></div>
+  <div class="group relative bg-gradient-to-br from-spotify-black-2 to-spotify-black-1 rounded-2xl shadow-xl border border-spotify-black-3/50 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-gray-600/30">
+    <!-- Offline state -->
+    <div class="p-4">
+      <div class="flex items-center gap-4 mb-4">
+        <!-- Animated album placeholder -->
+        <div class="relative">
+          <div class="w-16 h-16 rounded-lg bg-spotify-black-3 flex items-center justify-center">
+            <div class="w-8 h-8 rounded bg-spotify-black-4 animate-pulse"></div>
+          </div>
+          <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-gray-600 rounded-full flex items-center justify-center">
+            <X class="w-3 h-3 text-gray-400" />
+          </div>
+        </div>
+
+        <!-- Offline info -->
+        <div class="flex-1">
+          <div class="font-bold text-gray-400 text-base mb-1">Not Playing</div>
+          <div class="text-sm text-gray-500">Connect to Spotify to see current track</div>
+        </div>
+
+        <!-- Spotify logo -->
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <a href="https://open.spotify.com" rel="noreferrer" target="_blank" class="block">
+            <SpotifyLogoIcon class="h-5 w-auto text-gray-400 hover:text-spotify-green hover:scale-110 transition-all duration-200" />
+          </a>
+        </div>
       </div>
-    </div>
-    <div
-      class="text-white flex-1 px-3 w-full bg-spotify-black-3 flex gap-2 justify-between items-center"
-    >
-      <div class="text-gray-300">Offline</div>
-      <a href="https://open.spotify.com" rel="noreferrer" target="_blank">
-        <SpotifyLogoIcon class="h-4 w-auto text-white" />
-      </a>
+
+      <!-- Offline progress bar placeholder -->
+      <div class="space-y-3">
+        <div class="h-2 rounded-full bg-spotify-black-3/30 overflow-hidden">
+          <div class="h-full w-0 bg-gradient-to-r from-gray-600 to-gray-700 rounded-full"></div>
+        </div>
+
+        <div class="flex items-center justify-between text-xs">
+          <div class="flex items-center gap-1 text-gray-500">
+            <Pause class="w-3 h-3" />
+            <span>Offline</span>
+          </div>
+          <span class="text-gray-500">--:--</span>
+        </div>
+      </div>
     </div>
   </div>
 {/if}
