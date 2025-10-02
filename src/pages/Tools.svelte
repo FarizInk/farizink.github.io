@@ -26,7 +26,8 @@
     Activity,
     ArrowUpDown,
     Percent,
-    Globe
+    Globe,
+    Image
   } from '@lucide/svelte';
 
   let searchQuery = $state('');
@@ -229,6 +230,15 @@
           comingSoon: false
         },
         {
+          id: 'hash-comparer',
+          name: 'Hash Comparer',
+          description: 'Compare two hash values for verification',
+          icon: GitCompare,
+          color: 'blue',
+          features: ['Real-time comparison', 'Supports all hash types', 'Detailed analysis', 'Easy copy/paste'],
+          comingSoon: false
+        },
+        {
           id: 'jwt-decoder',
           name: 'JWT Decoder',
           description: 'Decode JWT tokens safely',
@@ -282,6 +292,15 @@
           icon: Box,
           color: 'gray',
           features: ['Box shadows', 'Text shadows', 'Multiple shadows', 'CSS export'],
+          comingSoon: false
+        },
+        {
+          id: 'ascii-art-generator',
+          name: 'ASCII Art Generator',
+          description: 'Convert text into ASCII art with different styles',
+          icon: Image,
+          color: 'purple',
+          features: ['Multiple art styles', 'Real-time preview', 'Easy export', 'Character support'],
           comingSoon: false
         }
       ]
@@ -462,6 +481,10 @@
       navigate('/tools/random-picker');
     } else if (toolId === 'cron-generator') {
       navigate('/tools/cron-generator');
+    } else if (toolId === 'hash-comparer') {
+      navigate('/tools/hash-comparer');
+    } else if (toolId === 'ascii-art-generator') {
+      navigate('/tools/ascii-art-generator');
     }
   }
 

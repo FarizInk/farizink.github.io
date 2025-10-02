@@ -42,6 +42,8 @@
   import AgeCalculator from './pages/tools/AgeCalculator.svelte';
   import RandomPicker from './pages/tools/RandomPicker.svelte';
   import CronGenerator from './pages/tools/CronGenerator.svelte';
+  import HashComparer from './pages/tools/HashComparer.svelte';
+  import AsciiArtGenerator from './pages/tools/AsciiArtGenerator.svelte';
 
   // Define routes
   const routes = [
@@ -186,6 +188,16 @@
       path: '/tools/cron-generator',
       component: CronGenerator,
       title: 'Cron Expression Generator - Fariz'
+    },
+    {
+      path: '/tools/hash-comparer',
+      component: HashComparer,
+      title: 'Hash Comparer - Fariz'
+    },
+    {
+      path: '/tools/ascii-art-generator',
+      component: AsciiArtGenerator,
+      title: 'ASCII Art Generator - Fariz'
     }
   ];
 
