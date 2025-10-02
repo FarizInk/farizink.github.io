@@ -37,8 +37,10 @@ export const toolsRoutes = [
     path: '/tools',
     component: Tools,
     title: 'Developer Tools - Fariz',
-    description: 'Free online developer tools and utilities. JSON parser, color converter, URL encoder, and more productivity tools for developers.',
-    keywords: 'developer tools, online tools, web tools, json parser, color converter, url encoder, productivity tools',
+    description:
+      'Free online developer tools and utilities. JSON parser, color converter, URL encoder, and more productivity tools for developers.',
+    keywords:
+      'developer tools, online tools, web tools, json parser, color converter, url encoder, productivity tools',
     robots: 'index, follow'
   },
   { path: '/tools/json-parser', component: JsonParser, title: 'JSON Parser - Fariz' },

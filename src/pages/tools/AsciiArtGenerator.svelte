@@ -1,6 +1,15 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, Image, Copy, Download, RefreshCw, Type, Zap, Palette } from '@lucide/svelte';
+  import {
+    ChevronLeft,
+    Image,
+    Copy,
+    Download,
+    Type,
+    Zap,
+    Palette,
+    Check
+  } from '@lucide/svelte';
 
   let inputText = $state('');
   let asciiArt = $state('');
@@ -11,32 +20,32 @@
     standard: {
       name: 'Standard',
       chars: {
-        'A': '  #  \n ### \n# # #\n#####\n#   #',
-        'B': '#### \n#   #\n#### \n#   #\n#### ',
-        'C': ' ### \n#    \n#    \n#    \n ### ',
-        'D': '#### \n#   #\n#   #\n#   #\n#### ',
-        'E': '#####\n#    \n###  \n#    \n#####',
-        'F': '#####\n#    \n###  \n#    \n#    ',
-        'G': ' ### \n#    \n#  ##\n#   #\n ### ',
-        'H': '#   #\n#   #\n#####\n#   #\n#   #',
-        'I': '#####\n  #  \n  #  \n  #  \n#####',
-        'J': ' #####\n    #\n    #\n#   #\n ### ',
-        'K': '#  # \n# #  \n##   \n# #  \n#  # ',
-        'L': '#    \n#    \n#    \n#    \n#####',
-        'M': '#   #\n## ##\n# # #\n#   #\n#   #',
-        'N': '#   #\n##  #\n# # #\n#  ##\n#   #',
-        'O': ' ### \n#   #\n#   #\n#   #\n ### ',
-        'P': '#### \n#   #\n#### \n#    \n#    ',
-        'Q': ' ### \n#   #\n#   #\n#  ##\n ## #',
-        'R': '#### \n#   #\n#### \n# #  \n#  # ',
-        'S': ' ### \n#    \n ### \n    #\n ####',
-        'T': '#####\n  #  \n  #  \n  #  \n  #  ',
-        'U': '#   #\n#   #\n#   #\n#   #\n ### ',
-        'V': '#   #\n#   #\n#   #\n # # \n  #  ',
-        'W': '#   #\n#   #\n# # #\n## ##\n#   #',
-        'X': '#   #\n # # \n  #  \n # # \n#   #',
-        'Y': '#   #\n # # \n  #  \n  #  \n  #  ',
-        'Z': '#####\n   # \n  #  \n #   \n#####',
+        A: '  #  \n ### \n# # #\n#####\n#   #',
+        B: '#### \n#   #\n#### \n#   #\n#### ',
+        C: ' ### \n#    \n#    \n#    \n ### ',
+        D: '#### \n#   #\n#   #\n#   #\n#### ',
+        E: '#####\n#    \n###  \n#    \n#####',
+        F: '#####\n#    \n###  \n#    \n#    ',
+        G: ' ### \n#    \n#  ##\n#   #\n ### ',
+        H: '#   #\n#   #\n#####\n#   #\n#   #',
+        I: '#####\n  #  \n  #  \n  #  \n#####',
+        J: ' #####\n    #\n    #\n#   #\n ### ',
+        K: '#  # \n# #  \n##   \n# #  \n#  # ',
+        L: '#    \n#    \n#    \n#    \n#####',
+        M: '#   #\n## ##\n# # #\n#   #\n#   #',
+        N: '#   #\n##  #\n# # #\n#  ##\n#   #',
+        O: ' ### \n#   #\n#   #\n#   #\n ### ',
+        P: '#### \n#   #\n#### \n#    \n#    ',
+        Q: ' ### \n#   #\n#   #\n#  ##\n ## #',
+        R: '#### \n#   #\n#### \n# #  \n#  # ',
+        S: ' ### \n#    \n ### \n    #\n ####',
+        T: '#####\n  #  \n  #  \n  #  \n  #  ',
+        U: '#   #\n#   #\n#   #\n#   #\n ### ',
+        V: '#   #\n#   #\n#   #\n # # \n  #  ',
+        W: '#   #\n#   #\n# # #\n## ##\n#   #',
+        X: '#   #\n # # \n  #  \n # # \n#   #',
+        Y: '#   #\n # # \n  #  \n  #  \n  #  ',
+        Z: '#####\n   # \n  #  \n #   \n#####',
         ' ': '     \n     \n     \n     \n     ',
         '!': '  #  \n  #  \n  #  \n     \n  #  ',
         '?': ' ### \n#   #\n   # \n  #  \n  #  ',
@@ -57,32 +66,32 @@
     block: {
       name: 'Block',
       chars: {
-        'A': '█████\n█   █\n█████\n█   █\n█   █',
-        'B': '█████\n█   █\n█████\n█   █\n█████',
-        'C': ' █████\n█     \n█     \n█     \n █████',
-        'D': '█████ \n█   █ \n█   █ \n█   █ \n█████ ',
-        'E': '█████\n█     \n████  \n█     \n█████',
-        'F': '█████\n█     \n████  \n█     \n█    ',
-        'G': ' █████\n█     \n█  ███\n█   █ \n █████',
-        'H': '█   █\n█   █\n█████\n█   █\n█   █',
-        'I': '█████\n  █  \n  █  \n  █  \n█████',
-        'J': '  ████\n     █\n     █\n█   █ \n ███ ',
-        'K': '█   █ \n█  █  \n███   \n█  █  \n█   █ ',
-        'L': '█     \n█     \n█     \n█     \n█████',
-        'M': '█   █\n██ ██\n█ █ █\n█   █\n█   █',
-        'N': '█   █\n██  █\n█ █ █\n█  ██\n█   █',
-        'O': ' █████\n█   █ \n█   █ \n█   █ \n █████',
-        'P': '█████ \n█   █ \n█████ \n█     \n█    ',
-        'Q': ' █████\n█   █ \n█   █ \n█  ██ \n ██ █ ',
-        'R': '█████ \n█   █ \n█████ \n█  █  \n█   █ ',
-        'S': ' █████\n█     \n ████ \n     █\n█████ ',
-        'T': '█████\n  █  \n  █  \n  █  \n  █  ',
-        'U': '█   █\n█   █\n█   █\n█   █ \n ███ ',
-        'V': '█   █\n█   █\n█   █\n █ █ \n  █  ',
-        'W': '█   █\n█   █\n█ █ █\n██ ██\n█   █',
-        'X': '█   █\n █ █ \n  █  \n █ █ \n█   █',
-        'Y': '█   █\n █ █ \n  █  \n  █  \n  █  ',
-        'Z': '█████\n   █ \n  █  \n █   \n█████',
+        A: '█████\n█   █\n█████\n█   █\n█   █',
+        B: '█████\n█   █\n█████\n█   █\n█████',
+        C: ' █████\n█     \n█     \n█     \n █████',
+        D: '█████ \n█   █ \n█   █ \n█   █ \n█████ ',
+        E: '█████\n█     \n████  \n█     \n█████',
+        F: '█████\n█     \n████  \n█     \n█    ',
+        G: ' █████\n█     \n█  ███\n█   █ \n █████',
+        H: '█   █\n█   █\n█████\n█   █\n█   █',
+        I: '█████\n  █  \n  █  \n  █  \n█████',
+        J: '  ████\n     █\n     █\n█   █ \n ███ ',
+        K: '█   █ \n█  █  \n███   \n█  █  \n█   █ ',
+        L: '█     \n█     \n█     \n█     \n█████',
+        M: '█   █\n██ ██\n█ █ █\n█   █\n█   █',
+        N: '█   █\n██  █\n█ █ █\n█  ██\n█   █',
+        O: ' █████\n█   █ \n█   █ \n█   █ \n █████',
+        P: '█████ \n█   █ \n█████ \n█     \n█    ',
+        Q: ' █████\n█   █ \n█   █ \n█  ██ \n ██ █ ',
+        R: '█████ \n█   █ \n█████ \n█  █  \n█   █ ',
+        S: ' █████\n█     \n ████ \n     █\n█████ ',
+        T: '█████\n  █  \n  █  \n  █  \n  █  ',
+        U: '█   █\n█   █\n█   █\n█   █ \n ███ ',
+        V: '█   █\n█   █\n█   █\n █ █ \n  █  ',
+        W: '█   █\n█   █\n█ █ █\n██ ██\n█   █',
+        X: '█   █\n █ █ \n  █  \n █ █ \n█   █',
+        Y: '█   █\n █ █ \n  █  \n  █  \n  █  ',
+        Z: '█████\n   █ \n  █  \n █   \n█████',
         ' ': '     \n     \n     \n     \n     ',
         '!': '  █  \n  █  \n  █  \n     \n  █  ',
         '?': ' ████\n█   █\n   █ \n  █  \n  █  ',
@@ -103,32 +112,32 @@
     simple: {
       name: 'Simple',
       chars: {
-        'A': '/\\  \n/\\_\\',
-        'B': '| __\n|__)',
-        'C': ' __ \n/  |',
-        'D': '|  \\\n|__/',
-        'E': '___ \n|__ ',
-        'F': '___ \n|  ',
-        'G': ' __ \n| __|',
-        'H': '|__|\n|  |',
-        'I': '_ \n|',
-        'J': ' __\n|__',
-        'K': '|_/\n| \\',
-        'L': '|   \n|__ ',
-        'M': '|\\/|\n|  |',
-        'N': '|\\ |\n| \\|',
-        'O': ' __ \n|__)',
-        'P': ' __ \n|__)',
-        'Q': ' __ \n|__\\',
-        'R': ' __ \n|__/',
-        'S': ' __ \n/__)',
-        'T': '___ \n  | ',
-        'U': '|  |\n|__|',
-        'V': '\\  /\n \\/ ',
-        'W': '|\\/|\n|  |',
-        'X': '\\_/\n/ \\',
-        'Y': '\\_/\n  |',
-        'Z': '__ \n/__',
+        A: '/\\  \n/\\_\\',
+        B: '| __\n|__)',
+        C: ' __ \n/  |',
+        D: '|  \\\n|__/',
+        E: '___ \n|__ ',
+        F: '___ \n|  ',
+        G: ' __ \n| __|',
+        H: '|__|\n|  |',
+        I: '_ \n|',
+        J: ' __\n|__',
+        K: '|_/\n| \\',
+        L: '|   \n|__ ',
+        M: '|\\/|\n|  |',
+        N: '|\\ |\n| \\|',
+        O: ' __ \n|__)',
+        P: ' __ \n|__)',
+        Q: ' __ \n|__\\',
+        R: ' __ \n|__/',
+        S: ' __ \n/__)',
+        T: '___ \n  | ',
+        U: '|  |\n|__|',
+        V: '\\  /\n \\/ ',
+        W: '|\\/|\n|  |',
+        X: '\\_/\n/ \\',
+        Y: '\\_/\n  |',
+        Z: '__ \n/__',
         ' ': '   \n   ',
         '!': '   \n  )',
         '?': ' _ \n(_)',
@@ -162,8 +171,8 @@
       let lineText = '';
       for (let i = 0; i < text.length; i++) {
         const char = text[i];
-        if (style.chars[char]) {
-          const charLines = style.chars[char].split('\n');
+        if (style.chars[char as keyof typeof style.chars]) {
+          const charLines = style.chars[char as keyof typeof style.chars].split('\n');
           if (charLines[line]) {
             lineText += charLines[line] + ' ';
           } else {
@@ -238,7 +247,8 @@
       </div>
       <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">ASCII Art Generator</h1>
       <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Convert text into ASCII art with different styles. Perfect for terminal displays and creative text art.
+        Convert text into ASCII art with different styles. Perfect for terminal displays and
+        creative text art.
       </p>
     </div>
   </div>
@@ -291,20 +301,21 @@
     >
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Art Style</h3>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {#each Object.entries(asciiStyles) as [key, style]}
+        {#each Object.entries(asciiStyles) as [key, style], index (index)}
           <button
-            onclick={() => selectedStyle = key}
+            onclick={() => (selectedStyle = key)}
             class="p-4 border-2 rounded-lg transition-all {selectedStyle === key
               ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
-              : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
-            }"
+              : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'}"
           >
             <div class="text-left">
               <h4 class="font-medium text-gray-900 dark:text-white mb-1">{style.name}</h4>
               <p class="text-xs text-gray-500 dark:text-gray-400">
-                {key === 'standard' ? 'Classic ASCII style with standard characters' :
-                 key === 'block' ? 'Bold block style using full Unicode blocks' :
-                 'Minimal style using basic ASCII characters'}
+                {key === 'standard'
+                  ? 'Classic ASCII style with standard characters'
+                  : key === 'block'
+                    ? 'Bold block style using full Unicode blocks'
+                    : 'Minimal style using basic ASCII characters'}
               </p>
             </div>
           </button>
@@ -331,7 +342,8 @@
       maxlength={10}
     />
     <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-      Maximum 10 characters recommended for best results. Supports letters, numbers, and basic punctuation.
+      Maximum 10 characters recommended for best results. Supports letters, numbers, and basic
+      punctuation.
     </p>
   </div>
 
@@ -366,8 +378,7 @@
       </div>
       <div class="relative">
         <pre
-          class="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg font-mono text-sm text-gray-900 dark:text-white overflow-x-auto whitespace-pre"
-        >{asciiArt}</pre>
+          class="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg font-mono text-sm text-gray-900 dark:text-white overflow-x-auto whitespace-pre">{asciiArt}</pre>
       </div>
     </div>
   {/if}

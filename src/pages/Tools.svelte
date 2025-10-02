@@ -235,7 +235,12 @@
           description: 'Compare two hash values for verification',
           icon: GitCompare,
           color: 'blue',
-          features: ['Real-time comparison', 'Supports all hash types', 'Detailed analysis', 'Easy copy/paste'],
+          features: [
+            'Real-time comparison',
+            'Supports all hash types',
+            'Detailed analysis',
+            'Easy copy/paste'
+          ],
           comingSoon: false
         },
         {
@@ -300,7 +305,12 @@
           description: 'Convert text into ASCII art with different styles',
           icon: Image,
           color: 'purple',
-          features: ['Multiple art styles', 'Real-time preview', 'Easy export', 'Character support'],
+          features: [
+            'Multiple art styles',
+            'Real-time preview',
+            'Easy export',
+            'Character support'
+          ],
           comingSoon: false
         }
       ]

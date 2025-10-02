@@ -5,46 +5,55 @@ Your website now has comprehensive Open Graph and social media meta tags! Here's
 ## 🔧 Testing Tools
 
 ### 1. Facebook/Meta Debugger
+
 - URL: https://developers.facebook.com/tools/debug/
 - Test: https://farizink.github.io/
 - This will show how your link appears on Facebook and Instagram
 
 ### 2. Twitter Card Validator
+
 - URL: https://cards-dev.twitter.com/validator
 - Test: https://farizink.github.io/
 - Shows how your link appears on Twitter/X
 
 ### 3. LinkedIn Post Inspector
+
 - URL: https://www.linkedin.com/post-inspector/
 - Test: https://farizink.github.io/
 - Shows LinkedIn preview
 
 ### 4. Discord Embed Checker
+
 - Simply paste your URL in any Discord channel
 - URL: https://farizink.github.io/
 
 ### 5. Telegram Preview
+
 - Send your link in any Telegram chat
 - URL: https://farizink.github.io/
 
 ## 📱 What's Included
 
 ### ✅ Open Graph Tags
+
 - Title, description, image, URL
 - Proper image dimensions (1200x630)
 - Secure HTTPS image URLs
 - Image type and alt text
 
 ### ✅ Twitter Cards
+
 - Large image summary card
 - Proper creator and site attribution
 - Optimized for Twitter/X sharing
 
 ### ✅ Discord/Telegram Optimization
+
 - Theme color for Discord embeds
 - Proper meta structure for instant previews
 
 ### ✅ Dynamic Updates
+
 - Page titles and descriptions update when navigating
 - Each tool page has custom descriptions
 - URL updates correctly for sharing specific tools
@@ -52,6 +61,7 @@ Your website now has comprehensive Open Graph and social media meta tags! Here's
 ## 🎯 Expected Results
 
 When you share your links, people should see:
+
 - **Title**: "Nizar Alfarizi Akbar - Software Engineer & Developer"
 - **Description**: Your professional summary
 - **Image**: Your profile photo
@@ -62,6 +72,7 @@ When you share your links, people should see:
 All tool pages now have custom descriptions for better social media sharing:
 
 ### 📝 Text & Content Tools
+
 - **JSON Parser**: `/tools/json-parser` - "Free online JSON parser and formatter..."
 - **Markdown Preview**: `/tools/markdown-preview` - "Live markdown editor and preview tool..."
 - **Character Counter**: `/tools/character-counter` - "Count characters, words, lines, and paragraphs..."
@@ -70,12 +81,14 @@ All tool pages now have custom descriptions for better social media sharing:
 - **Lorem Ipsum Generator**: `/tools/lorem-ipsum-generator` - "Generate placeholder text for web design..."
 
 ### 🎨 Design & CSS Tools
+
 - **Color Converter**: `/tools/color-converter` - "Convert colors between HEX, RGB, HSL..."
 - **Color Palette Generator**: `/tools/color-palette` - "Generate beautiful color palettes and schemes..."
 - **CSS Gradient Generator**: `/tools/gradient-generator` - "Create CSS gradients with live preview..."
 - **CSS Shadow Generator**: `/tools/css-shadow-generator` - "Create CSS box-shadow and text-shadow effects..."
 
 ### 🔧 Developer Tools
+
 - **Base64 Converter**: `/tools/base64-converter` - "Free Base64 encoder and decoder tool..."
 - **URL Encoder**: `/tools/url-encoder` - "Free URL encoder and decoder tool..."
 - **URL Parser**: `/tools/url-parser` - "Parse and analyze URLs to extract protocol, domain..."
@@ -87,6 +100,7 @@ All tool pages now have custom descriptions for better social media sharing:
 - **Cron Generator**: `/tools/cron-generator` - "Generate and validate cron expressions..."
 
 ### 📊 Calculators
+
 - **Percentage Calculator**: `/tools/percentage-calculator` - "Calculate percentages, percentage changes..."
 - **Unit Converter**: `/tools/unit-converter` - "Convert between different units of measurement..."
 - **BMI Calculator**: `/tools/bmi-calculator` - "Calculate Body Mass Index and get health recommendations..."
@@ -94,6 +108,7 @@ All tool pages now have custom descriptions for better social media sharing:
 - **Tip Calculator**: `/tools/tip-calculator` - "Calculate tips and split bills easily..."
 
 ### 🎯 Utility Tools
+
 - **Password Generator**: `/tools/password-generator` - "Generate secure passwords with customizable options..."
 - **QR Code Generator**: `/tools/qr-code-generator` - "Create QR codes for URLs, text, WiFi..."
 - **Random Picker**: `/tools/random-picker` - "Random selection tool for making decisions..."
@@ -104,6 +119,7 @@ All tool pages now have custom descriptions for better social media sharing:
 ## 🔄 Cache Clearing
 
 If you don't see updates immediately:
+
 1. Use the testing tools above to refresh cache
 2. Wait 24-48 hours for social platform caches to update
 3. Some platforms may need the debugger/validator run first

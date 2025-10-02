@@ -214,8 +214,11 @@
 </script>
 
 {#if spotify}
-  <div class="group relative bg-gradient-to-br from-spotify-black-2 to-spotify-black-1 rounded-2xl shadow-xl border {isPlaying ? 'border-spotify-green/50 shadow-spotify-green/20' : 'border-spotify-black-3/50'} overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-spotify-green/30">
-
+  <div
+    class="group relative bg-gradient-to-br from-spotify-black-2 to-spotify-black-1 rounded-2xl shadow-xl border {isPlaying
+      ? 'border-spotify-green/50 shadow-spotify-green/20'
+      : 'border-spotify-black-3/50'} overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-spotify-green/30"
+  >
     <!-- Main content -->
     <div class="p-4">
       <!-- Header with album and track info -->
@@ -229,7 +232,9 @@
               class="w-16 h-16 rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105 object-cover"
             />
             {#if isPlaying}
-              <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-spotify-green rounded-full flex items-center justify-center shadow-lg">
+              <div
+                class="absolute -bottom-1 -right-1 w-5 h-5 bg-spotify-green rounded-full flex items-center justify-center shadow-lg"
+              >
                 <Play class="w-2.5 h-2.5 text-white" />
               </div>
             {/if}
@@ -238,13 +243,10 @@
 
         <!-- Track information -->
         <div class="flex-1 min-w-0">
-          <div class="font-bold text-white text-base mb-1 truncate group-hover:text-spotify-green transition-colors duration-200">
-            <a
-              target="_blank"
-              rel="noreferrer"
-              class="hover:underline"
-              href={track.url}
-            >
+          <div
+            class="font-bold text-white text-base mb-1 truncate group-hover:text-spotify-green transition-colors duration-200"
+          >
+            <a target="_blank" rel="noreferrer" class="hover:underline" href={track.url}>
               {track.name}
             </a>
           </div>
@@ -270,7 +272,9 @@
         <!-- Spotify logo -->
         <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <a href="https://open.spotify.com" rel="noreferrer" target="_blank" class="block">
-            <SpotifyLogoIcon class="h-5 w-auto text-spotify-green hover:scale-110 transition-transform duration-200" />
+            <SpotifyLogoIcon
+              class="h-5 w-auto text-spotify-green hover:scale-110 transition-transform duration-200"
+            />
           </a>
         </div>
       </div>
@@ -335,7 +339,9 @@
     </div>
   </div>
 {:else}
-  <div class="group relative bg-gradient-to-br from-spotify-black-2 to-spotify-black-1 rounded-2xl shadow-xl border border-spotify-black-3/50 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-gray-600/30">
+  <div
+    class="group relative bg-gradient-to-br from-spotify-black-2 to-spotify-black-1 rounded-2xl shadow-xl border border-spotify-black-3/50 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-gray-600/30"
+  >
     <!-- Offline state -->
     <div class="p-4">
       <div class="flex items-center gap-4 mb-4">
@@ -344,7 +350,9 @@
           <div class="w-16 h-16 rounded-lg bg-spotify-black-3 flex items-center justify-center">
             <div class="w-8 h-8 rounded bg-spotify-black-4 animate-pulse"></div>
           </div>
-          <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-gray-600 rounded-full flex items-center justify-center">
+          <div
+            class="absolute -bottom-1 -right-1 w-5 h-5 bg-gray-600 rounded-full flex items-center justify-center"
+          >
             <X class="w-3 h-3 text-gray-400" />
           </div>
         </div>
@@ -358,7 +366,9 @@
         <!-- Spotify logo -->
         <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <a href="https://open.spotify.com" rel="noreferrer" target="_blank" class="block">
-            <SpotifyLogoIcon class="h-5 w-auto text-gray-400 hover:text-spotify-green hover:scale-110 transition-all duration-200" />
+            <SpotifyLogoIcon
+              class="h-5 w-auto text-gray-400 hover:text-spotify-green hover:scale-110 transition-all duration-200"
+            />
           </a>
         </div>
       </div>
@@ -382,7 +392,4 @@
 {/if}
 
 <style scoped>
-  .spotify-offline {
-    height: 100px;
-  }
 </style>

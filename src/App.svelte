@@ -22,7 +22,8 @@
     // Listen for theme changes
     const handleThemeChange = () => {
       const theme = localStorage.getItem('theme');
-      isDark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      isDark =
+        theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
     };
 
     // Listen for storage changes and system theme changes
@@ -40,7 +41,9 @@
 
     return () => {
       window.removeEventListener('storage', handleThemeChange);
-      window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', handleThemeChange);
+      window
+        .matchMedia('(prefers-color-scheme: dark)')
+        .removeEventListener('change', handleThemeChange);
       observer.disconnect();
     };
   });

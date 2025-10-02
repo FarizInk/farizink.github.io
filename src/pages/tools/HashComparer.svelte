@@ -79,6 +79,8 @@
     }
   });
 
+  const CurrentIcon = $derived(comparisonIcon());
+
   function getComparisonColor() {
     switch (comparisonResult) {
       case 'match':
@@ -185,10 +187,8 @@
       class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center"
     >
       <div class="flex items-center justify-center gap-3">
-        <div
-          class="w-12 h-12 {getComparisonColor()} rounded-lg flex items-center justify-center"
-        >
-          <svelte:component this={comparisonIcon()} class="w-6 h-6" />
+        <div class="w-12 h-12 {getComparisonColor()} rounded-lg flex items-center justify-center">
+          <CurrentIcon class="w-6 h-6" />
         </div>
         <div>
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -198,9 +198,8 @@
             {comparisonResult === 'match'
               ? 'Both hash values are identical'
               : comparisonResult === 'different'
-              ? 'Hash values are different'
-              : 'Enter two hash values to compare'
-            }
+                ? 'Hash values are different'
+                : 'Enter two hash values to compare'}
           </p>
         </div>
       </div>
@@ -279,7 +278,11 @@
       <div class="space-y-4">
         <div class="flex items-center justify-between">
           <span class="text-gray-600 dark:text-gray-400">Match Status:</span>
-          <span class="font-medium {comparisonResult === 'match' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}">
+          <span
+            class="font-medium {comparisonResult === 'match'
+              ? 'text-green-600 dark:text-green-400'
+              : 'text-red-600 dark:text-red-400'}"
+          >
             {comparisonResult === 'match' ? '✓ Identical' : '✗ Different'}
           </span>
         </div>
@@ -297,7 +300,11 @@
         </div>
         <div class="flex items-center justify-between">
           <span class="text-gray-600 dark:text-gray-400">Length Match:</span>
-          <span class="font-medium {hash1.trim().length === hash2.trim().length ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}">
+          <span
+            class="font-medium {hash1.trim().length === hash2.trim().length
+              ? 'text-green-600 dark:text-green-400'
+              : 'text-red-600 dark:text-red-400'}"
+          >
             {hash1.trim().length === hash2.trim().length ? '✓ Yes' : '✗ No'}
           </span>
         </div>

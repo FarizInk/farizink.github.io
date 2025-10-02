@@ -17,7 +17,6 @@
 </script>
 
 <main class="min-h-screen flex items-center justify-center px-4 py-8 relative">
-
   <!-- Main Content -->
   <div class="max-w-4xl w-full">
     <div class="text-left">
@@ -44,7 +43,10 @@
       <!-- Description -->
       <div class="mb-8">
         <p class="text-gray-700 dark:text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl">
-          Software engineer based in Surabaya, Indonesia. Specializing in backend development and high-quality web applications. Currently building <span class="italic text-blue-600 dark:text-blue-400">"gabut"</span> projects and crushing work tasks 🙂
+          Software engineer based in Surabaya, Indonesia. Specializing in backend development and
+          high-quality web applications. Currently building <span
+            class="italic text-blue-600 dark:text-blue-400">"gabut"</span
+          > projects and crushing work tasks 🙂
         </p>
       </div>
 
@@ -64,24 +66,35 @@
   {#if showPhoto && randPhoto}
     <div
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
-      onclick={() => showPhoto = false}
+      onclick={() => (showPhoto = false)}
+      onkeydown={(e) => e.key === 'Escape' && (showPhoto = false)}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Photo modal"
+      tabindex="-1"
     >
       <div
         class="relative group animate-in zoom-in duration-300"
-        onclick={(e) => e.stopPropagation()}
+        role="document"
+        tabindex="-1"
       >
         <!-- Close button -->
         <button
-          onclick={() => showPhoto = false}
+          onclick={() => (showPhoto = false)}
           class="absolute hover:cursor-pointer -top-3 -right-3 z-10 w-10 h-10 bg-gray-900 dark:bg-white rounded-full flex items-center justify-center text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-200 transition-all duration-200 shadow-lg hover:scale-110"
+          aria-label="Close photo modal"
         >
           <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+            <path
+              d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"
+            />
           </svg>
         </button>
 
         <!-- Photo card with natural ratio -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden max-w-sm md:max-w-md lg:max-w-lg">
+        <div
+          class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden max-w-sm md:max-w-md lg:max-w-lg"
+        >
           <img
             src={randPhoto}
             alt="Fariz"
@@ -90,14 +103,18 @@
         </div>
 
         <!-- Subtle shadow effect -->
-        <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-2xl pointer-events-none"></div>
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-2xl pointer-events-none"
+        ></div>
       </div>
     </div>
   {/if}
 
   <!-- Subtle hint about the hidden feature -->
   {#if !showPhoto}
-    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+    <div
+      class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center opacity-0 hover:opacity-100 transition-opacity duration-300"
+    >
       <p class="text-xs text-gray-400 dark:text-gray-600 italic">Click my name for a surprise</p>
     </div>
   {/if}

@@ -93,7 +93,9 @@
   {#if loading}
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
       {#each Array(6) as i (i)}
-        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 animate-pulse">
+        <div
+          class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 animate-pulse"
+        >
           <div class="mb-4">
             <div class="h-6 bg-gray-300 dark:bg-gray-600 rounded-lg mb-2 w-3/4"></div>
           </div>
@@ -107,7 +109,9 @@
             <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-20"></div>
             <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-14"></div>
           </div>
-          <div class="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div
+            class="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-700"
+          >
             <div class="flex items-center gap-4">
               <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
               <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-12"></div>
@@ -135,7 +139,9 @@
         <div
           class="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:border-blue-300 dark:hover:border-blue-600 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-out flex flex-col relative overflow-hidden"
         >
-          <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div
+            class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          ></div>
 
           <div class="mb-4 relative z-10">
             <div class="flex items-start justify-between mb-2">
@@ -154,8 +160,12 @@
                     fill="currentColor"
                     class="opacity-0 group-hover/link:opacity-70 transition-opacity duration-200"
                   >
-                    <path d="M3.75 2h3.5a.75.75 0 010 1.5h-3.5a.25.25 0 00-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 00.25-.25v-3.5a.75.75 0 011.5 0v3.5A1.75 1.75 0 0111.25 15h-8.5A1.75 1.75 0 011 13.25v-8.5A1.75 1.75 0 012.75 3h3.5a.75.75 0 010 1.5h-3.5z"/>
-                    <path d="M15.22 1.28a.75.75 0 010 1.06l-6.22 6.22H11a.75.75 0 010 1.5H7.25a.75.75 0 01-.75-.75V6a.75.75 0 011.5 0v2.19l6.22-6.22a.75.75 0 011.06 0z"/>
+                    <path
+                      d="M3.75 2h3.5a.75.75 0 010 1.5h-3.5a.25.25 0 00-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 00.25-.25v-3.5a.75.75 0 011.5 0v3.5A1.75 1.75 0 0111.25 15h-8.5A1.75 1.75 0 011 13.25v-8.5A1.75 1.75 0 012.75 3h3.5a.75.75 0 010 1.5h-3.5z"
+                    />
+                    <path
+                      d="M15.22 1.28a.75.75 0 010 1.06l-6.22 6.22H11a.75.75 0 010 1.5H7.25a.75.75 0 01-.75-.75V6a.75.75 0 011.5 0v2.19l6.22-6.22a.75.75 0 011.06 0z"
+                    />
                   </svg>
                 </a>
               </h3>
