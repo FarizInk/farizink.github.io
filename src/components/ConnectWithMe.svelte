@@ -40,7 +40,8 @@ import { toast } from 'svelte-sonner';
 
   <!-- Social Links -->
   <div class="flex items-center gap-2">
-    <!-- LinkedIn -->
+    <!-- LinkedIn - Commented out -->
+    <!--
     <a
       href="https://www.linkedin.com/in/farizink"
       target="_blank"
@@ -62,6 +63,7 @@ import { toast } from 'svelte-sonner';
         LinkedIn
       </div>
     </a>
+    -->
 
     <!-- GitHub -->
     <a
