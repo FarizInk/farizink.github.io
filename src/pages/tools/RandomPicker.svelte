@@ -15,6 +15,8 @@
     Users
   } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
+  import Button from '../../components/ui/Button.svelte';
+  import Input from '../../components/ui/Input.svelte';
 
   // Types
   interface PickerItem {
@@ -347,19 +349,21 @@
             Items to Pick From
           </h2>
           <div class="flex gap-2">
-            <button
+            <Button
               onclick={addItem}
-              class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors flex items-center"
+              variant="primary"
+              size="sm"
             >
-              <Plus class="w-4 h-4 mr-1" />
+              <Plus class="w-4 h-4 mr-1" slot="leftIcon" />
               Add Item
-            </button>
-            <button
+            </Button>
+            <Button
               onclick={clearAll}
-              class="px-3 py-1.5 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              variant="destructive"
+              size="sm"
             >
               Clear All
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -474,23 +478,24 @@
           </label>
         </div>
 
-        <button
+        <Button
           onclick={spinPicker}
           disabled={isSpinning || items.filter(item => item.text.trim() !== '').length === 0}
-          class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-lg font-medium"
+          variant="primary"
+          class="w-full"
         >
           {#if isSpinning}
             <div class="flex items-center">
               <div class="animate-spin">
-                <Shuffle class="w-5 h-5 mr-2" />
+                <Shuffle class="w-5 h-5 mr-2" slot="leftIcon" />
               </div>
               Picking...
             </div>
           {:else}
-            <Shuffle class="w-5 h-5 mr-2" />
+            <Shuffle class="w-5 h-5 mr-2" slot="leftIcon" />
             Pick Random Item{numberOfPicks > 1 ? 's' : ''}
           {/if}
-        </button>
+        </Button>
       </div>
 
       <!-- Result Display -->
@@ -504,19 +509,21 @@
               Result
             </h2>
             <div class="flex gap-2">
-              <button
+              <Button
                 onclick={copyResult}
-                class="px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center"
+                variant="secondary"
+                size="sm"
               >
-                <Copy class="w-4 h-4 mr-1" />
+                <Copy class="w-4 h-4 mr-1" slot="leftIcon" />
                 Copy
-              </button>
-              <button
+              </Button>
+              <Button
                 onclick={resetPicker}
-                class="px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                variant="secondary"
+                size="sm"
               >
-                <RotateCcw class="w-4 h-4" />
-              </button>
+                <RotateCcw class="w-4 h-4" slot="leftIcon" />
+              </Button>
             </div>
           </div>
 

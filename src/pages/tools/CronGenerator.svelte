@@ -1,6 +1,8 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
   import { ChevronLeft, Timer, Copy, Calendar, RefreshCw, Info, Clock } from '@lucide/svelte';
+  import Button from '../../components/ui/Button.svelte';
+  import Input from '../../components/ui/Input.svelte';
 
   let cronExpression = $state('0 0 * * *');
   let nextRunTimes = $state<string[]>([]);

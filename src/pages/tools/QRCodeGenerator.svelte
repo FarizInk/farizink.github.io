@@ -3,6 +3,9 @@
   import { navigate } from '../../lib/router.js';
   import QRCode from 'qrcode';
   import { Download, Copy, ChevronLeft, QrCode } from '@lucide/svelte';
+  import Button from '../../components/ui/Button.svelte';
+  import Input from '../../components/ui/Input.svelte';
+  import Textarea from '../../components/ui/Textarea.svelte';
 
   let text = $state('');
   let qrDataUrl = $state('');
@@ -106,6 +109,7 @@
     <div class="text-center mb-8">
       <div
         class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-teal-400 to-teal-600 rounded-2xl mb-4"
+        style="background: linear-gradient(to bottom right, var(--color-qrcode-teal-light), var(--color-qrcode-teal))"
       >
         <QrCode class="w-10 h-10 text-white" />
       </div>
@@ -152,13 +156,12 @@
         >
           Text or URL
         </label>
-        <textarea
+        <Textarea
           id="text-input"
           bind:value={text}
           placeholder="Enter text, URL, or any data to encode..."
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
           rows="4"
-        ></textarea>
+        />
       </div>
 
       <!-- Customization Options -->
@@ -170,52 +173,33 @@
           <label for="size" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Size: {size}px
           </label>
-          <input
+          <Input
             id="size"
             type="range"
             min="100"
             max="500"
             step="50"
             bind:value={size}
-            class="w-full"
+            label={`Size: ${size}px`}
           />
         </div>
 
         <!-- Colors -->
         <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label
-              for="bg-color"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-            >
-              Background Color
-            </label>
-            <div class="flex items-center space-x-2">
-              <input id="bg-color" type="color" bind:value={bgColor} class="h-10 w-full" />
-              <input
-                type="text"
-                bind:value={bgColor}
-                class="w-20 px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 dark:text-white"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label
-              for="fg-color"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-            >
-              Foreground Color
-            </label>
-            <div class="flex items-center space-x-2">
-              <input id="fg-color" type="color" bind:value={fgColor} class="h-10 w-full" />
-              <input
-                type="text"
-                bind:value={fgColor}
-                class="w-20 px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 dark:text-white"
-              />
-            </div>
-          </div>
+          <Input
+            id="bg-color"
+            type="color"
+            bind:value={bgColor}
+            label="Background Color"
+            placeholder="#FFFFFF"
+          />
+          <Input
+            id="fg-color"
+            type="color"
+            bind:value={fgColor}
+            label="Foreground Color"
+            placeholder="#000000"
+          />
         </div>
 
         <!-- Error Correction Level -->
@@ -257,18 +241,18 @@
 
       <!-- Action Buttons -->
       <div class="flex flex-wrap gap-3">
-        <button
+        <Button
           onclick={generateQRCode}
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          variant="primary"
         >
           Generate QR Code
-        </button>
-        <button
+        </Button>
+        <Button
           onclick={resetForm}
-          class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+          variant="flat"
         >
           Reset
-        </button>
+        </Button>
       </div>
     </div>
 
@@ -291,20 +275,20 @@
             </div>
 
             <div class="flex flex-wrap gap-3 justify-center">
-              <button
+              <Button
                 onclick={downloadQRCode}
-                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center"
+                variant="success"
               >
-                <Download class="w-4 h-4 mr-2" />
+                <Download slot="leftIcon" class="w-4 h-4" />
                 Download
-              </button>
-              <button
+              </Button>
+              <Button
                 onclick={copyToClipboard}
-                class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center"
+                variant="secondary"
               >
-                <Copy class="w-4 h-4 mr-2" />
+                <Copy slot="leftIcon" class="w-4 h-4" />
                 Copy
-              </button>
+              </Button>
             </div>
           </div>
         {:else if error}

@@ -1,6 +1,8 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
   import { ChevronLeft, Palette, Copy, Zap, RefreshCw } from '@lucide/svelte';
+  import Button from '../../components/ui/Button.svelte';
+  import Input from '../../components/ui/Input.svelte';
 
   let baseColor = $state('#3B82F6');
   let paletteType = $state('complementary');
@@ -246,6 +248,7 @@
     <div class="text-center mb-8">
       <div
         class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-pink-400 to-pink-600 rounded-2xl mb-4"
+        style="background: linear-gradient(to bottom right, var(--color-palette-pink-light), var(--color-palette-pink))"
       >
         <Palette class="w-10 h-10 text-white" />
       </div>
@@ -294,25 +297,19 @@
           Base Color
         </label>
         <div class="flex gap-2">
-          <input
+          <Input
             id="base-color-picker"
             type="color"
             bind:value={baseColor}
-            class="h-10 w-20 border border-gray-300 dark:border-gray-600 rounded cursor-pointer"
+            placeholder="#3B82F6"
           />
-          <input
-            id="base-color-text"
-            type="text"
-            bind:value={baseColor}
-            placeholder="#000000"
-            class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-          />
-          <button
+          <Button
             onclick={randomColor}
-            class="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            variant="ghost"
+            size="md"
           >
-            <RefreshCw class="w-4 h-4" />
-          </button>
+            <RefreshCw slot="leftIcon" class="w-4 h-4" />
+          </Button>
         </div>
       </div>
 
@@ -336,12 +333,13 @@
       </div>
 
       <div class="flex items-end">
-        <button
+        <Button
           onclick={loadSamplePalette}
-          class="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          variant="secondary"
+          fullWidth
         >
           Load Sample Palette
-        </button>
+        </Button>
       </div>
     </div>
   </div>

@@ -1,6 +1,9 @@
 <script lang="ts">
   import { Copy, RefreshCw, FileText, Hash, Type, ChevronLeft } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
+  import Button from '../../components/ui/Button.svelte';
+  import Input from '../../components/ui/Input.svelte';
+  import Textarea from '../../components/ui/Textarea.svelte';
 
   // Component state
   let amount = $state(5);
@@ -380,13 +383,13 @@
         >
           Amount
         </label>
-        <input
+        <Input
           id="amount-input"
           type="number"
           bind:value={amount}
           min="1"
           max="100"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          variant="default"
         />
       </div>
 
@@ -425,13 +428,14 @@
 
       <!-- Generate Button -->
       <div class="flex items-end">
-        <button
+        <Button
           onclick={generateLoremText}
-          class="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          variant="primary"
+          class="w-full"
         >
-          <RefreshCw class="w-4 h-4 mr-2" />
+          <RefreshCw class="w-4 h-4 mr-2" slot="leftIcon" />
           Generate
-        </button>
+        </Button>
       </div>
     </div>
 
@@ -461,19 +465,21 @@
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Generated Text</h2>
       <div class="flex gap-2">
-        <button
+        <Button
           onclick={copyToClipboard}
-          class="flex items-center px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+          variant="secondary"
+          size="sm"
         >
-          <Copy class="w-4 h-4 mr-1" />
+          <Copy class="w-4 h-4 mr-1" slot="leftIcon" />
           {copied ? 'Copied!' : 'Copy'}
-        </button>
-        <button
+        </Button>
+        <Button
           onclick={downloadAsFile}
-          class="flex items-center px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+          variant="secondary"
+          size="sm"
         >
           Download
-        </button>
+        </Button>
       </div>
     </div>
 

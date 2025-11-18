@@ -16,6 +16,247 @@ footer {
   height: 40px;
 }
 
+/* Gradient Animation */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 3s ease infinite;
+}
+
+/* Design System Utilities */
+
+/* Loading States */
+.ds-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.ds-loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Hover States */
+.ds-hover-lift {
+  transition: transform var(--ds-transition-normal);
+}
+
+.ds-hover-lift:hover {
+  transform: translateY(-4px);
+}
+
+.ds-hover-scale {
+  transition: transform var(--ds-transition-normal);
+}
+
+.ds-hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/* Focus States */
+.ds-focus-ring {
+  transition: box-shadow var(--ds-transition-fast);
+}
+
+.ds-focus-ring:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+/* Card Animations */
+.ds-card-enter {
+  animation: cardEnter 0.3s ease-out;
+}
+
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Status Indicators */
+.ds-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.ds-status-success {
+  background-color: var(--ds-success-500);
+}
+
+.ds-status-warning {
+  background-color: var(--ds-warning-500);
+}
+
+.ds-status-error {
+  background-color: var(--ds-danger-500);
+}
+
+.ds-status-info {
+  background-color: var(--ds-primary-500);
+}
+
+/* Glassmorphism Effect */
+.ds-glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .ds-glass {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Gradients */
+.ds-gradient-primary {
+  background: linear-gradient(135deg, var(--ds-primary-500), var(--ds-primary-600));
+}
+
+.ds-gradient-success {
+  background: linear-gradient(135deg, var(--ds-success-500), var(--ds-success-600));
+}
+
+.ds-gradient-warning {
+  background: linear-gradient(135deg, var(--ds-warning-500), var(--ds-warning-600));
+}
+
+.ds-gradient-danger {
+  background: linear-gradient(135deg, var(--ds-danger-500), var(--ds-danger-600));
+}
+
+/* Responsive Spacing */
+.ds-space-y-1 > * + * {
+  margin-top: var(--ds-space-1);
+}
+
+.ds-space-y-2 > * + * {
+  margin-top: var(--ds-space-2);
+}
+
+.ds-space-y-3 > * + * {
+  margin-top: var(--ds-space-3);
+}
+
+.ds-space-y-4 > * + * {
+  margin-top: var(--ds-space-4);
+}
+
+.ds-space-y-6 > * + * {
+  margin-top: var(--ds-space-6);
+}
+
+.ds-space-x-1 > * + * {
+  margin-left: var(--ds-space-1);
+}
+
+.ds-space-x-2 > * + * {
+  margin-left: var(--ds-space-2);
+}
+
+.ds-space-x-3 > * + * {
+  margin-left: var(--ds-space-3);
+}
+
+.ds-space-x-4 > * + * {
+  margin-left: var(--ds-space-4);
+}
+
+.ds-space-x-6 > * + * {
+  margin-left: var(--ds-space-6);
+}
+
+/* Typography Scale */
+.ds-text-xs {
+  font-size: var(--ds-font-xs);
+}
+
+.ds-text-sm {
+  font-size: var(--ds-font-sm);
+}
+
+.ds-text-base {
+  font-size: var(--ds-font-base);
+}
+
+.ds-text-lg {
+  font-size: var(--ds-font-lg);
+}
+
+.ds-text-xl {
+  font-size: var(--ds-font-xl);
+}
+
+.ds-text-2xl {
+  font-size: var(--ds-font-2xl);
+}
+
+.ds-text-3xl {
+  font-size: var(--ds-font-3xl);
+}
+
+.ds-text-4xl {
+  font-size: var(--ds-font-4xl);
+}
+
+/* Component Shadows */
+.ds-shadow-button {
+  box-shadow: var(--ds-shadow-sm);
+}
+
+.ds-shadow-button:hover {
+  box-shadow: var(--ds-shadow-md);
+}
+
+.ds-shadow-card {
+  box-shadow: var(--ds-shadow-md);
+}
+
+.ds-shadow-card:hover {
+  box-shadow: var(--ds-shadow-lg);
+}
+
+.ds-shadow-modal {
+  box-shadow: var(--ds-shadow-xl);
+}
+
 @theme {
   --color-spotify-green: #1cd760;
   --color-spotify-black-1: #070707;
@@ -28,4 +269,199 @@ footer {
   --color-twitter-blue-1: #00acee;
   --color-x-black-1: #000;
   --color-zasifer-yellow-1: #ffd600;
+
+  /* Tool Colors */
+  --color-password-red: #ef4444;
+  --color-password-red-light: #f87171;
+  --color-password-red-dark: #dc2626;
+  --color-qrcode-teal: #14b8a6;
+  --color-qrcode-teal-light: #2dd4bf;
+  --color-qrcode-teal-dark: #0f766e;
+  --color-palette-pink: #ec4899;
+  --color-palette-pink-light: #f472b6;
+  --color-palette-pink-dark: #db2777;
+  --color-hash-blue: #3b82f6;
+  --color-hash-blue-light: #60a5fa;
+  --color-hash-blue-dark: #2563eb;
+  --color-base64-purple: #8b5cf6;
+  --color-base64-purple-light: #a78bfa;
+  --color-base64-purple-dark: #7c3aed;
+  --color-json-green: #10b981;
+  --color-json-green-light: #34d399;
+  --color-json-green-dark: #059669;
+  --color-url-orange: #f97316;
+  --color-url-orange-light: #fb923c;
+  --color-url-orange-dark: #ea580c;
+
+  /* Design System - Primary Colors */
+  --ds-primary-50: #eff6ff;
+  --ds-primary-100: #dbeafe;
+  --ds-primary-200: #bfdbfe;
+  --ds-primary-300: #93c5fd;
+  --ds-primary-400: #60a5fa;
+  --ds-primary-500: #3b82f6;
+  --ds-primary-600: #2563eb;
+  --ds-primary-700: #1d4ed8;
+  --ds-primary-800: #1e40af;
+  --ds-primary-900: #1e3a8a;
+
+  /* Design System - Secondary Colors */
+  --ds-secondary-50: #f8fafc;
+  --ds-secondary-100: #f1f5f9;
+  --ds-secondary-200: #e2e8f0;
+  --ds-secondary-300: #cbd5e1;
+  --ds-secondary-400: #94a3b8;
+  --ds-secondary-500: #64748b;
+  --ds-secondary-600: #475569;
+  --ds-secondary-700: #334155;
+  --ds-secondary-800: #1e293b;
+  --ds-secondary-900: #0f172a;
+
+  /* Design System - Success Colors */
+  --ds-success-50: #f0fdf4;
+  --ds-success-100: #dcfce7;
+  --ds-success-200: #bbf7d0;
+  --ds-success-300: #86efac;
+  --ds-success-400: #4ade80;
+  --ds-success-500: #22c55e;
+  --ds-success-600: #16a34a;
+  --ds-success-700: #15803d;
+  --ds-success-800: #166534;
+  --ds-success-900: #14532d;
+
+  /* Design System - Warning Colors */
+  --ds-warning-50: #fffbeb;
+  --ds-warning-100: #fef3c7;
+  --ds-warning-200: #fde68a;
+  --ds-warning-300: #fcd34d;
+  --ds-warning-400: #fbbf24;
+  --ds-warning-500: #f59e0b;
+  --ds-warning-600: #d97706;
+  --ds-warning-700: #b45309;
+  --ds-warning-800: #92400e;
+  --ds-warning-900: #78350f;
+
+  /* Design System - Danger Colors */
+  --ds-danger-50: #fef2f2;
+  --ds-danger-100: #fee2e2;
+  --ds-danger-200: #fecaca;
+  --ds-danger-300: #fca5a5;
+  --ds-danger-400: #f87171;
+  --ds-danger-500: #ef4444;
+  --ds-danger-600: #dc2626;
+  --ds-danger-700: #b91c1c;
+  --ds-danger-800: #991b1b;
+  --ds-danger-900: #7f1d1d;
+
+  /* Design System - Spacing */
+  --ds-space-1: 0.25rem;
+  --ds-space-2: 0.5rem;
+  --ds-space-3: 0.75rem;
+  --ds-space-4: 1rem;
+  --ds-space-5: 1.25rem;
+  --ds-space-6: 1.5rem;
+  --ds-space-8: 2rem;
+  --ds-space-10: 2.5rem;
+  --ds-space-12: 3rem;
+  --ds-space-16: 4rem;
+  --ds-space-20: 5rem;
+
+  /* Design System - Border Radius */
+  --ds-radius-sm: 0.375rem;
+  --ds-radius-md: 0.5rem;
+  --ds-radius-lg: 0.75rem;
+  --ds-radius-xl: 1rem;
+  --ds-radius-2xl: 1.5rem;
+  --ds-radius-full: 9999px;
+
+  /* Design System - Shadows */
+  --ds-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --ds-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --ds-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --ds-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --ds-shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+  /* Design System - Typography */
+  --ds-font-xs: 0.75rem;
+  --ds-font-sm: 0.875rem;
+  --ds-font-base: 1rem;
+  --ds-font-lg: 1.125rem;
+  --ds-font-xl: 1.25rem;
+  --ds-font-2xl: 1.5rem;
+  --ds-font-3xl: 1.875rem;
+  --ds-font-4xl: 2.25rem;
+
+  /* Design System - Transitions */
+  --ds-transition-fast: 150ms ease;
+  --ds-transition-normal: 300ms ease;
+  --ds-transition-slow: 500ms ease;
+}
+
+/* ToolCard Gradient Classes */
+.gradient-red {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+}
+
+.gradient-blue {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+.gradient-green {
+  background: linear-gradient(135deg, #10b981, #047857);
+}
+
+.gradient-purple {
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+}
+
+.gradient-pink {
+  background: linear-gradient(135deg, #ec4899, #db2777);
+}
+
+.gradient-teal {
+  background: linear-gradient(135deg, #14b8a6, #0f766e);
+}
+
+.gradient-yellow {
+  background: linear-gradient(135deg, #eab308, #ca8a04);
+}
+
+.gradient-indigo {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+}
+
+.gradient-orange {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+}
+
+.gradient-rose {
+  background: linear-gradient(135deg, #f43f5e, #e11d48);
+}
+
+.gradient-emerald {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.gradient-violet {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.gradient-amber {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.gradient-slate {
+  background: linear-gradient(135deg, #64748b, #475569);
+}
+
+.gradient-cyan {
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+}
+
+.gradient-lime {
+  background: linear-gradient(135deg, #84cc16, #65a30d);
+}
+
+.gradient-gray {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
 }

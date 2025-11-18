@@ -1,6 +1,8 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
   import { ChevronLeft, Shield, Lock, Settings2 } from '@lucide/svelte';
+  import Button from '../../components/ui/Button.svelte';
+  import Input from '../../components/ui/Input.svelte';
 
   let password = $state('');
   let passwordLength = $state(16);
@@ -236,6 +238,7 @@
     <div class="text-center mb-8">
       <div
         class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-red-400 to-red-600 rounded-2xl mb-4"
+        style="background: linear-gradient(to bottom right, var(--color-password-red-light), var(--color-password-red))"
       >
         <Lock class="w-10 h-10 text-white" />
       </div>
@@ -317,22 +320,23 @@
             {getStrengthText(calculatePasswordStrength(password))}
           </span>
         {/if}
-        <button
+        <Button
           onclick={copyToClipboard}
-          class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+          variant="danger"
+          size="sm"
         >
           {copiedText === 'password' ? '✓ Copied!' : 'Copy'}
-        </button>
+        </Button>
       </div>
     </div>
 
     <div class="relative">
-      <input
-        type="text"
+      <Input
         bind:value={password}
         readonly
         placeholder="Click 'Generate Password' to create a secure password"
-        class="w-full p-4 font-mono text-lg border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white"
+        size="lg"
+        type="text"
       />
       {#if !password}
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -500,30 +504,35 @@
 
         <!-- Action Buttons -->
         <div class="flex flex-wrap gap-3">
-          <button
+          <Button
             onclick={generatePassword}
-            class="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+            variant="danger"
+            size="lg"
+            fullWidth
           >
             Generate Password
-          </button>
-          <button
+          </Button>
+          <Button
             onclick={regeneratePassword}
-            class="px-4 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium"
+            variant="secondary"
+            size="lg"
           >
             Regenerate
-          </button>
-          <button
+          </Button>
+          <Button
             onclick={() => generateMultiplePasswords(5)}
-            class="px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
+            variant="primary"
+            size="lg"
           >
             Generate 5
-          </button>
-          <button
+          </Button>
+          <Button
             onclick={clearAll}
-            class="px-4 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-medium"
+            variant="flat"
+            size="lg"
           >
             Clear
-          </button>
+          </Button>
         </div>
       </div>
     </div>

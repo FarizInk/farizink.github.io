@@ -1,6 +1,8 @@
 <script lang="ts">
   import { Copy, Type, ArrowRight, ChevronLeft } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
+  import Button from '../../components/ui/Button.svelte';
+  import Textarea from '../../components/ui/Textarea.svelte';
 
   // Component state
   let inputText = $state('');
@@ -268,11 +270,11 @@
         </button>
       </div>
 
-      <textarea
+      <Textarea
         bind:value={inputText}
         placeholder="Enter your text here..."
-        class="w-full h-64 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-      ></textarea>
+        rows="12"
+      />
 
       {#if textStats}
         <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -330,21 +332,23 @@
         </div>
       </div>
 
-      <textarea
+      <Textarea
         bind:value={convertedText}
         readonly
         placeholder="Converted text will appear here..."
-        class="w-full h-64 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none"
-      ></textarea>
+        rows="12"
+        variant="default"
+      />
 
       <div class="mt-4 flex gap-2">
-        <button
+        <Button
           onclick={downloadAsFile}
           disabled={!convertedText}
-          class="flex-1 flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          variant="primary"
+          fullWidth
         >
           Download as File
-        </button>
+        </Button>
       </div>
     </div>
   </div>

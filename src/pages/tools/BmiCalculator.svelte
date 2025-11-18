@@ -1,6 +1,8 @@
 <script lang="ts">
   import { Activity, Users, Target, Heart, ChevronLeft, Info } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
+  import Button from '../../components/ui/Button.svelte';
+  import Input from '../../components/ui/Input.svelte';
 
   // Units state
   let units = $state('metric'); // 'metric' or 'imperial'
@@ -282,22 +284,18 @@
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Measurement Units</h2>
         <div class="flex gap-2">
-          <button
+          <Button
             onclick={() => switchUnits('metric')}
-            class="px-4 py-2 rounded-lg transition-colors {units === 'metric'
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'}"
+            variant={units === 'metric' ? 'primary' : 'secondary'}
           >
             Metric
-          </button>
-          <button
+          </Button>
+          <Button
             onclick={() => switchUnits('imperial')}
-            class="px-4 py-2 rounded-lg transition-colors {units === 'imperial'
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'}"
+            variant={units === 'imperial' ? 'primary' : 'secondary'}
           >
             Imperial
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -316,69 +314,47 @@
             Personal Information
           </h2>
           <div class="flex gap-2">
-            <button
+            <Button
               onclick={loadExample}
-              class="px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              variant="secondary"
+              size="sm"
             >
               Example
-            </button>
-            <button
+            </Button>
+            <Button
               onclick={reset}
-              class="px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              variant="secondary"
+              size="sm"
             >
               Reset
-            </button>
+            </Button>
           </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label
-              for="height-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-            >
-              Height ({units === 'metric' ? 'cm' : 'inches'})
-            </label>
-            <input
-              id="height-input"
-              type="number"
-              bind:value={height}
-              placeholder={units === 'metric' ? '170' : '5\'7"'}
-              class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
+          <Input
+            id="height-input"
+            type="number"
+            bind:value={height}
+            label={`Height (${units === 'metric' ? 'cm' : 'inches'})`}
+            placeholder={units === 'metric' ? '170' : '5\'7"'}
+          />
 
-          <div>
-            <label
-              for="weight-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-            >
-              Weight ({units === 'metric' ? 'kg' : 'lbs'})
-            </label>
-            <input
-              id="weight-input"
-              type="number"
-              bind:value={weight}
-              placeholder={units === 'metric' ? '70' : '154'}
-              class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
+          <Input
+            id="weight-input"
+            type="number"
+            bind:value={weight}
+            label={`Weight (${units === 'metric' ? 'kg' : 'lbs'})`}
+            placeholder={units === 'metric' ? '70' : '154'}
+          />
 
-          <div>
-            <label
-              for="age-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-            >
-              Age (years)
-            </label>
-            <input
-              id="age-input"
-              type="number"
-              bind:value={age}
-              placeholder="30"
-              class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
+          <Input
+            id="age-input"
+            type="number"
+            bind:value={age}
+            label="Age (years)"
+            placeholder="30"
+          />
 
           <div>
             <fieldset>

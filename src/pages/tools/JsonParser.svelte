@@ -1,6 +1,8 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
   import { ChevronLeft, FileJson, CheckCircle, Layout, Copy } from '@lucide/svelte';
+  import Button from '../../components/ui/Button.svelte';
+  import Textarea from '../../components/ui/Textarea.svelte';
 
   let inputJson = $state('');
   let outputJson = $state('');

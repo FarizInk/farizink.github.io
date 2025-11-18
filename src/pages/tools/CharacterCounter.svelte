@@ -10,6 +10,8 @@
     ChevronLeft
   } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
+  import Button from '../../components/ui/Button.svelte';
+  import Textarea from '../../components/ui/Textarea.svelte';
 
   // Component state
   let inputText = $state('');
@@ -172,13 +174,13 @@ ${inputText}
   <!-- Header -->
   <div class="mb-8">
     <div class="flex items-center gap-4 mb-4">
-      <button
+      <Button
         onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+        variant="ghost"
       >
-        <ChevronLeft class="w-5 h-5" />
+        <ChevronLeft class="w-5 h-5" slot="leftIcon" />
         Back to Tools
-      </button>
+      </Button>
     </div>
 
     <div class="text-center mb-8">
@@ -229,26 +231,28 @@ ${inputText}
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Input Text</h2>
           <div class="flex items-center gap-2">
-            <button
+            <Button
               onclick={loadSampleText}
-              class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+              variant="secondary"
+              size="sm"
             >
               Load Sample
-            </button>
-            <button
+            </Button>
+            <Button
               onclick={clearAll}
-              class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+              variant="secondary"
+              size="sm"
             >
               Clear
-            </button>
+            </Button>
           </div>
         </div>
 
-        <textarea
+        <Textarea
           bind:value={inputText}
           placeholder="Enter your text here to count characters, words, and analyze..."
-          class="w-full h-64 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-        ></textarea>
+          rows={16}
+        />
 
         <!-- Character Limit Indicators -->
         {#if stats && stats.totalChars > 0}
@@ -351,23 +355,25 @@ ${inputText}
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Actions</h2>
 
         <div class="space-y-3">
-          <button
+          <Button
             onclick={() => copyToClipboard(inputText)}
             disabled={!inputText}
-            class="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            variant="primary"
+            fullWidth
           >
-            <Copy class="w-4 h-4 mr-2" />
+            <Copy class="w-4 h-4" slot="leftIcon" />
             Copy Text
-          </button>
+          </Button>
 
-          <button
+          <Button
             onclick={downloadReport}
             disabled={!stats}
-            class="w-full flex items-center justify-center px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            variant="secondary"
+            fullWidth
           >
-            <Calculator class="w-4 h-4 mr-2" />
+            <Calculator class="w-4 h-4" slot="leftIcon" />
             Download Report
-          </button>
+          </Button>
         </div>
       </div>
     </div>

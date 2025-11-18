@@ -29,6 +29,9 @@
     Globe,
     Image
   } from '@lucide/svelte';
+  import Button from '../components/ui/Button.svelte';
+  import Input from '../components/ui/Input.svelte';
+  import ToolCard from '../components/ui/ToolCard.svelte';
 
   let searchQuery = $state('');
 
@@ -42,7 +45,7 @@
           name: 'JSON Parser & Formatter',
           description: 'Format, validate, and minify JSON data with ease',
           icon: FileJson,
-          color: 'blue',
+          color: 'json-green',
           features: [
             'Validate JSON',
             'Format with custom indentation',
@@ -114,7 +117,7 @@
           name: 'URL Encoder/Decoder',
           description: 'Encode and decode URLs safely',
           icon: Link,
-          color: 'green',
+          color: 'url-orange',
           features: ['URL encode', 'URL decode', 'Batch processing', 'Safe for special characters'],
           comingSoon: false
         },
@@ -132,7 +135,7 @@
           name: 'Base64 Converter',
           description: 'Encode and decode Base64 strings',
           icon: Hash,
-          color: 'yellow',
+          color: 'base64-purple',
           features: ['String to Base64', 'Base64 to string', 'File support', 'Batch conversion'],
           comingSoon: false
         },
@@ -197,7 +200,7 @@
           name: 'Password Generator',
           description: 'Generate secure and random passwords',
           icon: Lock,
-          color: 'red',
+          color: 'password-red',
           features: [
             'Customizable length',
             'Character sets',
@@ -211,7 +214,7 @@
           name: 'QR Code Generator',
           description: 'Generate custom QR codes for URLs and text',
           icon: QrCode,
-          color: 'teal',
+          color: 'qrcode-teal',
           features: [
             'Custom size and colors',
             'Error correction levels',
@@ -225,7 +228,7 @@
           name: 'Hash Generator',
           description: 'Generate MD5, SHA1, SHA256 hashes',
           icon: Hash,
-          color: 'amber',
+          color: 'hash-blue',
           features: ['MD5', 'SHA1', 'SHA256', 'SHA512', 'Multiple formats'],
           comingSoon: false
         },
@@ -272,7 +275,7 @@
           name: 'Color Palette Generator',
           description: 'Generate harmonious color palettes',
           icon: Palette,
-          color: 'pink',
+          color: 'palette-pink',
           features: [
             'Complementary colors',
             'Triadic palettes',
@@ -500,107 +503,176 @@
 
   function getColorClasses(color: string) {
     const colorMap = {
+      // Tool-specific colors with enhanced gradients
+      'password-red': {
+        bg: 'bg-red-100 dark:bg-red-900/20',
+        text: 'text-red-600 dark:text-red-400',
+        border: 'border-red-200 dark:border-red-800',
+        hover: 'hover:bg-red-50 dark:hover:bg-red-900/10',
+        gradient: 'from-red-500 to-red-700'
+      },
+      'qrcode-teal': {
+        bg: 'bg-teal-100 dark:bg-teal-900/20',
+        text: 'text-teal-600 dark:text-teal-400',
+        border: 'border-teal-200 dark:border-teal-800',
+        hover: 'hover:bg-teal-50 dark:hover:bg-teal-900/10',
+        gradient: 'from-teal-500 to-teal-700'
+      },
+      'palette-pink': {
+        bg: 'bg-pink-100 dark:bg-pink-900/20',
+        text: 'text-pink-600 dark:text-pink-400',
+        border: 'border-pink-200 dark:border-pink-800',
+        hover: 'hover:bg-pink-50 dark:hover:bg-pink-900/10',
+        gradient: 'from-pink-500 to-pink-700'
+      },
+      'hash-blue': {
+        bg: 'bg-blue-100 dark:bg-blue-900/20',
+        text: 'text-blue-600 dark:text-blue-400',
+        border: 'border-blue-200 dark:border-blue-800',
+        hover: 'hover:bg-blue-50 dark:hover:bg-blue-900/10',
+        gradient: 'from-blue-500 to-blue-700'
+      },
+      'base64-purple': {
+        bg: 'bg-purple-100 dark:bg-purple-900/20',
+        text: 'text-purple-600 dark:text-purple-400',
+        border: 'border-purple-200 dark:border-purple-800',
+        hover: 'hover:bg-purple-50 dark:hover:bg-purple-900/10',
+        gradient: 'from-purple-500 to-purple-700'
+      },
+      'json-green': {
+        bg: 'bg-green-100 dark:bg-green-900/20',
+        text: 'text-green-600 dark:text-green-400',
+        border: 'border-green-200 dark:border-green-800',
+        hover: 'hover:bg-green-50 dark:hover:bg-green-900/10',
+        gradient: 'from-green-500 to-green-700'
+      },
+      'url-orange': {
+        bg: 'bg-orange-100 dark:bg-orange-900/20',
+        text: 'text-orange-600 dark:text-orange-400',
+        border: 'border-orange-200 dark:border-orange-800',
+        hover: 'hover:bg-orange-50 dark:hover:bg-orange-900/10',
+        gradient: 'from-orange-500 to-orange-700'
+      },
+
+      // Fallback colors
       blue: {
         bg: 'bg-blue-100 dark:bg-blue-900/20',
         text: 'text-blue-600 dark:text-blue-400',
         border: 'border-blue-200 dark:border-blue-800',
-        hover: 'hover:bg-blue-50 dark:hover:bg-blue-900/10'
+        hover: 'hover:bg-blue-50 dark:hover:bg-blue-900/10',
+        gradient: 'from-blue-500 to-blue-700'
       },
       purple: {
         bg: 'bg-purple-100 dark:bg-purple-900/20',
         text: 'text-purple-600 dark:text-purple-400',
         border: 'border-purple-200 dark:border-purple-800',
-        hover: 'hover:bg-purple-50 dark:hover:bg-purple-900/10'
+        hover: 'hover:bg-purple-50 dark:hover:bg-purple-900/10',
+        gradient: 'from-purple-500 to-purple-700'
       },
       green: {
         bg: 'bg-green-100 dark:bg-green-900/20',
         text: 'text-green-600 dark:text-green-400',
         border: 'border-green-200 dark:border-green-800',
-        hover: 'hover:bg-green-50 dark:hover:bg-green-900/10'
+        hover: 'hover:bg-green-50 dark:hover:bg-green-900/10',
+        gradient: 'from-green-500 to-green-700'
       },
       indigo: {
         bg: 'bg-indigo-100 dark:bg-indigo-900/20',
         text: 'text-indigo-600 dark:text-indigo-400',
         border: 'border-indigo-200 dark:border-indigo-800',
-        hover: 'hover:bg-indigo-50 dark:hover:bg-indigo-900/10'
+        hover: 'hover:bg-indigo-50 dark:hover:bg-indigo-900/10',
+        gradient: 'from-indigo-500 to-indigo-700'
       },
       yellow: {
         bg: 'bg-yellow-100 dark:bg-yellow-900/20',
         text: 'text-yellow-600 dark:text-yellow-400',
         border: 'border-yellow-200 dark:border-yellow-800',
-        hover: 'hover:bg-yellow-50 dark:hover:bg-yellow-900/10'
+        hover: 'hover:bg-yellow-50 dark:hover:bg-yellow-900/10',
+        gradient: 'from-yellow-500 to-yellow-600'
       },
       red: {
         bg: 'bg-red-100 dark:bg-red-900/20',
         text: 'text-red-600 dark:text-red-400',
         border: 'border-red-200 dark:border-red-800',
-        hover: 'hover:bg-red-50 dark:hover:bg-red-900/10'
+        hover: 'hover:bg-red-50 dark:hover:bg-red-900/10',
+        gradient: 'from-red-500 to-red-700'
       },
       teal: {
         bg: 'bg-teal-100 dark:bg-teal-900/20',
         text: 'text-teal-600 dark:text-teal-400',
         border: 'border-teal-200 dark:border-teal-800',
-        hover: 'hover:bg-teal-50 dark:hover:bg-teal-900/10'
+        hover: 'hover:bg-teal-50 dark:hover:bg-teal-900/10',
+        gradient: 'from-teal-500 to-teal-700'
       },
       cyan: {
         bg: 'bg-cyan-100 dark:bg-cyan-900/20',
         text: 'text-cyan-600 dark:text-cyan-400',
         border: 'border-cyan-200 dark:border-cyan-800',
-        hover: 'hover:bg-cyan-50 dark:hover:bg-cyan-900/10'
+        hover: 'hover:bg-cyan-50 dark:hover:bg-cyan-900/10',
+        gradient: 'from-cyan-500 to-cyan-700'
       },
       lime: {
         bg: 'bg-lime-100 dark:bg-lime-900/20',
         text: 'text-lime-600 dark:text-lime-400',
         border: 'border-lime-200 dark:border-lime-800',
-        hover: 'hover:bg-lime-50 dark:hover:bg-lime-900/10'
+        hover: 'hover:bg-lime-50 dark:hover:bg-lime-900/10',
+        gradient: 'from-lime-500 to-lime-700'
       },
       orange: {
         bg: 'bg-orange-100 dark:bg-orange-900/20',
         text: 'text-orange-600 dark:text-orange-400',
         border: 'border-orange-200 dark:border-orange-800',
-        hover: 'hover:bg-orange-50 dark:hover:bg-orange-900/10'
+        hover: 'hover:bg-orange-50 dark:hover:bg-orange-900/10',
+        gradient: 'from-orange-500 to-orange-700'
       },
       rose: {
         bg: 'bg-rose-100 dark:bg-rose-900/20',
         text: 'text-rose-600 dark:text-rose-400',
         border: 'border-rose-200 dark:border-rose-800',
-        hover: 'hover:bg-rose-50 dark:hover:bg-rose-900/10'
+        hover: 'hover:bg-rose-50 dark:hover:bg-rose-900/10',
+        gradient: 'from-rose-500 to-rose-700'
       },
       emerald: {
         bg: 'bg-emerald-100 dark:bg-emerald-900/20',
         text: 'text-emerald-600 dark:text-emerald-400',
         border: 'border-emerald-200 dark:border-emerald-800',
-        hover: 'hover:bg-emerald-50 dark:hover:bg-emerald-900/10'
+        hover: 'hover:bg-emerald-50 dark:hover:bg-emerald-900/10',
+        gradient: 'from-emerald-500 to-emerald-700'
       },
       violet: {
         bg: 'bg-violet-100 dark:bg-violet-900/20',
         text: 'text-violet-600 dark:text-violet-400',
         border: 'border-violet-200 dark:border-violet-800',
-        hover: 'hover:bg-violet-50 dark:hover:bg-violet-900/10'
+        hover: 'hover:bg-violet-50 dark:hover:bg-violet-900/10',
+        gradient: 'from-violet-500 to-violet-700'
       },
       amber: {
         bg: 'bg-amber-100 dark:bg-amber-900/20',
         text: 'text-amber-600 dark:text-amber-400',
         border: 'border-amber-200 dark:border-amber-800',
-        hover: 'hover:bg-amber-50 dark:hover:bg-amber-900/10'
+        hover: 'hover:bg-amber-50 dark:hover:bg-amber-900/10',
+        gradient: 'from-amber-500 to-amber-600'
       },
       slate: {
         bg: 'bg-slate-100 dark:bg-slate-900/20',
         text: 'text-slate-600 dark:text-slate-400',
         border: 'border-slate-200 dark:border-slate-800',
-        hover: 'hover:bg-slate-50 dark:hover:bg-slate-900/10'
+        hover: 'hover:bg-slate-50 dark:hover:bg-slate-900/10',
+        gradient: 'from-slate-500 to-slate-700'
       },
       pink: {
         bg: 'bg-pink-100 dark:bg-pink-900/20',
         text: 'text-pink-600 dark:text-pink-400',
         border: 'border-pink-200 dark:border-pink-800',
-        hover: 'hover:bg-pink-50 dark:hover:bg-pink-900/10'
+        hover: 'hover:bg-pink-50 dark:hover:bg-pink-900/10',
+        gradient: 'from-pink-500 to-pink-700'
       },
       gray: {
         bg: 'bg-gray-100 dark:bg-gray-900/20',
         text: 'text-gray-600 dark:text-gray-400',
         border: 'border-gray-200 dark:border-gray-800',
-        hover: 'hover:bg-gray-50 dark:hover:bg-gray-900/10'
+        hover: 'hover:bg-gray-50 dark:hover:bg-gray-900/10',
+        gradient: 'from-gray-500 to-gray-700'
       }
     };
 
@@ -610,32 +682,23 @@
 
 <div class="max-w-7xl mx-auto p-6">
   <div class="mb-8">
-    <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Developer Tools</h1>
-    <p class="text-lg text-gray-600 dark:text-gray-400 mb-6">
-      A comprehensive collection of useful tools for developers, designers, and everyday tasks
+    <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-gradient">
+      Developer Tools
+    </h1>
+    <p class="text-lg text-gray-600 dark:text-gray-400 mb-6 max-w-3xl mx-auto">
+      A comprehensive collection of useful tools for developers, designers, and everyday tasks.
+      Each tool is carefully crafted with attention to detail and user experience.
     </p>
 
     <!-- Search Input -->
     <div class="max-w-2xl mx-auto mb-8">
-      <div class="relative">
-        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <Search class="h-5 w-5 text-gray-400" />
-        </div>
-        <input
-          type="text"
-          bind:value={searchQuery}
-          placeholder="Search tools by name, description, or features..."
-          class="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg leading-5 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors"
-        />
-        {#if searchQuery}
-          <button
-            onclick={() => (searchQuery = '')}
-            class="absolute inset-y-0 right-0 pr-3 flex items-center"
-          >
-            <X class="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
-          </button>
-        {/if}
-      </div>
+      <Input
+        bind:value={searchQuery}
+        placeholder="Search tools by name, description, or features..."
+        leftIcon={Search}
+        size="lg"
+        type="search"
+      />
       {#if searchQuery && filteredTools.length === 0}
         <p class="text-center text-gray-500 dark:text-gray-400 mt-4">
           No tools found matching "{searchQuery}"
@@ -677,116 +740,39 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {#each category.tools as tool (tool.id)}
           {@const colors = getColorClasses(tool.color)}
-          <button
-            type="button"
-            class="group relative bg-white dark:bg-gray-800 rounded-xl border {colors.border} overflow-hidden transition-all duration-300 {colors.hover} cursor-pointer text-left"
-            onclick={() => handleToolClick(tool.id)}
-            disabled={tool.comingSoon}
-          >
-            <!-- Tool Content -->
-            <div class="p-6">
-              <!-- Icon -->
-              <div
-                class="w-16 h-16 {colors.bg} rounded-lg flex items-center justify-center mb-4 {colors.text}"
-              >
-                {#if typeof tool.icon === 'string'}
-                  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-                  {@html tool.icon}
-                {:else}
-                  {@const IconComponent = tool.icon}
-                  <IconComponent class="w-8 h-8" />
-                {/if}
-              </div>
-
-              <!-- Title and Status -->
-              <div class="flex items-start justify-between mb-2">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                  {tool.name}
-                </h3>
-                {#if tool.comingSoon}
-                  <span
-                    class="px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full"
-                  >
-                    Coming Soon
-                  </span>
-                {/if}
-              </div>
-
-              <!-- Description -->
-              <p class="text-gray-600 dark:text-gray-400 mb-4">
-                {tool.description}
-              </p>
-
-              <!-- Features -->
-              <div class="space-y-2">
-                {#each tool.features.slice(0, 3) as feature, i (feature + i)}
-                  <div class="flex items-center text-sm text-gray-500 dark:text-gray-500">
-                    <Check class="w-4 h-4 mr-2 {colors.text}" />
-                    {feature}
-                  </div>
-                {/each}
-              </div>
-            </div>
-
-            <!-- Hover Effect Overlay -->
-            {#if !tool.comingSoon}
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none"
-              >
-                <div class="absolute inset-0 flex flex-col justify-end p-6">
-                  <div
-                    class="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
-                  >
-                    <div
-                      class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm rounded-lg px-4 py-3 shadow-xl border border-white/20 dark:border-gray-700/20"
-                    >
-                      <div class="flex items-center justify-between">
-                        <span class="text-gray-900 dark:text-white font-semibold text-sm">
-                          Open Tool
-                        </span>
-                        <div class="flex items-center gap-1 text-blue-600 dark:text-blue-400">
-                          <span class="text-xs font-medium">Launch</span>
-                          <ArrowRight class="w-4 h-4" />
-                        </div>
-                      </div>
-                      <div class="mt-1 text-xs text-gray-600 dark:text-gray-400">
-                        {tool.features.slice(0, 2).join(' • ')}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            {/if}
-          </button>
+          <ToolCard
+            {tool}
+            {colors}
+            on:toolClick={(e) => handleToolClick(e.detail.toolId)}
+          />
         {/each}
       </div>
     </div>
   {/each}
 
   <!-- Call to Action -->
-  <div
-    class="mt-12 p-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800"
-  >
+  <div class="mt-12 p-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
     <div class="text-center">
       <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">More Tools Coming Soon</h2>
       <p class="text-gray-600 dark:text-gray-400 mb-6">
         I'm constantly adding new tools to make your development workflow easier. Check back
         regularly for updates!
       </p>
-      <div class="flex justify-center space-x-4">
-        <a
+      <div class="flex justify-center">
+        <Button
           href="https://github.com/FarizInk"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
+          variant="primary"
+          size="lg"
         >
-          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+          <svg slot="leftIcon" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
             <path
               d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
             />
           </svg>
           Follow on GitHub
-        </a>
+        </Button>
       </div>
     </div>
   </div>

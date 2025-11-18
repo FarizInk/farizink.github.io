@@ -1,6 +1,8 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
   import { ChevronLeft, FileText, Eye, Edit, Zap, Code, Download } from '@lucide/svelte';
+  import Button from '../../components/ui/Button.svelte';
+  import Textarea from '../../components/ui/Textarea.svelte';
 
   let markdownText = $state(
     '# Welcome to Markdown Preview' +

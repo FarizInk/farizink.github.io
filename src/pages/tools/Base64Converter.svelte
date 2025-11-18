@@ -1,6 +1,9 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
   import { ChevronLeft, Hash, Upload, Shield, FileText, Zap } from '@lucide/svelte';
+  import Button from '../../components/ui/Button.svelte';
+  import Input from '../../components/ui/Input.svelte';
+  import Textarea from '../../components/ui/Textarea.svelte';
 
   let inputText = $state('');
   let encodedText = $state('');
@@ -206,36 +209,36 @@
     <!-- Text Converter -->
     <!-- Controls -->
     <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
-      <button
+      <Button
         onclick={encodeBase64}
-        class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors"
+        variant="primary"
       >
         Encode to Base64
-      </button>
-      <button
+      </Button>
+      <Button
         onclick={decodeBase64}
-        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        variant="secondary"
       >
         Decode from Base64
-      </button>
-      <button
+      </Button>
+      <Button
         onclick={loadSampleText}
-        class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+        variant="success"
       >
         Load Sample Text
-      </button>
-      <button
+      </Button>
+      <Button
         onclick={loadSampleBase64}
-        class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+        variant="primary"
       >
         Load Sample Base64
-      </button>
-      <button
+      </Button>
+      <Button
         onclick={clearAll}
-        class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+        variant="ghost"
       >
         Clear All
-      </button>
+      </Button>
     </div>
 
     <!-- Error Display -->
@@ -250,17 +253,13 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Input Section -->
       <div>
-        <div class="flex justify-between items-center mb-2">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input</h2>
-          <span class="text-sm text-gray-500 dark:text-gray-400">
-            {inputText.length} characters
-          </span>
-        </div>
-        <textarea
+        <Textarea
           bind:value={inputText}
           placeholder="Enter text or Base64 string to encode/decode..."
-          class="w-full h-64 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-        ></textarea>
+          label="Input"
+          helperText={`${inputText.length} characters`}
+          rows={16}
+        />
       </div>
 
       <!-- Results Section -->
@@ -270,29 +269,22 @@
           <div class="flex justify-between items-center mb-2">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Base64 Result</h2>
             {#if encodedText}
-              <button
+              <Button
                 onclick={() => copyToClipboard(encodedText, 'encoded')}
-                class="px-3 py-1 text-sm bg-yellow-600 text-white rounded hover:bg-yellow-700 transition-colors"
+                variant="primary"
+                size="sm"
               >
                 {copiedText === 'encoded' ? '✓ Copied!' : 'Copy'}
-              </button>
+              </Button>
             {/if}
           </div>
-          <div class="relative">
-            <textarea
-              bind:value={encodedText}
-              readonly
-              placeholder="Base64 encoded text will appear here..."
-              class="w-full h-28 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none"
-            ></textarea>
-            {#if !encodedText}
-              <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <p class="text-gray-400 dark:text-gray-600">
-                  Enter text above to see Base64 result
-                </p>
-              </div>
-            {/if}
-          </div>
+          <Textarea
+            bind:value={encodedText}
+            readonly
+            placeholder="Base64 encoded text will appear here..."
+            rows={7}
+            variant="default"
+          />
         </div>
 
         <!-- Decoded Result -->
@@ -300,29 +292,22 @@
           <div class="flex justify-between items-center mb-2">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Decoded Result</h2>
             {#if decodedText}
-              <button
+              <Button
                 onclick={() => copyToClipboard(decodedText, 'decoded')}
-                class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                variant="primary"
+                size="sm"
               >
                 {copiedText === 'decoded' ? '✓ Copied!' : 'Copy'}
-              </button>
+              </Button>
             {/if}
           </div>
-          <div class="relative">
-            <textarea
-              bind:value={decodedText}
-              readonly
-              placeholder="Decoded text will appear here..."
-              class="w-full h-28 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none"
-            ></textarea>
-            {#if !decodedText}
-              <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <p class="text-gray-400 dark:text-gray-600">
-                  Enter Base64 string above to see decoded result
-                </p>
-              </div>
-            {/if}
-          </div>
+          <Textarea
+            bind:value={decodedText}
+            readonly
+            placeholder="Decoded text will appear here..."
+            rows={7}
+            variant="default"
+          />
         </div>
       </div>
     </div>
@@ -348,7 +333,7 @@
             </span>
             <span class="text-gray-600 dark:text-gray-400"> or drag and drop </span>
           </label>
-          <input id="file-upload" type="file" onchange={handleFileSelect} class="hidden" />
+          <Input id="file-upload" type="file" onchange={handleFileSelect} class="hidden" />
           <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Supports any file type</p>
         </div>
 
@@ -417,26 +402,29 @@
                   >Base64 Data:</span
                 >
                 <div class="flex gap-2">
-                  <button
+                  <Button
                     onclick={() =>
                       fileResult && copyToClipboard(fileResult.encoded, 'file-encoded')}
-                    class="px-3 py-1 text-sm bg-yellow-600 text-white rounded hover:bg-yellow-700 transition-colors"
+                    variant="primary"
+                    size="sm"
                   >
                     {copiedText === 'file-encoded' ? '✓ Copied!' : 'Copy'}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onclick={downloadEncodedFile}
-                    class="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                    variant="success"
+                    size="sm"
                   >
                     Download
-                  </button>
+                  </Button>
                 </div>
               </div>
-              <textarea
+              <Textarea
                 readonly
                 value={fileResult.encoded}
-                class="w-full h-32 p-3 font-mono text-xs border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none"
-              ></textarea>
+                rows={8}
+                variant="default"
+              />
             </div>
           </div>
         </div>

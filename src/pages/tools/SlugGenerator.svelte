@@ -1,6 +1,9 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
   import { ChevronLeft, Type, Zap, FileText } from '@lucide/svelte';
+  import Button from '../../components/ui/Button.svelte';
+  import Input from '../../components/ui/Input.svelte';
+  import Textarea from '../../components/ui/Textarea.svelte';
 
   let inputText = $state('');
   let generatedSlug = $state('');
@@ -241,25 +244,25 @@
 
   <!-- Controls -->
   <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
-    <button
+    <Button
       onclick={generateSlug}
       disabled={!inputText.trim()}
-      class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      variant="primary"
     >
       Generate Slug
-    </button>
-    <button
+    </Button>
+    <Button
       onclick={loadSampleText}
-      class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+      variant="secondary"
     >
       Load Sample Text
-    </button>
-    <button
+    </Button>
+    <Button
       onclick={clearAll}
-      class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+      variant="destructive"
     >
       Clear All
-    </button>
+    </Button>
   </div>
 
   <!-- Input and Output -->
@@ -272,11 +275,12 @@
           {inputText.length} characters
         </span>
       </div>
-      <textarea
+      <Textarea
         bind:value={inputText}
         placeholder="Enter your text here to generate a URL-friendly slug..."
-        class="w-full h-32 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-      ></textarea>
+        rows="4"
+        variant="default"
+      />
     </div>
 
     <!-- Output Section -->
@@ -284,12 +288,13 @@
       <div class="flex justify-between items-center mb-2">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Generated Slug</h2>
         {#if generatedSlug}
-          <button
+          <Button
             onclick={() => copyToClipboard(generatedSlug)}
-            class="px-3 py-1 text-sm bg-emerald-600 text-white rounded hover:bg-emerald-700 transition-colors"
+            variant="success"
+            size="sm"
           >
             {copiedText === 'slug' ? '✓ Copied!' : 'Copy'}
-          </button>
+          </Button>
         {/if}
       </div>
       <div class="relative">

@@ -17,12 +17,12 @@ import { toast } from 'svelte-sonner';
   <div class="group relative">
     <button
       onclick={copyEmail}
-      class="flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 rounded-full border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300 hover:border-amber-300 dark:hover:border-amber-600"
+      class="flex items-center gap-3 pr-4 bg-white dark:bg-gray-800 rounded-full border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300 hover:border-amber-300 dark:hover:border-amber-600 h-10"
     >
       <div
-        class="flex items-center justify-center w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/30 group-hover:bg-amber-200 dark:group-hover:bg-amber-900/50 transition-colors duration-300"
+        class="flex items-center justify-center w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30 group-hover:bg-amber-200 dark:group-hover:bg-amber-900/50 transition-colors duration-300"
       >
-        <MailIcon class="w-4 h-4 text-amber-600 dark:text-amber-400" />
+        <MailIcon class="w-5 h-5 text-amber-600 dark:text-amber-400" />
       </div>
       <span
         class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-300"

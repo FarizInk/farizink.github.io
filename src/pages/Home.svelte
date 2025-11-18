@@ -6,13 +6,19 @@
 
   let showPhoto = $state(false);
   let randPhoto = $state<string | null>(null);
+  let imageLoading = $state(false);
 
   const togglePhoto = () => {
     const photos = [photoOne, photoTwo];
     if (!showPhoto) {
       randPhoto = photos[Math.floor(Math.random() * photos.length)];
+      imageLoading = true;
     }
     showPhoto = !showPhoto;
+  };
+
+  const handleImageLoad = () => {
+    imageLoading = false;
   };
 </script>
 
@@ -67,17 +73,13 @@
     <div
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
       onclick={() => (showPhoto = false)}
-      onkeydown={(e) => e.key === 'Escape' && (showPhoto = false)}
+      onkeydown={e => e.key === 'Escape' && (showPhoto = false)}
       role="dialog"
       aria-modal="true"
       aria-label="Photo modal"
       tabindex="-1"
     >
-      <div
-        class="relative group animate-in zoom-in duration-300"
-        role="document"
-        tabindex="-1"
-      >
+      <div class="relative group animate-in zoom-in duration-300" role="document" tabindex="-1">
         <!-- Close button -->
         <button
           onclick={() => (showPhoto = false)}
@@ -95,10 +97,29 @@
         <div
           class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden max-w-sm md:max-w-md lg:max-w-lg"
         >
+          {#if imageLoading}
+            <div
+              class="aspect-[3/4] h-full w-full bg-gradient-to-br from-gray-100 via-gray-200 to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse"
+            >
+              <div class="h-full w-full relative overflow-hidden">
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-gray-200/50 to-transparent dark:from-gray-600/50"
+                ></div>
+                <div class="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                  <div
+                    class="h-24 w-24 rounded-full bg-gray-300/50 dark:bg-gray-600/50 animate-pulse"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          {/if}
           <img
             src={randPhoto}
             alt="Fariz"
-            class="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+            class="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500 {imageLoading
+              ? 'opacity-0'
+              : 'opacity-100'}"
+            onload={handleImageLoad}
           />
         </div>
 

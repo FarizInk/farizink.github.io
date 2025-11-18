@@ -1,6 +1,8 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
   import { ChevronLeft, Palette, Zap, Calendar } from '@lucide/svelte';
+  import Button from '../../components/ui/Button.svelte';
+  import Input from '../../components/ui/Input.svelte';
 
   let hexInput = $state('#3B82F6');
   let rgbInput = $state({ r: 59, g: 130, b: 246 });
@@ -207,13 +209,13 @@
   <!-- Header -->
   <div class="mb-8">
     <div class="flex items-center gap-4 mb-4">
-      <button
+      <Button
         onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+        variant="ghost"
       >
-        <ChevronLeft class="w-5 h-5" />
+        <ChevronLeft class="w-5 h-5" slot="leftIcon" />
         Back to Tools
-      </button>
+      </Button>
     </div>
 
     <div class="text-center mb-8">
@@ -256,12 +258,12 @@
 
   <!-- Controls -->
   <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
-    <button
+    <Button
       onclick={randomColor}
-      class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+      variant="primary"
     >
       Random Color
-    </button>
+    </Button>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">

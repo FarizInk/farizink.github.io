@@ -1,6 +1,8 @@
 <script lang="ts">
   import { ChevronLeft, Calendar, Clock, Gift, Heart, Star, RotateCcw, Copy } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
+  import Button from '../../components/ui/Button.svelte';
+  import Input from '../../components/ui/Input.svelte';
 
   // Input state
   let birthDate = $state('');
@@ -382,52 +384,39 @@
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Enter Dates</h2>
         <div class="flex gap-2">
-          <button
+          <Button
             onclick={loadExample}
-            class="px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            variant="secondary"
+            size="sm"
           >
             Example
-          </button>
-          <button
+          </Button>
+          <Button
             onclick={reset}
-            class="px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            variant="secondary"
+            size="sm"
           >
-            <RotateCcw class="w-4 h-4" />
-          </button>
+            <RotateCcw class="w-4 h-4" slot="leftIcon" />
+            Reset
+          </Button>
         </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label
-            for="birth-date"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
-            Date of Birth
-          </label>
-          <input
-            id="birth-date"
-            type="date"
-            bind:value={birthDate}
-            max={currentDate}
-            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
+        <Input
+          id="birth-date"
+          type="date"
+          bind:value={birthDate}
+          label="Date of Birth"
+          max={currentDate}
+        />
 
-        <div>
-          <label
-            for="current-date"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-          >
-            Current Date
-          </label>
-          <input
-            id="current-date"
-            type="date"
-            bind:value={currentDate}
-            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
+        <Input
+          id="current-date"
+          type="date"
+          bind:value={currentDate}
+          label="Current Date"
+        />
       </div>
 
       <!-- Calculation Mode -->
@@ -731,19 +720,21 @@
         >
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Copy</h3>
           <div class="space-y-2">
-            <button
+            <Button
               onclick={() => copyToClipboard(formatAgeText())}
-              class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+              variant="primary"
+              fullWidth
             >
-              <Copy class="w-4 h-4 mr-2" />
+              <Copy class="w-4 h-4" slot="leftIcon" />
               Copy Age Text
-            </button>
-            <button
+            </Button>
+            <Button
               onclick={() => copyToClipboard(`${years} years, ${months} months, ${days} days`)}
-              class="w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              variant="secondary"
+              fullWidth
             >
               Copy Detailed Age
-            </button>
+            </Button>
           </div>
         </div>
       </div>
