@@ -270,11 +270,7 @@
         </button>
       </div>
 
-      <Textarea
-        bind:value={inputText}
-        placeholder="Enter your text here..."
-        rows="12"
-      />
+      <Textarea bind:value={inputText} placeholder="Enter your text here..." rows="12" />
 
       {#if textStats}
         <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -341,12 +337,7 @@
       />
 
       <div class="mt-4 flex gap-2">
-        <Button
-          onclick={downloadAsFile}
-          disabled={!convertedText}
-          variant="primary"
-          fullWidth
-        >
+        <Button onclick={downloadAsFile} disabled={!convertedText} variant="primary" fullWidth>
           Download as File
         </Button>
       </div>

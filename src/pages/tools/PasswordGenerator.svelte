@@ -320,11 +320,7 @@
             {getStrengthText(calculatePasswordStrength(password))}
           </span>
         {/if}
-        <Button
-          onclick={copyToClipboard}
-          variant="danger"
-          size="sm"
-        >
+        <Button onclick={copyToClipboard} variant="danger" size="sm">
           {copiedText === 'password' ? '✓ Copied!' : 'Copy'}
         </Button>
       </div>
@@ -504,35 +500,14 @@
 
         <!-- Action Buttons -->
         <div class="flex flex-wrap gap-3">
-          <Button
-            onclick={generatePassword}
-            variant="danger"
-            size="lg"
-            fullWidth
-          >
+          <Button onclick={generatePassword} variant="danger" size="lg" fullWidth>
             Generate Password
           </Button>
-          <Button
-            onclick={regeneratePassword}
-            variant="secondary"
-            size="lg"
-          >
-            Regenerate
-          </Button>
-          <Button
-            onclick={() => generateMultiplePasswords(5)}
-            variant="primary"
-            size="lg"
-          >
+          <Button onclick={regeneratePassword} variant="secondary" size="lg">Regenerate</Button>
+          <Button onclick={() => generateMultiplePasswords(5)} variant="primary" size="lg">
             Generate 5
           </Button>
-          <Button
-            onclick={clearAll}
-            variant="flat"
-            size="lg"
-          >
-            Clear
-          </Button>
+          <Button onclick={clearAll} variant="flat" size="lg">Clear</Button>
         </div>
       </div>
     </div>

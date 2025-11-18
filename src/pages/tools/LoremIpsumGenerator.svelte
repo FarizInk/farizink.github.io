@@ -428,11 +428,7 @@
 
       <!-- Generate Button -->
       <div class="flex items-end">
-        <Button
-          onclick={generateLoremText}
-          variant="primary"
-          class="w-full"
-        >
+        <Button onclick={generateLoremText} variant="primary" class="w-full">
           <RefreshCw class="w-4 h-4 mr-2" slot="leftIcon" />
           Generate
         </Button>
@@ -465,21 +461,11 @@
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Generated Text</h2>
       <div class="flex gap-2">
-        <Button
-          onclick={copyToClipboard}
-          variant="secondary"
-          size="sm"
-        >
+        <Button onclick={copyToClipboard} variant="secondary" size="sm">
           <Copy class="w-4 h-4 mr-1" slot="leftIcon" />
           {copied ? 'Copied!' : 'Copy'}
         </Button>
-        <Button
-          onclick={downloadAsFile}
-          variant="secondary"
-          size="sm"
-        >
-          Download
-        </Button>
+        <Button onclick={downloadAsFile} variant="secondary" size="sm">Download</Button>
       </div>
     </div>
 

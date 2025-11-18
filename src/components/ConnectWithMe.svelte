@@ -3,8 +3,8 @@
   import LinkedinIcon from './icons/LinkedinIcon.svelte';
   import GithubIcon from './icons/GithubIcon.svelte';
   import DiscordIcon from './icons/DiscordIcon.svelte';
-import SpotifyIcon from './icons/SpotifyIcon.svelte';
-import { toast } from 'svelte-sonner';
+  import SpotifyIcon from './icons/SpotifyIcon.svelte';
+  import { toast } from 'svelte-sonner';
 
   const copyEmail = () => {
     navigator.clipboard.writeText('me@fariz.dev');

@@ -349,21 +349,11 @@
             Items to Pick From
           </h2>
           <div class="flex gap-2">
-            <Button
-              onclick={addItem}
-              variant="primary"
-              size="sm"
-            >
+            <Button onclick={addItem} variant="primary" size="sm">
               <Plus class="w-4 h-4 mr-1" slot="leftIcon" />
               Add Item
             </Button>
-            <Button
-              onclick={clearAll}
-              variant="destructive"
-              size="sm"
-            >
-              Clear All
-            </Button>
+            <Button onclick={clearAll} variant="destructive" size="sm">Clear All</Button>
           </div>
         </div>
 
@@ -509,19 +499,11 @@
               Result
             </h2>
             <div class="flex gap-2">
-              <Button
-                onclick={copyResult}
-                variant="secondary"
-                size="sm"
-              >
+              <Button onclick={copyResult} variant="secondary" size="sm">
                 <Copy class="w-4 h-4 mr-1" slot="leftIcon" />
                 Copy
               </Button>
-              <Button
-                onclick={resetPicker}
-                variant="secondary"
-                size="sm"
-              >
+              <Button onclick={resetPicker} variant="secondary" size="sm">
                 <RotateCcw class="w-4 h-4" slot="leftIcon" />
               </Button>
             </div>

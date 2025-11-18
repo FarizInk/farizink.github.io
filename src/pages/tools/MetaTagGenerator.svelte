@@ -1062,19 +1062,11 @@
 
   <!-- Actions -->
   <div class="flex flex-wrap gap-3 mb-6">
-    <Button
-      onclick={loadExample}
-      variant="secondary"
-    >
+    <Button onclick={loadExample} variant="secondary">
       <RefreshCw class="w-4 h-4 mr-2" slot="leftIcon" />
       Load Example
     </Button>
-    <Button
-      onclick={clearAll}
-      variant="destructive"
-    >
-      Clear All
-    </Button>
+    <Button onclick={clearAll} variant="destructive">Clear All</Button>
   </div>
 
   <!-- Generated Output -->
@@ -1084,21 +1076,11 @@
     >
       <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Generated Meta Tags</h2>
       <div class="flex gap-2">
-        <Button
-          onclick={copyToClipboard}
-          disabled={!generatedTags}
-          variant="secondary"
-          size="sm"
-        >
+        <Button onclick={copyToClipboard} disabled={!generatedTags} variant="secondary" size="sm">
           <Copy class="w-4 h-4 mr-1" slot="leftIcon" />
           {copied ? 'Copied!' : 'Copy'}
         </Button>
-        <Button
-          onclick={downloadAsHtml}
-          disabled={!generatedTags}
-          variant="success"
-          size="sm"
-        >
+        <Button onclick={downloadAsHtml} disabled={!generatedTags} variant="success" size="sm">
           Download HTML
         </Button>
       </div>

@@ -97,28 +97,28 @@
       {#each Array(6) as i (i)}
         <Card variant="default" padding="lg">
           <div class="animate-pulse">
-          <div class="mb-4">
-            <div class="h-6 bg-gray-300 dark:bg-gray-600 rounded-lg mb-2 w-3/4"></div>
-          </div>
-          <div class="space-y-2 mb-4">
-            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
-            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
-            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/6"></div>
-          </div>
-          <div class="flex flex-wrap gap-2 mb-4">
-            <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-16"></div>
-            <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-20"></div>
-            <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-14"></div>
-          </div>
-          <div
-            class="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-700"
-          >
-            <div class="flex items-center gap-4">
-              <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
-              <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-12"></div>
+            <div class="mb-4">
+              <div class="h-6 bg-gray-300 dark:bg-gray-600 rounded-lg mb-2 w-3/4"></div>
             </div>
-            <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
-          </div>
+            <div class="space-y-2 mb-4">
+              <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+              <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+              <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/6"></div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-16"></div>
+              <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-20"></div>
+              <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-14"></div>
+            </div>
+            <div
+              class="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-700"
+            >
+              <div class="flex items-center gap-4">
+                <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
+                <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-12"></div>
+              </div>
+              <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+            </div>
           </div>
         </Card>
       {/each}
@@ -127,23 +127,13 @@
     <Card variant="default" padding="xl" class="max-w-md mx-auto">
       <div class="flex flex-col items-center justify-center text-gray-600 dark:text-gray-400">
         <p class="mb-4">Error: {error}</p>
-        <Button
-          onclick={fetchPinnedRepos}
-          variant="primary"
-        >
-          Try Again
-        </Button>
+        <Button onclick={fetchPinnedRepos} variant="primary">Try Again</Button>
       </div>
     </Card>
   {:else}
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
       {#each repositories as repo (repo.id)}
-        <Card
-          variant="elevated"
-          clickable
-          hover
-          class="group"
-        >
+        <Card variant="elevated" clickable hover class="group">
           <div
             class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           ></div>
@@ -251,7 +241,7 @@
               {formatDate(repo.updated_at)}
             </span>
           </div>
-            </Card>
+        </Card>
       {/each}
     </div>
   {/if}

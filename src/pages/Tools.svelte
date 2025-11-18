@@ -2,7 +2,6 @@
   import { navigate } from '../lib/router.js';
   import {
     Search,
-    X,
     FileText,
     Hash,
     Type,
@@ -15,8 +14,6 @@
     Calculator,
     Calendar,
     DollarSign,
-    ArrowRight,
-    Check,
     Shuffle,
     Key,
     QrCode,
@@ -682,12 +679,14 @@
 
 <div class="max-w-7xl mx-auto p-6">
   <div class="mb-8">
-    <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-gradient">
+    <h1
+      class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-gradient"
+    >
       Developer Tools
     </h1>
     <p class="text-lg text-gray-600 dark:text-gray-400 mb-6 max-w-3xl mx-auto">
-      A comprehensive collection of useful tools for developers, designers, and everyday tasks.
-      Each tool is carefully crafted with attention to detail and user experience.
+      A comprehensive collection of useful tools for developers, designers, and everyday tasks. Each
+      tool is carefully crafted with attention to detail and user experience.
     </p>
 
     <!-- Search Input -->
@@ -740,18 +739,16 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {#each category.tools as tool (tool.id)}
           {@const colors = getColorClasses(tool.color)}
-          <ToolCard
-            {tool}
-            {colors}
-            on:toolClick={(e) => handleToolClick(e.detail.toolId)}
-          />
+          <ToolCard {tool} {colors} on:toolClick={e => handleToolClick(e.detail.toolId)} />
         {/each}
       </div>
     </div>
   {/each}
 
   <!-- Call to Action -->
-  <div class="mt-12 p-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+  <div
+    class="mt-12 p-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800"
+  >
     <div class="text-center">
       <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">More Tools Coming Soon</h2>
       <p class="text-gray-600 dark:text-gray-400 mb-6">

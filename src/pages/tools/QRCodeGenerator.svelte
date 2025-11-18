@@ -241,18 +241,8 @@
 
       <!-- Action Buttons -->
       <div class="flex flex-wrap gap-3">
-        <Button
-          onclick={generateQRCode}
-          variant="primary"
-        >
-          Generate QR Code
-        </Button>
-        <Button
-          onclick={resetForm}
-          variant="flat"
-        >
-          Reset
-        </Button>
+        <Button onclick={generateQRCode} variant="primary">Generate QR Code</Button>
+        <Button onclick={resetForm} variant="flat">Reset</Button>
       </div>
     </div>
 
@@ -275,17 +265,11 @@
             </div>
 
             <div class="flex flex-wrap gap-3 justify-center">
-              <Button
-                onclick={downloadQRCode}
-                variant="success"
-              >
+              <Button onclick={downloadQRCode} variant="success">
                 <Download slot="leftIcon" class="w-4 h-4" />
                 Download
               </Button>
-              <Button
-                onclick={copyToClipboard}
-                variant="secondary"
-              >
+              <Button onclick={copyToClipboard} variant="secondary">
                 <Copy slot="leftIcon" class="w-4 h-4" />
                 Copy
               </Button>

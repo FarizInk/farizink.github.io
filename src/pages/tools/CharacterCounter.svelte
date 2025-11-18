@@ -174,10 +174,7 @@ ${inputText}
   <!-- Header -->
   <div class="mb-8">
     <div class="flex items-center gap-4 mb-4">
-      <Button
-        onclick={handleBackToTools}
-        variant="ghost"
-      >
+      <Button onclick={handleBackToTools} variant="ghost">
         <ChevronLeft class="w-5 h-5" slot="leftIcon" />
         Back to Tools
       </Button>
@@ -231,20 +228,8 @@ ${inputText}
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Input Text</h2>
           <div class="flex items-center gap-2">
-            <Button
-              onclick={loadSampleText}
-              variant="secondary"
-              size="sm"
-            >
-              Load Sample
-            </Button>
-            <Button
-              onclick={clearAll}
-              variant="secondary"
-              size="sm"
-            >
-              Clear
-            </Button>
+            <Button onclick={loadSampleText} variant="secondary" size="sm">Load Sample</Button>
+            <Button onclick={clearAll} variant="secondary" size="sm">Clear</Button>
           </div>
         </div>
 
@@ -365,12 +350,7 @@ ${inputText}
             Copy Text
           </Button>
 
-          <Button
-            onclick={downloadReport}
-            disabled={!stats}
-            variant="secondary"
-            fullWidth
-          >
+          <Button onclick={downloadReport} disabled={!stats} variant="secondary" fullWidth>
             <Calculator class="w-4 h-4" slot="leftIcon" />
             Download Report
           </Button>

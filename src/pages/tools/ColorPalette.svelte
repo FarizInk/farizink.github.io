@@ -297,17 +297,8 @@
           Base Color
         </label>
         <div class="flex gap-2">
-          <Input
-            id="base-color-picker"
-            type="color"
-            bind:value={baseColor}
-            placeholder="#3B82F6"
-          />
-          <Button
-            onclick={randomColor}
-            variant="ghost"
-            size="md"
-          >
+          <Input id="base-color-picker" type="color" bind:value={baseColor} placeholder="#3B82F6" />
+          <Button onclick={randomColor} variant="ghost" size="md">
             <RefreshCw slot="leftIcon" class="w-4 h-4" />
           </Button>
         </div>
@@ -333,11 +324,7 @@
       </div>
 
       <div class="flex items-end">
-        <Button
-          onclick={loadSamplePalette}
-          variant="secondary"
-          fullWidth
-        >
+        <Button onclick={loadSamplePalette} variant="secondary" fullWidth>
           Load Sample Palette
         </Button>
       </div>

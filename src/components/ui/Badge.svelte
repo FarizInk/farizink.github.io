@@ -9,7 +9,7 @@
     size?: BadgeSize;
     rounded?: boolean;
     class?: string;
-    children?: any;
+    children?: () => void;
   }
 
   let {
@@ -41,7 +41,9 @@
 
   const roundedClasses = rounded ? 'rounded-full' : 'rounded';
 
-  const badgeClasses = $derived([...baseClasses, sizeClasses, variantClasses, roundedClasses, className].join(' '));
+  const badgeClasses = $derived(
+    [...baseClasses, sizeClasses, variantClasses, roundedClasses, className].join(' ')
+  );
 </script>
 
 <span class={badgeClasses} {...restProps}>

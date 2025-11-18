@@ -384,18 +384,8 @@
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Enter Dates</h2>
         <div class="flex gap-2">
-          <Button
-            onclick={loadExample}
-            variant="secondary"
-            size="sm"
-          >
-            Example
-          </Button>
-          <Button
-            onclick={reset}
-            variant="secondary"
-            size="sm"
-          >
+          <Button onclick={loadExample} variant="secondary" size="sm">Example</Button>
+          <Button onclick={reset} variant="secondary" size="sm">
             <RotateCcw class="w-4 h-4" slot="leftIcon" />
             Reset
           </Button>
@@ -411,12 +401,7 @@
           max={currentDate}
         />
 
-        <Input
-          id="current-date"
-          type="date"
-          bind:value={currentDate}
-          label="Current Date"
-        />
+        <Input id="current-date" type="date" bind:value={currentDate} label="Current Date" />
       </div>
 
       <!-- Calculation Mode -->
@@ -720,11 +705,7 @@
         >
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Copy</h3>
           <div class="space-y-2">
-            <Button
-              onclick={() => copyToClipboard(formatAgeText())}
-              variant="primary"
-              fullWidth
-            >
+            <Button onclick={() => copyToClipboard(formatAgeText())} variant="primary" fullWidth>
               <Copy class="w-4 h-4" slot="leftIcon" />
               Copy Age Text
             </Button>

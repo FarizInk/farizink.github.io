@@ -244,25 +244,11 @@
 
   <!-- Controls -->
   <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
-    <Button
-      onclick={generateSlug}
-      disabled={!inputText.trim()}
-      variant="primary"
-    >
+    <Button onclick={generateSlug} disabled={!inputText.trim()} variant="primary">
       Generate Slug
     </Button>
-    <Button
-      onclick={loadSampleText}
-      variant="secondary"
-    >
-      Load Sample Text
-    </Button>
-    <Button
-      onclick={clearAll}
-      variant="destructive"
-    >
-      Clear All
-    </Button>
+    <Button onclick={loadSampleText} variant="secondary">Load Sample Text</Button>
+    <Button onclick={clearAll} variant="destructive">Clear All</Button>
   </div>
 
   <!-- Input and Output -->
@@ -288,11 +274,7 @@
       <div class="flex justify-between items-center mb-2">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Generated Slug</h2>
         {#if generatedSlug}
-          <Button
-            onclick={() => copyToClipboard(generatedSlug)}
-            variant="success"
-            size="sm"
-          >
+          <Button onclick={() => copyToClipboard(generatedSlug)} variant="success" size="sm">
             {copiedText === 'slug' ? '✓ Copied!' : 'Copy'}
           </Button>
         {/if}

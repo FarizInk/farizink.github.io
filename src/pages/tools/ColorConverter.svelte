@@ -209,10 +209,7 @@
   <!-- Header -->
   <div class="mb-8">
     <div class="flex items-center gap-4 mb-4">
-      <Button
-        onclick={handleBackToTools}
-        variant="ghost"
-      >
+      <Button onclick={handleBackToTools} variant="ghost">
         <ChevronLeft class="w-5 h-5" slot="leftIcon" />
         Back to Tools
       </Button>
@@ -258,12 +255,7 @@
 
   <!-- Controls -->
   <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
-    <Button
-      onclick={randomColor}
-      variant="primary"
-    >
-      Random Color
-    </Button>
+    <Button onclick={randomColor} variant="primary">Random Color</Button>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">

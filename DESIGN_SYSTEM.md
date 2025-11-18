@@ -1,11 +1,13 @@
 # Design System Documentation
 
 ## Overview
+
 This design system provides a comprehensive set of reusable UI components and styling utilities for the FarizInk website. It ensures consistency, accessibility, and maintainability across all pages.
 
 ## Color System
 
 ### Design System Colors
+
 All colors are available in 50-900 scale variations:
 
 - **Primary**: Blue palette for main actions and links
@@ -15,7 +17,9 @@ All colors are available in 50-900 scale variations:
 - **Danger**: Red palette for error/danger states
 
 ### Tool-Specific Colors
+
 Each tool has its own color identity:
+
 - `--color-password-red`: Password Generator
 - `--color-qrcode-teal`: QR Code Generator
 - `--color-palette-pink`: Color Palette Generator
@@ -75,7 +79,9 @@ Each tool has its own color identity:
 ## Components
 
 ### Button
+
 **Variants:**
+
 - `primary`: Main action button (blue)
 - `secondary`: Secondary button (gray)
 - `success`: Success actions (green)
@@ -85,6 +91,7 @@ Each tool has its own color identity:
 - `ghost`: Transparent button
 
 **Sizes:**
+
 - `xs`: Extra small
 - `sm`: Small
 - `md`: Medium (default)
@@ -92,6 +99,7 @@ Each tool has its own color identity:
 - `xl`: Extra large
 
 **Props:**
+
 - `variant`: Button variant
 - `size`: Button size
 - `disabled`: Disable button
@@ -101,18 +109,22 @@ Each tool has its own color identity:
 - `leftIcon`, `rightIcon`: Icon slots
 
 ### Input
+
 **Variants:**
+
 - `default`: Standard input
 - `success`: Success state
 - `warning`: Warning state
 - `error`: Error state
 
 **Sizes:**
+
 - `sm`: Small input
 - `md`: Medium input (default)
 - `lg`: Large input
 
 **Props:**
+
 - `variant`: Input variant
 - `size`: Input size
 - `label`: Input label
@@ -125,18 +137,23 @@ Each tool has its own color identity:
 - `leftIcon`, `rightIcon`: Icon support
 
 ### Textarea
+
 Similar to Input but with:
+
 - `rows`: Number of rows
 - `resize`: Resize behavior (`none`, `vertical`, `horizontal`, `both`)
 
 ### Card
+
 **Variants:**
+
 - `default`: Standard card with border
 - `elevated`: Card with shadow
 - `outlined`: Card with thick border
 - `flat`: Minimal card with background only
 
 **Padding:**
+
 - `none`: No padding
 - `sm`: Small padding
 - `md`: Medium padding (default)
@@ -144,13 +161,16 @@ Similar to Input but with:
 - `xl`: Extra large padding
 
 **Props:**
+
 - `variant`: Card variant
 - `padding`: Card padding
 - `hover`: Enable hover effects
 - `clickable`: Make card clickable
 
 ### Badge
+
 **Variants:**
+
 - `default`: Gray badge
 - `primary`: Blue badge
 - `success`: Green badge
@@ -159,24 +179,30 @@ Similar to Input but with:
 - `info`: Cyan badge
 
 **Sizes:**
+
 - `sm`: Small badge
 - `md`: Medium badge
 - `lg`: Large badge
 
 ### Alert
+
 **Variants:**
+
 - `info`: Information alert (blue)
 - `success`: Success alert (green)
 - `warning`: Warning alert (yellow)
 - `error`: Error alert (red)
 
 **Props:**
+
 - `variant`: Alert variant
 - `dismissible`: Show dismiss button
 - `show`: Control visibility
 
 ### ToolCard
+
 Specialized card for tools display:
+
 - Hover effects
 - Status badges
 - Feature lists
@@ -186,30 +212,38 @@ Specialized card for tools display:
 ## Utility Classes
 
 ### Spacing
+
 - `.ds-space-y-*`: Vertical spacing between direct children
 - `.ds-space-x-*`: Horizontal spacing between direct children
 
 ### Typography
+
 - `.ds-text-*`: Font size classes
 
 ### Hover Effects
+
 - `.ds-hover-lift`: Lift element on hover
 - `.ds-hover-scale`: Scale element on hover
 
 ### Loading States
+
 - `.ds-loading`: Show loading shimmer effect
 
 ### Status Indicators
+
 - `.ds-status-dot`: Small colored dot
 - `.ds-status-*`: Color variants for status
 
 ### Gradients
+
 - `.ds-gradient-*`: Predefined gradient backgrounds
 
 ### Glassmorphism
+
 - `.ds-glass`: Glass effect with backdrop blur
 
 ### Shadows
+
 - `.ds-shadow-button`: Button shadow
 - `.ds-shadow-card`: Card shadow
 - `.ds-shadow-modal`: Modal shadow
@@ -217,11 +251,10 @@ Specialized card for tools display:
 ## Usage Examples
 
 ### Button Examples
+
 ```svelte
 <!-- Primary button -->
-<Button variant="primary" size="lg" onclick={handleClick}>
-  Click Me
-</Button>
+<Button variant="primary" size="lg" onclick={handleClick}>Click Me</Button>
 
 <!-- Button with icon -->
 <Button variant="success" onclick={handleAction}>
@@ -230,32 +263,23 @@ Specialized card for tools display:
 </Button>
 
 <!-- Loading button -->
-<Button loading variant="primary" disabled>
-  Loading...
-</Button>
+<Button loading variant="primary" disabled>Loading...</Button>
 ```
 
 ### Input Examples
+
 ```svelte
 <!-- Standard input -->
-Input
-  bind:value={name}
-  label="Name"
-  placeholder="Enter your name"
-  required
-/>
+Input bind:value={name}
+label="Name" placeholder="Enter your name" required />
 
 <!-- Input with error state -->
-Input
-  bind:value={email}
-  label="Email"
-  type="email"
-  errorText="Please enter a valid email"
-  variant="error"
-/>
+Input bind:value={email}
+label="Email" type="email" errorText="Please enter a valid email" variant="error" />
 ```
 
 ### Card Examples
+
 ```svelte
 <!-- Standard card -->
 <Card variant="elevated" padding="lg">

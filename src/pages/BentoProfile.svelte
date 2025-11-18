@@ -73,13 +73,7 @@
           <MailIcon class="w-5 h-5 text-blue-600 dark:text-blue-400" />
           <h3 class="font-semibold text-gray-900 dark:text-white">Contact</h3>
         </div>
-        <Button
-          onclick={copyEmail}
-          variant="ghost"
-          size="sm"
-        >
-          john.doe@example.com
-        </Button>
+        <Button onclick={copyEmail} variant="ghost" size="sm">john.doe@example.com</Button>
       </div>
 
       <!-- Location -->

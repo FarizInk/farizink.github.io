@@ -1,15 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
-  import {
-    ChevronLeft,
-    Image,
-    Copy,
-    Download,
-    Type,
-    Zap,
-    Palette,
-    Check
-  } from '@lucide/svelte';
+  import { ChevronLeft, Image, Copy, Download, Type, Zap, Palette, Check } from '@lucide/svelte';
 
   let inputText = $state('');
   let asciiArt = $state('');

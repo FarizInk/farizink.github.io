@@ -209,36 +209,11 @@
     <!-- Text Converter -->
     <!-- Controls -->
     <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
-      <Button
-        onclick={encodeBase64}
-        variant="primary"
-      >
-        Encode to Base64
-      </Button>
-      <Button
-        onclick={decodeBase64}
-        variant="secondary"
-      >
-        Decode from Base64
-      </Button>
-      <Button
-        onclick={loadSampleText}
-        variant="success"
-      >
-        Load Sample Text
-      </Button>
-      <Button
-        onclick={loadSampleBase64}
-        variant="primary"
-      >
-        Load Sample Base64
-      </Button>
-      <Button
-        onclick={clearAll}
-        variant="ghost"
-      >
-        Clear All
-      </Button>
+      <Button onclick={encodeBase64} variant="primary">Encode to Base64</Button>
+      <Button onclick={decodeBase64} variant="secondary">Decode from Base64</Button>
+      <Button onclick={loadSampleText} variant="success">Load Sample Text</Button>
+      <Button onclick={loadSampleBase64} variant="primary">Load Sample Base64</Button>
+      <Button onclick={clearAll} variant="ghost">Clear All</Button>
     </div>
 
     <!-- Error Display -->
@@ -410,21 +385,12 @@
                   >
                     {copiedText === 'file-encoded' ? '✓ Copied!' : 'Copy'}
                   </Button>
-                  <Button
-                    onclick={downloadEncodedFile}
-                    variant="success"
-                    size="sm"
-                  >
+                  <Button onclick={downloadEncodedFile} variant="success" size="sm">
                     Download
                   </Button>
                 </div>
               </div>
-              <Textarea
-                readonly
-                value={fileResult.encoded}
-                rows={8}
-                variant="default"
-              />
+              <Textarea readonly value={fileResult.encoded} rows={8} variant="default" />
             </div>
           </div>
         </div>

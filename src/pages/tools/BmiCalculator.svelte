@@ -314,20 +314,8 @@
             Personal Information
           </h2>
           <div class="flex gap-2">
-            <Button
-              onclick={loadExample}
-              variant="secondary"
-              size="sm"
-            >
-              Example
-            </Button>
-            <Button
-              onclick={reset}
-              variant="secondary"
-              size="sm"
-            >
-              Reset
-            </Button>
+            <Button onclick={loadExample} variant="secondary" size="sm">Example</Button>
+            <Button onclick={reset} variant="secondary" size="sm">Reset</Button>
           </div>
         </div>
 
