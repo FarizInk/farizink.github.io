@@ -3,6 +3,7 @@
   import { createRouter } from './lib/router.js';
   import Router from './lib/Router.svelte';
   import Navigation from './components/Navigation.svelte';
+  import ScrollToTop from './components/ScrollToTop.svelte';
   import PixelBackground from './components/PixelBackground.svelte';
   import LoveIcon from './components/icons/LoveIcon.svelte';
   import Thanks from './components/Thanks.svelte';
@@ -67,18 +68,19 @@
 </script>
 
 <div
-  class="min-h-screen flex flex-col justify-between relative bg-[var(--ds-secondary-50)] dark:bg-[var(--ds-secondary-900)] transition-colors duration-300"
+  class="min-h-screen flex flex-col justify-between relative bg-secondary-50 dark:bg-secondary-900 transition-colors duration-300"
 >
   <PixelBackground />
   <Navigation />
-  <div class="flex-1 pt-[72px]">
+  <ScrollToTop />
+  <div class="flex-1">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <Router />
     </div>
   </div>
 
   <footer
-    class="flex justify-center items-center text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)] py-8 mt-12 border-t border-[var(--ds-secondary-200)] dark:border-[var(--ds-secondary-800)] bg-white/50 dark:bg-black/20 backdrop-blur-sm"
+    class="flex justify-center items-center text-secondary-600 dark:text-secondary-400 py-8 mt-12 border-t border-secondary-200 dark:border-secondary-800 bg-white/50 dark:bg-black/20 backdrop-blur-sm"
   >
     Made with <button
       type="button"

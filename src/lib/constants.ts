@@ -8,7 +8,7 @@
 /**
  * API Base URLs
  */
-export const API_BASE_URL = 'http://localhost:3000';
+export const API_BASE_URL = 'https://core.fariz.dev';
 
 /**
  * Spotify API Configuration
@@ -24,7 +24,7 @@ export const SPOTIFY_API = {
  * Application Metadata
  */
 export const APP_META = {
-  NAME: 'Fariz Portfolio',
-  DESCRIPTION: 'Software Engineer & Developer Tools Creator',
+  NAME: 'Fariz',
+  DESCRIPTION: 'Software Engineer',
   AUTHOR: 'Fariz'
 } as const;

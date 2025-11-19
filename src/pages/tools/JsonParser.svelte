@@ -88,17 +88,17 @@
 
     <div class="text-center mb-12">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-success-400)] to-[var(--ds-success-600)] rounded-2xl mb-6 shadow-lg animate-scale-in"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-success-400 to-success-600 rounded-2xl mb-6 shadow-lg animate-scale-in"
       >
         <FileJson class="w-10 h-10 text-white" />
       </div>
       <h1
-        class="text-4xl md:text-5xl font-bold text-[var(--ds-secondary-900)] dark:text-white mb-4 tracking-tight"
+        class="text-4xl md:text-5xl font-bold text-secondary-900 dark:text-white mb-4 tracking-tight"
       >
         JSON Parser
       </h1>
       <p
-        class="text-xl text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)] max-w-2xl mx-auto leading-relaxed"
+        class="text-xl text-secondary-600 dark:text-secondary-400 max-w-2xl mx-auto leading-relaxed"
       >
         Parse, validate, format, and minify JSON data with syntax highlighting and error detection.
       </p>
@@ -121,7 +121,7 @@
       <div class="flex flex-col gap-4">
         <div class="flex items-center justify-between">
           <h3
-            class="text-sm font-medium text-[var(--ds-secondary-700)] dark:text-[var(--ds-secondary-300)]"
+            class="text-sm font-medium text-secondary-700 dark:text-secondary-300"
           >
             Input JSON
           </h3>
@@ -153,7 +153,7 @@
       <div class="flex flex-col gap-4">
         <div class="flex items-center justify-between">
           <h3
-            class="text-sm font-medium text-[var(--ds-secondary-700)] dark:text-[var(--ds-secondary-300)]"
+            class="text-sm font-medium text-secondary-700 dark:text-secondary-300"
           >
             Output
           </h3>
@@ -180,9 +180,9 @@
       class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
     >
       <div
-        class="w-12 h-12 bg-[var(--ds-success-100)] dark:bg-[var(--ds-success-900)/20] rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-success-100 dark:bg-success-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <Check class="w-6 h-6 text-[var(--ds-success-600)] dark:text-[var(--ds-success-400)]" />
+        <Check class="w-6 h-6 text-success-600 dark:text-success-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Validation</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -193,9 +193,9 @@
       class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
     >
       <div
-        class="w-12 h-12 bg-[var(--ds-success-100)] dark:bg-[var(--ds-success-900)/20] rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-success-100 dark:bg-success-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <Check class="w-6 h-6 text-[var(--ds-success-600)] dark:text-[var(--ds-success-400)]" />
+        <Check class="w-6 h-6 text-success-600 dark:text-success-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Formatting</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -206,9 +206,9 @@
       class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
     >
       <div
-        class="w-12 h-12 bg-[var(--ds-success-100)] dark:bg-[var(--ds-success-900)/20] rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-success-100 dark:bg-success-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <Check class="w-6 h-6 text-[var(--ds-success-600)] dark:text-[var(--ds-success-400)]" />
+        <Check class="w-6 h-6 text-success-600 dark:text-success-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Privacy</h3>
       <p class="text-gray-600 dark:text-gray-400">

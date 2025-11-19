@@ -195,7 +195,7 @@
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-primary-400)] to-[var(--ds-primary-600)] rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
       >
         <Code class="w-10 h-10 text-white" />
       </div>
@@ -239,7 +239,7 @@
       <button
         onclick={() => (minified = false)}
         class="px-4 py-2 rounded-md text-sm font-medium transition-colors {!minified
-          ? 'bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]'
+          ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
           : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
       >
         Beautify CSS
@@ -247,7 +247,7 @@
       <button
         onclick={() => (minified = true)}
         class="px-4 py-2 rounded-md text-sm font-medium transition-colors {minified
-          ? 'bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]'
+          ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
           : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
       >
         Minify CSS
@@ -272,7 +272,7 @@
     {#if cssOutput}
       <button
         onclick={() => copyToClipboard(cssOutput, 'output')}
-        class="px-4 py-2 bg-[var(--ds-primary-600)] text-white rounded-lg hover:bg-blue-700 transition-colors"
+        class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
       >
         {copiedText === 'output' ? '✓ Copied!' : 'Copy Result'}
       </button>
@@ -336,7 +336,7 @@
       <textarea
         bind:value={cssInput}
         placeholder="Enter your CSS code here..."
-        class="w-full h-96 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-[var(--ds-primary-500)] focus:border-transparent"
+        class="w-full h-96 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
       ></textarea>
     </div>
 
@@ -373,9 +373,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <Zap class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
+        <Zap class="w-6 h-6 text-primary-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Minify CSS</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -387,9 +387,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <FileText class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
+        <FileText class="w-6 h-6 text-primary-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Beautify CSS</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -401,9 +401,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <Download class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
+        <Download class="w-6 h-6 text-primary-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Export Results</h3>
       <p class="text-gray-600 dark:text-gray-400">

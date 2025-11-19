@@ -92,9 +92,9 @@
     // Remove selection from all items
     items.forEach(item => {
       item.classList.remove(
-        'bg-[var(--ds-secondary-100)]',
-        'dark:bg-[var(--ds-secondary-700)]',
-        'border-[var(--ds-primary-500)]'
+        'bg-secondary-100',
+        'dark:bg-secondary-700',
+        'border-primary-500'
       );
       item.classList.add('border-transparent');
       item.setAttribute('data-selected', 'false');
@@ -103,9 +103,9 @@
     // Add selection to target item
     if (items[index]) {
       items[index].classList.add(
-        'bg-[var(--ds-secondary-100)]',
-        'dark:bg-[var(--ds-secondary-700)]',
-        'border-[var(--ds-primary-500)]'
+        'bg-secondary-100',
+        'dark:bg-secondary-700',
+        'border-primary-500'
       );
       items[index].classList.remove('border-transparent');
       items[index].setAttribute('data-selected', 'true');
@@ -131,7 +131,7 @@
       document.documentElement.classList.remove('dark');
     }
 
-    // Add global keyboard event listener
+    // Add global event listeners
     document.addEventListener('keydown', handleKeydown);
 
     return () => {
@@ -143,48 +143,42 @@
 <!-- Command Palette Modal -->
 <CommandPalette bind:isOpen={isCommandPaletteOpen} />
 
-<nav class="mb-8 w-full backdrop-blur-xs py-4 fixed top-0 z-40">
-  <div class="flex justify-between items-center px-6">
-    <!-- Navigation Links -->
-    <div class="flex space-x-6">
-      <a
-        href="/"
-        class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors font-medium"
-        onclick={e => handleNavigation(e, '/')}
-      >
-        Home
-      </a>
+<!-- Bottom Center Floating Navigation (Compact) -->
+<div
+  class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 px-3 py-2 transition-all duration-300"
+>
+  <!-- Navigation Menu (Compact Layout) -->
+  <div class="flex items-center gap-1">
+    <!-- Home -->
+    <a
+      href="/"
+      class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-white hover:bg-primary-50 dark:hover:bg-primary-900 rounded-lg transition-all"
+      onclick={(e) => handleNavigation(e, '/')}
+    >
+      Home
+    </a>
 
-      <a
-        href="/projects"
-        class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors font-medium"
-        onclick={e => handleNavigation(e, '/projects')}
-      >
-        Projects
-      </a>
+    <!-- Tools -->
+    <a
+      href="/tools"
+      class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-white hover:bg-primary-50 dark:hover:bg-primary-900 rounded-lg transition-all"
+      onclick={(e) => handleNavigation(e, '/tools')}
+    >
+      Tools
+    </a>
 
-      <a
-        href="/tools"
-        class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors font-medium"
-        onclick={e => handleNavigation(e, '/tools')}
-      >
-        Tools
-      </a>
-    </div>
-
-    <!-- Theme Switcher -->
+    <!-- Theme Toggle -->
     <button
       onclick={toggleTheme}
-      class="hover:cursor-pointer p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+      class="w-10 h-8 rounded-lg bg-primary-600 hover:bg-primary-700 flex items-center justify-center transition-all transform hover:scale-105"
       title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       {#if isDark}
-        <!-- Sun icon for light mode -->
-        <Sun class="w-5 h-5" />
+        <Sun class="w-4 h-4 text-white" />
       {:else}
-        <!-- Moon icon for dark mode -->
-        <Moon class="w-5 h-5" />
+        <Moon class="w-4 h-4 text-white" />
       {/if}
     </button>
   </div>
-</nav>
+</div>
+

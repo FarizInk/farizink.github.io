@@ -102,14 +102,14 @@
       <button
         onclick={() => navigateToTool(tool.id)}
         onkeydown={e => handleKeydown(e, tool.id)}
-        class="w-full text-left p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--ds-primary-500)] focus:ring-inset group"
+        class="w-full text-left p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-inset group"
         tabindex="0"
         aria-label="Open {tool.name}"
       >
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
             <div
-              class="w-10 h-10 bg-gradient-to-br from-[var(--ds-primary-400)] to-[var(--ds-primary-600)] dark:from-[var(--ds-primary-500)] dark:to-[var(--ds-primary-700)] rounded-lg flex items-center justify-center flex-shrink-0"
+              class="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 dark:from-primary-500 dark:to-primary-700 rounded-lg flex items-center justify-center flex-shrink-0"
             >
               <tool.icon class="w-5 h-5 text-white" />
             </div>
@@ -117,7 +117,7 @@
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2">
                 <h3
-                  class="font-semibold text-gray-900 dark:text-white group-hover:text-[var(--ds-primary-600)] dark:group-hover:text-[var(--ds-primary-400)] transition-colors"
+                  class="font-semibold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
                 >
                   {tool.name}
                 </h3>
@@ -136,7 +136,7 @@
           </div>
 
           <ChevronRight
-            class="w-5 h-5 text-gray-400 group-hover:text-[var(--ds-primary-600)] dark:group-hover:text-[var(--ds-primary-400)] transition-colors flex-shrink-0 ml-3"
+            class="w-5 h-5 text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors flex-shrink-0 ml-3"
           />
         </div>
 

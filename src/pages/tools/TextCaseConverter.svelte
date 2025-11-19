@@ -159,7 +159,7 @@
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-secondary-400)] to-[var(--ds-secondary-600)] rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-secondary-400 to-secondary-600 rounded-2xl mb-4"
       >
         <Type class="w-10 h-10 text-white" />
       </div>
@@ -220,13 +220,13 @@
           type="button"
           onclick={() => (activeCase = caseType)}
           class="relative p-3 rounded-lg border-2 transition-all {activeCase === caseType
-            ? 'border-[var(--ds-secondary-500)] bg-[var(--ds-secondary-100)] dark:bg-[var(--ds-secondary-900)/20]'
+            ? 'border-secondary-500 bg-secondary-100 dark:bg-secondary-900/20'
             : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'}"
         >
           <div class="flex items-center justify-center mb-2">
             <Type
               class="w-5 h-5 {activeCase === caseType
-                ? 'text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]'
+                ? 'text-secondary-600 dark:text-secondary-400'
                 : 'text-gray-600 dark:text-gray-400'}"
             />
           </div>
@@ -241,7 +241,7 @@
 
           {#if activeCase === caseType}
             <div class="absolute top-1 right-1">
-              <div class="w-2 h-2 bg-[var(--ds-secondary-500)] rounded-full"></div>
+              <div class="w-2 h-2 bg-secondary-500 rounded-full"></div>
             </div>
           {/if}
         </button>

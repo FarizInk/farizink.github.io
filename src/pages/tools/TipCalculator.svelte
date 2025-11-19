@@ -94,7 +94,7 @@
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-primary-400)] to-[var(--ds-primary-600)] rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
       >
         <DollarSign class="w-10 h-10 text-white" />
       </div>
@@ -156,7 +156,7 @@
           placeholder="0.00"
           step="0.01"
           min="0"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--ds-primary-500)] focus:border-transparent text-lg"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent text-lg"
         />
       </div>
 
@@ -184,7 +184,7 @@
             <button
               onclick={() => (tipPercentage = preset)}
               class="px-3 py-2 text-sm rounded-lg border transition-colors {tipPercentage === preset
-                ? 'bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] border-green-500 text-green-700 dark:text-green-300'
+                ? 'bg-primary-100 dark:bg-primary-900/20 border-green-500 text-green-700 dark:text-green-300'
                 : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-green-400'}"
             >
               {preset}%
@@ -215,7 +215,7 @@
             type="number"
             bind:value={numberOfPeople}
             min="1"
-            class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-center focus:ring-2 focus:ring-[var(--ds-primary-500)] focus:border-transparent"
+            class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-center focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           />
           <button
             onclick={() => (numberOfPeople = numberOfPeople + 1)}
@@ -238,7 +238,7 @@
           <input
             type="checkbox"
             bind:checked={includeTax}
-            class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-[var(--ds-primary-500)] dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <span class="text-sm text-gray-700 dark:text-gray-300">Include tax in total</span>
         </label>
@@ -259,7 +259,7 @@
               step="0.01"
               min="0"
               oninput={updateTaxRate}
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--ds-primary-500)] focus:border-transparent"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
 
@@ -278,7 +278,7 @@
               step="0.1"
               min="0"
               oninput={updateTaxAmount}
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--ds-primary-500)] focus:border-transparent"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
         </div>
@@ -328,7 +328,7 @@
               <span class="text-gray-600 dark:text-gray-400">Per Person:</span>
               <div class="flex items-center gap-2">
                 <span
-                  class="text-2xl font-bold text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+                  class="text-2xl font-bold text-primary-600 dark:text-primary-400"
                   >${amountPerPerson.toFixed(2)}</span
                 >
                 <button
@@ -351,10 +351,10 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
       >
         <Calculator
-          class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+          class="w-6 h-6 text-primary-600 dark:text-primary-400"
         />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Tip Calculation</h3>
@@ -367,9 +367,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <Users class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
+        <Users class="w-6 h-6 text-primary-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Bill Splitting</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -381,10 +381,10 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
       >
         <DollarSign
-          class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+          class="w-6 h-6 text-primary-600 dark:text-primary-400"
         />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Tax Support</h3>

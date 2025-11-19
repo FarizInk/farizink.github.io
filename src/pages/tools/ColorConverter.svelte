@@ -216,7 +216,7 @@
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-primary-400)] to-[var(--ds-primary-600)] rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
       >
         <Palette class="w-10 h-10 text-white" />
       </div>
@@ -363,7 +363,7 @@
               max="255"
               bind:value={rgbInput[channel as keyof typeof rgbInput]}
               oninput={updateFromRgb}
-              class="flex-1 accent-[var(--ds-primary-500)]"
+              class="flex-1 accent-primary-500"
             />
             <input
               type="number"
@@ -405,7 +405,7 @@
               max={channel === 'h' ? 360 : 100}
               bind:value={hslInput[channel as keyof typeof hslInput]}
               oninput={updateFromHsl}
-              class="flex-1 accent-[var(--ds-primary-500)]"
+              class="flex-1 accent-primary-500"
             />
             <input
               type="number"
@@ -489,7 +489,7 @@
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
       <div
-        class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+        class="flex items-center gap-2 mb-2 text-primary-600 dark:text-primary-400"
       >
         <Palette class="w-5 h-5" />
         <h3 class="font-medium">Multiple Formats</h3>
@@ -500,7 +500,7 @@
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
       <div
-        class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+        class="flex items-center gap-2 mb-2 text-primary-600 dark:text-primary-400"
       >
         <Zap class="w-5 h-5" />
         <h3 class="font-medium">Live Conversion</h3>
@@ -511,7 +511,7 @@
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
       <div
-        class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+        class="flex items-center gap-2 mb-2 text-primary-600 dark:text-primary-400"
       >
         <History class="w-5 h-5" />
         <h3 class="font-medium">Color History</h3>

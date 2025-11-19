@@ -232,7 +232,7 @@
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-primary-400)] to-[var(--ds-primary-600)] rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
       >
         <Timer class="w-10 h-10 text-white" />
       </div>
@@ -290,7 +290,7 @@
             </button>
             {#if copySuccess}
               <button
-                class="p-2 rounded-lg bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] text-xs font-semibold transition-colors"
+                class="p-2 rounded-lg bg-primary-100 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 text-xs font-semibold transition-colors"
                 disabled
               >
                 Copied!
@@ -298,11 +298,11 @@
             {:else}
               <button
                 onclick={copyToClipboard}
-                class="p-2 rounded-lg bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] hover:bg-blue-200 dark:hover:bg-blue-900/30 transition-colors relative group"
+                class="p-2 rounded-lg bg-primary-100 dark:bg-primary-900/20 hover:bg-blue-200 dark:hover:bg-blue-900/30 transition-colors relative group"
                 title="Copy to clipboard"
               >
                 <Copy
-                  class="w-4 h-4 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+                  class="w-4 h-4 text-primary-600 dark:text-primary-400"
                 />
               </button>
             {/if}
@@ -314,7 +314,7 @@
             type="text"
             bind:value={cronExpression}
             oninput={updateFromExpression}
-            class={`w-full px-4 py-3 rounded-lg border ${isValidCron ? 'border-gray-300 dark:border-gray-600' : 'border-red-300 dark:border-red-600'} bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-mono text-lg focus:outline-none focus:ring-2 focus:ring-[var(--ds-primary-500)]`}
+            class={`w-full px-4 py-3 rounded-lg border ${isValidCron ? 'border-gray-300 dark:border-gray-600' : 'border-red-300 dark:border-red-600'} bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-mono text-lg focus:outline-none focus:ring-2 focus:ring-primary-500`}
             placeholder="* * * * *"
           />
 
@@ -348,7 +348,7 @@
               type="text"
               bind:value={minute}
               oninput={updateFromComponents}
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-primary-500)]"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               placeholder="0"
             />
           </div>
@@ -364,7 +364,7 @@
               type="text"
               bind:value={hour}
               oninput={updateFromComponents}
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-primary-500)]"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               placeholder="0"
             />
           </div>
@@ -380,7 +380,7 @@
               type="text"
               bind:value={dayOfMonth}
               oninput={updateFromComponents}
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-primary-500)]"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               placeholder="*"
             />
           </div>
@@ -396,7 +396,7 @@
               type="text"
               bind:value={month}
               oninput={updateFromComponents}
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-primary-500)]"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               placeholder="*"
             />
           </div>
@@ -412,7 +412,7 @@
               type="text"
               bind:value={dayOfWeek}
               oninput={updateFromComponents}
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-primary-500)]"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               placeholder="*"
             />
           </div>
@@ -483,7 +483,7 @@
 
       <!-- Help Information -->
       <div
-        class="bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-xl border border-[var(--ds-primary-200)] dark:border-[var(--ds-primary-800)] p-6"
+        class="bg-primary-100 dark:bg-primary-900/20 rounded-xl border border-primary-200 dark:border-primary-800 p-6"
       >
         <h3
           class="text-lg font-semibold text-blue-900 dark:text-blue-400 mb-4 flex items-center gap-2"

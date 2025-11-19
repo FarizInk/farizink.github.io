@@ -369,7 +369,7 @@
         </button>
         <button
           onclick={randomizeColor}
-          class="px-3 py-1.5 text-sm bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] text-purple-700 dark:text-purple-400 rounded hover:bg-purple-200 dark:hover:bg-purple-900/30 transition-colors"
+          class="px-3 py-1.5 text-sm bg-primary-100 dark:bg-primary-900/20 text-purple-700 dark:text-purple-400 rounded hover:bg-purple-200 dark:hover:bg-purple-900/30 transition-colors"
         >
           🎨 Random Color
         </button>
@@ -393,7 +393,7 @@
             onclick={() => (activeTab = 'box')}
             class="flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors {activeTab ===
             'box'
-              ? 'border-[var(--ds-primary-500)] text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] bg-blue-50 dark:bg-blue-900/10'
+              ? 'border-primary-500 text-primary-600 dark:text-primary-400 bg-blue-50 dark:bg-blue-900/10'
               : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
           >
             Box Shadow
@@ -402,7 +402,7 @@
             onclick={() => (activeTab = 'text')}
             class="flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors {activeTab ===
             'text'
-              ? 'border-[var(--ds-primary-500)] text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] bg-blue-50 dark:bg-blue-900/10'
+              ? 'border-primary-500 text-primary-600 dark:text-primary-400 bg-blue-50 dark:bg-blue-900/10'
               : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
           >
             Text Shadow
@@ -550,7 +550,7 @@
                       id="box-inset-{index}"
                       type="checkbox"
                       bind:checked={shadow.inset}
-                      class="w-4 h-4 text-[var(--ds-primary-600)] bg-gray-100 border-gray-300 rounded focus:ring-[var(--ds-primary-500)]"
+                      class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500"
                     />
                     <label
                       for="box-inset-{index}"
@@ -564,7 +564,7 @@
 
               <button
                 onclick={addBoxShadow}
-                class="w-full px-4 py-2 text-sm bg-[var(--ds-primary-600)] text-white rounded hover:bg-blue-700 transition-colors flex items-center justify-center"
+                class="w-full px-4 py-2 text-sm bg-primary-600 text-white rounded hover:bg-blue-700 transition-colors flex items-center justify-center"
               >
                 <Plus class="w-4 h-4 mr-2" />
                 Add Shadow Layer
@@ -683,7 +683,7 @@
 
               <button
                 onclick={addTextShadow}
-                class="w-full px-4 py-2 text-sm bg-[var(--ds-primary-600)] text-white rounded hover:bg-blue-700 transition-colors flex items-center justify-center"
+                class="w-full px-4 py-2 text-sm bg-primary-600 text-white rounded hover:bg-blue-700 transition-colors flex items-center justify-center"
               >
                 <Plus class="w-4 h-4 mr-2" />
                 Add Text Shadow Layer
@@ -767,7 +767,7 @@
               <input
                 type="checkbox"
                 bind:checked={showBox}
-                class="w-4 h-4 text-[var(--ds-primary-600)] bg-gray-100 border-gray-300 rounded focus:ring-[var(--ds-primary-500)]"
+                class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500"
               />
               <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Show Box</span>
             </label>
@@ -775,7 +775,7 @@
               <input
                 type="checkbox"
                 bind:checked={showText}
-                class="w-4 h-4 text-[var(--ds-primary-600)] bg-gray-100 border-gray-300 rounded focus:ring-[var(--ds-primary-500)]"
+                class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500"
               />
               <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Show Text</span>
             </label>
@@ -843,7 +843,7 @@
             </button>
             <button
               onclick={downloadCSS}
-              class="flex items-center px-3 py-1.5 text-sm bg-[var(--ds-primary-600)] text-white rounded hover:bg-blue-700 transition-colors"
+              class="flex items-center px-3 py-1.5 text-sm bg-primary-600 text-white rounded hover:bg-blue-700 transition-colors"
             >
               <Download class="w-4 h-4 mr-1" />
               Download

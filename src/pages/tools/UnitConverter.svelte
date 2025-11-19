@@ -307,7 +307,7 @@
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-primary-400)] to-[var(--ds-primary-600)] rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
       >
         <Calculator class="w-10 h-10 text-white" />
       </div>
@@ -369,7 +369,7 @@
           }}
           class="flex items-center gap-2 px-4 py-2 rounded-xl border transition-all duration-200 {activeCategory ===
           category.id
-            ? `border-[var(--ds-primary-500)] bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]`
+            ? `border-primary-500 bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300`
             : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600'}"
         >
           <category.icon class="w-4 h-4" />
@@ -387,7 +387,7 @@
         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
       >
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
-          <Calculator class="w-5 h-5 mr-2 text-[var(--ds-primary-500)]" />
+          <Calculator class="w-5 h-5 mr-2 text-primary-500" />
           Convert {categories.find(c => c.id === activeCategory)?.name}
         </h2>
 
@@ -460,15 +460,15 @@
           <!-- Formula Information (for temperature) -->
           {#if activeCategory === 'temperature'}
             <div
-              class="bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] border border-[var(--ds-primary-200)] dark:border-[var(--ds-primary-800)] rounded-xl p-4"
+              class="bg-primary-100 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-xl p-4"
             >
               <h3
-                class="text-sm font-medium text-[var(--ds-primary-800)] dark:text-[var(--ds-primary-200)] mb-2"
+                class="text-sm font-medium text-primary-800 dark:text-primary-200 mb-2"
               >
                 Conversion Formulas
               </h3>
               <div
-                class="space-y-1 text-xs text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]"
+                class="space-y-1 text-xs text-primary-700 dark:text-primary-300"
               >
                 <p>°C to °F: (°C × 9/5) + 32</p>
                 <p>°F to °C: (°F - 32) × 5/9</p>
@@ -609,7 +609,7 @@
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
       <div
-        class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+        class="flex items-center gap-2 mb-2 text-primary-600 dark:text-primary-400"
       >
         <Calculator class="w-5 h-5" />
         <h3 class="font-medium">Precision</h3>
@@ -620,7 +620,7 @@
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
       <div
-        class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+        class="flex items-center gap-2 mb-2 text-primary-600 dark:text-primary-400"
       >
         <History class="w-5 h-5" />
         <h3 class="font-medium">History</h3>
@@ -631,7 +631,7 @@
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
       <div
-        class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+        class="flex items-center gap-2 mb-2 text-primary-600 dark:text-primary-400"
       >
         <Zap class="w-5 h-5" />
         <h3 class="font-medium">Fast</h3>

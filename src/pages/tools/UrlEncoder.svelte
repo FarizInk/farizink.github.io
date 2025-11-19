@@ -111,7 +111,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-primary-400)] to-[var(--ds-primary-600)] rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
       >
         <Link class="w-10 h-10 text-white" />
       </div>
@@ -157,7 +157,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
         <button
           onclick={() => (activeTab = 'single')}
           class="px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'single'
-            ? 'bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] text-green-700 dark:text-green-300'
+            ? 'bg-primary-100 dark:bg-primary-900/20 text-green-700 dark:text-green-300'
             : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
         >
           Single URL
@@ -165,7 +165,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
         <button
           onclick={() => (activeTab = 'batch')}
           class="px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'batch'
-            ? 'bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] text-green-700 dark:text-green-300'
+            ? 'bg-primary-100 dark:bg-primary-900/20 text-green-700 dark:text-green-300'
             : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
         >
           Batch Processing
@@ -200,7 +200,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
         <textarea
           bind:value={inputText}
           placeholder="Enter text or URL to encode/decode..."
-          class="w-full h-64 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-[var(--ds-primary-500)] focus:border-transparent"
+          class="w-full h-64 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
         ></textarea>
 
         <!-- Quick Examples -->
@@ -212,7 +212,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
                 inputText = 'https://example.com/search?q=hello world&category=web development';
                 encodeUrl();
               }}
-              class="block w-full text-left text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] hover:underline"
+              class="block w-full text-left text-sm text-primary-600 dark:text-primary-400 hover:underline"
             >
               Query parameters with spaces
             </button>
@@ -221,7 +221,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
                 inputText = 'https://test.com/path?name=John Doe&city=New York';
                 encodeUrl();
               }}
-              class="block w-full text-left text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] hover:underline"
+              class="block w-full text-left text-sm text-primary-600 dark:text-primary-400 hover:underline"
             >
               Multiple parameters with special characters
             </button>
@@ -230,7 +230,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
                 inputText = 'https://site.com/search?q=测试&lang=zh-CN';
                 encodeUrl();
               }}
-              class="block w-full text-left text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] hover:underline"
+              class="block w-full text-left text-sm text-primary-600 dark:text-primary-400 hover:underline"
             >
               International characters (Chinese)
             </button>
@@ -317,7 +317,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
         <textarea
           bind:value={batchInput}
           placeholder="Enter multiple URLs or text strings, one per line..."
-          class="w-full h-96 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-[var(--ds-primary-500)] focus:border-transparent"
+          class="w-full h-96 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
         ></textarea>
       </div>
 
@@ -356,7 +356,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
                     </div>
                     <div>
                       <span
-                        class="text-xs font-medium text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+                        class="text-xs font-medium text-primary-600 dark:text-primary-400"
                         >Encoded:</span
                       >
                       <div class="font-mono text-xs text-green-700 dark:text-green-300 break-all">
@@ -365,11 +365,11 @@ https://demo.com/search?query=测试&lang=zh-CN`;
                     </div>
                     <div>
                       <span
-                        class="text-xs font-medium text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+                        class="text-xs font-medium text-primary-600 dark:text-primary-400"
                         >Decoded:</span
                       >
                       <div
-                        class="font-mono text-xs text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)] break-all"
+                        class="font-mono text-xs text-primary-700 dark:text-primary-300 break-all"
                       >
                         {result.decoded}
                       </div>
@@ -390,9 +390,9 @@ https://demo.com/search?query=测试&lang=zh-CN`;
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <Shield class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
+        <Shield class="w-6 h-6 text-primary-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Safe Encoding</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -405,9 +405,9 @@ https://demo.com/search?query=测试&lang=zh-CN`;
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <Zap class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
+        <Zap class="w-6 h-6 text-primary-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Batch Processing</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -419,10 +419,10 @@ https://demo.com/search?query=测试&lang=zh-CN`;
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
       >
         <CreditCard
-          class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+          class="w-6 h-6 text-primary-600 dark:text-primary-400"
         />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Round-trip Testing</h3>

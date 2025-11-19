@@ -111,24 +111,24 @@
   >
     <!-- Modal -->
     <div
-      class="bg-white dark:bg-[var(--ds-secondary-800)] rounded-lg shadow-2xl w-full max-w-2xl mx-4 border border-[var(--ds-secondary-200)] dark:border-[var(--ds-secondary-700)] overflow-hidden"
+      class="bg-white dark:bg-secondary-800 rounded-lg shadow-2xl w-full max-w-2xl mx-4 border border-secondary-200 dark:border-secondary-700 overflow-hidden"
       role="document"
     >
       <!-- Search Input -->
       <div
-        class="flex items-center px-4 py-3 border-b border-[var(--ds-secondary-200)] dark:border-[var(--ds-secondary-700)]"
+        class="flex items-center px-4 py-3 border-b border-secondary-200 dark:border-secondary-700"
       >
-        <Search class="w-5 h-5 text-[var(--ds-secondary-500)] mr-3" />
+        <Search class="w-5 h-5 text-secondary-500 mr-3" />
         <input
           id="command-palette-search"
           type="text"
           placeholder="Type a command or search..."
-          class="flex-1 bg-transparent outline-none text-[var(--ds-secondary-900)] dark:text-[var(--ds-secondary-50)] placeholder-[var(--ds-secondary-500)] dark:placeholder-[var(--ds-secondary-500)]"
+          class="flex-1 bg-transparent outline-none text-secondary-900 dark:text-secondary-50 placeholder-secondary-500 dark:placeholder-secondary-500"
           bind:value={searchQuery}
         />
-        <div class="flex items-center gap-1 text-xs text-[var(--ds-secondary-500)]">
+        <div class="flex items-center gap-1 text-xs text-secondary-500">
           <div
-            class="flex items-center gap-1 px-2 py-1 bg-[var(--ds-secondary-100)] dark:bg-[var(--ds-secondary-700)] rounded"
+            class="flex items-center gap-1 px-2 py-1 bg-secondary-100 dark:bg-secondary-700 rounded"
           >
             <Command class="w-3 h-3" />
             <span>K</span>
@@ -145,8 +145,8 @@
               <div
                 class="px-4 py-3 cursor-pointer transition-colors border-l-2 border-transparent {i ===
                 selectedIndex
-                  ? 'bg-[var(--ds-secondary-100)] dark:bg-[var(--ds-secondary-700)] border-[var(--ds-primary-500)]'
-                  : 'hover:bg-[var(--ds-secondary-50)] dark:hover:bg-[var(--ds-secondary-600)]'}"
+                  ? 'bg-secondary-100 dark:bg-secondary-700 border-primary-500'
+                  : 'hover:bg-secondary-50 dark:hover:bg-secondary-600'}"
                 onclick={() => navigateToRoute(route)}
                 onkeydown={e => (e.key === 'Enter' || e.key === ' ') && navigateToRoute(route)}
                 role="option"
@@ -157,27 +157,27 @@
                 <div class="flex items-center justify-between">
                   <div class="flex-1 min-w-0">
                     <div
-                      class="font-medium text-[var(--ds-secondary-900)] dark:text-[var(--ds-secondary-50)] truncate"
+                      class="font-medium text-secondary-900 dark:text-secondary-50 truncate"
                     >
                       {route.title?.replace(' - Fariz', '') || route.path}
                     </div>
                     {#if route.path !== '/' && route.path !== '/projects' && route.path !== '/tools'}
                       <div
-                        class="text-sm text-[var(--ds-secondary-500)] dark:text-[var(--ds-secondary-400)] mt-1"
+                        class="text-sm text-secondary-500 dark:text-secondary-400 mt-1"
                       >
                         {route.path}
                       </div>
                     {/if}
                     {#if route.description && route.path !== '/' && route.path !== '/tools'}
                       <div
-                        class="text-sm text-[var(--ds-secondary-400)] dark:text-[var(--ds-secondary-500)] mt-1 line-clamp-2"
+                        class="text-sm text-secondary-400 dark:text-secondary-500 mt-1 line-clamp-2"
                       >
                         {route.description}
                       </div>
                     {/if}
                   </div>
                   <div
-                    class="ml-4 text-xs text-[var(--ds-secondary-400)] dark:text-[var(--ds-secondary-500)]"
+                    class="ml-4 text-xs text-secondary-400 dark:text-secondary-500"
                   >
                     {#if route.path === '/'}Home
                     {:else if route.path === '/projects'}Projects
@@ -191,7 +191,7 @@
           </div>
         {:else}
           <div
-            class="px-4 py-8 text-center text-[var(--ds-secondary-500)] dark:text-[var(--ds-secondary-400)]"
+            class="px-4 py-8 text-center text-secondary-500 dark:text-secondary-400"
           >
             <Search class="w-8 h-8 mx-auto mb-2 opacity-50" />
             <div>No results found for "{searchQuery}"</div>
@@ -201,27 +201,27 @@
 
       <!-- Footer -->
       <div
-        class="px-4 py-2 bg-[var(--ds-secondary-50)] dark:bg-[var(--ds-secondary-900)] border-t border-[var(--ds-secondary-200)] dark:border-[var(--ds-secondary-700)] text-xs text-[var(--ds-secondary-500)] dark:text-[var(--ds-secondary-400)]"
+        class="px-4 py-2 bg-secondary-50 dark:bg-secondary-900 border-t border-secondary-200 dark:border-secondary-700 text-xs text-secondary-500 dark:text-secondary-400"
       >
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-4">
             <div class="flex items-center gap-1">
               <kbd
-                class="px-1.5 py-0.5 bg-white dark:bg-[var(--ds-secondary-800)] rounded border border-[var(--ds-secondary-300)] dark:border-[var(--ds-secondary-600)]"
+                class="px-1.5 py-0.5 bg-white dark:bg-secondary-800 rounded border border-secondary-300 dark:border-secondary-600"
                 >↑↓</kbd
               >
               <span>to navigate</span>
             </div>
             <div class="flex items-center gap-1">
               <kbd
-                class="px-1.5 py-0.5 bg-white dark:bg-[var(--ds-secondary-800)] rounded border border-[var(--ds-secondary-300)] dark:border-[var(--ds-secondary-600)]"
+                class="px-1.5 py-0.5 bg-white dark:bg-secondary-800 rounded border border-secondary-300 dark:border-secondary-600"
                 >↵</kbd
               >
               <span>to select</span>
             </div>
             <div class="flex items-center gap-1">
               <kbd
-                class="px-1.5 py-0.5 bg-white dark:bg-[var(--ds-secondary-800)] rounded border border-[var(--ds-secondary-300)] dark:border-[var(--ds-secondary-600)]"
+                class="px-1.5 py-0.5 bg-white dark:bg-secondary-800 rounded border border-secondary-300 dark:border-secondary-600"
                 >esc</kbd
               >
               <span>to close</span>

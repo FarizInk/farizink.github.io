@@ -191,7 +191,7 @@ console.log('Total amount:', result.total);`;
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-primary-400)] to-[var(--ds-primary-600)] rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
       >
         <Code class="w-10 h-10 text-white" />
       </div>
@@ -270,7 +270,7 @@ console.log('Total amount:', result.total);`;
     {#if jsOutput}
       <button
         onclick={() => copyToClipboard(jsOutput, 'output')}
-        class="px-4 py-2 bg-[var(--ds-primary-600)] text-white rounded-lg hover:bg-blue-700 transition-colors"
+        class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
       >
         {copiedText === 'output' ? '✓ Copied!' : 'Copy Result'}
       </button>

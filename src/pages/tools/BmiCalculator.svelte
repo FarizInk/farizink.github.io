@@ -238,7 +238,7 @@
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-primary-400)] to-[var(--ds-primary-600)] rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
       >
         <Activity class="w-10 h-10 text-white" />
       </div>
@@ -363,7 +363,7 @@
                     type="radio"
                     bind:group={gender}
                     value="male"
-                    class="w-4 h-4 text-[var(--ds-primary-600)] bg-gray-100 border-gray-300 focus:ring-[var(--ds-primary-500)]"
+                    class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500"
                   />
                   <span class="ml-2 text-gray-700 dark:text-gray-300">Male</span>
                 </label>
@@ -372,7 +372,7 @@
                     type="radio"
                     bind:group={gender}
                     value="female"
-                    class="w-4 h-4 text-[var(--ds-primary-600)] bg-gray-100 border-gray-300 focus:ring-[var(--ds-primary-500)]"
+                    class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500"
                   />
                   <span class="ml-2 text-gray-700 dark:text-gray-300">Female</span>
                 </label>
@@ -391,7 +391,7 @@
           <select
             id="activity-level-select"
             bind:value={activityLevel}
-            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--ds-primary-500)] focus:border-[var(--ds-primary-500)]"
+            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           >
             {#each activityLevels as level (level.value)}
               <option value={level.value}>{level.label} - {level.description}</option>
@@ -450,7 +450,7 @@
           <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
             <div class="flex items-start">
               <Info
-                class="w-5 h-5 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mt-0.5 mr-3"
+                class="w-5 h-5 text-primary-600 dark:text-primary-400 mt-0.5 mr-3"
               />
               <div>
                 <p class="font-medium text-gray-900 dark:text-white mb-1">Health Risk Assessment</p>
@@ -541,10 +541,10 @@
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">BMI Categories</h3>
         <div class="space-y-3">
           <div
-            class="flex items-center justify-between p-2 rounded bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20]"
+            class="flex items-center justify-between p-2 rounded bg-primary-100 dark:bg-primary-900/20"
           >
             <div class="flex items-center">
-              <div class="w-3 h-3 bg-[var(--ds-primary-500)] rounded-full mr-3"></div>
+              <div class="w-3 h-3 bg-primary-500 rounded-full mr-3"></div>
               <span class="text-sm text-gray-700 dark:text-gray-300">Underweight</span>
             </div>
             <span class="text-sm text-gray-600 dark:text-gray-400">&lt; 18.5</span>
@@ -586,7 +586,7 @@
           <div class="space-y-3">
             {#each getHealthTips() as tip (tip)}
               <div class="flex items-start">
-                <div class="w-2 h-2 bg-[var(--ds-primary-500)] rounded-full mt-1.5 mr-3"></div>
+                <div class="w-2 h-2 bg-primary-500 rounded-full mt-1.5 mr-3"></div>
                 <p class="text-sm text-gray-600 dark:text-gray-400">{tip}</p>
               </div>
             {/each}

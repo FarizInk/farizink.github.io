@@ -176,7 +176,7 @@ console.log('Result:', result);`;
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-primary-400)] to-[var(--ds-primary-600)] rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
       >
         <GitCompare class="w-10 h-10 text-white" />
       </div>
@@ -269,7 +269,7 @@ console.log('Result:', result);`;
     {#if diffResult}
       <button
         onclick={copyDiff}
-        class="px-4 py-2 bg-[var(--ds-primary-600)] text-white rounded-lg hover:bg-blue-700 transition-colors"
+        class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
       >
         {copiedText === 'diff' ? '✓ Copied!' : 'Copy Diff'}
       </button>
@@ -322,7 +322,7 @@ console.log('Result:', result);`;
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Diff Result</h3>
         {#if getStats()}
           <div class="flex gap-4 text-sm">
-            <span class="text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+            <span class="text-primary-600 dark:text-primary-400"
               >+{getStats()!.added} added</span
             >
             <span class="text-red-600 dark:text-red-400">-{getStats()!.removed} removed</span>
@@ -352,7 +352,7 @@ console.log('Result:', result);`;
                     >{index + 1}</span
                   >
                 {/if}
-                <span class="text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">+</span
+                <span class="text-primary-600 dark:text-primary-400">+</span
                 >
                 <pre
                   class="text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded flex-1">{diffResult
@@ -382,7 +382,7 @@ console.log('Result:', result);`;
                   >{diffResult.removed.length + diffResult.unchanged.length + index + 1}</span
                 >
               {/if}
-              <span class="text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">+</span>
+              <span class="text-primary-600 dark:text-primary-400">+</span>
               <pre
                 class="text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded flex-1">{line ||
                   '\u00A0'}</pre>

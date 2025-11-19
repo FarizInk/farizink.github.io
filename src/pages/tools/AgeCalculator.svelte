@@ -339,7 +339,7 @@
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-primary-400)] to-[var(--ds-primary-600)] rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
       >
         <Calendar class="w-10 h-10 text-white" />
       </div>
@@ -409,7 +409,7 @@
                 type="radio"
                 bind:group={calculationMode}
                 value="exact"
-                class="w-4 h-4 text-[var(--ds-primary-600)] bg-gray-100 border-gray-300 focus:ring-[var(--ds-primary-500)]"
+                class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500"
               />
               <span class="ml-2 text-gray-700 dark:text-gray-300"
                 >Exact Age (Years, Months, Days)</span
@@ -420,7 +420,7 @@
                 type="radio"
                 bind:group={calculationMode}
                 value="difference"
-                class="w-4 h-4 text-[var(--ds-primary-600)] bg-gray-100 border-gray-300 focus:ring-[var(--ds-primary-500)]"
+                class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500"
               />
               <span class="ml-2 text-gray-700 dark:text-gray-300">Total Difference</span>
             </label>
@@ -440,22 +440,22 @@
         >
           <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
             <Clock
-              class="w-5 h-5 mr-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+              class="w-5 h-5 mr-2 text-primary-600 dark:text-primary-400"
             />
             Your Age
           </h2>
 
           <div class="text-center mb-8">
             <div
-              class="inline-block p-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border-2 border-[var(--ds-primary-200)] dark:border-[var(--ds-primary-800)]"
+              class="inline-block p-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border-2 border-primary-200 dark:border-primary-800"
             >
               <div
-                class="text-6xl font-bold text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mb-4"
+                class="text-6xl font-bold text-primary-600 dark:text-primary-400 mb-4"
               >
                 {years}
               </div>
               <div
-                class="text-lg font-medium text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]"
+                class="text-lg font-medium text-primary-700 dark:text-primary-300"
               >
                 Years
               </div>
@@ -540,58 +540,58 @@
 
               <!-- Countdown to next year's birthday -->
               <div
-                class="p-4 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg"
+                class="p-4 bg-primary-100 dark:bg-primary-900/20 rounded-lg"
               >
                 <h3
-                  class="text-lg font-medium text-[var(--ds-primary-800)] dark:text-[var(--ds-primary-200)] mb-2"
+                  class="text-lg font-medium text-primary-800 dark:text-primary-200 mb-2"
                 >
                   Countdown to Next Birthday
                 </h3>
                 <div class="grid grid-cols-4 gap-2 text-center">
                   <div>
                     <div
-                      class="text-2xl font-bold text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+                      class="text-2xl font-bold text-primary-600 dark:text-primary-400"
                     >
                       {countdownTime.days}
                     </div>
                     <div
-                      class="text-xs text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]"
+                      class="text-xs text-primary-700 dark:text-primary-300"
                     >
                       Days
                     </div>
                   </div>
                   <div>
                     <div
-                      class="text-2xl font-bold text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+                      class="text-2xl font-bold text-primary-600 dark:text-primary-400"
                     >
                       {countdownTime.hours}
                     </div>
                     <div
-                      class="text-xs text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]"
+                      class="text-xs text-primary-700 dark:text-primary-300"
                     >
                       Hours
                     </div>
                   </div>
                   <div>
                     <div
-                      class="text-2xl font-bold text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+                      class="text-2xl font-bold text-primary-600 dark:text-primary-400"
                     >
                       {countdownTime.minutes}
                     </div>
                     <div
-                      class="text-xs text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]"
+                      class="text-xs text-primary-700 dark:text-primary-300"
                     >
                       Minutes
                     </div>
                   </div>
                   <div>
                     <div
-                      class="text-2xl font-bold text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+                      class="text-2xl font-bold text-primary-600 dark:text-primary-400"
                     >
                       {countdownTime.seconds}
                     </div>
                     <div
-                      class="text-xs text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]"
+                      class="text-xs text-primary-700 dark:text-primary-300"
                     >
                       Seconds
                     </div>

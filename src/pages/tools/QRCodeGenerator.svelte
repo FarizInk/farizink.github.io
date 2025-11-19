@@ -109,7 +109,7 @@
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-success-400)] to-[var(--ds-success-600)] rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-success-400 to-success-600 rounded-2xl mb-4"
       >
         <QrCode class="w-10 h-10 text-white" />
       </div>
@@ -171,11 +171,11 @@
           placeholder="Enter text, URL, or any data to encode..."
           rows="4"
           class="textarea {error
-            ? 'border-[var(--ds-danger-500)] focus:border-[var(--ds-danger-500)] focus:ring-[var(--ds-danger-500)]'
+            ? 'border-danger-500 focus:border-danger-500 focus:ring-danger-500'
             : ''}"
         ></textarea>
         {#if error}
-          <p class="mt-1 text-sm text-[var(--ds-danger-500)]">{error}</p>
+          <p class="mt-1 text-sm text-danger-500">{error}</p>
         {/if}
       </div>
 
@@ -202,7 +202,7 @@
             max="500"
             step="50"
             bind:value={size}
-            class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[var(--ds-success-500)]"
+            class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-success-500"
           />
         </div>
 
@@ -247,7 +247,7 @@
             type="checkbox"
             id="include-margin"
             bind:checked={includeMargin}
-            class="w-4 h-4 text-[var(--ds-success-600)] bg-gray-100 border-gray-300 rounded focus:ring-[var(--ds-success-500)] dark:focus:ring-[var(--ds-success-600)] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            class="w-4 h-4 text-success-600 bg-gray-100 border-gray-300 rounded focus:ring-success-500 dark:focus:ring-success-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <label
             for="include-margin"
@@ -290,9 +290,9 @@
           </div>
         {:else if error}
           <div
-            class="bg-[var(--ds-danger-100)] dark:bg-[var(--ds-danger-900)/20] border border-[var(--ds-danger-200)] dark:border-[var(--ds-danger-800)] rounded-xl p-6"
+            class="bg-danger-100 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800 rounded-xl p-6"
           >
-            <p class="text-[var(--ds-danger-600)] dark:text-[var(--ds-danger-400)] text-center">
+            <p class="text-danger-600 dark:text-danger-400 text-center">
               {error}
             </p>
           </div>
@@ -308,16 +308,16 @@
 
       <!-- Info Section -->
       <div
-        class="bg-[var(--ds-success-100)] dark:bg-[var(--ds-success-900)/20] border border-[var(--ds-success-200)] dark:border-[var(--ds-success-800)] rounded-xl p-4"
+        class="bg-success-100 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-xl p-4"
       >
         <div
-          class="flex items-center gap-2 mb-2 text-[var(--ds-success-800)] dark:text-[var(--ds-success-200)]"
+          class="flex items-center gap-2 mb-2 text-success-800 dark:text-success-200"
         >
           <Info class="w-4 h-4" />
           <h4 class="text-sm font-semibold">Tips</h4>
         </div>
         <ul
-          class="text-sm text-[var(--ds-success-700)] dark:text-[var(--ds-success-300)] space-y-1 list-disc list-inside"
+          class="text-sm text-success-700 dark:text-success-300 space-y-1 list-disc list-inside"
         >
           <li>QR codes can store up to 4,296 alphanumeric characters</li>
           <li>Higher error correction levels create more complex but more robust codes</li>
