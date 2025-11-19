@@ -400,15 +400,7 @@ html.dark body {
   --ds-danger-800: #991b1b;
   --ds-danger-900: #7f1d1d;
 
-  /* Tool Colors - Preserved and Enhanced */
-  --color-password-red: #ef4444;
-  --color-qrcode-teal: #14b8a6;
-  --color-palette-pink: #ec4899;
-  --color-hash-blue: #3b82f6;
-  --color-base64-purple: #8b5cf6;
-  --color-json-green: #10b981;
-  --color-url-orange: #f97316;
-
+  
   /* Spacing */
   --ds-space-1: 0.25rem;
   --ds-space-2: 0.5rem;

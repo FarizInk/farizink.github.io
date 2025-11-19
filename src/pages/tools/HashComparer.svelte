@@ -84,13 +84,13 @@
   function getComparisonColor() {
     switch (comparisonResult) {
       case 'match':
-        return 'text-green-600 bg-green-100 dark:bg-green-900/20 dark:text-green-400';
+        return 'text-[var(--ds-success-600)] bg-[var(--ds-success-100)] dark:bg-[var(--ds-success-900)/20] dark:text-[var(--ds-success-400)]';
       case 'different':
-        return 'text-red-600 bg-red-100 dark:bg-red-900/20 dark:text-red-400';
+        return 'text-[var(--ds-danger-600)] bg-[var(--ds-danger-100)] dark:bg-[var(--ds-danger-900)/20] dark:text-[var(--ds-danger-400)]';
       case 'empty':
         return 'text-gray-600 bg-gray-100 dark:bg-gray-900/20 dark:text-gray-400';
       default:
-        return 'text-blue-600 bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400';
+        return 'text-[var(--ds-secondary-600)] bg-[var(--ds-secondary-100)] dark:bg-[var(--ds-secondary-900)/20] dark:text-[var(--ds-secondary-400)]';
     }
   }
 
@@ -123,7 +123,7 @@
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-secondary-400)] to-[var(--ds-secondary-600)] rounded-2xl mb-4"
       >
         <GitCompare class="w-10 h-10 text-white" />
       </div>
@@ -163,13 +163,13 @@
   <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
     <button
       onclick={loadSampleHashes}
-      class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+      class="px-4 py-2 bg-[var(--ds-success-600)] text-white rounded-lg hover:bg-[var(--ds-success-700)] transition-colors"
     >
       Load Matching Hashes
     </button>
     <button
       onclick={loadDifferentHashes}
-      class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+      class="px-4 py-2 bg-[var(--ds-danger-600)] text-white rounded-lg hover:bg-[var(--ds-danger-700)] transition-colors"
     >
       Load Different Hashes
     </button>
@@ -234,7 +234,7 @@
       <textarea
         bind:value={hash1}
         placeholder="Enter first hash value..."
-        class="w-full h-32 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        class="w-full h-32 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-[var(--ds-secondary-500)] focus:border-transparent"
       ></textarea>
     </div>
 
@@ -264,7 +264,7 @@
       <textarea
         bind:value={hash2}
         placeholder="Enter second hash value..."
-        class="w-full h-32 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        class="w-full h-32 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-[var(--ds-secondary-500)] focus:border-transparent"
       ></textarea>
     </div>
   </div>
@@ -351,9 +351,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-[var(--ds-secondary-100)] dark:bg-[var(--ds-secondary-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <GitCompare class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+        <GitCompare class="w-6 h-6 text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Real-time Comparison</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -365,9 +365,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-[var(--ds-secondary-100)] dark:bg-[var(--ds-secondary-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <Copy class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+        <Copy class="w-6 h-6 text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Easy Copy & Paste</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -379,9 +379,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-[var(--ds-secondary-100)] dark:bg-[var(--ds-secondary-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <FileText class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+        <FileText class="w-6 h-6 text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Detailed Analysis</h3>
       <p class="text-gray-600 dark:text-gray-400">

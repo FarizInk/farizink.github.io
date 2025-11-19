@@ -227,7 +227,7 @@
             bind:value={jwtToken}
             placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
             rows={showToken ? 4 : 1}
-            class="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm resize-none"
+            class="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--ds-primary-500)] focus:border-[var(--ds-primary-500)] font-mono text-sm resize-none"
           ></textarea>
           <button
             onclick={() => (showToken = !showToken)}
@@ -270,7 +270,7 @@
             : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'}"
         >
           {#if isValid}
-            <Check class="w-5 h-5 text-green-600 dark:text-green-400 mr-2" />
+            <Check class="w-5 h-5 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mr-2" />
             <span class="text-sm text-green-700 dark:text-green-300">Valid JWT format</span>
           {:else}
             <X class="w-5 h-5 text-red-600 dark:text-red-400 mr-2" />
@@ -325,7 +325,7 @@
             <p
               class="text-sm font-medium {isTokenExpired()
                 ? 'text-red-600 dark:text-red-400'
-                : 'text-green-600 dark:text-green-400'}"
+                : 'text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]'}"
             >
               {isTokenExpired() ? 'Expired' : `Valid (${getTokenValidityTime()})`}
             </p>
@@ -343,7 +343,7 @@
         <button
           onclick={() => (activeTab = 'header')}
           class="px-4 py-3 text-sm font-medium border-b-2 transition-colors {activeTab === 'header'
-            ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+            ? 'border-[var(--ds-primary-500)] text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]'
             : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
         >
           Header
@@ -351,7 +351,7 @@
         <button
           onclick={() => (activeTab = 'payload')}
           class="px-4 py-3 text-sm font-medium border-b-2 transition-colors {activeTab === 'payload'
-            ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+            ? 'border-[var(--ds-primary-500)] text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]'
             : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
         >
           Payload
@@ -360,7 +360,7 @@
           onclick={() => (activeTab = 'signature')}
           class="px-4 py-3 text-sm font-medium border-b-2 transition-colors {activeTab ===
           'signature'
-            ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+            ? 'border-[var(--ds-primary-500)] text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]'
             : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
         >
           Signature

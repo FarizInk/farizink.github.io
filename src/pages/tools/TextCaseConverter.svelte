@@ -151,18 +151,15 @@
   <!-- Header -->
   <div class="mb-8">
     <div class="flex items-center gap-4 mb-4">
-      <button
-        onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        <ChevronLeft class="w-5 h-5" />
+      <button class="btn btn-primary" onclick={handleBackToTools}>
+        <ChevronLeft class="w-5 h-5 mr-2" />
         Back to Tools
       </button>
     </div>
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-secondary-400)] to-[var(--ds-secondary-600)] rounded-2xl mb-4"
       >
         <Type class="w-10 h-10 text-white" />
       </div>
@@ -223,13 +220,13 @@
           type="button"
           onclick={() => (activeCase = caseType)}
           class="relative p-3 rounded-lg border-2 transition-all {activeCase === caseType
-            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+            ? 'border-[var(--ds-secondary-500)] bg-[var(--ds-secondary-100)] dark:bg-[var(--ds-secondary-900)/20]'
             : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'}"
         >
           <div class="flex items-center justify-center mb-2">
             <Type
               class="w-5 h-5 {activeCase === caseType
-                ? 'text-blue-600 dark:text-blue-400'
+                ? 'text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]'
                 : 'text-gray-600 dark:text-gray-400'}"
             />
           </div>
@@ -244,7 +241,7 @@
 
           {#if activeCase === caseType}
             <div class="absolute top-1 right-1">
-              <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <div class="w-2 h-2 bg-[var(--ds-secondary-500)] rounded-full"></div>
             </div>
           {/if}
         </button>
@@ -260,10 +257,7 @@
     >
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Input Text</h2>
-        <button
-          onclick={clearAll}
-          class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
-        >
+        <button class="btn btn-primary btn-sm" onclick={clearAll}>
           Clear
         </button>
       </div>
@@ -311,7 +305,7 @@
           <button
             onclick={swapTexts}
             disabled={!inputText || !convertedText}
-            class="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            class="btn btn-primary btn-sm"
             title="Swap input and output"
           >
             <ArrowRight class="w-4 h-4 rotate-180" />
@@ -319,7 +313,7 @@
           <button
             onclick={copyToClipboard}
             disabled={!convertedText}
-            class="flex items-center px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            class="btn btn-primary btn-sm"
           >
             <Copy class="w-4 h-4 mr-1" />
             {copied ? 'Copied!' : 'Copy'}
@@ -351,28 +345,28 @@
           inputText = 'Hello World! This is a SAMPLE text for TESTING.';
           activeCase = 'uppercase';
         }}
-        class="p-3 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+        class="btn btn-primary btn-sm"
       >
         Load Sample Text
       </button>
 
       <button
         onclick={() => (activeCase = 'uppercase')}
-        class="p-3 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+        class="btn btn-primary btn-sm"
       >
         UPPERCASE
       </button>
 
       <button
         onclick={() => (activeCase = 'lowercase')}
-        class="p-3 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+        class="btn btn-primary btn-sm"
       >
         lowercase
       </button>
 
       <button
         onclick={() => (activeCase = 'title')}
-        class="p-3 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+        class="btn btn-primary btn-sm"
       >
         Title Case
       </button>

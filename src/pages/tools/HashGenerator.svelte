@@ -106,7 +106,7 @@
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-secondary-400)] to-[var(--ds-secondary-600)] rounded-2xl mb-4"
       >
         <Hash class="w-10 h-10 text-white" />
       </div>
@@ -147,13 +147,13 @@
     <button
       onclick={generateAllHashes}
       disabled={!inputText.trim()}
-      class="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="px-4 py-2 bg-[var(--ds-secondary-600)] text-white rounded-lg hover:bg-[var(--ds-secondary-700)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       Generate Hashes
     </button>
     <button
       onclick={loadSampleText}
-      class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+      class="px-4 py-2 bg-[var(--ds-primary-600)] text-white rounded-lg hover:bg-[var(--ds-primary-700)] transition-colors"
     >
       Load Sample Text
     </button>
@@ -178,7 +178,7 @@
     <textarea
       bind:value={inputText}
       placeholder="Enter text to generate hashes..."
-      class="w-full h-32 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+      class="w-full h-32 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-[var(--ds-secondary-500)] focus:border-transparent"
     ></textarea>
   </div>
 
@@ -192,9 +192,9 @@
           <div class="flex justify-between items-center mb-3">
             <div class="flex items-center gap-3">
               <div
-                class="w-10 h-10 bg-amber-100 dark:bg-amber-900/20 rounded-lg flex items-center justify-center"
+                class="w-10 h-10 bg-[var(--ds-secondary-100)] dark:bg-[var(--ds-secondary-900)/20] rounded-lg flex items-center justify-center"
               >
-                <Hash class="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                <Hash class="w-5 h-5 text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]" />
               </div>
               <div>
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -207,7 +207,7 @@
             </div>
             <button
               onclick={() => copyToClipboard(hash, algorithm)}
-              class="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
+              class="px-4 py-2 bg-[var(--ds-secondary-600)] text-white rounded-lg hover:bg-[var(--ds-secondary-700)] transition-colors"
             >
               {copiedText === algorithm ? '✓ Copied!' : 'Copy Hash'}
             </button>
@@ -279,7 +279,7 @@
       <div
         class="w-12 h-12 bg-amber-100 dark:bg-amber-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <FileText class="w-6 h-6 text-amber-600 dark:text-amber-400" />
+        <FileText class="w-6 h-6 text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Data Verification</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -293,7 +293,7 @@
       <div
         class="w-12 h-12 bg-amber-100 dark:bg-amber-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <Zap class="w-6 h-6 text-amber-600 dark:text-amber-400" />
+        <Zap class="w-6 h-6 text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Instant Results</h3>
       <p class="text-gray-600 dark:text-gray-400">

@@ -101,18 +101,15 @@
   <!-- Header -->
   <div class="mb-8">
     <div class="flex items-center gap-4 mb-4">
-      <button
-        onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        <ChevronLeft class="w-5 h-5" />
+      <button class="btn btn-primary" onclick={handleBackToTools}>
+        <ChevronLeft class="w-5 h-5 mr-2" />
         Back to Tools
       </button>
     </div>
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-teal-400 to-teal-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-success-400)] to-[var(--ds-success-600)] rounded-2xl mb-4"
       >
         <QrCode class="w-10 h-10 text-white" />
       </div>
@@ -154,7 +151,7 @@
       <RefreshCw class="w-4 h-4 mr-2" />
       Generate
     </button>
-    <button onclick={resetForm} class="btn btn-outline btn-sm">Reset</button>
+    <button onclick={resetForm} class="btn btn-primary btn-sm">Reset</button>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -173,10 +170,10 @@
           bind:value={text}
           placeholder="Enter text, URL, or any data to encode..."
           rows="4"
-          class="textarea {error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}"
+          class="textarea {error ? 'border-[var(--ds-danger-500)] focus:border-[var(--ds-danger-500)] focus:ring-[var(--ds-danger-500)]' : ''}"
         ></textarea>
         {#if error}
-          <p class="mt-1 text-sm text-red-500">{error}</p>
+          <p class="mt-1 text-sm text-[var(--ds-danger-500)]">{error}</p>
         {/if}
       </div>
 
@@ -203,7 +200,7 @@
             max="500"
             step="50"
             bind:value={size}
-            class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+            class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[var(--ds-success-500)]"
           />
         </div>
 
@@ -248,7 +245,7 @@
             type="checkbox"
             id="include-margin"
             bind:checked={includeMargin}
-            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            class="w-4 h-4 text-[var(--ds-success-600)] bg-gray-100 border-gray-300 rounded focus:ring-[var(--ds-success-500)] dark:focus:ring-[var(--ds-success-600)] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <label
             for="include-margin"
@@ -291,9 +288,9 @@
           </div>
         {:else if error}
           <div
-            class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6"
+            class="bg-[var(--ds-danger-100)] dark:bg-[var(--ds-danger-900)/20] border border-[var(--ds-danger-200)] dark:border-[var(--ds-danger-800)] rounded-xl p-6"
           >
-            <p class="text-red-600 dark:text-red-400 text-center">
+            <p class="text-[var(--ds-danger-600)] dark:text-[var(--ds-danger-400)] text-center">
               {error}
             </p>
           </div>
@@ -309,13 +306,13 @@
 
       <!-- Info Section -->
       <div
-        class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4"
+        class="bg-[var(--ds-success-100)] dark:bg-[var(--ds-success-900)/20] border border-[var(--ds-success-200)] dark:border-[var(--ds-success-800)] rounded-xl p-4"
       >
-        <div class="flex items-center gap-2 mb-2 text-blue-800 dark:text-blue-200">
+        <div class="flex items-center gap-2 mb-2 text-[var(--ds-success-800)] dark:text-[var(--ds-success-200)]">
           <Info class="w-4 h-4" />
           <h4 class="text-sm font-semibold">Tips</h4>
         </div>
-        <ul class="text-sm text-blue-700 dark:text-blue-300 space-y-1 list-disc list-inside">
+        <ul class="text-sm text-[var(--ds-success-700)] dark:text-[var(--ds-success-300)] space-y-1 list-disc list-inside">
           <li>QR codes can store up to 4,296 alphanumeric characters</li>
           <li>Higher error correction levels create more complex but more robust codes</li>
           <li>Test your QR code before using it in production</li>

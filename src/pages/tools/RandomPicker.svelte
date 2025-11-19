@@ -277,7 +277,7 @@
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-primary-400)] to-[var(--ds-primary-600)] rounded-2xl mb-4"
       >
         <Shuffle class="w-10 h-10 text-white" />
       </div>
@@ -362,7 +362,7 @@
                 type="text"
                 bind:value={item.text}
                 placeholder="Enter item name"
-                class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--ds-primary-500)] focus:border-[var(--ds-primary-500)]"
               />
 
               {#if showWeights}
@@ -397,7 +397,7 @@
             <input
               type="checkbox"
               bind:checked={showWeights}
-              class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+              class="w-4 h-4 text-[var(--ds-primary-600)] bg-gray-100 border-gray-300 rounded focus:ring-[var(--ds-primary-500)]"
             />
             <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Enable Weights</span>
           </label>
@@ -430,7 +430,7 @@
               bind:value={numberOfPicks}
               min="1"
               max={items.filter(item => item.text.trim() !== '').length}
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--ds-primary-500)] focus:border-[var(--ds-primary-500)]"
             />
           </div>
 
@@ -459,7 +459,7 @@
             id="allow-duplicates"
             type="checkbox"
             bind:checked={allowDuplicates}
-            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+            class="w-4 h-4 text-[var(--ds-primary-600)] bg-gray-100 border-gray-300 rounded focus:ring-[var(--ds-primary-500)]"
           />
           <label for="allow-duplicates" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
             Allow Duplicates (when picking multiple items)
@@ -515,7 +515,7 @@
           {:else if selectedItem.type === 'animating'}
             <div class="text-center py-8">
               <div class="inline-block animate-bounce">
-                <Dices class="w-16 h-16 text-blue-600 dark:text-blue-400" />
+                <Dices class="w-16 h-16 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
               </div>
               <p class="mt-4 text-gray-600 dark:text-gray-400 animate-pulse">{selectedItem.text}</p>
             </div>
@@ -524,7 +524,7 @@
               <div
                 class="inline-block p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg border-2 border-green-200 dark:border-green-800"
               >
-                <Star class="w-12 h-12 text-green-600 dark:text-green-400 mx-auto mb-3" />
+                <Star class="w-12 h-12 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mx-auto mb-3" />
                 <h3 class="text-2xl font-bold text-green-700 dark:text-green-300 mb-2">
                   {selectedItem.text}
                 </h3>
@@ -580,27 +580,27 @@
 
       <!-- Tips -->
       <div
-        class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-800 p-6"
+        class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-[var(--ds-primary-200)] dark:border-[var(--ds-primary-800)] p-6"
       >
-        <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-4 flex items-center">
+        <h3 class="text-lg font-semibold text-[var(--ds-primary-800)] dark:text-[var(--ds-primary-200)] mb-4 flex items-center">
           <Zap class="w-5 h-5 mr-2" />
           Pro Tips
         </h3>
-        <div class="space-y-3 text-sm text-blue-700 dark:text-blue-300">
+        <div class="space-y-3 text-sm text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]">
           <div class="flex items-start">
-            <div class="w-2 h-2 bg-blue-500 rounded-full mt-1.5 mr-3"></div>
+            <div class="w-2 h-2 bg-[var(--ds-primary-500)] rounded-full mt-1.5 mr-3"></div>
             <p>Use weights to give some items higher chances of being selected</p>
           </div>
           <div class="flex items-start">
-            <div class="w-2 h-2 bg-blue-500 rounded-full mt-1.5 mr-3"></div>
+            <div class="w-2 h-2 bg-[var(--ds-primary-500)] rounded-full mt-1.5 mr-3"></div>
             <p>Enable multiple picks for selecting more than one item at once</p>
           </div>
           <div class="flex items-start">
-            <div class="w-2 h-2 bg-blue-500 rounded-full mt-1.5 mr-3"></div>
+            <div class="w-2 h-2 bg-[var(--ds-primary-500)] rounded-full mt-1.5 mr-3"></div>
             <p>History helps you track previous random selections</p>
           </div>
           <div class="flex items-start">
-            <div class="w-2 h-2 bg-blue-500 rounded-full mt-1.5 mr-3"></div>
+            <div class="w-2 h-2 bg-[var(--ds-primary-500)] rounded-full mt-1.5 mr-3"></div>
             <p>Use presets for quick decision-making scenarios</p>
           </div>
         </div>

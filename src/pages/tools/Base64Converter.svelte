@@ -129,18 +129,15 @@
   <!-- Header -->
   <div class="mb-8">
     <div class="flex items-center gap-4 mb-4">
-      <button
-        onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        <ChevronLeft class="w-5 h-5" />
+      <button class="btn btn-primary" onclick={handleBackToTools}>
+        <ChevronLeft class="w-5 h-5 mr-2" />
         Back to Tools
       </button>
     </div>
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-primary-400)] to-[var(--ds-primary-600)] rounded-2xl mb-4"
       >
         <Hash class="w-10 h-10 text-white" />
       </div>
@@ -185,7 +182,7 @@
         <button
           onclick={() => (activeTab = 'text')}
           class="px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'text'
-            ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300'
+            ? 'bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]'
             : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
         >
           Text Converter
@@ -193,7 +190,7 @@
         <button
           onclick={() => (activeTab = 'file')}
           class="px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'file'
-            ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300'
+            ? 'bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]'
             : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
         >
           File Converter
@@ -208,17 +205,17 @@
     <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
       <button class="btn btn-primary" onclick={encodeBase64}>Encode to Base64</button>
       <button class="btn btn-primary" onclick={decodeBase64}>Decode from Base64</button>
-      <button class="btn btn-primary" onclick={loadSampleText}>Load Sample Text</button>
-      <button class="btn btn-primary" onclick={loadSampleBase64}>Load Sample Base64</button>
-      <button class="btn btn-primary" onclick={clearAll}>Clear All</button>
+      <button class="btn btn-primary btn-sm" onclick={loadSampleText}>Load Sample Text</button>
+      <button class="btn btn-primary btn-sm" onclick={loadSampleBase64}>Load Sample Base64</button>
+      <button class="btn btn-primary btn-sm" onclick={clearAll}>Clear All</button>
     </div>
 
     <!-- Error Display -->
     {#if error}
       <div
-        class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+        class="mb-4 p-4 bg-[var(--ds-danger-100)] dark:bg-[var(--ds-danger-900)/20] border border-[var(--ds-danger-200)] dark:border-[var(--ds-danger-800)] rounded-lg"
       >
-        <p class="text-red-700 dark:text-red-400 font-medium">Error: {error}</p>
+        <p class="text-[var(--ds-danger-700)] dark:text-[var(--ds-danger-400)] font-medium">Error: {error}</p>
       </div>
     {/if}
 
@@ -298,7 +295,7 @@
           <Upload class="w-12 h-12 mx-auto mb-4 text-gray-400" />
 
           <label for="file-upload" class="cursor-pointer">
-            <span class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+            <span class="text-[var(--ds-primary-600)] dark:text-blue-400 hover:underline font-medium">
               Click to upload
             </span>
             <span class="text-gray-600 dark:text-gray-400"> or drag and drop </span>
@@ -321,7 +318,7 @@
         <div class="text-center py-8">
           <div class="inline-flex items-center gap-2">
             <div
-              class="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"
+              class="w-5 h-5 border-2 border-[var(--ds-primary-600)] border-t-transparent rounded-full animate-spin"
             ></div>
             <span class="text-gray-600 dark:text-gray-400">Processing file...</span>
           </div>
@@ -331,9 +328,9 @@
       <!-- Error Display -->
       {#if error}
         <div
-          class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+          class="mb-4 p-4 bg-[var(--ds-danger-100)] dark:bg-[var(--ds-danger-900)/20] border border-[var(--ds-danger-200)] dark:border-[var(--ds-danger-800)] rounded-lg"
         >
-          <p class="text-red-700 dark:text-red-400 font-medium">Error: {error}</p>
+          <p class="text-[var(--ds-danger-700)] dark:text-[var(--ds-danger-400)] font-medium">Error: {error}</p>
         </div>
       {/if}
 
@@ -398,9 +395,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <Shield class="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+        <Shield class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Secure Encoding</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -413,9 +410,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <FileText class="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+        <FileText class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">File Support</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -427,9 +424,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <Zap class="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+        <Zap class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Fast Processing</h3>
       <p class="text-gray-600 dark:text-gray-400">

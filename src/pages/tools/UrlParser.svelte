@@ -81,18 +81,15 @@
   <!-- Header -->
   <div class="mb-8">
     <div class="flex items-center gap-4 mb-4">
-      <button
-        onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        <ChevronLeft class="w-5 h-5" />
+      <button class="btn btn-primary" onclick={handleBackToTools}>
+        <ChevronLeft class="w-5 h-5 mr-2" />
         Back to Tools
       </button>
     </div>
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-lime-400 to-lime-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-primary-400)] to-[var(--ds-primary-600)] rounded-2xl mb-4"
       >
         <Link class="w-10 h-10 text-white" />
       </div>
@@ -140,12 +137,12 @@
         type="text"
         bind:value={urlInput}
         placeholder="https://example.com/path?query=value#section"
-        class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-lime-500 focus:border-transparent"
+        class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--ds-primary-500)] focus:border-transparent"
         onkeydown={e => e.key === 'Enter' && parseUrl()}
       />
       <button
         onclick={parseUrl}
-        class="px-6 py-2 bg-lime-600 text-white rounded-lg hover:bg-lime-700 transition-colors"
+        class="btn btn-primary"
       >
         Parse URL
       </button>
@@ -154,13 +151,13 @@
     <div class="flex gap-4">
       <button
         onclick={loadSampleUrl}
-        class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+        class="btn btn-primary"
       >
         Load Sample URL
       </button>
       <button
         onclick={clearAll}
-        class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+        class="btn btn-primary"
       >
         Clear
       </button>
@@ -192,7 +189,7 @@
               <code class="text-sm text-gray-900 dark:text-white">{parsedUrl.protocol}</code>
               <button
                 onclick={() => parsedUrl && copyToClipboard(parsedUrl.protocol)}
-                class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                class="btn btn-primary btn-sm"
               >
                 <Copy class="w-4 h-4" />
               </button>
@@ -205,7 +202,7 @@
               <code class="text-sm text-gray-900 dark:text-white">{parsedUrl.hostname}</code>
               <button
                 onclick={() => parsedUrl && copyToClipboard(parsedUrl.hostname)}
-                class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                class="btn btn-primary btn-sm"
               >
                 <Copy class="w-4 h-4" />
               </button>
@@ -218,7 +215,7 @@
               <code class="text-sm text-gray-900 dark:text-white">{parsedUrl.port}</code>
               <button
                 onclick={() => parsedUrl && copyToClipboard(parsedUrl.port)}
-                class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                class="btn btn-primary btn-sm"
               >
                 <Copy class="w-4 h-4" />
               </button>
@@ -233,7 +230,7 @@
               >
               <button
                 onclick={() => parsedUrl && copyToClipboard(parsedUrl.pathname)}
-                class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                class="btn btn-primary btn-sm"
               >
                 <Copy class="w-4 h-4" />
               </button>
@@ -248,7 +245,7 @@
               >
               <button
                 onclick={() => parsedUrl && copyToClipboard(parsedUrl.hash || '')}
-                class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                class="btn btn-primary btn-sm"
               >
                 <Copy class="w-4 h-4" />
               </button>
@@ -274,7 +271,7 @@
               >
               <button
                 onclick={() => parsedUrl && copyToClipboard(parsedUrl.origin)}
-                class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                class="btn btn-primary btn-sm"
               >
                 <Copy class="w-4 h-4" />
               </button>
@@ -289,7 +286,7 @@
               >
               <button
                 onclick={() => parsedUrl && copyToClipboard(parsedUrl.host)}
-                class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                class="btn btn-primary btn-sm"
               >
                 <Copy class="w-4 h-4" />
               </button>
@@ -304,7 +301,7 @@
               >
               <button
                 onclick={() => parsedUrl && copyToClipboard(parsedUrl.search || '')}
-                class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                class="btn btn-primary btn-sm"
               >
                 <Copy class="w-4 h-4" />
               </button>
@@ -357,14 +354,14 @@
                     <div class="flex justify-center gap-2">
                       <button
                         onclick={() => copyToClipboard(param.key)}
-                        class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                        class="btn btn-primary btn-sm"
                         title="Copy parameter name"
                       >
                         <Copy class="w-4 h-4" />
                       </button>
                       <button
                         onclick={() => copyToClipboard(param.value)}
-                        class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                        class="btn btn-primary btn-sm"
                         title="Copy parameter value"
                       >
                         <Copy class="w-4 h-4" />
@@ -386,9 +383,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-lime-100 dark:bg-lime-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <Globe class="w-6 h-6 text-lime-600 dark:text-lime-400" />
+        <Globe class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Extract Domain</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -400,9 +397,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-lime-100 dark:bg-lime-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <FileText class="w-6 h-6 text-lime-600 dark:text-lime-400" />
+        <FileText class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Path Analysis</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -414,9 +411,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-lime-100 dark:bg-lime-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <Zap class="w-6 h-6 text-lime-600 dark:text-lime-400" />
+        <Zap class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Query Parameters</h3>
       <p class="text-gray-600 dark:text-gray-400">

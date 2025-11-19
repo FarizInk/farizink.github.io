@@ -208,18 +208,15 @@
   <!-- Header -->
   <div class="mb-8">
     <div class="flex items-center gap-4 mb-4">
-      <button
-        onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        <ChevronLeft class="w-5 h-5" />
+      <button class="btn btn-primary" onclick={handleBackToTools}>
+        <ChevronLeft class="w-5 h-5 mr-2" />
         Back to Tools
       </button>
     </div>
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-primary-400)] to-[var(--ds-primary-600)] rounded-2xl mb-4"
       >
         <Palette class="w-10 h-10 text-white" />
       </div>
@@ -366,7 +363,7 @@
               max="255"
               bind:value={rgbInput[channel as keyof typeof rgbInput]}
               oninput={updateFromRgb}
-              class="flex-1 accent-purple-500"
+              class="flex-1 accent-[var(--ds-primary-500)]"
             />
             <input
               type="number"
@@ -408,7 +405,7 @@
               max={channel === 'h' ? 360 : 100}
               bind:value={hslInput[channel as keyof typeof hslInput]}
               oninput={updateFromHsl}
-              class="flex-1 accent-purple-500"
+              class="flex-1 accent-[var(--ds-primary-500)]"
             />
             <input
               type="number"
@@ -491,7 +488,7 @@
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-purple-600 dark:text-purple-400">
+      <div class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">
         <Palette class="w-5 h-5" />
         <h3 class="font-medium">Multiple Formats</h3>
       </div>
@@ -500,7 +497,7 @@
       </p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-purple-600 dark:text-purple-400">
+      <div class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">
         <Zap class="w-5 h-5" />
         <h3 class="font-medium">Live Conversion</h3>
       </div>
@@ -509,7 +506,7 @@
       </p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-purple-600 dark:text-purple-400">
+      <div class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">
         <History class="w-5 h-5" />
         <h3 class="font-medium">Color History</h3>
       </div>

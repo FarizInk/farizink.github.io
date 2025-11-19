@@ -180,7 +180,7 @@ ${inputText}
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-primary-400)] to-[var(--ds-primary-600)] rounded-2xl mb-4"
       >
         <Calculator class="w-10 h-10 text-white" />
       </div>
@@ -278,13 +278,13 @@ ${inputText}
         {#if stats}
           <div class="space-y-3">
             <div
-              class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg"
+              class="flex items-center justify-between p-3 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg"
             >
               <div class="flex items-center">
-                <Type class="w-5 h-5 text-blue-600 dark:text-blue-400 mr-2" />
+                <Type class="w-5 h-5 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mr-2" />
                 <span class="text-sm font-medium text-gray-900 dark:text-white">Characters</span>
               </div>
-              <span class="text-lg font-bold text-blue-600 dark:text-blue-400">
+              <span class="text-lg font-bold text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">
                 {stats.totalChars}
               </span>
             </div>
@@ -293,10 +293,10 @@ ${inputText}
               class="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg"
             >
               <div class="flex items-center">
-                <FileText class="w-5 h-5 text-green-600 dark:text-green-400 mr-2" />
+                <FileText class="w-5 h-5 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mr-2" />
                 <span class="text-sm font-medium text-gray-900 dark:text-white">Words</span>
               </div>
-              <span class="text-lg font-bold text-green-600 dark:text-green-400">
+              <span class="text-lg font-bold text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">
                 {stats.words}
               </span>
             </div>
@@ -305,10 +305,10 @@ ${inputText}
               class="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg"
             >
               <div class="flex items-center">
-                <Hash class="w-5 h-5 text-purple-600 dark:text-purple-400 mr-2" />
+                <Hash class="w-5 h-5 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mr-2" />
                 <span class="text-sm font-medium text-gray-900 dark:text-white">Sentences</span>
               </div>
-              <span class="text-lg font-bold text-purple-600 dark:text-purple-400">
+              <span class="text-lg font-bold text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">
                 {stats.sentences}
               </span>
             </div>

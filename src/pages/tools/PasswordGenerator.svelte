@@ -106,13 +106,13 @@
   function getStrengthColor(strength: string): string {
     switch (strength) {
       case 'weak':
-        return 'text-red-500';
+        return 'text-[var(--ds-danger-500)]';
       case 'medium':
-        return 'text-yellow-500';
+        return 'text-[var(--ds-warning-500)]';
       case 'strong':
-        return 'text-green-500';
+        return 'text-[var(--ds-success-500)]';
       case 'very-strong':
-        return 'text-green-600';
+        return 'text-[var(--ds-success-600)]';
       default:
         return 'text-gray-500';
     }
@@ -121,13 +121,13 @@
   function getStrengthBgColor(strength: string): string {
     switch (strength) {
       case 'weak':
-        return 'bg-red-100 dark:bg-red-900/20';
+        return 'bg-[var(--ds-danger-100)] dark:bg-[var(--ds-danger-900)/20]';
       case 'medium':
-        return 'bg-yellow-100 dark:bg-yellow-900/20';
+        return 'bg-[var(--ds-warning-100)] dark:bg-[var(--ds-warning-900)/20]';
       case 'strong':
-        return 'bg-green-100 dark:bg-green-900/20';
+        return 'bg-[var(--ds-success-100)] dark:bg-[var(--ds-success-900)/20]';
       case 'very-strong':
-        return 'bg-green-200 dark:bg-green-900/30';
+        return 'bg-[var(--ds-success-200)] dark:bg-[var(--ds-success-900)/30]';
       default:
         return 'bg-gray-100 dark:bg-gray-800';
     }
@@ -231,18 +231,15 @@
   <!-- Header -->
   <div class="mb-8">
     <div class="flex items-center gap-4 mb-4">
-      <button
-        onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        <ChevronLeft class="w-5 h-5" />
+      <button class="btn btn-primary" onclick={handleBackToTools}>
+        <ChevronLeft class="w-5 h-5 mr-2" />
         Back to Tools
       </button>
     </div>
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-red-400 to-red-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-danger-400)] to-[var(--ds-danger-600)] rounded-2xl mb-4"
       >
         <Lock class="w-10 h-10 text-white" />
       </div>
@@ -280,12 +277,12 @@
 
   <!-- Controls -->
   <div class="mb-6 flex justify-center flex-wrap gap-2">
-    <button onclick={() => generateMultiplePasswords(5)} class="btn btn-outline btn-sm">
+    <button onclick={() => generateMultiplePasswords(5)} class="btn btn-primary btn-sm">
       Generate 5
     </button>
     <button
       onclick={clearAll}
-      class="btn btn-outline btn-sm text-red-500 hover:text-red-600 hover:border-red-200"
+      class="btn btn-primary btn-sm text-red-500 hover:text-red-600"
     >
       <Trash2 class="w-4 h-4 mr-2" />
       Clear
@@ -348,12 +345,12 @@
               <div
                 class="h-full transition-all duration-300 {calculatePasswordStrength(password) ===
                 'weak'
-                  ? 'bg-red-500 w-1/4'
+                  ? 'bg-[var(--ds-danger-500)] w-1/4'
                   : calculatePasswordStrength(password) === 'medium'
-                    ? 'bg-yellow-500 w-2/4'
+                    ? 'bg-[var(--ds-warning-500)] w-2/4'
                     : calculatePasswordStrength(password) === 'strong'
-                      ? 'bg-green-500 w-3/4'
-                      : 'bg-green-600 w-full'}"
+                      ? 'bg-[var(--ds-success-500)] w-3/4'
+                      : 'bg-[var(--ds-success-600)] w-full'}"
               ></div>
             </div>
           </div>
@@ -385,7 +382,7 @@
             min="4"
             max="64"
             bind:value={passwordLength}
-            class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-red-500"
+            class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[var(--ds-danger-500)]"
           />
           <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
             <span>4</span>
@@ -400,7 +397,7 @@
             <input
               type="checkbox"
               bind:checked={includeUppercase}
-              class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500"
+              class="w-4 h-4 text-[var(--ds-danger-600)] bg-gray-100 border-gray-300 rounded focus:ring-[var(--ds-danger-500)]"
             />
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
               Uppercase (A-Z)
@@ -411,7 +408,7 @@
             <input
               type="checkbox"
               bind:checked={includeLowercase}
-              class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500"
+              class="w-4 h-4 text-[var(--ds-danger-600)] bg-gray-100 border-gray-300 rounded focus:ring-[var(--ds-danger-500)]"
             />
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
               Lowercase (a-z)
@@ -422,7 +419,7 @@
             <input
               type="checkbox"
               bind:checked={includeNumbers}
-              class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500"
+              class="w-4 h-4 text-[var(--ds-danger-600)] bg-gray-100 border-gray-300 rounded focus:ring-[var(--ds-danger-500)]"
             />
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
               Numbers (0-9)
@@ -433,7 +430,7 @@
             <input
               type="checkbox"
               bind:checked={includeSymbols}
-              class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500"
+              class="w-4 h-4 text-[var(--ds-danger-600)] bg-gray-100 border-gray-300 rounded focus:ring-[var(--ds-danger-500)]"
             />
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
               Symbols (!@#$%)
@@ -444,7 +441,7 @@
             <input
               type="checkbox"
               bind:checked={useCustomCharacters}
-              class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500"
+              class="w-4 h-4 text-[var(--ds-danger-600)] bg-gray-100 border-gray-300 rounded focus:ring-[var(--ds-danger-500)]"
             />
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
               Custom Characters
@@ -468,7 +465,7 @@
             <input
               type="checkbox"
               bind:checked={excludeSimilar}
-              class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500"
+              class="w-4 h-4 text-[var(--ds-danger-600)] bg-gray-100 border-gray-300 rounded focus:ring-[var(--ds-danger-500)]"
             />
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
               Exclude Similar Characters (i, l, 1, L, o, 0, O)
@@ -479,7 +476,7 @@
             <input
               type="checkbox"
               bind:checked={excludeAmbiguous}
-              class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500"
+              class="w-4 h-4 text-[var(--ds-danger-600)] bg-gray-100 border-gray-300 rounded focus:ring-[var(--ds-danger-500)]"
             />
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
               Exclude Ambiguous Characters ({`{ } [ ] ( ) / \\ ' " \` ~ , ; . < >`})
@@ -562,7 +559,7 @@
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-red-600 dark:text-red-400">
+      <div class="flex items-center gap-2 mb-2 text-[var(--ds-danger-600)] dark:text-[var(--ds-danger-400)]">
         <Shield class="w-5 h-5" />
         <h3 class="font-medium">Strong Security</h3>
       </div>
@@ -571,7 +568,7 @@
       </p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-red-600 dark:text-red-400">
+      <div class="flex items-center gap-2 mb-2 text-[var(--ds-danger-600)] dark:text-[var(--ds-danger-400)]">
         <Settings2 class="w-5 h-5" />
         <h3 class="font-medium">Customizable Options</h3>
       </div>
@@ -580,7 +577,7 @@
       </p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-red-600 dark:text-red-400">
+      <div class="flex items-center gap-2 mb-2 text-[var(--ds-danger-600)] dark:text-[var(--ds-danger-400)]">
         <History class="w-5 h-5" />
         <h3 class="font-medium">Password History</h3>
       </div>

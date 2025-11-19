@@ -156,18 +156,15 @@
   <!-- Header -->
   <div class="mb-8">
     <div class="flex items-center gap-4 mb-4">
-      <button
-        onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        <ChevronLeft class="w-5 h-5" />
+      <button class="btn btn-primary" onclick={handleBackToTools}>
+        <ChevronLeft class="w-5 h-5 mr-2" />
         Back to Tools
       </button>
     </div>
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-orange-400 to-orange-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-secondary-400)] to-[var(--ds-secondary-600)] rounded-2xl mb-4"
       >
         <Calendar class="w-10 h-10 text-white" />
       </div>
@@ -207,7 +204,7 @@
 
   <!-- Current Timestamp -->
   <div
-    class="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-xl border border-orange-200 dark:border-orange-800 p-6 mb-6"
+    class="bg-gradient-to-r from-[var(--ds-secondary-100)] to-[var(--ds-secondary-50)] dark:from-[var(--ds-secondary-900)/20] dark:to-[var(--ds-secondary-900)/20] rounded-xl border border-[var(--ds-secondary-200)] dark:border-[var(--ds-secondary-800)] p-6 mb-6"
   >
     <div class="flex justify-between items-center">
       <div>
@@ -220,9 +217,9 @@
       </div>
       <button
         onclick={getCurrentTimestamp}
-        class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors flex items-center gap-2"
+        class="btn btn-primary"
       >
-        <RefreshCw class="w-4 h-4" />
+        <RefreshCw class="w-4 h-4 mr-2" />
         Refresh
       </button>
     </div>
@@ -232,13 +229,13 @@
   <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
     <button
       onclick={loadSampleTimestamp}
-      class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+      class="btn btn-primary"
     >
       Load Sample Timestamp
     </button>
     <button
       onclick={clearAll}
-      class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+      class="btn btn-primary"
     >
       Clear All
     </button>
@@ -267,7 +264,7 @@
             type="text"
             bind:value={unixTimestamp}
             placeholder="1704067200"
-            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent font-mono"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--ds-secondary-500)] focus:border-transparent font-mono"
           />
         </div>
 
@@ -289,7 +286,7 @@
               />
               <button
                 onclick={() => copyToClipboard(isoString, 'iso')}
-                class="px-3 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                class="btn btn-primary btn-sm"
               >
                 {copiedText === 'iso' ? '✓' : 'Copy'}
               </button>
@@ -319,7 +316,7 @@
             id="date-iso"
             type="datetime-local"
             bind:value={isoString}
-            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--ds-secondary-500)] focus:border-transparent"
           />
         </div>
 
@@ -341,7 +338,7 @@
               />
               <button
                 onclick={() => copyToClipboard(unixTimestamp, 'timestamp')}
-                class="px-3 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                class="btn btn-primary btn-sm"
               >
                 {copiedText === 'timestamp' ? '✓' : 'Copy'}
               </button>
@@ -390,7 +387,7 @@
         />
         <button
           onclick={() => copyToClipboard(formattedDate, 'formatted')}
-          class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+          class="btn btn-primary"
         >
           {copiedText === 'formatted' ? '✓ Copied!' : 'Copy'}
         </button>
@@ -427,9 +424,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-[var(--ds-secondary-100)] dark:bg-[var(--ds-secondary-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <Calendar class="w-6 h-6 text-orange-600 dark:text-orange-400" />
+        <Calendar class="w-6 h-6 text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Unix Timestamps</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -441,9 +438,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-[var(--ds-secondary-100)] dark:bg-[var(--ds-secondary-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <Copy class="w-6 h-6 text-orange-600 dark:text-orange-400" />
+        <Copy class="w-6 h-6 text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Multiple Formats</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -455,9 +452,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-[var(--ds-secondary-100)] dark:bg-[var(--ds-secondary-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <Zap class="w-6 h-6 text-orange-600 dark:text-orange-400" />
+        <Zap class="w-6 h-6 text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Real-time Updates</h3>
       <p class="text-gray-600 dark:text-gray-400">

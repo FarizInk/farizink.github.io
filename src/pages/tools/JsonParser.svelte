@@ -81,15 +81,15 @@
   <!-- Header -->
   <div class="mb-8">
     <div class="flex items-center gap-4 mb-6">
-      <button onclick={handleBackToTools} class="btn btn-outline btn-sm">
-        <ChevronLeft class="w-4 h-4 mr-2" />
+      <button class="btn btn-primary" onclick={handleBackToTools}>
+        <ChevronLeft class="w-5 h-5 mr-2" />
         Back to Tools
       </button>
     </div>
 
     <div class="text-center mb-12">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl mb-6 shadow-lg animate-scale-in"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-success-400)] to-[var(--ds-success-600)] rounded-2xl mb-6 shadow-lg animate-scale-in"
       >
         <FileJson class="w-10 h-10 text-white" />
       </div>
@@ -108,10 +108,10 @@
 
   <!-- Controls -->
   <div
-    class="mb-8 flex flex-wrap gap-2 items-center justify-center bg-white/50 dark:bg-white/5 p-4 rounded-2xl border border-[var(--ds-secondary-200)] dark:border-[var(--ds-secondary-800)]"
+    class="mb-8 flex flex-wrap gap-2 items-center justify-center"
   >
-    <button onclick={loadSample} class="btn btn-outline btn-sm">Load Sample</button>
-    <button onclick={clearAll} class="btn btn-outline btn-sm text-red-500 hover:text-red-600">
+    <button onclick={loadSample} class="btn btn-primary btn-sm">Load Sample</button>
+    <button onclick={clearAll} class="btn btn-primary btn-sm text-red-500 hover:text-red-600">
       <Trash2 class="w-4 h-4 mr-2" />
       Clear
     </button>
@@ -179,36 +179,36 @@
 
   <!-- Features Section -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="card">
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
       <div
-        class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+        class="w-12 h-12 bg-[var(--ds-success-100)] dark:bg-[var(--ds-success-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <Check class="w-5 h-5" />
-        <h3 class="font-medium">Validation</h3>
+        <Check class="w-6 h-6 text-[var(--ds-success-600)] dark:text-[var(--ds-success-400)]" />
       </div>
-      <p class="text-sm text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Validation</h3>
+      <p class="text-gray-600 dark:text-gray-400">
         Instantly validates your JSON and provides helpful error messages for invalid syntax.
       </p>
     </div>
-    <div class="card">
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
       <div
-        class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+        class="w-12 h-12 bg-[var(--ds-success-100)] dark:bg-[var(--ds-success-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <Check class="w-5 h-5" />
-        <h3 class="font-medium">Formatting</h3>
+        <Check class="w-6 h-6 text-[var(--ds-success-600)] dark:text-[var(--ds-success-400)]" />
       </div>
-      <p class="text-sm text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Formatting</h3>
+      <p class="text-gray-600 dark:text-gray-400">
         Beautify minified JSON with proper indentation or minify it for production use.
       </p>
     </div>
-    <div class="card">
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
       <div
-        class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+        class="w-12 h-12 bg-[var(--ds-success-100)] dark:bg-[var(--ds-success-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <Check class="w-5 h-5" />
-        <h3 class="font-medium">Privacy</h3>
+        <Check class="w-6 h-6 text-[var(--ds-success-600)] dark:text-[var(--ds-success-400)]" />
       </div>
-      <p class="text-sm text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Privacy</h3>
+      <p class="text-gray-600 dark:text-gray-400">
         All processing happens in your browser. No data is sent to any server.
       </p>
     </div>

@@ -167,7 +167,7 @@
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-primary-400)] to-[var(--ds-primary-600)] rounded-2xl mb-4"
       >
         <Droplets class="w-10 h-10 text-white" />
       </div>
@@ -230,7 +230,7 @@
           <select
             id="gradient-type-select"
             bind:value={gradientType}
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--ds-primary-500)] focus:border-transparent"
           >
             <option value="linear">Linear</option>
             <option value="radial">Radial</option>
@@ -248,7 +248,7 @@
           <select
             id="gradient-direction"
             bind:value={gradientDirection}
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--ds-primary-500)] focus:border-transparent"
           >
             {#if gradientType === 'linear'}
               <option value="0deg">↑ Top</option>
@@ -285,7 +285,7 @@
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Color Stops</h3>
         <button
           onclick={addColorStop}
-          class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1"
+          class="px-3 py-1 bg-[var(--ds-primary-600)] text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1"
         >
           <Plus class="w-4 h-4" />
           Add Stop
@@ -347,7 +347,7 @@
       <div class="flex gap-2">
         <button
           onclick={() => copyToClipboard(cssCode, 'css')}
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          class="px-4 py-2 bg-[var(--ds-primary-600)] text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           {copiedText === 'css' ? '✓ Copied!' : 'Copy CSS'}
         </button>
@@ -372,7 +372,7 @@
       {#each presetGradients as preset, i (preset.name + i)}
         <button
           onclick={() => loadPreset(preset)}
-          class="p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
+          class="p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-[var(--ds-primary-500)] dark:hover:border-blue-400 transition-colors"
         >
           <div
             class="h-16 w-full rounded mb-2"
@@ -392,9 +392,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <Droplets class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+        <Droplets class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
         Multiple Gradient Types
@@ -408,9 +408,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <Copy class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+        <Copy class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Live Preview</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -422,9 +422,9 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <Zap class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+        <Zap class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">CSS Export</h3>
       <p class="text-gray-600 dark:text-gray-400">

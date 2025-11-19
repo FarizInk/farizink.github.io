@@ -299,18 +299,15 @@
   <!-- Header -->
   <div class="mb-8">
     <div class="flex items-center gap-4 mb-4">
-      <button
-        onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        <ChevronLeft class="w-5 h-5" />
+      <button class="btn btn-primary" onclick={handleBackToTools}>
+        <ChevronLeft class="w-5 h-5 mr-2" />
         Back to Tools
       </button>
     </div>
 
     <div class="text-center mb-8">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--ds-primary-400)] to-[var(--ds-primary-600)] rounded-2xl mb-4"
       >
         <Calculator class="w-10 h-10 text-white" />
       </div>
@@ -348,13 +345,13 @@
 
   <!-- Controls -->
   <div class="mb-6 flex justify-center flex-wrap gap-2">
-    <button onclick={reset} class="btn btn-outline btn-sm">
+    <button onclick={reset} class="btn btn-primary btn-sm">
       <RotateCcw class="w-4 h-4 mr-2" />
       Reset
     </button>
     <button
       onclick={clearHistory}
-      class="btn btn-outline btn-sm text-red-500 hover:text-red-600 hover:border-red-200"
+      class="btn btn-primary btn-sm text-red-500 hover:text-red-600 hover:border-red-200"
     >
       <Trash2 class="w-4 h-4 mr-2" />
       Clear History
@@ -372,7 +369,7 @@
           }}
           class="flex items-center gap-2 px-4 py-2 rounded-xl border transition-all duration-200 {activeCategory ===
           category.id
-            ? `border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300`
+            ? `border-[var(--ds-primary-500)] bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]`
             : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600'}"
         >
           <category.icon class="w-4 h-4" />
@@ -390,7 +387,7 @@
         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
       >
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
-          <Calculator class="w-5 h-5 mr-2 text-blue-500" />
+          <Calculator class="w-5 h-5 mr-2 text-[var(--ds-primary-500)]" />
           Convert {categories.find(c => c.id === activeCategory)?.name}
         </h2>
 
@@ -421,7 +418,7 @@
 
           <!-- Swap Button -->
           <div class="flex justify-center">
-            <button onclick={swapUnits} class="btn btn-secondary btn-sm rounded-full">
+            <button onclick={swapUnits} class="btn btn-primary btn-sm rounded-full">
               <ArrowUpDown class="w-5 h-5" />
             </button>
           </div>
@@ -446,7 +443,7 @@
                 />
                 <button
                   onclick={copyResult}
-                  class="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-blue-500 transition-colors"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 btn btn-primary btn-sm"
                   title="Copy result"
                 >
                   <Copy class="w-4 h-4" />
@@ -463,12 +460,12 @@
           <!-- Formula Information (for temperature) -->
           {#if activeCategory === 'temperature'}
             <div
-              class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4"
+              class="bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] border border-[var(--ds-primary-200)] dark:border-[var(--ds-primary-800)] rounded-xl p-4"
             >
-              <h3 class="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
+              <h3 class="text-sm font-medium text-[var(--ds-primary-800)] dark:text-[var(--ds-primary-200)] mb-2">
                 Conversion Formulas
               </h3>
-              <div class="space-y-1 text-xs text-blue-700 dark:text-blue-300">
+              <div class="space-y-1 text-xs text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]">
                 <p>°C to °F: (°C × 9/5) + 32</p>
                 <p>°F to °C: (°F - 32) × 5/9</p>
                 <p>°C to K: °C + 273.15</p>
@@ -564,7 +561,7 @@
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">History</h3>
           {#if conversionHistory.length > 0}
-            <button onclick={clearHistory} class="text-sm text-red-500 hover:text-red-600">
+            <button onclick={clearHistory} class="btn btn-primary btn-sm text-red-500 hover:text-red-600">
               Clear
             </button>
           {/if}
@@ -604,7 +601,7 @@
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-blue-600 dark:text-blue-400">
+      <div class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">
         <Calculator class="w-5 h-5" />
         <h3 class="font-medium">Precision</h3>
       </div>
@@ -613,7 +610,7 @@
       </p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-blue-600 dark:text-blue-400">
+      <div class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">
         <History class="w-5 h-5" />
         <h3 class="font-medium">History</h3>
       </div>
@@ -622,7 +619,7 @@
       </p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-blue-600 dark:text-blue-400">
+      <div class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">
         <Zap class="w-5 h-5" />
         <h3 class="font-medium">Fast</h3>
       </div>
