@@ -449,7 +449,9 @@
           <!-- Health Risk -->
           <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
             <div class="flex items-start">
-              <Info class="w-5 h-5 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mt-0.5 mr-3" />
+              <Info
+                class="w-5 h-5 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mt-0.5 mr-3"
+              />
               <div>
                 <p class="font-medium text-gray-900 dark:text-white mb-1">Health Risk Assessment</p>
                 <p class="text-sm text-gray-600 dark:text-gray-400">{healthRisk}</p>
@@ -538,7 +540,9 @@
       >
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">BMI Categories</h3>
         <div class="space-y-3">
-          <div class="flex items-center justify-between p-2 rounded bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20]">
+          <div
+            class="flex items-center justify-between p-2 rounded bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20]"
+          >
             <div class="flex items-center">
               <div class="w-3 h-3 bg-[var(--ds-primary-500)] rounded-full mr-3"></div>
               <span class="text-sm text-gray-700 dark:text-gray-300">Underweight</span>

@@ -140,27 +140,12 @@
         class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[var(--ds-primary-500)] focus:border-transparent"
         onkeydown={e => e.key === 'Enter' && parseUrl()}
       />
-      <button
-        onclick={parseUrl}
-        class="btn btn-primary"
-      >
-        Parse URL
-      </button>
+      <button onclick={parseUrl} class="btn btn-primary"> Parse URL </button>
     </div>
 
     <div class="flex gap-4">
-      <button
-        onclick={loadSampleUrl}
-        class="btn btn-primary"
-      >
-        Load Sample URL
-      </button>
-      <button
-        onclick={clearAll}
-        class="btn btn-primary"
-      >
-        Clear
-      </button>
+      <button onclick={loadSampleUrl} class="btn btn-primary"> Load Sample URL </button>
+      <button onclick={clearAll} class="btn btn-primary"> Clear </button>
     </div>
   </div>
 

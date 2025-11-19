@@ -353,7 +353,6 @@
       <div class="relative">
         <textarea
           bind:value={cssOutput}
-         
           placeholder="{minified ? 'Minified' : 'Beautified'} CSS will appear here..."
           class="w-full h-96 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none"
         ></textarea>

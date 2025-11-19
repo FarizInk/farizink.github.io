@@ -6,7 +6,6 @@
   let input = $state('');
   let output = $state('');
   let error = $state('');
-  let mode = $state('format'); // 'format' | 'minify'
 
   function formatJSON() {
     try {
@@ -107,9 +106,7 @@
   </div>
 
   <!-- Controls -->
-  <div
-    class="mb-8 flex flex-wrap gap-2 items-center justify-center"
-  >
+  <div class="mb-8 flex flex-wrap gap-2 items-center justify-center">
     <button onclick={loadSample} class="btn btn-primary btn-sm">Load Sample</button>
     <button onclick={clearAll} class="btn btn-primary btn-sm text-red-500 hover:text-red-600">
       <Trash2 class="w-4 h-4 mr-2" />
@@ -179,7 +176,9 @@
 
   <!-- Features Section -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+    >
       <div
         class="w-12 h-12 bg-[var(--ds-success-100)] dark:bg-[var(--ds-success-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
@@ -190,7 +189,9 @@
         Instantly validates your JSON and provides helpful error messages for invalid syntax.
       </p>
     </div>
-    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+    >
       <div
         class="w-12 h-12 bg-[var(--ds-success-100)] dark:bg-[var(--ds-success-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
@@ -201,7 +202,9 @@
         Beautify minified JSON with proper indentation or minify it for production use.
       </p>
     </div>
-    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+    >
       <div
         class="w-12 h-12 bg-[var(--ds-success-100)] dark:bg-[var(--ds-success-900)/20] rounded-lg flex items-center justify-center mb-4"
       >

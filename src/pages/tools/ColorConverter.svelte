@@ -348,7 +348,7 @@
     >
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">RGB</h3>
       <div class="space-y-3">
-        {#each ['r', 'g', 'b'] as channel}
+        {#each ['r', 'g', 'b'] as channel (channel)}
           <div class="flex items-center gap-2">
             <label
               for={`rgb-${channel}`}
@@ -390,7 +390,7 @@
     >
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">HSL</h3>
       <div class="space-y-3">
-        {#each ['h', 's', 'l'] as channel}
+        {#each ['h', 's', 'l'] as channel (channel)}
           <div class="flex items-center gap-2">
             <label
               for={`hsl-${channel}`}
@@ -461,7 +461,7 @@
     >
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">CMYK</h3>
       <div class="space-y-2">
-        {#each ['c', 'm', 'y', 'k'] as channel}
+        {#each ['c', 'm', 'y', 'k'] as channel (channel)}
           <div class="flex justify-between text-sm">
             <span class="text-gray-600 dark:text-gray-400 uppercase"
               >{channel === 'k' ? 'Key (Black)' : channel}:</span
@@ -488,7 +488,9 @@
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">
+      <div
+        class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+      >
         <Palette class="w-5 h-5" />
         <h3 class="font-medium">Multiple Formats</h3>
       </div>
@@ -497,7 +499,9 @@
       </p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">
+      <div
+        class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+      >
         <Zap class="w-5 h-5" />
         <h3 class="font-medium">Live Conversion</h3>
       </div>
@@ -506,7 +510,9 @@
       </p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">
+      <div
+        class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+      >
         <History class="w-5 h-5" />
         <h3 class="font-medium">Color History</h3>
       </div>

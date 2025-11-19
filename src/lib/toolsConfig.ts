@@ -18,6 +18,7 @@ export interface Tool {
   id: string;
   name: string;
   description: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: any;
   features: string[];
   comingSoon: boolean;
@@ -52,14 +53,7 @@ export const toolsByCategory: Category[] = [
         name: 'Text Case Converter',
         description: 'Convert between different text cases',
         icon: Type,
-        features: [
-          'UPPERCASE',
-          'lowercase',
-          'Title Case',
-          'camelCase',
-          'snake_case',
-          'kebab-case'
-        ],
+        features: ['UPPERCASE', 'lowercase', 'Title Case', 'camelCase', 'snake_case', 'kebab-case'],
         comingSoon: false
       },
       {
@@ -199,7 +193,12 @@ export const toolsByCategory: Category[] = [
         name: 'CSS Minifier',
         description: 'Minify and optimize CSS code',
         icon: FileText,
-        features: ['Remove whitespace', 'Optimize properties', 'Compress output', 'Before/after comparison'],
+        features: [
+          'Remove whitespace',
+          'Optimize properties',
+          'Compress output',
+          'Before/after comparison'
+        ],
         comingSoon: false
       },
       {
@@ -253,7 +252,12 @@ export const toolsByCategory: Category[] = [
         name: 'Percentage Calculator',
         description: 'Calculate percentages and related values',
         icon: Calculator,
-        features: ['Percentage of', 'Percentage increase/decrease', 'Reverse percentage', 'Step-by-step'],
+        features: [
+          'Percentage of',
+          'Percentage increase/decrease',
+          'Reverse percentage',
+          'Step-by-step'
+        ],
         comingSoon: false
       },
       {
@@ -341,9 +345,10 @@ export const searchTools = (query: string): Tool[] => {
   if (!query) return getAllTools();
 
   const lowercaseQuery = query.toLowerCase();
-  return getAllTools().filter(tool =>
-    tool.name.toLowerCase().includes(lowercaseQuery) ||
-    tool.description.toLowerCase().includes(lowercaseQuery) ||
-    tool.features.some(feature => feature.toLowerCase().includes(lowercaseQuery))
+  return getAllTools().filter(
+    tool =>
+      tool.name.toLowerCase().includes(lowercaseQuery) ||
+      tool.description.toLowerCase().includes(lowercaseQuery) ||
+      tool.features.some(feature => feature.toLowerCase().includes(lowercaseQuery))
   );
 };

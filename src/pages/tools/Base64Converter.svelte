@@ -215,7 +215,9 @@
       <div
         class="mb-4 p-4 bg-[var(--ds-danger-100)] dark:bg-[var(--ds-danger-900)/20] border border-[var(--ds-danger-200)] dark:border-[var(--ds-danger-800)] rounded-lg"
       >
-        <p class="text-[var(--ds-danger-700)] dark:text-[var(--ds-danger-400)] font-medium">Error: {error}</p>
+        <p class="text-[var(--ds-danger-700)] dark:text-[var(--ds-danger-400)] font-medium">
+          Error: {error}
+        </p>
       </div>
     {/if}
 
@@ -295,7 +297,9 @@
           <Upload class="w-12 h-12 mx-auto mb-4 text-gray-400" />
 
           <label for="file-upload" class="cursor-pointer">
-            <span class="text-[var(--ds-primary-600)] dark:text-blue-400 hover:underline font-medium">
+            <span
+              class="text-[var(--ds-primary-600)] dark:text-blue-400 hover:underline font-medium"
+            >
               Click to upload
             </span>
             <span class="text-gray-600 dark:text-gray-400"> or drag and drop </span>
@@ -330,7 +334,9 @@
         <div
           class="mb-4 p-4 bg-[var(--ds-danger-100)] dark:bg-[var(--ds-danger-900)/20] border border-[var(--ds-danger-200)] dark:border-[var(--ds-danger-800)] rounded-lg"
         >
-          <p class="text-[var(--ds-danger-700)] dark:text-[var(--ds-danger-400)] font-medium">Error: {error}</p>
+          <p class="text-[var(--ds-danger-700)] dark:text-[var(--ds-danger-400)] font-medium">
+            Error: {error}
+          </p>
         </div>
       {/if}
 

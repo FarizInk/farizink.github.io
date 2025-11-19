@@ -515,7 +515,9 @@
           {:else if selectedItem.type === 'animating'}
             <div class="text-center py-8">
               <div class="inline-block animate-bounce">
-                <Dices class="w-16 h-16 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
+                <Dices
+                  class="w-16 h-16 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+                />
               </div>
               <p class="mt-4 text-gray-600 dark:text-gray-400 animate-pulse">{selectedItem.text}</p>
             </div>
@@ -524,7 +526,9 @@
               <div
                 class="inline-block p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg border-2 border-green-200 dark:border-green-800"
               >
-                <Star class="w-12 h-12 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mx-auto mb-3" />
+                <Star
+                  class="w-12 h-12 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mx-auto mb-3"
+                />
                 <h3 class="text-2xl font-bold text-green-700 dark:text-green-300 mb-2">
                   {selectedItem.text}
                 </h3>
@@ -582,11 +586,15 @@
       <div
         class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-[var(--ds-primary-200)] dark:border-[var(--ds-primary-800)] p-6"
       >
-        <h3 class="text-lg font-semibold text-[var(--ds-primary-800)] dark:text-[var(--ds-primary-200)] mb-4 flex items-center">
+        <h3
+          class="text-lg font-semibold text-[var(--ds-primary-800)] dark:text-[var(--ds-primary-200)] mb-4 flex items-center"
+        >
           <Zap class="w-5 h-5 mr-2" />
           Pro Tips
         </h3>
-        <div class="space-y-3 text-sm text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]">
+        <div
+          class="space-y-3 text-sm text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]"
+        >
           <div class="flex items-start">
             <div class="w-2 h-2 bg-[var(--ds-primary-500)] rounded-full mt-1.5 mr-3"></div>
             <p>Use weights to give some items higher chances of being selected</p>

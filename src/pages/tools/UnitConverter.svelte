@@ -409,7 +409,7 @@
                 class="input text-lg"
               />
               <select bind:value={fromUnit} class="select">
-                {#each unitOptions as option}
+                {#each unitOptions as option (option.value)}
                   <option value={option.value}>{option.label}</option>
                 {/each}
               </select>
@@ -450,7 +450,7 @@
                 </button>
               </div>
               <select bind:value={toUnit} class="select">
-                {#each unitOptions as option}
+                {#each unitOptions as option (option.value)}
                   <option value={option.value}>{option.label}</option>
                 {/each}
               </select>
@@ -462,10 +462,14 @@
             <div
               class="bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] border border-[var(--ds-primary-200)] dark:border-[var(--ds-primary-800)] rounded-xl p-4"
             >
-              <h3 class="text-sm font-medium text-[var(--ds-primary-800)] dark:text-[var(--ds-primary-200)] mb-2">
+              <h3
+                class="text-sm font-medium text-[var(--ds-primary-800)] dark:text-[var(--ds-primary-200)] mb-2"
+              >
                 Conversion Formulas
               </h3>
-              <div class="space-y-1 text-xs text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]">
+              <div
+                class="space-y-1 text-xs text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]"
+              >
                 <p>°C to °F: (°C × 9/5) + 32</p>
                 <p>°F to °C: (°F - 32) × 5/9</p>
                 <p>°C to K: °C + 273.15</p>
@@ -561,7 +565,10 @@
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">History</h3>
           {#if conversionHistory.length > 0}
-            <button onclick={clearHistory} class="btn btn-primary btn-sm text-red-500 hover:text-red-600">
+            <button
+              onclick={clearHistory}
+              class="btn btn-primary btn-sm text-red-500 hover:text-red-600"
+            >
               Clear
             </button>
           {/if}
@@ -601,7 +608,9 @@
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">
+      <div
+        class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+      >
         <Calculator class="w-5 h-5" />
         <h3 class="font-medium">Precision</h3>
       </div>
@@ -610,7 +619,9 @@
       </p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">
+      <div
+        class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+      >
         <History class="w-5 h-5" />
         <h3 class="font-medium">History</h3>
       </div>
@@ -619,7 +630,9 @@
       </p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">
+      <div
+        class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+      >
         <Zap class="w-5 h-5" />
         <h3 class="font-medium">Fast</h3>
       </div>

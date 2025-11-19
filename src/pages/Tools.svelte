@@ -1,7 +1,7 @@
 <script lang="ts">
   import { navigate } from '../lib/router.js';
   import { Search, ChevronRight } from '@lucide/svelte';
-  import { toolsByCategory, type Tool, type Category } from '../lib/toolsConfig.js';
+  import { toolsByCategory } from '../lib/toolsConfig.js';
 
   let searchQuery = $state('');
   let selectedCategory = $state('All');
@@ -83,7 +83,7 @@
 
   <!-- Category Filter -->
   <div class="flex flex-wrap justify-center gap-1 mb-6">
-    {#each categories as category}
+    {#each categories as category (category)}
       <button
         onclick={() => (selectedCategory = category)}
         class="btn btn-sm {selectedCategory === category ? 'btn-primary' : 'btn-secondary'}"
@@ -142,7 +142,7 @@
 
         <!-- Features Tags -->
         <div class="flex flex-wrap gap-1 mt-3 ml-[3.5rem]">
-          {#each tool.features.slice(0, 4) as feature}
+          {#each tool.features.slice(0, 4) as feature (feature)}
             <span class="badge">
               {feature}
             </span>

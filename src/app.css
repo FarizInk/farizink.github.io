@@ -44,24 +44,46 @@ html.dark body {
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .animate-fade-in {
@@ -80,7 +102,6 @@ html.dark body {
   background-size: 200% 200%;
   animation: gradient 6s ease infinite;
 }
-
 
 /* Flat Design - Buttons */
 .btn {
@@ -400,7 +421,6 @@ html.dark body {
   --ds-danger-800: #991b1b;
   --ds-danger-900: #7f1d1d;
 
-  
   /* Spacing */
   --ds-space-1: 0.25rem;
   --ds-space-2: 0.5rem;
@@ -430,4 +450,3 @@ html.dark body {
   --ds-shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
   --ds-shadow-glow: 0 0 15px rgba(139, 92, 246, 0.5);
 }
-

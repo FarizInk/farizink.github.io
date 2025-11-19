@@ -281,10 +281,14 @@ ${inputText}
               class="flex items-center justify-between p-3 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg"
             >
               <div class="flex items-center">
-                <Type class="w-5 h-5 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mr-2" />
+                <Type
+                  class="w-5 h-5 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mr-2"
+                />
                 <span class="text-sm font-medium text-gray-900 dark:text-white">Characters</span>
               </div>
-              <span class="text-lg font-bold text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">
+              <span
+                class="text-lg font-bold text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+              >
                 {stats.totalChars}
               </span>
             </div>
@@ -293,10 +297,14 @@ ${inputText}
               class="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg"
             >
               <div class="flex items-center">
-                <FileText class="w-5 h-5 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mr-2" />
+                <FileText
+                  class="w-5 h-5 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mr-2"
+                />
                 <span class="text-sm font-medium text-gray-900 dark:text-white">Words</span>
               </div>
-              <span class="text-lg font-bold text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">
+              <span
+                class="text-lg font-bold text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+              >
                 {stats.words}
               </span>
             </div>
@@ -305,10 +313,14 @@ ${inputText}
               class="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg"
             >
               <div class="flex items-center">
-                <Hash class="w-5 h-5 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mr-2" />
+                <Hash
+                  class="w-5 h-5 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mr-2"
+                />
                 <span class="text-sm font-medium text-gray-900 dark:text-white">Sentences</span>
               </div>
-              <span class="text-lg font-bold text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]">
+              <span
+                class="text-lg font-bold text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+              >
                 {stats.sentences}
               </span>
             </div>

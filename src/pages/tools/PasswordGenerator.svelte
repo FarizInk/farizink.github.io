@@ -280,10 +280,7 @@
     <button onclick={() => generateMultiplePasswords(5)} class="btn btn-primary btn-sm">
       Generate 5
     </button>
-    <button
-      onclick={clearAll}
-      class="btn btn-primary btn-sm text-red-500 hover:text-red-600"
-    >
+    <button onclick={clearAll} class="btn btn-primary btn-sm text-red-500 hover:text-red-600">
       <Trash2 class="w-4 h-4 mr-2" />
       Clear
     </button>
@@ -294,9 +291,9 @@
     <div
       class="inline-flex rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1 shadow-sm"
     >
-      {#each ['strong', 'memorable', 'pin', 'passphrase'] as preset}
+      {#each ['strong', 'memorable', 'pin', 'passphrase'] as preset (preset)}
         <button
-          onclick={() => usePreset(preset as any)}
+          onclick={() => usePreset(preset as 'strong' | 'memorable' | 'pin' | 'passphrase')}
           class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 capitalize"
         >
           {preset}
@@ -559,7 +556,9 @@
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-[var(--ds-danger-600)] dark:text-[var(--ds-danger-400)]">
+      <div
+        class="flex items-center gap-2 mb-2 text-[var(--ds-danger-600)] dark:text-[var(--ds-danger-400)]"
+      >
         <Shield class="w-5 h-5" />
         <h3 class="font-medium">Strong Security</h3>
       </div>
@@ -568,7 +567,9 @@
       </p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-[var(--ds-danger-600)] dark:text-[var(--ds-danger-400)]">
+      <div
+        class="flex items-center gap-2 mb-2 text-[var(--ds-danger-600)] dark:text-[var(--ds-danger-400)]"
+      >
         <Settings2 class="w-5 h-5" />
         <h3 class="font-medium">Customizable Options</h3>
       </div>
@@ -577,7 +578,9 @@
       </p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-[var(--ds-danger-600)] dark:text-[var(--ds-danger-400)]">
+      <div
+        class="flex items-center gap-2 mb-2 text-[var(--ds-danger-600)] dark:text-[var(--ds-danger-400)]"
+      >
         <History class="w-5 h-5" />
         <h3 class="font-medium">Password History</h3>
       </div>

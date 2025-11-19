@@ -338,7 +338,9 @@
               ? 'border-[var(--ds-primary-500)] bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20]'
               : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'}"
           >
-            <mode.icon class="w-6 h-6 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
+            <mode.icon
+              class="w-6 h-6 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+            />
             <h3 class="font-medium text-gray-900 dark:text-white mb-1">{mode.name}</h3>
             <p class="text-sm text-gray-600 dark:text-gray-400">{mode.description}</p>
           </button>
@@ -416,8 +418,16 @@
               >
                 <div class="flex items-center justify-between">
                   <div>
-                    <p class="text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mb-1">Result</p>
-                    <p class="text-2xl font-bold text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]">{result}</p>
+                    <p
+                      class="text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mb-1"
+                    >
+                      Result
+                    </p>
+                    <p
+                      class="text-2xl font-bold text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]"
+                    >
+                      {result}
+                    </p>
                   </div>
                   <button
                     onclick={() => copyToClipboard(result)}
@@ -456,11 +466,17 @@
               >
                 <div class="flex items-center justify-between">
                   <div>
-                    <p class="text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mb-1">New Value</p>
+                    <p
+                      class="text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mb-1"
+                    >
+                      New Value
+                    </p>
                     <p class="text-2xl font-bold text-green-700 dark:text-green-300">
                       {changedResult}
                     </p>
-                    <p class="text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mt-1">
+                    <p
+                      class="text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mt-1"
+                    >
                       (+{(
                         ((parseFloat(changedResult) - parseFloat(originalValue)) /
                           parseFloat(originalValue)) *
@@ -569,7 +585,9 @@
               >
                 <div class="flex items-center justify-between">
                   <div>
-                    <p class="text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mb-1">
+                    <p
+                      class="text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mb-1"
+                    >
                       Percentage Difference
                     </p>
                     <p class="text-2xl font-bold text-purple-700 dark:text-purple-300">
@@ -649,7 +667,11 @@
                 <div
                   class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg"
                 >
-                  <p class="text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mb-1">You Save</p>
+                  <p
+                    class="text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mb-1"
+                  >
+                    You Save
+                  </p>
                   <p class="text-xl font-bold text-green-700 dark:text-green-300">
                     {formatCurrency(savedAmount)}
                   </p>
@@ -729,15 +751,25 @@
                   <div
                     class="p-4 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] border border-[var(--ds-primary-200)] dark:border-[var(--ds-primary-800)] rounded-lg"
                   >
-                    <p class="text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mb-1">Tip Amount</p>
-                    <p class="text-xl font-bold text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]">
+                    <p
+                      class="text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mb-1"
+                    >
+                      Tip Amount
+                    </p>
+                    <p
+                      class="text-xl font-bold text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)]"
+                    >
                       {formatCurrency(tipAmount)}
                     </p>
                   </div>
                   <div
                     class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg"
                   >
-                    <p class="text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mb-1">Total with Tip</p>
+                    <p
+                      class="text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mb-1"
+                    >
+                      Total with Tip
+                    </p>
                     <p class="text-xl font-bold text-green-700 dark:text-green-300">
                       {formatCurrency(totalWithTip)}
                     </p>
@@ -750,7 +782,11 @@
                   >
                     <div class="flex items-center justify-between">
                       <div>
-                        <p class="text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mb-1">Per Person</p>
+                        <p
+                          class="text-sm text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mb-1"
+                        >
+                          Per Person
+                        </p>
                         <p class="text-2xl font-bold text-purple-700 dark:text-purple-300">
                           {formatCurrency(amountPerPerson)}
                         </p>

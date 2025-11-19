@@ -257,9 +257,7 @@
     >
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Input Text</h2>
-        <button class="btn btn-primary btn-sm" onclick={clearAll}>
-          Clear
-        </button>
+        <button class="btn btn-primary btn-sm" onclick={clearAll}> Clear </button>
       </div>
 
       <textarea class="textarea" bind:value={inputText} placeholder="Enter your text here..."
@@ -350,24 +348,15 @@
         Load Sample Text
       </button>
 
-      <button
-        onclick={() => (activeCase = 'uppercase')}
-        class="btn btn-primary btn-sm"
-      >
+      <button onclick={() => (activeCase = 'uppercase')} class="btn btn-primary btn-sm">
         UPPERCASE
       </button>
 
-      <button
-        onclick={() => (activeCase = 'lowercase')}
-        class="btn btn-primary btn-sm"
-      >
+      <button onclick={() => (activeCase = 'lowercase')} class="btn btn-primary btn-sm">
         lowercase
       </button>
 
-      <button
-        onclick={() => (activeCase = 'title')}
-        class="btn btn-primary btn-sm"
-      >
+      <button onclick={() => (activeCase = 'title')} class="btn btn-primary btn-sm">
         Title Case
       </button>
     </div>

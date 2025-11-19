@@ -1,6 +1,5 @@
 <script lang="ts">
   import MailIcon from './icons/MailIcon.svelte';
-  import LinkedinIcon from './icons/LinkedinIcon.svelte';
   import GithubIcon from './icons/GithubIcon.svelte';
   import DiscordIcon from './icons/DiscordIcon.svelte';
   import SpotifyIcon from './icons/SpotifyIcon.svelte';

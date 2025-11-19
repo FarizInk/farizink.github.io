@@ -270,7 +270,9 @@
             : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'}"
         >
           {#if isValid}
-            <Check class="w-5 h-5 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mr-2" />
+            <Check
+              class="w-5 h-5 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)] mr-2"
+            />
             <span class="text-sm text-green-700 dark:text-green-300">Valid JWT format</span>
           {:else}
             <X class="w-5 h-5 text-red-600 dark:text-red-400 mr-2" />

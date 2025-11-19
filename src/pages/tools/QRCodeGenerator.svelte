@@ -170,7 +170,9 @@
           bind:value={text}
           placeholder="Enter text, URL, or any data to encode..."
           rows="4"
-          class="textarea {error ? 'border-[var(--ds-danger-500)] focus:border-[var(--ds-danger-500)] focus:ring-[var(--ds-danger-500)]' : ''}"
+          class="textarea {error
+            ? 'border-[var(--ds-danger-500)] focus:border-[var(--ds-danger-500)] focus:ring-[var(--ds-danger-500)]'
+            : ''}"
         ></textarea>
         {#if error}
           <p class="mt-1 text-sm text-[var(--ds-danger-500)]">{error}</p>
@@ -233,7 +235,7 @@
             Error Correction Level
           </label>
           <select id="error-correction" bind:value={errorCorrection} class="select">
-            {#each errorCorrectionOptions as option}
+            {#each errorCorrectionOptions as option (option.value)}
               <option value={option.value}>{option.label}</option>
             {/each}
           </select>
@@ -308,11 +310,15 @@
       <div
         class="bg-[var(--ds-success-100)] dark:bg-[var(--ds-success-900)/20] border border-[var(--ds-success-200)] dark:border-[var(--ds-success-800)] rounded-xl p-4"
       >
-        <div class="flex items-center gap-2 mb-2 text-[var(--ds-success-800)] dark:text-[var(--ds-success-200)]">
+        <div
+          class="flex items-center gap-2 mb-2 text-[var(--ds-success-800)] dark:text-[var(--ds-success-200)]"
+        >
           <Info class="w-4 h-4" />
           <h4 class="text-sm font-semibold">Tips</h4>
         </div>
-        <ul class="text-sm text-[var(--ds-success-700)] dark:text-[var(--ds-success-300)] space-y-1 list-disc list-inside">
+        <ul
+          class="text-sm text-[var(--ds-success-700)] dark:text-[var(--ds-success-300)] space-y-1 list-disc list-inside"
+        >
           <li>QR codes can store up to 4,296 alphanumeric characters</li>
           <li>Higher error correction levels create more complex but more robust codes</li>
           <li>Test your QR code before using it in production</li>

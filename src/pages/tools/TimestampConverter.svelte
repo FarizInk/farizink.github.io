@@ -215,10 +215,7 @@
           <span class="text-gray-600 dark:text-gray-400">({new Date().toLocaleString()})</span>
         </div>
       </div>
-      <button
-        onclick={getCurrentTimestamp}
-        class="btn btn-primary"
-      >
+      <button onclick={getCurrentTimestamp} class="btn btn-primary">
         <RefreshCw class="w-4 h-4 mr-2" />
         Refresh
       </button>
@@ -227,18 +224,8 @@
 
   <!-- Controls -->
   <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
-    <button
-      onclick={loadSampleTimestamp}
-      class="btn btn-primary"
-    >
-      Load Sample Timestamp
-    </button>
-    <button
-      onclick={clearAll}
-      class="btn btn-primary"
-    >
-      Clear All
-    </button>
+    <button onclick={loadSampleTimestamp} class="btn btn-primary"> Load Sample Timestamp </button>
+    <button onclick={clearAll} class="btn btn-primary"> Clear All </button>
   </div>
 
   <!-- Conversion Tools -->
@@ -281,7 +268,6 @@
                 id="iso-string"
                 type="text"
                 bind:value={isoString}
-               
                 class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-mono"
               />
               <button
@@ -333,7 +319,6 @@
                 id="unix-timestamp-result"
                 type="text"
                 bind:value={unixTimestamp}
-               
                 class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-mono"
               />
               <button
@@ -382,13 +367,9 @@
         <input
           type="text"
           bind:value={formattedDate}
-         
           class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white"
         />
-        <button
-          onclick={() => copyToClipboard(formattedDate, 'formatted')}
-          class="btn btn-primary"
-        >
+        <button onclick={() => copyToClipboard(formattedDate, 'formatted')} class="btn btn-primary">
           {copiedText === 'formatted' ? '✓ Copied!' : 'Copy'}
         </button>
       </div>
@@ -426,7 +407,9 @@
       <div
         class="w-12 h-12 bg-[var(--ds-secondary-100)] dark:bg-[var(--ds-secondary-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <Calendar class="w-6 h-6 text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]" />
+        <Calendar
+          class="w-6 h-6 text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]"
+        />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Unix Timestamps</h3>
       <p class="text-gray-600 dark:text-gray-400">

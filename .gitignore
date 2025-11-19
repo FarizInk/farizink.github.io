@@ -22,3 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# TypeScript generated files (exclude compiled JS from source folders)
+src/**/*.js
+src/**/*.js.map
+# !src/main.js
+!src/**/*.d.ts
+
+# Keep this pattern specific to avoid excluding important JS files
+lib/**/*.js
+lib/**/*.js.map
+routes/**/*.js
+routes/**/*.js.map

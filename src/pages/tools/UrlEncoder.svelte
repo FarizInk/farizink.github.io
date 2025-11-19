@@ -177,38 +177,13 @@ https://demo.com/search?query=测试&lang=zh-CN`;
   <!-- Controls -->
   <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
     {#if activeTab === 'single'}
-      <button
-        onclick={encodeUrl}
-        class="btn btn-primary"
-      >
-        Encode URL
-      </button>
-      <button
-        onclick={decodeUrl}
-        class="btn btn-primary"
-      >
-        Decode URL
-      </button>
+      <button onclick={encodeUrl} class="btn btn-primary"> Encode URL </button>
+      <button onclick={decodeUrl} class="btn btn-primary"> Decode URL </button>
     {:else}
-      <button
-        onclick={encodeBatch}
-        class="btn btn-primary"
-      >
-        Process Batch
-      </button>
-      <button
-        onclick={loadSampleUrls}
-        class="btn btn-primary"
-      >
-        Load Sample URLs
-      </button>
+      <button onclick={encodeBatch} class="btn btn-primary"> Process Batch </button>
+      <button onclick={loadSampleUrls} class="btn btn-primary"> Load Sample URLs </button>
     {/if}
-    <button
-      onclick={clearAll}
-      class="btn btn-primary"
-    >
-      Clear All
-    </button>
+    <button onclick={clearAll} class="btn btn-primary"> Clear All </button>
   </div>
 
   {#if activeTab === 'single'}
@@ -281,7 +256,6 @@ https://demo.com/search?query=测试&lang=zh-CN`;
           <div class="relative">
             <textarea
               bind:value={encodedText}
-             
               placeholder="Encoded URL will appear here..."
               class="w-full h-28 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none"
             ></textarea>
@@ -313,7 +287,6 @@ https://demo.com/search?query=测试&lang=zh-CN`;
           <div class="relative">
             <textarea
               bind:value={decodedText}
-             
               placeholder="Decoded URL will appear here..."
               class="w-full h-28 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none"
             ></textarea>
@@ -353,10 +326,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
         <div class="flex justify-between items-center mb-2">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Batch Results</h2>
           {#if batchResults.length > 0}
-            <button
-              onclick={copyBatchResults}
-              class="btn btn-primary btn-sm"
-            >
+            <button onclick={copyBatchResults} class="btn btn-primary btn-sm">
               {copiedText === 'batch' ? '✓ Copied!' : 'Copy All'}
             </button>
           {/if}
@@ -385,7 +355,8 @@ https://demo.com/search?query=测试&lang=zh-CN`;
                       </div>
                     </div>
                     <div>
-                      <span class="text-xs font-medium text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+                      <span
+                        class="text-xs font-medium text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
                         >Encoded:</span
                       >
                       <div class="font-mono text-xs text-green-700 dark:text-green-300 break-all">
@@ -393,10 +364,13 @@ https://demo.com/search?query=测试&lang=zh-CN`;
                       </div>
                     </div>
                     <div>
-                      <span class="text-xs font-medium text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+                      <span
+                        class="text-xs font-medium text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
                         >Decoded:</span
                       >
-                      <div class="font-mono text-xs text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)] break-all">
+                      <div
+                        class="font-mono text-xs text-[var(--ds-primary-700)] dark:text-[var(--ds-primary-300)] break-all"
+                      >
                         {result.decoded}
                       </div>
                     </div>
@@ -447,7 +421,9 @@ https://demo.com/search?query=测试&lang=zh-CN`;
       <div
         class="w-12 h-12 bg-[var(--ds-primary-100)] dark:bg-[var(--ds-primary-900)/20] rounded-lg flex items-center justify-center mb-4"
       >
-        <CreditCard class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]" />
+        <CreditCard
+          class="w-6 h-6 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
+        />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Round-trip Testing</h3>
       <p class="text-gray-600 dark:text-gray-400">
