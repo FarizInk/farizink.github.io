@@ -1,8 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
   import { ChevronLeft, Code, Zap, Download, FileText } from '@lucide/svelte';
-  import Button from '../../components/ui/Button.svelte';
-  import Textarea from '../../components/ui/Textarea.svelte';
 
   let cssInput = $state('');
   let cssOutput = $state('');
@@ -355,7 +353,7 @@
       <div class="relative">
         <textarea
           bind:value={cssOutput}
-          readonly
+         
           placeholder="{minified ? 'Minified' : 'Beautified'} CSS will appear here..."
           class="w-full h-96 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none"
         ></textarea>

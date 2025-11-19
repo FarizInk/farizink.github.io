@@ -1,8 +1,7 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, Palette, Zap, Calendar } from '@lucide/svelte';
-  import Button from '../../components/ui/Button.svelte';
-  import Input from '../../components/ui/Input.svelte';
+  import { Palette, Zap, History, Copy, RefreshCw, ChevronLeft } from '@lucide/svelte';
+  import { toast } from 'svelte-sonner';
 
   let hexInput = $state('#3B82F6');
   let rgbInput = $state({ r: 59, g: 130, b: 246 });
@@ -11,7 +10,6 @@
   let cmykInput = $state({ c: 76, m: 47, y: 0, k: 4 });
 
   let history = $state<Array<{ color: string; format: string; timestamp: Date }>>([]);
-  let copiedText = $state('');
 
   function hexToRgb(hex: string) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -179,13 +177,13 @@
 
   function copyToClipboard(text: string, format: string) {
     navigator.clipboard.writeText(text);
-    copiedText = format;
-    setTimeout(() => {
-      copiedText = '';
-    }, 2000);
+    toast.success(`Copied ${format} value`);
   }
 
   function addToHistory(color: string, format: string) {
+    // Avoid duplicates at the top of the list
+    if (history.length > 0 && history[0].color === color) return;
+
     history.unshift({ color, format, timestamp: new Date() });
     if (history.length > 10) {
       history = history.slice(0, 10);
@@ -198,6 +196,7 @@
     const b = Math.floor(Math.random() * 256);
     rgbInput = { r, g, b };
     updateFromRgb();
+    toast.success('Generated random color');
   }
 
   function handleBackToTools() {
@@ -209,10 +208,13 @@
   <!-- Header -->
   <div class="mb-8">
     <div class="flex items-center gap-4 mb-4">
-      <Button onclick={handleBackToTools} variant="ghost">
-        <ChevronLeft class="w-5 h-5" slot="leftIcon" />
+      <button
+        onclick={handleBackToTools}
+        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+      >
+        <ChevronLeft class="w-5 h-5" />
         Back to Tools
-      </Button>
+      </button>
     </div>
 
     <div class="text-center mb-8">
@@ -254,8 +256,11 @@
   </nav>
 
   <!-- Controls -->
-  <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
-    <Button onclick={randomColor} variant="primary">Random Color</Button>
+  <div class="mb-6 flex justify-center">
+    <button onclick={randomColor} class="btn btn-primary btn-sm">
+      <RefreshCw class="w-4 h-4 mr-2" />
+      Random Color
+    </button>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -265,7 +270,7 @@
     >
       <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Color Preview</h2>
       <div
-        class="w-full h-48 rounded-lg shadow-inner mb-4"
+        class="w-full h-48 rounded-xl shadow-inner mb-4 transition-colors duration-300"
         style="background-color: {hexInput}"
       ></div>
       <div class="grid grid-cols-2 gap-4 text-sm">
@@ -288,9 +293,12 @@
     >
       <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Recent Colors</h2>
       {#if history.length === 0}
-        <p class="text-gray-500 dark:text-gray-400 text-center py-8">
-          No colors yet. Start converting!
-        </p>
+        <div
+          class="flex flex-col items-center justify-center h-48 text-gray-500 dark:text-gray-400"
+        >
+          <History class="w-8 h-8 mb-2 opacity-50" />
+          <p>No colors yet. Start converting!</p>
+        </div>
       {:else}
         <div class="grid grid-cols-5 gap-2">
           {#each history as item (item.timestamp.getTime())}
@@ -303,16 +311,10 @@
                   hexInput = item.color;
                   updateFromHex();
                 }}
-                onkeydown={e => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    hexInput = item.color;
-                    updateFromHex();
-                  }
-                }}
                 aria-label={`Select color ${item.color}`}
               ></button>
               <div
-                class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none"
+                class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10"
               >
                 {item.color}
               </div>
@@ -332,17 +334,13 @@
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">HEX</h3>
       <div class="flex gap-2">
         <input
-          type="text"
           bind:value={hexInput}
           oninput={updateFromHex}
-          class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-mono"
+          class="input font-mono"
           placeholder="#000000"
         />
-        <button
-          onclick={() => copyToClipboard(hexInput, 'HEX')}
-          class="px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-        >
-          {copiedText === 'HEX' ? '✓' : 'Copy'}
+        <button onclick={() => copyToClipboard(hexInput, 'HEX')} class="btn btn-secondary btn-sm">
+          <Copy class="w-4 h-4" />
         </button>
       </div>
     </div>
@@ -353,77 +351,38 @@
     >
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">RGB</h3>
       <div class="space-y-3">
-        <div class="flex items-center gap-2">
-          <label for="rgb-r" class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300"
-            >R:</label
-          >
-          <input
-            id="rgb-r"
-            type="range"
-            min="0"
-            max="255"
-            bind:value={rgbInput.r}
-            oninput={updateFromRgb}
-            class="flex-1"
-          />
-          <input
-            type="number"
-            min="0"
-            max="255"
-            bind:value={rgbInput.r}
-            oninput={updateFromRgb}
-            class="w-16 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
-          />
-        </div>
-        <div class="flex items-center gap-2">
-          <label for="rgb-g" class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300"
-            >G:</label
-          >
-          <input
-            id="rgb-g"
-            type="range"
-            min="0"
-            max="255"
-            bind:value={rgbInput.g}
-            oninput={updateFromRgb}
-            class="flex-1"
-          />
-          <input
-            type="number"
-            min="0"
-            max="255"
-            bind:value={rgbInput.g}
-            oninput={updateFromRgb}
-            class="w-16 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
-          />
-        </div>
-        <div class="flex items-center gap-2">
-          <label for="rgb-b" class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300"
-            >B:</label
-          >
-          <input
-            id="rgb-b"
-            type="range"
-            min="0"
-            max="255"
-            bind:value={rgbInput.b}
-            oninput={updateFromRgb}
-            class="flex-1"
-          />
-          <input
-            type="number"
-            min="0"
-            max="255"
-            bind:value={rgbInput.b}
-            oninput={updateFromRgb}
-            class="w-16 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
-          />
-        </div>
+        {#each ['r', 'g', 'b'] as channel}
+          <div class="flex items-center gap-2">
+            <label
+              for={`rgb-${channel}`}
+              class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300 uppercase"
+            >
+              {channel}:
+            </label>
+            <input
+              id={`rgb-${channel}`}
+              type="range"
+              min="0"
+              max="255"
+              bind:value={rgbInput[channel as keyof typeof rgbInput]}
+              oninput={updateFromRgb}
+              class="flex-1 accent-purple-500"
+            />
+            <input
+              type="number"
+              min="0"
+              max="255"
+              bind:value={rgbInput[channel as keyof typeof rgbInput]}
+              oninput={updateFromRgb}
+              class="w-16 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+            />
+          </div>
+        {/each}
         <button
           onclick={() => copyToClipboard(`rgb(${rgbInput.r}, ${rgbInput.g}, ${rgbInput.b})`, 'RGB')}
-          class="w-full px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          class="btn btn-secondary w-full mt-2"
         >
-          {copiedText === 'RGB' ? '✓ Copied!' : 'Copy RGB'}
+          Copy RGB
         </button>
       </div>
     </div>
@@ -434,78 +393,39 @@
     >
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">HSL</h3>
       <div class="space-y-3">
-        <div class="flex items-center gap-2">
-          <label for="hsl-h" class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300"
-            >H:</label
-          >
-          <input
-            id="hsl-h"
-            type="range"
-            min="0"
-            max="360"
-            bind:value={hslInput.h}
-            oninput={updateFromHsl}
-            class="flex-1"
-          />
-          <input
-            type="number"
-            min="0"
-            max="360"
-            bind:value={hslInput.h}
-            oninput={updateFromHsl}
-            class="w-16 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
-          />
-        </div>
-        <div class="flex items-center gap-2">
-          <label for="hsl-s" class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300"
-            >S:</label
-          >
-          <input
-            id="hsl-s"
-            type="range"
-            min="0"
-            max="100"
-            bind:value={hslInput.s}
-            oninput={updateFromHsl}
-            class="flex-1"
-          />
-          <input
-            type="number"
-            min="0"
-            max="100"
-            bind:value={hslInput.s}
-            oninput={updateFromHsl}
-            class="w-16 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
-          />
-        </div>
-        <div class="flex items-center gap-2">
-          <label for="hsl-l" class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300"
-            >L:</label
-          >
-          <input
-            id="hsl-l"
-            type="range"
-            min="0"
-            max="100"
-            bind:value={hslInput.l}
-            oninput={updateFromHsl}
-            class="flex-1"
-          />
-          <input
-            type="number"
-            min="0"
-            max="100"
-            bind:value={hslInput.l}
-            oninput={updateFromHsl}
-            class="w-16 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
-          />
-        </div>
+        {#each ['h', 's', 'l'] as channel}
+          <div class="flex items-center gap-2">
+            <label
+              for={`hsl-${channel}`}
+              class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300 uppercase"
+            >
+              {channel}:
+            </label>
+            <input
+              id={`hsl-${channel}`}
+              type="range"
+              min="0"
+              max={channel === 'h' ? 360 : 100}
+              bind:value={hslInput[channel as keyof typeof hslInput]}
+              oninput={updateFromHsl}
+              class="flex-1 accent-purple-500"
+            />
+            <input
+              type="number"
+              min="0"
+              max={channel === 'h' ? 360 : 100}
+              bind:value={hslInput[channel as keyof typeof hslInput]}
+              oninput={updateFromHsl}
+              class="w-16 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+            />
+          </div>
+        {/each}
         <button
           onclick={() =>
             copyToClipboard(`hsl(${hslInput.h}, ${hslInput.s}%, ${hslInput.l}%)`, 'HSL')}
-          class="w-full px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          class="btn btn-secondary w-full mt-2"
         >
-          {copiedText === 'HSL' ? '✓ Copied!' : 'Copy HSL'}
+          Copy HSL
         </button>
       </div>
     </div>
@@ -531,9 +451,9 @@
         <button
           onclick={() =>
             copyToClipboard(`hsv(${hsvInput.h}, ${hsvInput.s}%, ${hsvInput.v}%)`, 'HSV')}
-          class="w-full px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          class="btn btn-secondary w-full mt-4"
         >
-          {copiedText === 'HSV' ? '✓ Copied!' : 'Copy HSV'}
+          Copy HSV
         </button>
       </div>
     </div>
@@ -544,31 +464,25 @@
     >
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">CMYK</h3>
       <div class="space-y-2">
-        <div class="flex justify-between text-sm">
-          <span class="text-gray-600 dark:text-gray-400">Cyan:</span>
-          <span class="font-mono text-gray-900 dark:text-white">{cmykInput.c}%</span>
-        </div>
-        <div class="flex justify-between text-sm">
-          <span class="text-gray-600 dark:text-gray-400">Magenta:</span>
-          <span class="font-mono text-gray-900 dark:text-white">{cmykInput.m}%</span>
-        </div>
-        <div class="flex justify-between text-sm">
-          <span class="text-gray-600 dark:text-gray-400">Yellow:</span>
-          <span class="font-mono text-gray-900 dark:text-white">{cmykInput.y}%</span>
-        </div>
-        <div class="flex justify-between text-sm">
-          <span class="text-gray-600 dark:text-gray-400">Key (Black):</span>
-          <span class="font-mono text-gray-900 dark:text-white">{cmykInput.k}%</span>
-        </div>
+        {#each ['c', 'm', 'y', 'k'] as channel}
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600 dark:text-gray-400 uppercase"
+              >{channel === 'k' ? 'Key (Black)' : channel}:</span
+            >
+            <span class="font-mono text-gray-900 dark:text-white"
+              >{cmykInput[channel as keyof typeof cmykInput]}%</span
+            >
+          </div>
+        {/each}
         <button
           onclick={() =>
             copyToClipboard(
               `cmyk(${cmykInput.c}%, ${cmykInput.m}%, ${cmykInput.y}%, ${cmykInput.k}%)`,
               'CMYK'
             )}
-          class="w-full px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          class="btn btn-secondary w-full mt-4"
         >
-          {copiedText === 'CMYK' ? '✓ Copied!' : 'Copy CMYK'}
+          Copy CMYK
         </button>
       </div>
     </div>
@@ -576,44 +490,30 @@
 
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <Palette class="w-6 h-6 text-purple-600 dark:text-purple-400" />
+    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+      <div class="flex items-center gap-2 mb-2 text-purple-600 dark:text-purple-400">
+        <Palette class="w-5 h-5" />
+        <h3 class="font-medium">Multiple Formats</h3>
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Multiple Formats</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400">
         Support for HEX, RGB, HSL, HSV, and CMYK color formats
       </p>
     </div>
-
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <Zap class="w-6 h-6 text-purple-600 dark:text-purple-400" />
+    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+      <div class="flex items-center gap-2 mb-2 text-purple-600 dark:text-purple-400">
+        <Zap class="w-5 h-5" />
+        <h3 class="font-medium">Live Conversion</h3>
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Live Conversion</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400">
         Real-time color conversion as you type or adjust sliders
       </p>
     </div>
-
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <Calendar class="w-6 h-6 text-purple-600 dark:text-purple-400" />
+    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+      <div class="flex items-center gap-2 mb-2 text-purple-600 dark:text-purple-400">
+        <History class="w-5 h-5" />
+        <h3 class="font-medium">Color History</h3>
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Color History</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400">
         Keep track of your recently used colors for quick access
       </p>
     </div>

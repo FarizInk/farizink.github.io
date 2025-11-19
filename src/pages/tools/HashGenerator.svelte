@@ -1,8 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
   import { ChevronLeft, Hash, Zap, FileText } from '@lucide/svelte';
-  import Button from '../../components/ui/Button.svelte';
-  import Textarea from '../../components/ui/Textarea.svelte';
 
   let inputText = $state('');
   let hashes = $state<Record<string, string>>({});

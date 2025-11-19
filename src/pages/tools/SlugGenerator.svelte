@@ -1,9 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
   import { ChevronLeft, Type, Zap, FileText } from '@lucide/svelte';
-  import Button from '../../components/ui/Button.svelte';
-  import Input from '../../components/ui/Input.svelte';
-  import Textarea from '../../components/ui/Textarea.svelte';
 
   let inputText = $state('');
   let generatedSlug = $state('');
@@ -244,11 +241,11 @@
 
   <!-- Controls -->
   <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
-    <Button onclick={generateSlug} disabled={!inputText.trim()} variant="primary">
+    <button class="btn btn-primary" onclick={generateSlug} disabled={!inputText.trim()}>
       Generate Slug
-    </Button>
-    <Button onclick={loadSampleText} variant="secondary">Load Sample Text</Button>
-    <Button onclick={clearAll} variant="destructive">Clear All</Button>
+    </button>
+    <button class="btn btn-primary" onclick={loadSampleText}>Load Sample Text</button>
+    <button class="btn btn-primary" onclick={clearAll}>Clear All</button>
   </div>
 
   <!-- Input and Output -->
@@ -261,12 +258,11 @@
           {inputText.length} characters
         </span>
       </div>
-      <Textarea
+      <textarea
+        class="textarea"
         bind:value={inputText}
         placeholder="Enter your text here to generate a URL-friendly slug..."
-        rows="4"
-        variant="default"
-      />
+      ></textarea>
     </div>
 
     <!-- Output Section -->
@@ -274,16 +270,15 @@
       <div class="flex justify-between items-center mb-2">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Generated Slug</h2>
         {#if generatedSlug}
-          <Button onclick={() => copyToClipboard(generatedSlug)} variant="success" size="sm">
+          <button class="btn btn-primary btn-sm" onclick={() => copyToClipboard(generatedSlug)}>
             {copiedText === 'slug' ? '✓ Copied!' : 'Copy'}
-          </Button>
+          </button>
         {/if}
       </div>
       <div class="relative">
         <input
           type="text"
           bind:value={generatedSlug}
-          readonly
           placeholder="Generated slug will appear here..."
           class="w-full p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white"
         />

@@ -1,8 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
   import { ChevronLeft, Palette, Copy, Zap, RefreshCw } from '@lucide/svelte';
-  import Button from '../../components/ui/Button.svelte';
-  import Input from '../../components/ui/Input.svelte';
 
   let baseColor = $state('#3B82F6');
   let paletteType = $state('complementary');
@@ -297,10 +295,16 @@
           Base Color
         </label>
         <div class="flex gap-2">
-          <Input id="base-color-picker" type="color" bind:value={baseColor} placeholder="#3B82F6" />
-          <Button onclick={randomColor} variant="ghost" size="md">
-            <RefreshCw slot="leftIcon" class="w-4 h-4" />
-          </Button>
+          <input
+            class="input"
+            id="base-color-picker"
+            type="color"
+            bind:value={baseColor}
+            placeholder="#3B82F6"
+          />
+          <button class="btn btn-primary" onclick={randomColor}>
+            <RefreshCw class="w-4 h-4" />
+          </button>
         </div>
       </div>
 
@@ -324,9 +328,9 @@
       </div>
 
       <div class="flex items-end">
-        <Button onclick={loadSamplePalette} variant="secondary" fullWidth>
+        <button class="btn btn-primary w-full" onclick={loadSamplePalette}>
           Load Sample Palette
-        </Button>
+        </button>
       </div>
     </div>
   </div>

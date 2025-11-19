@@ -40,31 +40,6 @@
 
   <!-- Social Links -->
   <div class="flex items-center gap-2">
-    <!-- LinkedIn - Commented out -->
-    <!--
-    <a
-      href="https://www.linkedin.com/in/farizink"
-      target="_blank"
-      rel="noreferrer"
-      class="group/social relative"
-    >
-      <div
-        class="flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-110 hover:border-linkedin-blue-1 hover:bg-linkedin-blue-1"
-      >
-        <div class="p-0.5">
-          <LinkedinIcon
-            class="w-4 h-4 text-gray-600 dark:text-gray-400 group-hover/social:text-white transition-colors duration-300"
-          />
-        </div>
-      </div>
-      <div
-        class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs px-2 py-1 rounded opacity-0 group-hover/social:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none"
-      >
-        LinkedIn
-      </div>
-    </a>
-    -->
-
     <!-- GitHub -->
     <a
       href="https://github.com/farizink"
@@ -94,7 +69,7 @@
       class="group/social relative"
     >
       <div
-        class="flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-110 hover:border-discord-blurple hover:bg-discord-blurple"
+        class="flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-110 hover:border-indigo-500 hover:bg-indigo-500"
       >
         <DiscordIcon
           class="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover/social:text-white transition-colors duration-300"
@@ -107,23 +82,6 @@
       </div>
     </a>
 
-    <!-- X (Twitter) - Hidden for now -->
-    <!--
-    <a
-      href="https://x.com/farizink"
-      target="_blank"
-      rel="noreferrer"
-      class="group/social relative"
-    >
-      <div class="flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-110 hover:border-gray-900 hover:bg-gray-900">
-        <XIcon class="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover/social:text-white transition-colors duration-300" />
-      </div>
-      <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs px-2 py-1 rounded opacity-0 group-hover/social:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
-        X (Twitter)
-      </div>
-    </a>
-    -->
-
     <!-- Spotify -->
     <a
       href="https://open.spotify.com/user/ci98z18wa1ebncapbw5hq350x"
@@ -132,7 +90,7 @@
       class="group/social relative"
     >
       <div
-        class="flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-110 hover:border-spotify-green hover:bg-spotify-green"
+        class="flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-110 hover:border-green-500 hover:bg-green-500"
       >
         <SpotifyIcon
           class="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover/social:text-white transition-colors duration-300"

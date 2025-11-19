@@ -1,8 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
   import { ChevronLeft, Droplets, Copy, Zap, Plus, Trash2 } from '@lucide/svelte';
-  import Button from '../../components/ui/Button.svelte';
-  import Input from '../../components/ui/Input.svelte';
 
   let gradientType = $state('linear');
   let gradientDirection = $state('90deg');

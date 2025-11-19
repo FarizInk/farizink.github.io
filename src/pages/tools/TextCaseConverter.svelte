@@ -1,8 +1,6 @@
 <script lang="ts">
   import { Copy, Type, ArrowRight, ChevronLeft } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
-  import Button from '../../components/ui/Button.svelte';
-  import Textarea from '../../components/ui/Textarea.svelte';
 
   // Component state
   let inputText = $state('');
@@ -270,7 +268,8 @@
         </button>
       </div>
 
-      <Textarea bind:value={inputText} placeholder="Enter your text here..." rows="12" />
+      <textarea class="textarea" bind:value={inputText} placeholder="Enter your text here..."
+      ></textarea>
 
       {#if textStats}
         <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -328,18 +327,16 @@
         </div>
       </div>
 
-      <Textarea
+      <textarea
+        class="textarea"
         bind:value={convertedText}
-        readonly
         placeholder="Converted text will appear here..."
-        rows="12"
-        variant="default"
-      />
+      ></textarea>
 
       <div class="mt-4 flex gap-2">
-        <Button onclick={downloadAsFile} disabled={!convertedText} variant="primary" fullWidth>
+        <button class="btn btn-primary w-full" onclick={downloadAsFile} disabled={!convertedText}>
           Download as File
-        </Button>
+        </button>
       </div>
     </div>
   </div>

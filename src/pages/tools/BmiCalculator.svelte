@@ -1,8 +1,6 @@
 <script lang="ts">
   import { Activity, Users, Target, Heart, ChevronLeft, Info } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
-  import Button from '../../components/ui/Button.svelte';
-  import Input from '../../components/ui/Input.svelte';
 
   // Units state
   let units = $state('metric'); // 'metric' or 'imperial'
@@ -284,18 +282,18 @@
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Measurement Units</h2>
         <div class="flex gap-2">
-          <Button
+          <button
+            class="btn {units === 'metric' ? 'btn-primary' : 'btn-secondary'}"
             onclick={() => switchUnits('metric')}
-            variant={units === 'metric' ? 'primary' : 'secondary'}
           >
             Metric
-          </Button>
-          <Button
+          </button>
+          <button
+            class="btn {units === 'imperial' ? 'btn-primary' : 'btn-secondary'}"
             onclick={() => switchUnits('imperial')}
-            variant={units === 'imperial' ? 'primary' : 'secondary'}
           >
             Imperial
-          </Button>
+          </button>
         </div>
       </div>
     </div>
@@ -314,35 +312,45 @@
             Personal Information
           </h2>
           <div class="flex gap-2">
-            <Button onclick={loadExample} variant="secondary" size="sm">Example</Button>
-            <Button onclick={reset} variant="secondary" size="sm">Reset</Button>
+            <button class="btn btn-primary btn-sm" onclick={loadExample}>Example</button>
+            <button class="btn btn-primary btn-sm" onclick={reset}>Reset</button>
           </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Input
-            id="height-input"
-            type="number"
-            bind:value={height}
-            label={`Height (${units === 'metric' ? 'cm' : 'inches'})`}
-            placeholder={units === 'metric' ? '170' : '5\'7"'}
-          />
+          <div>
+            <label
+              for="height-input"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Height ({units === 'metric' ? 'cm' : 'inches'})
+            </label>
+            <input
+              class="input"
+              id="height-input"
+              type="number"
+              bind:value={height}
+              placeholder={units === 'metric' ? '170' : '5\'7"'}
+            />
+          </div>
 
-          <Input
-            id="weight-input"
-            type="number"
-            bind:value={weight}
-            label={`Weight (${units === 'metric' ? 'kg' : 'lbs'})`}
-            placeholder={units === 'metric' ? '70' : '154'}
-          />
+          <div>
+            <label
+              for="weight-input"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Weight ({units === 'metric' ? 'kg' : 'lbs'})
+            </label>
+            <input
+              class="input"
+              id="weight-input"
+              type="number"
+              bind:value={weight}
+              placeholder={units === 'metric' ? '70' : '154'}
+            />
+          </div>
 
-          <Input
-            id="age-input"
-            type="number"
-            bind:value={age}
-            label="Age (years)"
-            placeholder="30"
-          />
+          <input class="input" id="age-input" type="number" bind:value={age} placeholder="30" />
 
           <div>
             <fieldset>

@@ -4,8 +4,6 @@
   import LinkedinIcon from '../components/icons/LinkedinIcon.svelte';
   import XIcon from '../components/icons/XIcon.svelte';
   import { toast } from 'svelte-sonner';
-  import Button from '../components/ui/Button.svelte';
-  import Card from '../components/ui/Card.svelte';
 
   const copyEmail = () => {
     navigator.clipboard.writeText('john.doe@example.com');
@@ -73,7 +71,7 @@
           <MailIcon class="w-5 h-5 text-blue-600 dark:text-blue-400" />
           <h3 class="font-semibold text-gray-900 dark:text-white">Contact</h3>
         </div>
-        <Button onclick={copyEmail} variant="ghost" size="sm">john.doe@example.com</Button>
+        <button onclick={copyEmail} class="btn btn-outline btn-sm">john.doe@example.com</button>
       </div>
 
       <!-- Location -->

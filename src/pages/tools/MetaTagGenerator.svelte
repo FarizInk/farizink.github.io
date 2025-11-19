@@ -10,9 +10,6 @@
     ChevronLeft
   } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
-  import Button from '../../components/ui/Button.svelte';
-  import Input from '../../components/ui/Input.svelte';
-  import Textarea from '../../components/ui/Textarea.svelte';
 
   // Basic SEO Meta Tags
   let title = $state('');
@@ -469,11 +466,11 @@
             >
               Page Title *
             </label>
-            <Input
+            <input
+              class="input"
               type="text"
               bind:value={title}
               placeholder="Enter page title (50-60 characters recommended)"
-              variant="default"
             />
             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
               {title.length}/60 characters
@@ -487,12 +484,11 @@
             >
               Meta Description *
             </label>
-            <Textarea
+            <textarea
+              class="textarea"
               bind:value={description}
               placeholder="Enter page description (150-160 characters recommended)"
-              rows="3"
-              variant="default"
-            />
+            ></textarea>
             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
               {description.length}/160 characters
             </p>
@@ -591,7 +587,6 @@
             <textarea
               bind:value={ogDescription}
               placeholder="Enter Open Graph description"
-              rows="3"
               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
             ></textarea>
           </div>
@@ -822,7 +817,6 @@
             <textarea
               bind:value={twitterDescription}
               placeholder="Enter Twitter card description"
-              rows="3"
               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
             ></textarea>
           </div>
@@ -1019,7 +1013,6 @@
                 <textarea
                   bind:value={jsonLdDescription}
                   placeholder="Enter description"
-                  rows="3"
                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
                 ></textarea>
               </div>
@@ -1062,11 +1055,11 @@
 
   <!-- Actions -->
   <div class="flex flex-wrap gap-3 mb-6">
-    <Button onclick={loadExample} variant="secondary">
-      <RefreshCw class="w-4 h-4 mr-2" slot="leftIcon" />
+    <button class="btn btn-primary" onclick={loadExample}>
+      <RefreshCw class="w-4 h-4 mr-2" />
       Load Example
-    </Button>
-    <Button onclick={clearAll} variant="destructive">Clear All</Button>
+    </button>
+    <button class="btn btn-primary" onclick={clearAll}>Clear All</button>
   </div>
 
   <!-- Generated Output -->
@@ -1076,13 +1069,13 @@
     >
       <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Generated Meta Tags</h2>
       <div class="flex gap-2">
-        <Button onclick={copyToClipboard} disabled={!generatedTags} variant="secondary" size="sm">
-          <Copy class="w-4 h-4 mr-1" slot="leftIcon" />
+        <button class="btn btn-primary btn-sm" onclick={copyToClipboard} disabled={!generatedTags}>
+          <Copy class="w-4 h-4 mr-1" />
           {copied ? 'Copied!' : 'Copy'}
-        </Button>
-        <Button onclick={downloadAsHtml} disabled={!generatedTags} variant="success" size="sm">
+        </button>
+        <button class="btn btn-primary btn-sm" onclick={downloadAsHtml} disabled={!generatedTags}>
           Download HTML
-        </Button>
+        </button>
       </div>
     </div>
 

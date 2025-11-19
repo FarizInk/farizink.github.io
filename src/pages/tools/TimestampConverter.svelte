@@ -284,7 +284,7 @@
                 id="iso-string"
                 type="text"
                 bind:value={isoString}
-                readonly
+               
                 class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-mono"
               />
               <button
@@ -336,7 +336,7 @@
                 id="unix-timestamp-result"
                 type="text"
                 bind:value={unixTimestamp}
-                readonly
+               
                 class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-mono"
               />
               <button
@@ -385,7 +385,7 @@
         <input
           type="text"
           bind:value={formattedDate}
-          readonly
+         
           class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white"
         />
         <button

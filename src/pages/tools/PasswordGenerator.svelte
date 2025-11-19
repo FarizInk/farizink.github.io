@@ -1,8 +1,16 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, Shield, Lock, Settings2 } from '@lucide/svelte';
-  import Button from '../../components/ui/Button.svelte';
-  import Input from '../../components/ui/Input.svelte';
+  import {
+    Lock,
+    Shield,
+    Settings2,
+    Copy,
+    RefreshCw,
+    History,
+    Trash2,
+    ChevronLeft
+  } from '@lucide/svelte';
+  import { toast } from 'svelte-sonner';
 
   let password = $state('');
   let passwordLength = $state(16);
@@ -13,7 +21,6 @@
   let excludeSimilar = $state(false);
   let excludeAmbiguous = $state(false);
   let passwordHistory = $state<Array<{ password: string; timestamp: Date; strength: string }>>([]);
-  let copiedText = $state('');
   let customCharacters = $state('');
   let useCustomCharacters = $state(false);
 
@@ -49,6 +56,7 @@
 
     if (charset === '') {
       password = '';
+      toast.error('Please select at least one character type');
       return;
     }
 
@@ -98,15 +106,15 @@
   function getStrengthColor(strength: string): string {
     switch (strength) {
       case 'weak':
-        return 'text-red-600 dark:text-red-400';
+        return 'text-red-500';
       case 'medium':
-        return 'text-yellow-600 dark:text-yellow-400';
+        return 'text-yellow-500';
       case 'strong':
-        return 'text-green-600 dark:text-green-400';
+        return 'text-green-500';
       case 'very-strong':
-        return 'text-emerald-600 dark:text-emerald-400';
+        return 'text-green-600';
       default:
-        return 'text-gray-600 dark:text-gray-400';
+        return 'text-gray-500';
     }
   }
 
@@ -119,35 +127,27 @@
       case 'strong':
         return 'bg-green-100 dark:bg-green-900/20';
       case 'very-strong':
-        return 'bg-emerald-100 dark:bg-emerald-900/20';
+        return 'bg-green-200 dark:bg-green-900/30';
       default:
-        return 'bg-gray-100 dark:bg-gray-700';
+        return 'bg-gray-100 dark:bg-gray-800';
     }
   }
 
   function copyToClipboard() {
+    if (!password) return;
     navigator.clipboard.writeText(password);
-    copiedText = 'password';
-    setTimeout(() => {
-      copiedText = '';
-    }, 2000);
+    toast.success('Password copied to clipboard');
   }
 
   function copyHistoryPassword(pwd: string) {
     navigator.clipboard.writeText(pwd);
-    copiedText = 'history';
-    setTimeout(() => {
-      copiedText = '';
-    }, 2000);
-  }
-
-  function regeneratePassword() {
-    generatePassword();
+    toast.success('Password copied to clipboard');
   }
 
   function clearAll() {
     password = '';
     passwordHistory = [];
+    toast.success('Cleared history');
   }
 
   function getStrengthText(strength: string): string {
@@ -169,6 +169,7 @@
     for (let i = 0; i < count; i++) {
       generatePassword();
     }
+    toast.success(`Generated ${count} passwords`);
   }
 
   function usePreset(preset: 'strong' | 'memorable' | 'pin' | 'passphrase') {
@@ -212,6 +213,8 @@
         useCustomCharacters = true;
         break;
     }
+    generatePassword();
+    toast.success(`Applied ${preset} preset`);
   }
 
   function handleBackToTools() {
@@ -219,7 +222,9 @@
   }
 
   // Generate initial password
-  generatePassword();
+  $effect(() => {
+    generatePassword();
+  });
 </script>
 
 <div class="max-w-6xl mx-auto p-6">
@@ -238,7 +243,6 @@
     <div class="text-center mb-8">
       <div
         class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-red-400 to-red-600 rounded-2xl mb-4"
-        style="background: linear-gradient(to bottom right, var(--color-password-red-light), var(--color-password-red))"
       >
         <Lock class="w-10 h-10 text-white" />
       </div>
@@ -274,104 +278,89 @@
     </ol>
   </nav>
 
-  <!-- Presets -->
-  <div class="mb-6">
-    <div class="flex justify-center">
-      <div
-        class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1"
-      >
-        <button
-          onclick={() => usePreset('strong')}
-          class="px-4 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
-        >
-          Strong
-        </button>
-        <button
-          onclick={() => usePreset('memorable')}
-          class="px-4 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
-        >
-          Memorable
-        </button>
-        <button
-          onclick={() => usePreset('pin')}
-          class="px-4 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
-        >
-          PIN
-        </button>
-        <button
-          onclick={() => usePreset('passphrase')}
-          class="px-4 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
-        >
-          Passphrase
-        </button>
-      </div>
-    </div>
+  <!-- Controls -->
+  <div class="mb-6 flex justify-center flex-wrap gap-2">
+    <button onclick={() => generateMultiplePasswords(5)} class="btn btn-outline btn-sm">
+      Generate 5
+    </button>
+    <button
+      onclick={clearAll}
+      class="btn btn-outline btn-sm text-red-500 hover:text-red-600 hover:border-red-200"
+    >
+      <Trash2 class="w-4 h-4 mr-2" />
+      Clear
+    </button>
   </div>
 
-  <!-- Main Password Display -->
-  <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
-  >
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Generated Password</h2>
-      <div class="flex items-center gap-2">
-        {#if password}
-          <span class="text-sm font-medium {getStrengthColor(calculatePasswordStrength(password))}">
-            {getStrengthText(calculatePasswordStrength(password))}
-          </span>
-        {/if}
-        <Button onclick={copyToClipboard} variant="danger" size="sm">
-          {copiedText === 'password' ? '✓ Copied!' : 'Copy'}
-        </Button>
-      </div>
+  <!-- Presets -->
+  <div class="mb-6 flex justify-center">
+    <div
+      class="inline-flex rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1 shadow-sm"
+    >
+      {#each ['strong', 'memorable', 'pin', 'passphrase'] as preset}
+        <button
+          onclick={() => usePreset(preset as any)}
+          class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 capitalize"
+        >
+          {preset}
+        </button>
+      {/each}
     </div>
-
-    <div class="relative">
-      <Input
-        bind:value={password}
-        readonly
-        placeholder="Click 'Generate Password' to create a secure password"
-        size="lg"
-        type="text"
-      />
-      {#if !password}
-        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <p class="text-gray-400 dark:text-gray-600">
-            Click 'Generate Password' to create a secure password
-          </p>
-        </div>
-      {/if}
-    </div>
-
-    <!-- Strength Indicator -->
-    {#if password}
-      <div class="mt-4">
-        <div class="flex justify-between text-sm mb-1">
-          <span class="text-gray-600 dark:text-gray-400">Password Strength</span>
-          <span class="font-medium {getStrengthColor(calculatePasswordStrength(password))}">
-            {getStrengthText(calculatePasswordStrength(password))}
-          </span>
-        </div>
-        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-          <div
-            class="h-2 rounded-full transition-all duration-300 {calculatePasswordStrength(
-              password
-            ) === 'weak'
-              ? 'w-1/4 bg-red-500'
-              : calculatePasswordStrength(password) === 'medium'
-                ? 'w-2/4 bg-yellow-500'
-                : calculatePasswordStrength(password) === 'strong'
-                  ? 'w-3/4 bg-green-500'
-                  : 'w-full bg-emerald-500'}"
-          ></div>
-        </div>
-      </div>
-    {/if}
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Settings Panel -->
-    <div class="lg:col-span-2">
+    <div class="lg:col-span-2 space-y-6">
+      <!-- Main Password Display -->
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Generated Password</h2>
+          <div class="flex items-center gap-2">
+            {#if password}
+              <span
+                class="text-sm font-medium {getStrengthColor(calculatePasswordStrength(password))}"
+              >
+                {getStrengthText(calculatePasswordStrength(password))}
+              </span>
+            {/if}
+            <button onclick={copyToClipboard} class="btn btn-secondary btn-sm">
+              <Copy class="w-4 h-4 mr-2" />
+              Copy
+            </button>
+          </div>
+        </div>
+
+        <div class="relative">
+          <input
+            bind:value={password}
+            readonly
+            placeholder="Click 'Generate Password' to create a secure password"
+            class="input font-mono text-lg"
+          />
+        </div>
+
+        <!-- Strength Indicator -->
+        {#if password}
+          <div class="mt-4">
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+              <div
+                class="h-full transition-all duration-300 {calculatePasswordStrength(password) ===
+                'weak'
+                  ? 'bg-red-500 w-1/4'
+                  : calculatePasswordStrength(password) === 'medium'
+                    ? 'bg-yellow-500 w-2/4'
+                    : calculatePasswordStrength(password) === 'strong'
+                      ? 'bg-green-500 w-3/4'
+                      : 'bg-green-600 w-full'}"
+              ></div>
+            </div>
+          </div>
+        {/if}
+      </div>
+
+      <!-- Settings -->
       <div
         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
       >
@@ -396,7 +385,7 @@
             min="4"
             max="64"
             bind:value={passwordLength}
-            class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
+            class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-red-500"
           />
           <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
             <span>4</span>
@@ -406,7 +395,7 @@
         </div>
 
         <!-- Character Options -->
-        <div class="space-y-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <label class="flex items-center space-x-3 cursor-pointer">
             <input
               type="checkbox"
@@ -414,7 +403,7 @@
               class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500"
             />
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Include Uppercase Letters (A-Z)
+              Uppercase (A-Z)
             </span>
           </label>
 
@@ -425,7 +414,7 @@
               class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500"
             />
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Include Lowercase Letters (a-z)
+              Lowercase (a-z)
             </span>
           </label>
 
@@ -436,7 +425,7 @@
               class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500"
             />
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Include Numbers (0-9)
+              Numbers (0-9)
             </span>
           </label>
 
@@ -447,7 +436,7 @@
               class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500"
             />
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Include Symbols (!@#$%^&*)
+              Symbols (!@#$%)
             </span>
           </label>
 
@@ -458,22 +447,23 @@
               class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500"
             />
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Use Custom Characters
+              Custom Characters
             </span>
           </label>
-
-          {#if useCustomCharacters}
-            <input
-              type="text"
-              bind:value={customCharacters}
-              placeholder="Enter custom characters..."
-              class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-mono text-sm"
-            />
-          {/if}
         </div>
 
+        {#if useCustomCharacters}
+          <div class="mb-6">
+            <input
+              bind:value={customCharacters}
+              placeholder="Enter custom characters..."
+              class="input font-mono text-sm"
+            />
+          </div>
+        {/if}
+
         <!-- Exclusion Options -->
-        <div class="space-y-4 mb-6">
+        <div class="space-y-4 mb-6 border-t border-gray-200 dark:border-gray-700 pt-6">
           <label class="flex items-center space-x-3 cursor-pointer">
             <input
               type="checkbox"
@@ -492,22 +482,17 @@
               class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500"
             />
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Exclude Ambiguous Characters (&lbrace; &rbrace; &lsqb; &rsqb; &lpar; &rpar; / \ ' " `
-              ~ , ; . &lt; &gt;)
+              Exclude Ambiguous Characters ({`{ } [ ] ( ) / \\ ' " \` ~ , ; . < >`})
             </span>
           </label>
         </div>
 
         <!-- Action Buttons -->
         <div class="flex flex-wrap gap-3">
-          <Button onclick={generatePassword} variant="danger" size="lg" fullWidth>
+          <button onclick={generatePassword} class="btn btn-primary btn-lg w-full">
+            <RefreshCw class="w-4 h-4 mr-2" />
             Generate Password
-          </Button>
-          <Button onclick={regeneratePassword} variant="secondary" size="lg">Regenerate</Button>
-          <Button onclick={() => generateMultiplePasswords(5)} variant="primary" size="lg">
-            Generate 5
-          </Button>
-          <Button onclick={clearAll} variant="flat" size="lg">Clear</Button>
+          </button>
         </div>
       </div>
     </div>
@@ -515,30 +500,32 @@
     <!-- Password History -->
     <div>
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 sticky top-6"
       >
         <div class="flex justify-between items-center mb-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Passwords</h2>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">History</h2>
           {#if passwordHistory.length > 0}
-            <button
-              onclick={clearAll}
-              class="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-            >
+            <button onclick={clearAll} class="text-sm text-red-500 hover:text-red-600">
               Clear
             </button>
           {/if}
         </div>
 
         {#if passwordHistory.length === 0}
-          <p class="text-gray-500 dark:text-gray-400 text-center py-8">
-            No passwords generated yet
-          </p>
+          <div
+            class="flex flex-col items-center justify-center py-8 text-gray-500 dark:text-gray-400"
+          >
+            <History class="w-8 h-8 mb-2 opacity-50" />
+            <p class="text-sm">No passwords generated yet</p>
+          </div>
         {:else}
-          <div class="space-y-2 max-h-96 overflow-y-auto">
+          <div class="space-y-2 max-h-[500px] overflow-y-auto pr-1 custom-scrollbar">
             {#each passwordHistory as item (item.timestamp.getTime())}
-              <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <div
+                class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg group hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              >
                 <div class="flex items-start justify-between mb-2">
-                  <div class="flex-1 mr-2">
+                  <div class="flex-1 mr-2 min-w-0">
                     <div class="font-mono text-sm text-gray-900 dark:text-white break-all">
                       {item.password}
                     </div>
@@ -548,7 +535,7 @@
                       </span>
                       <div class="flex items-center gap-2">
                         <span
-                          class="text-xs px-2 py-1 rounded-full {getStrengthBgColor(
+                          class="text-xs px-2 py-0.5 rounded-full {getStrengthBgColor(
                             item.strength
                           )} {getStrengthColor(item.strength)}"
                         >
@@ -556,9 +543,9 @@
                         </span>
                         <button
                           onclick={() => copyHistoryPassword(item.password)}
-                          class="text-xs px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                          class="text-gray-400 hover:text-red-500 transition-colors"
                         >
-                          {copiedText === 'history' ? '✓' : 'Copy'}
+                          <Copy class="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </div>
@@ -574,44 +561,30 @@
 
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <Shield class="w-6 h-6 text-red-600 dark:text-red-400" />
+    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+      <div class="flex items-center gap-2 mb-2 text-red-600 dark:text-red-400">
+        <Shield class="w-5 h-5" />
+        <h3 class="font-medium">Strong Security</h3>
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Strong Security</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400">
         Generate cryptographically secure passwords with customizable complexity
       </p>
     </div>
-
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <Settings2 class="w-6 h-6 text-red-600 dark:text-red-400" />
+    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+      <div class="flex items-center gap-2 mb-2 text-red-600 dark:text-red-400">
+        <Settings2 class="w-5 h-5" />
+        <h3 class="font-medium">Customizable Options</h3>
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Customizable Options</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400">
         Fine-tune character sets, length, and exclusions for your specific needs
       </p>
     </div>
-
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <Lock class="w-6 h-6 text-red-600 dark:text-red-400" />
+    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+      <div class="flex items-center gap-2 mb-2 text-red-600 dark:text-red-400">
+        <History class="w-5 h-5" />
+        <h3 class="font-medium">Password History</h3>
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Password History</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400">
         Keep track of generated passwords with strength analysis
       </p>
     </div>

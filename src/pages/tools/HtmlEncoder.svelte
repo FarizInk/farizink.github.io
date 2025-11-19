@@ -1,8 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
   import { ChevronLeft, Code, Zap, FileText } from '@lucide/svelte';
-  import Button from '../../components/ui/Button.svelte';
-  import Textarea from '../../components/ui/Textarea.svelte';
 
   let inputText = $state('');
   let encodedText = $state('');
@@ -204,7 +202,7 @@
         {#if activeTab === 'encode'}
           <textarea
             bind:value={encodedText}
-            readonly
+           
             placeholder="Encoded HTML will appear here..."
             class="w-full h-64 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none"
           ></textarea>
@@ -216,7 +214,7 @@
         {:else}
           <textarea
             bind:value={decodedText}
-            readonly
+           
             placeholder="Decoded HTML will appear here..."
             class="w-full h-64 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none"
           ></textarea>

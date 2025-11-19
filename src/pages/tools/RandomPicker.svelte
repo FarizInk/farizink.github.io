@@ -15,8 +15,6 @@
     Users
   } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
-  import Button from '../../components/ui/Button.svelte';
-  import Input from '../../components/ui/Input.svelte';
 
   // Types
   interface PickerItem {
@@ -349,11 +347,11 @@
             Items to Pick From
           </h2>
           <div class="flex gap-2">
-            <Button onclick={addItem} variant="primary" size="sm">
-              <Plus class="w-4 h-4 mr-1" slot="leftIcon" />
+            <button class="btn btn-primary btn-sm" onclick={addItem}>
+              <Plus class="w-4 h-4 mr-1" />
               Add Item
-            </Button>
-            <Button onclick={clearAll} variant="destructive" size="sm">Clear All</Button>
+            </button>
+            <button class="btn btn-primary btn-sm" onclick={clearAll}>Clear All</button>
           </div>
         </div>
 
@@ -468,24 +466,23 @@
           </label>
         </div>
 
-        <Button
+        <button
+          class="btn btn-primary w-full"
           onclick={spinPicker}
           disabled={isSpinning || items.filter(item => item.text.trim() !== '').length === 0}
-          variant="primary"
-          class="w-full"
         >
           {#if isSpinning}
             <div class="flex items-center">
               <div class="animate-spin">
-                <Shuffle class="w-5 h-5 mr-2" slot="leftIcon" />
+                <Shuffle class="w-5 h-5 mr-2" />
               </div>
               Picking...
             </div>
           {:else}
-            <Shuffle class="w-5 h-5 mr-2" slot="leftIcon" />
+            <Shuffle class="w-5 h-5 mr-2" />
             Pick Random Item{numberOfPicks > 1 ? 's' : ''}
           {/if}
-        </Button>
+        </button>
       </div>
 
       <!-- Result Display -->
@@ -499,13 +496,13 @@
               Result
             </h2>
             <div class="flex gap-2">
-              <Button onclick={copyResult} variant="secondary" size="sm">
-                <Copy class="w-4 h-4 mr-1" slot="leftIcon" />
+              <button class="btn btn-primary btn-sm" onclick={copyResult}>
+                <Copy class="w-4 h-4 mr-1" />
                 Copy
-              </Button>
-              <Button onclick={resetPicker} variant="secondary" size="sm">
-                <RotateCcw class="w-4 h-4" slot="leftIcon" />
-              </Button>
+              </button>
+              <button class="btn btn-primary btn-sm" onclick={resetPicker}>
+                <RotateCcw class="w-4 h-4" />
+              </button>
             </div>
           </div>
 

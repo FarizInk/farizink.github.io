@@ -11,8 +11,6 @@
     ChevronLeft
   } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
-  import Button from '../../components/ui/Button.svelte';
-  import Input from '../../components/ui/Input.svelte';
 
   // Calculator modes
   const modes = [

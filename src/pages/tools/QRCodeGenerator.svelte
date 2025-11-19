@@ -2,19 +2,24 @@
   import { onMount } from 'svelte';
   import { navigate } from '../../lib/router.js';
   import QRCode from 'qrcode';
-  import { Download, Copy, ChevronLeft, QrCode } from '@lucide/svelte';
-  import Button from '../../components/ui/Button.svelte';
-  import Input from '../../components/ui/Input.svelte';
-  import Textarea from '../../components/ui/Textarea.svelte';
+  import { QrCode, Download, Copy, RefreshCw, Settings2, Info, ChevronLeft } from '@lucide/svelte';
+  import { toast } from 'svelte-sonner';
 
   let text = $state('');
   let qrDataUrl = $state('');
   let error = $state('');
-  let size = $state(300);
+  let size = $state('300');
   let bgColor = $state('#FFFFFF');
   let fgColor = $state('#000000');
   let errorCorrection = $state('M');
   let includeMargin = $state(true);
+
+  const errorCorrectionOptions = [
+    { value: 'L', label: 'Low (7%)' },
+    { value: 'M', label: 'Medium (15%)' },
+    { value: 'Q', label: 'Quartile (25%)' },
+    { value: 'H', label: 'High (30%)' }
+  ];
 
   async function generateQRCode() {
     if (!text.trim()) {
@@ -24,30 +29,24 @@
     }
 
     try {
-      // Convert error correction level string to qrcode library format
-      const errorCorrectionMap: Record<string, 'L' | 'M' | 'Q' | 'H'> = {
-        L: 'L', // Low
-        M: 'M', // Medium
-        Q: 'Q', // Quartile
-        H: 'H' // High
-      };
-
       const options = {
-        width: size,
+        width: parseInt(size),
         margin: includeMargin ? 4 : 0,
         color: {
           dark: fgColor,
           light: bgColor
         },
-        errorCorrectionLevel: errorCorrectionMap[errorCorrection] || 'M'
+        errorCorrectionLevel: errorCorrection as 'L' | 'M' | 'Q' | 'H'
       };
 
       qrDataUrl = await QRCode.toDataURL(text, options);
       error = '';
+      toast.success('QR Code generated successfully');
     } catch (err) {
       error = 'Failed to generate QR code';
       qrDataUrl = '';
       console.error('QR Code generation error:', err);
+      toast.error('Failed to generate QR code');
     }
   }
 
@@ -58,6 +57,7 @@
     link.download = 'qrcode.png';
     link.href = qrDataUrl;
     link.click();
+    toast.success('QR Code downloaded');
   }
 
   function copyToClipboard() {
@@ -68,6 +68,10 @@
       .then(blob => {
         const item = new ClipboardItem({ 'image/png': blob });
         navigator.clipboard.write([item]);
+        toast.success('QR Code copied to clipboard');
+      })
+      .catch(() => {
+        toast.error('Failed to copy QR Code');
       });
   }
 
@@ -75,11 +79,12 @@
     text = '';
     qrDataUrl = '';
     error = '';
-    size = 300;
+    size = '300';
     bgColor = '#FFFFFF';
     fgColor = '#000000';
     errorCorrection = 'M';
     includeMargin = true;
+    toast.success('Form reset');
   }
 
   function handleBackToTools() {
@@ -87,13 +92,12 @@
   }
 
   onMount(() => {
-    // Generate initial QR code with example text
     text = 'https://farizink.dev';
     generateQRCode();
   });
 </script>
 
-<div class="max-w-4xl mx-auto p-6">
+<div class="max-w-6xl mx-auto p-6">
   <!-- Header -->
   <div class="mb-8">
     <div class="flex items-center gap-4 mb-4">
@@ -109,7 +113,6 @@
     <div class="text-center mb-8">
       <div
         class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-teal-400 to-teal-600 rounded-2xl mb-4"
-        style="background: linear-gradient(to bottom right, var(--color-qrcode-teal-light), var(--color-qrcode-teal))"
       >
         <QrCode class="w-10 h-10 text-white" />
       </div>
@@ -122,7 +125,7 @@
 
   <!-- Breadcrumb -->
   <nav class="mb-8">
-    <ol class="flex items-center space-x-2 text-sm">
+    <ol class="flex items-center justify-center space-x-2 text-sm">
       <li>
         <a
           href="/"
@@ -145,6 +148,15 @@
     </ol>
   </nav>
 
+  <!-- Controls -->
+  <div class="mb-6 flex justify-center flex-wrap gap-2">
+    <button onclick={generateQRCode} class="btn btn-primary btn-sm">
+      <RefreshCw class="w-4 h-4 mr-2" />
+      Generate
+    </button>
+    <button onclick={resetForm} class="btn btn-outline btn-sm">Reset</button>
+  </div>
+
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
     <!-- Input Section -->
     <div class="space-y-6">
@@ -156,50 +168,63 @@
         >
           Text or URL
         </label>
-        <Textarea
+        <textarea
           id="text-input"
           bind:value={text}
           placeholder="Enter text, URL, or any data to encode..."
           rows="4"
-        />
+          class="textarea {error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}"
+        ></textarea>
+        {#if error}
+          <p class="mt-1 text-sm text-red-500">{error}</p>
+        {/if}
       </div>
 
       <!-- Customization Options -->
-      <div class="space-y-4">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Customization</h3>
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-6"
+      >
+        <div class="flex items-center gap-2 mb-2 text-gray-900 dark:text-white">
+          <Settings2 class="w-5 h-5" />
+          <h3 class="text-lg font-semibold">Customization</h3>
+        </div>
 
         <!-- Size -->
         <div>
-          <label for="size" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Size: {size}px
-          </label>
-          <Input
+          <div class="flex justify-between items-center mb-2">
+            <label for="size" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Size: {size}px
+            </label>
+          </div>
+          <input
             id="size"
             type="range"
             min="100"
             max="500"
             step="50"
             bind:value={size}
-            label={`Size: ${size}px`}
+            class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
           />
         </div>
 
         <!-- Colors -->
         <div class="grid grid-cols-2 gap-4">
-          <Input
-            id="bg-color"
-            type="color"
-            bind:value={bgColor}
-            label="Background Color"
-            placeholder="#FFFFFF"
-          />
-          <Input
-            id="fg-color"
-            type="color"
-            bind:value={fgColor}
-            label="Foreground Color"
-            placeholder="#000000"
-          />
+          <div>
+            <label
+              for="bg-color"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Background</label
+            >
+            <input id="bg-color" type="color" bind:value={bgColor} class="input h-12 p-1 w-full" />
+          </div>
+          <div>
+            <label
+              for="fg-color"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Foreground</label
+            >
+            <input id="fg-color" type="color" bind:value={fgColor} class="input h-12 p-1 w-full" />
+          </div>
         </div>
 
         <!-- Error Correction Level -->
@@ -210,15 +235,10 @@
           >
             Error Correction Level
           </label>
-          <select
-            id="error-correction"
-            bind:value={errorCorrection}
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-          >
-            <option value="L">Low (7%)</option>
-            <option value="M">Medium (15%)</option>
-            <option value="Q">Quartile (25%)</option>
-            <option value="H">High (30%)</option>
+          <select id="error-correction" bind:value={errorCorrection} class="select">
+            {#each errorCorrectionOptions as option}
+              <option value={option.value}>{option.label}</option>
+            {/each}
           </select>
         </div>
 
@@ -228,7 +248,7 @@
             type="checkbox"
             id="include-margin"
             bind:checked={includeMargin}
-            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <label
             for="include-margin"
@@ -237,12 +257,6 @@
             Include margin
           </label>
         </div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="flex flex-wrap gap-3">
-        <Button onclick={generateQRCode} variant="primary">Generate QR Code</Button>
-        <Button onclick={resetForm} variant="flat">Reset</Button>
       </div>
     </div>
 
@@ -253,31 +267,31 @@
 
         {#if qrDataUrl}
           <div
-            class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700"
+            class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 flex flex-col items-center"
           >
-            <div class="flex justify-center mb-4">
+            <div class="mb-6 p-4 bg-white rounded-lg shadow-sm">
               <img
                 src={qrDataUrl}
                 alt="Generated QR Code"
-                class="max-w-full h-auto rounded-lg shadow-lg"
+                class="max-w-full h-auto rounded"
                 style="max-width: {size}px; max-height: {size}px;"
               />
             </div>
 
-            <div class="flex flex-wrap gap-3 justify-center">
-              <Button onclick={downloadQRCode} variant="success">
-                <Download slot="leftIcon" class="w-4 h-4" />
-                Download
-              </Button>
-              <Button onclick={copyToClipboard} variant="secondary">
-                <Copy slot="leftIcon" class="w-4 h-4" />
-                Copy
-              </Button>
+            <div class="flex flex-wrap gap-3 justify-center w-full">
+              <button onclick={downloadQRCode} class="btn btn-primary btn-block sm:w-auto">
+                <Download class="w-4 h-4 mr-2" />
+                Download PNG
+              </button>
+              <button onclick={copyToClipboard} class="btn btn-secondary btn-block sm:w-auto">
+                <Copy class="w-4 h-4 mr-2" />
+                Copy Image
+              </button>
             </div>
           </div>
         {:else if error}
           <div
-            class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6"
+            class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6"
           >
             <p class="text-red-600 dark:text-red-400 text-center">
               {error}
@@ -285,25 +299,27 @@
           </div>
         {:else}
           <div
-            class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-12"
+            class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-12 flex flex-col items-center justify-center text-gray-500 dark:text-gray-400"
           >
-            <p class="text-gray-500 dark:text-gray-400 text-center">
-              Enter text and click "Generate QR Code" to create your QR code
-            </p>
+            <QrCode class="w-12 h-12 mb-4 opacity-50" />
+            <p class="text-center">Enter text and click "Generate" to create your QR code</p>
           </div>
         {/if}
       </div>
 
       <!-- Info Section -->
       <div
-        class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4"
+        class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4"
       >
-        <h4 class="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2">💡 Tips</h4>
-        <ul class="text-sm text-blue-700 dark:text-blue-300 space-y-1">
-          <li>• QR codes can store up to 4,296 alphanumeric characters</li>
-          <li>• Higher error correction levels create more complex but more robust codes</li>
-          <li>• Test your QR code before using it in production</li>
-          <li>• Ensure good contrast between foreground and background colors</li>
+        <div class="flex items-center gap-2 mb-2 text-blue-800 dark:text-blue-200">
+          <Info class="w-4 h-4" />
+          <h4 class="text-sm font-semibold">Tips</h4>
+        </div>
+        <ul class="text-sm text-blue-700 dark:text-blue-300 space-y-1 list-disc list-inside">
+          <li>QR codes can store up to 4,296 alphanumeric characters</li>
+          <li>Higher error correction levels create more complex but more robust codes</li>
+          <li>Test your QR code before using it in production</li>
+          <li>Ensure good contrast between foreground and background colors</li>
         </ul>
       </div>
     </div>

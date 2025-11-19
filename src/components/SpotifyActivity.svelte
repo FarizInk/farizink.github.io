@@ -2,6 +2,7 @@
   import { MonitorSmartphone, Play, Pause, X } from '@lucide/svelte';
   import SpotifyLogoIcon from './icons/SpotifyLogoIcon.svelte';
   import { onMount, onDestroy } from 'svelte';
+  import { SPOTIFY_API } from '../lib/constants';
 
   interface SpotifyDevice {
     name: string | null;
@@ -89,7 +90,7 @@
   };
 
   const getDevice = () => {
-    fetch('https://api.spotify.com/v1/me/player/devices', {
+    fetch(`${SPOTIFY_API.BASE_URL}/me/player/devices`, {
       method: 'GET',
       headers: new Headers({
         Accept: 'application/json',
@@ -124,7 +125,7 @@
   };
 
   const refreshToken = () => {
-    fetch('https://core.fariz.dev/api/spotify/refresh')
+    fetch(SPOTIFY_API.REFRESH_ENDPOINT)
       .then(response => response.json())
       .then(data => {
         if (data.data !== null) {
@@ -141,7 +142,7 @@
   const getCurrentPlayingTrack = () => {
     if (!isComponentMounted) return;
 
-    fetch('https://api.spotify.com/v1/me/player/currently-playing?market=ID', {
+    fetch(`${SPOTIFY_API.BASE_URL}/me/player/currently-playing?market=${SPOTIFY_API.MARKET}`, {
       method: 'GET',
       headers: new Headers({
         Accept: 'application/json',
@@ -191,7 +192,7 @@
   onMount(() => {
     isComponentMounted = true;
 
-    fetch('https://core.fariz.dev/api/spotify/token')
+    fetch(SPOTIFY_API.TOKEN_ENDPOINT)
       .then(response => response.json())
       .then(data => {
         if (!isComponentMounted) return;
@@ -215,9 +216,9 @@
 
 {#if spotify}
   <div
-    class="group relative bg-gradient-to-br from-spotify-black-2 to-spotify-black-1 rounded-2xl shadow-xl border {isPlaying
-      ? 'border-spotify-green/50 shadow-spotify-green/20'
-      : 'border-spotify-black-3/50'} overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-spotify-green/30"
+    class="group relative bg-gradient-to-br from-gray-900 to-black rounded-2xl shadow-xl border {isPlaying
+      ? 'border-green-500/50 shadow-green-500/20'
+      : 'border-gray-800/50'} overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-green-500/30"
   >
     <!-- Main content -->
     <div class="p-4">
@@ -233,7 +234,7 @@
             />
             {#if isPlaying}
               <div
-                class="absolute -bottom-1 -right-1 w-5 h-5 bg-spotify-green rounded-full flex items-center justify-center shadow-lg"
+                class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center shadow-lg"
               >
                 <Play class="w-2.5 h-2.5 text-white" />
               </div>
@@ -244,7 +245,7 @@
         <!-- Track information -->
         <div class="flex-1 min-w-0">
           <div
-            class="font-bold text-white text-base mb-1 truncate group-hover:text-spotify-green transition-colors duration-200"
+            class="font-bold text-white text-base mb-1 truncate group-hover:text-green-400 transition-colors duration-200"
           >
             <a target="_blank" rel="noreferrer" class="hover:underline" href={track.url}>
               {track.name}
@@ -273,7 +274,7 @@
         <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <a href="https://open.spotify.com" rel="noreferrer" target="_blank" class="block">
             <SpotifyLogoIcon
-              class="h-5 w-auto text-spotify-green hover:scale-110 transition-transform duration-200"
+              class="h-5 w-auto text-green-500 hover:scale-110 transition-transform duration-200"
             />
           </a>
         </div>
@@ -284,13 +285,11 @@
         <!-- Progress bar -->
         <div class="relative">
           <div
-            class="h-2 rounded-full overflow-hidden {isPlaying
-              ? 'bg-spotify-black-4'
-              : 'bg-spotify-black-3/50'}"
+            class="h-2 rounded-full overflow-hidden {isPlaying ? 'bg-gray-800' : 'bg-gray-800/50'}"
           >
             <div
               class="h-full rounded-full transition-all duration-300 ease-out {isPlaying
-                ? 'bg-gradient-to-r from-spotify-green to-spotify-green/80'
+                ? 'bg-gradient-to-r from-green-500 to-green-400'
                 : 'bg-gradient-to-r from-gray-400 to-gray-500'}"
               style="width: {track.percent}%;"
             >
@@ -326,8 +325,8 @@
             {/if}
             <div class="flex items-center gap-1">
               {#if isPlaying}
-                <div class="w-2 h-2 bg-spotify-green rounded-full animate-pulse"></div>
-                <span class="text-spotify-green font-medium">LIVE</span>
+                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span class="text-green-500 font-medium">LIVE</span>
               {:else}
                 <Pause class="w-3 h-3 text-gray-400" />
                 <span class="text-gray-400">PAUSED</span>
@@ -340,15 +339,15 @@
   </div>
 {:else}
   <div
-    class="group relative bg-gradient-to-br from-spotify-black-2 to-spotify-black-1 rounded-2xl shadow-xl border border-spotify-black-3/50 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-gray-600/30"
+    class="group relative bg-gradient-to-br from-gray-900 to-black rounded-2xl shadow-xl border border-gray-800/50 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-gray-600/30"
   >
     <!-- Offline state -->
     <div class="p-4">
       <div class="flex items-center gap-4 mb-4">
         <!-- Animated album placeholder -->
         <div class="relative">
-          <div class="w-16 h-16 rounded-lg bg-spotify-black-3 flex items-center justify-center">
-            <div class="w-8 h-8 rounded bg-spotify-black-4 animate-pulse"></div>
+          <div class="w-16 h-16 rounded-lg bg-gray-800 flex items-center justify-center">
+            <div class="w-8 h-8 rounded bg-gray-700 animate-pulse"></div>
           </div>
           <div
             class="absolute -bottom-1 -right-1 w-5 h-5 bg-gray-600 rounded-full flex items-center justify-center"
@@ -367,7 +366,7 @@
         <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <a href="https://open.spotify.com" rel="noreferrer" target="_blank" class="block">
             <SpotifyLogoIcon
-              class="h-5 w-auto text-gray-400 hover:text-spotify-green hover:scale-110 transition-all duration-200"
+              class="h-5 w-auto text-gray-400 hover:text-green-500 hover:scale-110 transition-all duration-200"
             />
           </a>
         </div>
@@ -375,7 +374,7 @@
 
       <!-- Offline progress bar placeholder -->
       <div class="space-y-3">
-        <div class="h-2 rounded-full bg-spotify-black-3/30 overflow-hidden">
+        <div class="h-2 rounded-full bg-gray-800/30 overflow-hidden">
           <div class="h-full w-0 bg-gradient-to-r from-gray-600 to-gray-700 rounded-full"></div>
         </div>
 
@@ -390,6 +389,3 @@
     </div>
   </div>
 {/if}
-
-<style scoped>
-</style>

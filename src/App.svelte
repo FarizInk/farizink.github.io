@@ -66,17 +66,25 @@
   });
 </script>
 
-<div class="min-h-screen flex flex-col justify-between relative">
+<div
+  class="min-h-screen flex flex-col justify-between relative bg-[var(--ds-secondary-50)] dark:bg-[var(--ds-secondary-900)] transition-colors duration-300"
+>
   <PixelBackground />
   <Navigation />
-  <div class="flex-1 pt-[56px]">
-    <div class="container mx-auto">
+  <div class="flex-1 pt-[72px]">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <Router />
     </div>
   </div>
 
-  <footer class="flex justify-center items-center text-black dark:text-white py-4">
-    Made with <button type="button" onclick={openThanksModal} class="hover:cursor-pointer">
+  <footer
+    class="flex justify-center items-center text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)] py-8 mt-12 border-t border-[var(--ds-secondary-200)] dark:border-[var(--ds-secondary-800)] bg-white/50 dark:bg-black/20 backdrop-blur-sm"
+  >
+    Made with <button
+      type="button"
+      onclick={openThanksModal}
+      class="hover:cursor-pointer hover:scale-110 transition-transform duration-200"
+    >
       <LoveIcon class="w-5 h-5 mx-1 text-rose-600" />
     </button> in Surabaya.
   </footer>

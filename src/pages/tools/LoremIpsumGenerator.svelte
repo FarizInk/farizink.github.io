@@ -1,9 +1,6 @@
 <script lang="ts">
   import { Copy, RefreshCw, FileText, Hash, Type, ChevronLeft } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
-  import Button from '../../components/ui/Button.svelte';
-  import Input from '../../components/ui/Input.svelte';
-  import Textarea from '../../components/ui/Textarea.svelte';
 
   // Component state
   let amount = $state(5);
@@ -383,13 +380,13 @@
         >
           Amount
         </label>
-        <Input
+        <input
+          class="input"
           id="amount-input"
           type="number"
           bind:value={amount}
           min="1"
           max="100"
-          variant="default"
         />
       </div>
 
@@ -428,10 +425,10 @@
 
       <!-- Generate Button -->
       <div class="flex items-end">
-        <Button onclick={generateLoremText} variant="primary" class="w-full">
-          <RefreshCw class="w-4 h-4 mr-2" slot="leftIcon" />
+        <button class="btn btn-primary w-full" onclick={generateLoremText}>
+          <RefreshCw class="w-4 h-4 mr-2" />
           Generate
-        </Button>
+        </button>
       </div>
     </div>
 
@@ -461,11 +458,11 @@
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Generated Text</h2>
       <div class="flex gap-2">
-        <Button onclick={copyToClipboard} variant="secondary" size="sm">
-          <Copy class="w-4 h-4 mr-1" slot="leftIcon" />
+        <button class="btn btn-primary btn-sm" onclick={copyToClipboard}>
+          <Copy class="w-4 h-4 mr-1" />
           {copied ? 'Copied!' : 'Copy'}
-        </Button>
-        <Button onclick={downloadAsFile} variant="secondary" size="sm">Download</Button>
+        </button>
+        <button class="btn btn-primary btn-sm" onclick={downloadAsFile}>Download</button>
       </div>
     </div>
 

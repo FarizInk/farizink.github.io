@@ -1,68 +1,75 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, FileJson, CheckCircle, Layout, Copy } from '@lucide/svelte';
-  import Button from '../../components/ui/Button.svelte';
-  import Textarea from '../../components/ui/Textarea.svelte';
+  import { FileJson, Copy, Trash2, Check, AlertCircle, ChevronLeft } from '@lucide/svelte';
+  import { toast } from 'svelte-sonner';
 
-  let inputJson = $state('');
-  let outputJson = $state('');
+  let input = $state('');
+  let output = $state('');
   let error = $state('');
-  let isValid = $state(false);
-  let indentSize = $state(2);
+  let mode = $state('format'); // 'format' | 'minify'
 
-  function formatJson() {
+  function formatJSON() {
     try {
-      const parsed = JSON.parse(inputJson);
-      outputJson = JSON.stringify(parsed, null, indentSize);
+      if (!input.trim()) {
+        error = 'Please enter some JSON to format';
+        return;
+      }
+      const parsed = JSON.parse(input);
+      output = JSON.stringify(parsed, null, 2);
       error = '';
-      isValid = true;
+      toast.success('JSON formatted successfully');
     } catch (e) {
-      error = e instanceof Error ? e.message : 'Invalid JSON';
-      isValid = false;
-      outputJson = '';
+      error = (e as Error).message;
+      toast.error('Invalid JSON');
     }
   }
 
-  function minifyJson() {
+  function minifyJSON() {
     try {
-      const parsed = JSON.parse(inputJson);
-      outputJson = JSON.stringify(parsed);
+      if (!input.trim()) {
+        error = 'Please enter some JSON to minify';
+        return;
+      }
+      const parsed = JSON.parse(input);
+      output = JSON.stringify(parsed);
       error = '';
-      isValid = true;
+      toast.success('JSON minified successfully');
     } catch (e) {
-      error = e instanceof Error ? e.message : 'Invalid JSON';
-      isValid = false;
-      outputJson = '';
+      error = (e as Error).message;
+      toast.error('Invalid JSON');
     }
-  }
-
-  function clearAll() {
-    inputJson = '';
-    outputJson = '';
-    error = '';
-    isValid = false;
   }
 
   function copyToClipboard() {
-    navigator.clipboard.writeText(outputJson);
+    if (!output) return;
+    navigator.clipboard.writeText(output);
+    toast.success('Copied to clipboard');
+  }
+
+  function clearAll() {
+    input = '';
+    output = '';
+    error = '';
+    toast.success('Cleared all content');
   }
 
   function loadSample() {
-    inputJson = `{
-  "name": "John Doe",
-  "age": 30,
-  "city": "New York",
-  "hobbies": [
-    "reading",
-    "swimming",
-    "coding"
-  ],
-  "address": {
-    "street": "123 Main St",
-    "zip": "10001"
-  }
-}`;
-    formatJson();
+    input = JSON.stringify(
+      {
+        name: 'FarizInk',
+        role: 'Developer',
+        skills: ['Svelte', 'TypeScript', 'Tailwind'],
+        active: true,
+        projects: {
+          total: 42,
+          featured: ['Portfolio', 'Tools']
+        }
+      },
+      null,
+      2
+    );
+    error = '';
+    output = '';
   }
 
   function handleBackToTools() {
@@ -70,210 +77,139 @@
   }
 </script>
 
-<div class="max-w-6xl mx-auto p-6">
+<div class="max-w-6xl mx-auto p-6 animate-fade-in">
   <!-- Header -->
   <div class="mb-8">
-    <div class="flex items-center gap-4 mb-4">
-      <button
-        onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        <ChevronLeft class="w-5 h-5" />
+    <div class="flex items-center gap-4 mb-6">
+      <button onclick={handleBackToTools} class="btn btn-outline btn-sm">
+        <ChevronLeft class="w-4 h-4 mr-2" />
         Back to Tools
       </button>
     </div>
 
-    <div class="text-center mb-8">
+    <div class="text-center mb-12">
       <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl mb-4"
+        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl mb-6 shadow-lg animate-scale-in"
       >
         <FileJson class="w-10 h-10 text-white" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">JSON Parser & Formatter</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Format, validate, and minify JSON data with ease. Perfect for developers working with APIs
-        and configuration files.
+      <h1
+        class="text-4xl md:text-5xl font-bold text-[var(--ds-secondary-900)] dark:text-white mb-4 tracking-tight"
+      >
+        JSON Parser
+      </h1>
+      <p
+        class="text-xl text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)] max-w-2xl mx-auto leading-relaxed"
+      >
+        Parse, validate, format, and minify JSON data with syntax highlighting and error detection.
       </p>
     </div>
   </div>
 
-  <!-- Breadcrumb -->
-  <nav class="mb-8">
-    <ol class="flex items-center justify-center space-x-2 text-sm">
-      <li>
-        <a
-          href="/"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Home
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li>
-        <a
-          href="/tools"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Tools
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li class="text-gray-900 dark:text-white font-medium">JSON Parser</li>
-    </ol>
-  </nav>
-
   <!-- Controls -->
-  <div class="mb-6 flex flex-wrap gap-4 items-center">
-    <button
-      onclick={formatJson}
-      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-    >
-      Format JSON
+  <div
+    class="mb-8 flex flex-wrap gap-2 items-center justify-center bg-white/50 dark:bg-white/5 p-4 rounded-2xl border border-[var(--ds-secondary-200)] dark:border-[var(--ds-secondary-800)]"
+  >
+    <button onclick={loadSample} class="btn btn-outline btn-sm">Load Sample</button>
+    <button onclick={clearAll} class="btn btn-outline btn-sm text-red-500 hover:text-red-600">
+      <Trash2 class="w-4 h-4 mr-2" />
+      Clear
     </button>
-
-    <button
-      onclick={minifyJson}
-      class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-    >
-      Minify JSON
-    </button>
-
-    <button
-      onclick={clearAll}
-      class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-    >
-      Clear All
-    </button>
-
-    <button
-      onclick={loadSample}
-      class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-    >
-      Load Sample
-    </button>
-
-    <div class="flex items-center gap-2">
-      <label for="indent" class="text-sm font-medium text-gray-700 dark:text-gray-300">
-        Indent:
-      </label>
-      <select
-        id="indent"
-        bind:value={indentSize}
-        class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-      >
-        <option value={2}>2 spaces</option>
-        <option value={4}>4 spaces</option>
-        <option value="\t">Tab</option>
-      </select>
-    </div>
   </div>
 
-  <!-- Error Display -->
-  {#if error}
-    <div
-      class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
-    >
-      <p class="text-red-700 dark:text-red-400 font-medium">Error: {error}</p>
-    </div>
-  {/if}
-
-  <!-- Success Message -->
-  {#if isValid && !error}
-    <div
-      class="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg"
-    >
-      <p class="text-green-700 dark:text-green-400 font-medium">✓ Valid JSON</p>
-    </div>
-  {/if}
-
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- Input Section -->
-    <div>
-      <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input JSON</h2>
-        <span class="text-sm text-gray-500 dark:text-gray-400">
-          {inputJson.length} characters
-        </span>
-      </div>
-      <textarea
-        bind:value={inputJson}
-        placeholder="Paste your JSON here..."
-        class="w-full h-96 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-      ></textarea>
-    </div>
-
-    <!-- Output Section -->
-    <div>
-      <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Output</h2>
-        {#if outputJson}
-          <button
-            onclick={copyToClipboard}
-            class="px-3 py-1 text-sm bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+  <!-- Main Content -->
+  <div class="mb-16">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+      <!-- Input Section -->
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <h3
+            class="text-sm font-medium text-[var(--ds-secondary-700)] dark:text-[var(--ds-secondary-300)]"
           >
-            Copy to Clipboard
-          </button>
-        {/if}
-      </div>
-      <div class="relative">
+            Input JSON
+          </h3>
+          <div class="flex gap-2">
+            <button onclick={formatJSON} disabled={!input} class="btn btn-primary btn-sm"
+              >Format</button
+            >
+            <button onclick={minifyJSON} disabled={!input} class="btn btn-secondary btn-sm"
+              >Minify</button
+            >
+          </div>
+        </div>
         <textarea
-          bind:value={outputJson}
-          readonly
-          placeholder="Formatted JSON will appear here..."
-          class="w-full h-96 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none"
+          bind:value={input}
+          placeholder="Paste your JSON here..."
+          class="textarea font-mono text-sm h-[400px] lg:h-[600px]"
         ></textarea>
-        {#if !outputJson && !error}
-          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <p class="text-gray-400 dark:text-gray-600">
-              Format or minify your JSON to see the output
-            </p>
+        {#if error}
+          <div
+            class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-start gap-2"
+          >
+            <AlertCircle class="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+            <p class="text-sm text-red-700 dark:text-red-300">{error}</p>
           </div>
         {/if}
+      </div>
+
+      <!-- Output Section -->
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <h3
+            class="text-sm font-medium text-[var(--ds-secondary-700)] dark:text-[var(--ds-secondary-300)]"
+          >
+            Output
+          </h3>
+          <button onclick={copyToClipboard} disabled={!output} class="btn btn-outline btn-sm">
+            <Copy class="w-4 h-4 mr-2" />
+            Copy
+          </button>
+        </div>
+        <div class="relative h-[400px] lg:h-[600px]">
+          <textarea
+            readonly
+            value={output}
+            class="textarea font-mono text-sm h-full"
+            placeholder="Result will appear here..."
+          ></textarea>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Features Section -->
-  <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="card">
       <div
-        class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
       >
-        <CheckCircle class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+        <Check class="w-5 h-5" />
+        <h3 class="font-medium">Validation</h3>
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Validate JSON</h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        Instant validation with detailed error messages for malformed JSON
+      <p class="text-sm text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]">
+        Instantly validates your JSON and provides helpful error messages for invalid syntax.
       </p>
     </div>
-
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
+    <div class="card">
       <div
-        class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
       >
-        <Layout class="w-6 h-6 text-green-600 dark:text-green-400" />
+        <Check class="w-5 h-5" />
+        <h3 class="font-medium">Formatting</h3>
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Format & Minify</h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        Pretty print with custom indentation or compress to minified format
+      <p class="text-sm text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]">
+        Beautify minified JSON with proper indentation or minify it for production use.
       </p>
     </div>
-
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
+    <div class="card">
       <div
-        class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="flex items-center gap-2 mb-2 text-[var(--ds-primary-600)] dark:text-[var(--ds-primary-400)]"
       >
-        <Copy class="w-6 h-6 text-purple-600 dark:text-purple-400" />
+        <Check class="w-5 h-5" />
+        <h3 class="font-medium">Privacy</h3>
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Copy Results</h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        One-click copy to clipboard for easy sharing and pasting
+      <p class="text-sm text-[var(--ds-secondary-600)] dark:text-[var(--ds-secondary-400)]">
+        All processing happens in your browser. No data is sent to any server.
       </p>
     </div>
   </div>

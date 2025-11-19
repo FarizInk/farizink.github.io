@@ -1,9 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
   import { ChevronLeft, Hash, Upload, Shield, FileText, Zap } from '@lucide/svelte';
-  import Button from '../../components/ui/Button.svelte';
-  import Input from '../../components/ui/Input.svelte';
-  import Textarea from '../../components/ui/Textarea.svelte';
 
   let inputText = $state('');
   let encodedText = $state('');
@@ -209,11 +206,11 @@
     <!-- Text Converter -->
     <!-- Controls -->
     <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
-      <Button onclick={encodeBase64} variant="primary">Encode to Base64</Button>
-      <Button onclick={decodeBase64} variant="secondary">Decode from Base64</Button>
-      <Button onclick={loadSampleText} variant="success">Load Sample Text</Button>
-      <Button onclick={loadSampleBase64} variant="primary">Load Sample Base64</Button>
-      <Button onclick={clearAll} variant="ghost">Clear All</Button>
+      <button class="btn btn-primary" onclick={encodeBase64}>Encode to Base64</button>
+      <button class="btn btn-primary" onclick={decodeBase64}>Decode from Base64</button>
+      <button class="btn btn-primary" onclick={loadSampleText}>Load Sample Text</button>
+      <button class="btn btn-primary" onclick={loadSampleBase64}>Load Sample Base64</button>
+      <button class="btn btn-primary" onclick={clearAll}>Clear All</button>
     </div>
 
     <!-- Error Display -->
@@ -228,13 +225,15 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Input Section -->
       <div>
-        <Textarea
+        <textarea
+          class="textarea"
           bind:value={inputText}
           placeholder="Enter text or Base64 string to encode/decode..."
-          label="Input"
-          helperText={`${inputText.length} characters`}
           rows={16}
-        />
+        ></textarea>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-right">
+          {inputText.length} characters
+        </p>
       </div>
 
       <!-- Results Section -->
@@ -244,22 +243,20 @@
           <div class="flex justify-between items-center mb-2">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Base64 Result</h2>
             {#if encodedText}
-              <Button
+              <button
+                class="btn btn-primary btn-sm"
                 onclick={() => copyToClipboard(encodedText, 'encoded')}
-                variant="primary"
-                size="sm"
               >
                 {copiedText === 'encoded' ? '✓ Copied!' : 'Copy'}
-              </Button>
+              </button>
             {/if}
           </div>
-          <Textarea
+          <textarea
+            class="textarea"
             bind:value={encodedText}
-            readonly
             placeholder="Base64 encoded text will appear here..."
             rows={7}
-            variant="default"
-          />
+          ></textarea>
         </div>
 
         <!-- Decoded Result -->
@@ -267,22 +264,20 @@
           <div class="flex justify-between items-center mb-2">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Decoded Result</h2>
             {#if decodedText}
-              <Button
+              <button
+                class="btn btn-primary btn-sm"
                 onclick={() => copyToClipboard(decodedText, 'decoded')}
-                variant="primary"
-                size="sm"
               >
                 {copiedText === 'decoded' ? '✓ Copied!' : 'Copy'}
-              </Button>
+              </button>
             {/if}
           </div>
-          <Textarea
+          <textarea
+            class="textarea"
             bind:value={decodedText}
-            readonly
             placeholder="Decoded text will appear here..."
             rows={7}
-            variant="default"
-          />
+          ></textarea>
         </div>
       </div>
     </div>
@@ -308,7 +303,7 @@
             </span>
             <span class="text-gray-600 dark:text-gray-400"> or drag and drop </span>
           </label>
-          <Input id="file-upload" type="file" onchange={handleFileSelect} class="hidden" />
+          <input class="input hidden" id="file-upload" type="file" onchange={handleFileSelect} />
           <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Supports any file type</p>
         </div>
 
@@ -377,20 +372,19 @@
                   >Base64 Data:</span
                 >
                 <div class="flex gap-2">
-                  <Button
+                  <button
+                    class="btn btn-primary btn-sm"
                     onclick={() =>
                       fileResult && copyToClipboard(fileResult.encoded, 'file-encoded')}
-                    variant="primary"
-                    size="sm"
                   >
                     {copiedText === 'file-encoded' ? '✓ Copied!' : 'Copy'}
-                  </Button>
-                  <Button onclick={downloadEncodedFile} variant="success" size="sm">
+                  </button>
+                  <button class="btn btn-primary btn-sm" onclick={downloadEncodedFile}>
                     Download
-                  </Button>
+                  </button>
                 </div>
               </div>
-              <Textarea readonly value={fileResult.encoded} rows={8} variant="default" />
+              <textarea class="textarea" value={fileResult.encoded} rows={8}></textarea>
             </div>
           </div>
         </div>

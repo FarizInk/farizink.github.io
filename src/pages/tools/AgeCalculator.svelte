@@ -1,8 +1,6 @@
 <script lang="ts">
   import { ChevronLeft, Calendar, Clock, Gift, Heart, Star, RotateCcw, Copy } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
-  import Button from '../../components/ui/Button.svelte';
-  import Input from '../../components/ui/Input.svelte';
 
   // Input state
   let birthDate = $state('');
@@ -384,24 +382,18 @@
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Enter Dates</h2>
         <div class="flex gap-2">
-          <Button onclick={loadExample} variant="secondary" size="sm">Example</Button>
-          <Button onclick={reset} variant="secondary" size="sm">
-            <RotateCcw class="w-4 h-4" slot="leftIcon" />
+          <button class="btn btn-primary btn-sm" onclick={loadExample}>Example</button>
+          <button class="btn btn-primary btn-sm" onclick={reset}>
+            <RotateCcw class="w-4 h-4 mr-2" />
             Reset
-          </Button>
+          </button>
         </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Input
-          id="birth-date"
-          type="date"
-          bind:value={birthDate}
-          label="Date of Birth"
-          max={currentDate}
-        />
+        <input class="input" id="birth-date" type="date" bind:value={birthDate} max={currentDate} />
 
-        <Input id="current-date" type="date" bind:value={currentDate} label="Current Date" />
+        <input class="input" id="current-date" type="date" bind:value={currentDate} />
       </div>
 
       <!-- Calculation Mode -->
@@ -705,17 +697,16 @@
         >
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Copy</h3>
           <div class="space-y-2">
-            <Button onclick={() => copyToClipboard(formatAgeText())} variant="primary" fullWidth>
-              <Copy class="w-4 h-4" slot="leftIcon" />
+            <button class="btn btn-primary w-full" onclick={() => copyToClipboard(formatAgeText())}>
+              <Copy class="w-4 h-4 mr-2" />
               Copy Age Text
-            </Button>
-            <Button
+            </button>
+            <button
+              class="btn btn-primary w-full"
               onclick={() => copyToClipboard(`${years} years, ${months} months, ${days} days`)}
-              variant="secondary"
-              fullWidth
             >
               Copy Detailed Age
-            </Button>
+            </button>
           </div>
         </div>
       </div>

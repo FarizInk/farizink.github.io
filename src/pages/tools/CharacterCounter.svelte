@@ -10,8 +10,6 @@
     ChevronLeft
   } from '@lucide/svelte';
   import { navigate } from '../../lib/router.js';
-  import Button from '../../components/ui/Button.svelte';
-  import Textarea from '../../components/ui/Textarea.svelte';
 
   // Component state
   let inputText = $state('');
@@ -174,10 +172,10 @@ ${inputText}
   <!-- Header -->
   <div class="mb-8">
     <div class="flex items-center gap-4 mb-4">
-      <Button onclick={handleBackToTools} variant="ghost">
-        <ChevronLeft class="w-5 h-5" slot="leftIcon" />
+      <button class="btn btn-primary" onclick={handleBackToTools}>
+        <ChevronLeft class="w-5 h-5 mr-2" />
         Back to Tools
-      </Button>
+      </button>
     </div>
 
     <div class="text-center mb-8">
@@ -228,16 +226,17 @@ ${inputText}
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Input Text</h2>
           <div class="flex items-center gap-2">
-            <Button onclick={loadSampleText} variant="secondary" size="sm">Load Sample</Button>
-            <Button onclick={clearAll} variant="secondary" size="sm">Clear</Button>
+            <button class="btn btn-primary btn-sm" onclick={loadSampleText}>Load Sample</button>
+            <button class="btn btn-primary btn-sm" onclick={clearAll}>Clear</button>
           </div>
         </div>
 
-        <Textarea
+        <textarea
+          class="textarea"
           bind:value={inputText}
           placeholder="Enter your text here to count characters, words, and analyze..."
           rows={16}
-        />
+        ></textarea>
 
         <!-- Character Limit Indicators -->
         {#if stats && stats.totalChars > 0}
@@ -340,20 +339,19 @@ ${inputText}
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Actions</h2>
 
         <div class="space-y-3">
-          <Button
+          <button
+            class="btn btn-primary w-full"
             onclick={() => copyToClipboard(inputText)}
             disabled={!inputText}
-            variant="primary"
-            fullWidth
           >
-            <Copy class="w-4 h-4" slot="leftIcon" />
+            <Copy class="w-4 h-4 mr-2" />
             Copy Text
-          </Button>
+          </button>
 
-          <Button onclick={downloadReport} disabled={!stats} variant="secondary" fullWidth>
-            <Calculator class="w-4 h-4" slot="leftIcon" />
+          <button class="btn btn-primary w-full" onclick={downloadReport} disabled={!stats}>
+            <Calculator class="w-4 h-4 mr-2" />
             Download Report
-          </Button>
+          </button>
         </div>
       </div>
     </div>

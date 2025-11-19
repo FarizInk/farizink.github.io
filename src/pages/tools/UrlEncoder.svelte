@@ -1,8 +1,6 @@
 <script lang="ts">
   import { navigate } from '../../lib/router.js';
   import { ChevronLeft, Link, Shield, Zap, CreditCard } from '@lucide/svelte';
-  import Button from '../../components/ui/Button.svelte';
-  import Textarea from '../../components/ui/Textarea.svelte';
 
   let inputText = $state('');
   let encodedText = $state('');
@@ -286,7 +284,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
           <div class="relative">
             <textarea
               bind:value={encodedText}
-              readonly
+             
               placeholder="Encoded URL will appear here..."
               class="w-full h-28 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none"
             ></textarea>
@@ -318,7 +316,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
           <div class="relative">
             <textarea
               bind:value={decodedText}
-              readonly
+             
               placeholder="Decoded URL will appear here..."
               class="w-full h-28 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none"
             ></textarea>
