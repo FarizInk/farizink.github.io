@@ -44,7 +44,10 @@
   async function installPWA() {
     if (!deferredPrompt) return;
 
-    const promptEvent = deferredPrompt as unknown as { prompt: () => void; userChoice: Promise<{ outcome: string }> };
+    const promptEvent = deferredPrompt as unknown as {
+      prompt: () => void;
+      userChoice: Promise<{ outcome: string }>;
+    };
     promptEvent.prompt();
     const { outcome } = await promptEvent.userChoice;
 

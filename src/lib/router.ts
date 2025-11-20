@@ -159,7 +159,10 @@ function handleLocationChange() {
 
 // Find matching route
 function findMatchingRoute(path: string): Route | null {
-  console.log('Available routes:', routes.map(r => r.path));
+  console.log(
+    'Available routes:',
+    routes.map(r => r.path)
+  );
   console.log('Checking path:', path);
 
   for (const route of routes) {

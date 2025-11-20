@@ -296,12 +296,14 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 ## Portfolio Purpose & Strategy
 
 ### Primary Objectives:
+
 1. **Professional Portfolio** - Showcase Fariz's expertise as a Software Engineer
 2. **Skill Demonstration** - Technical capabilities through real implementation
 3. **Value Proposition** - Provide useful utilities that benefit the developer community
 4. **Personal Branding** - Positioning as a helpful, skilled developer
 
 ### Strategic Approach:
+
 - **Utility-First Portfolio**: Combines traditional portfolio with practical tools
 - **Technical Showcase**: 34 tools demonstrate frontend/backend skills, UX design, and problem-solving
 - **Community Value**: Free tools serve as ongoing contribution to developer community

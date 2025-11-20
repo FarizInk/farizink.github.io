@@ -14,7 +14,7 @@ const STATIC_ASSETS = [
   '/favicon-32x32.png',
   '/apple-touch-icon.png',
   '/android-chrome-192x192.png',
-  '/android-chrome-512x512.png',
+  '/android-chrome-512x512.png'
   // CSS and JS bundles will be cached dynamically
 ];
 
@@ -22,16 +22,17 @@ const STATIC_ASSETS = [
 const IGNORED_PATTERNS = [
   /^https:\/\/analytics\.umami\.is/,
   /^https:\/\/fonts\.googleapis\.com/,
-  /^https:\/\/fonts\.gstatic\.com/,
+  /^https:\/\/fonts\.gstatic\.com/
 ];
 
 // Install event - cache static assets
-self.addEventListener('install', (event) => {
+self.addEventListener('install', event => {
   console.log('[SW] Installing service worker');
 
   event.waitUntil(
-    caches.open(STATIC_CACHE)
-      .then((cache) => {
+    caches
+      .open(STATIC_CACHE)
+      .then(cache => {
         console.log('[SW] Caching static assets');
         return cache.addAll(STATIC_ASSETS);
       })
@@ -43,14 +44,15 @@ self.addEventListener('install', (event) => {
 });
 
 // Activate event - clean up old caches
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', event => {
   console.log('[SW] Activating service worker');
 
   event.waitUntil(
-    caches.keys()
-      .then((cacheNames) => {
+    caches
+      .keys()
+      .then(cacheNames => {
         return Promise.all(
-          cacheNames.map((cacheName) => {
+          cacheNames.map(cacheName => {
             if (cacheName !== STATIC_CACHE && cacheName !== RUNTIME_CACHE) {
               console.log('[SW] Deleting old cache:', cacheName);
               return caches.delete(cacheName);
@@ -66,7 +68,7 @@ self.addEventListener('activate', (event) => {
 });
 
 // Fetch event - serve cached content when offline
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
 
@@ -86,33 +88,31 @@ self.addEventListener('fetch', (event) => {
   // For navigation requests (HTML pages)
   if (request.mode === 'navigate') {
     event.respondWith(
-      caches.match(request)
-        .then((response) => {
-          // Return cached version if available
-          if (response) {
-            console.log('[SW] Serving cached page:', request.url);
-            return response;
-          }
+      caches.match(request).then(response => {
+        // Return cached version if available
+        if (response) {
+          console.log('[SW] Serving cached page:', request.url);
+          return response;
+        }
 
-          // Otherwise fetch from network
-          return fetch(request)
-            .then((response) => {
-              // Cache successful responses
-              if (response.ok || response.status === 0) {
-                const responseClone = response.clone();
-                caches.open(RUNTIME_CACHE)
-                  .then((cache) => {
-                    cache.put(request, responseClone);
-                  });
-              }
-              return response;
-            })
-            .catch(() => {
-              // If network fails and it's a navigation request, serve the index.html
-              console.log('[SW] Network failed, serving offline page');
-              return caches.match('/');
-            });
-        })
+        // Otherwise fetch from network
+        return fetch(request)
+          .then(response => {
+            // Cache successful responses
+            if (response.ok || response.status === 0) {
+              const responseClone = response.clone();
+              caches.open(RUNTIME_CACHE).then(cache => {
+                cache.put(request, responseClone);
+              });
+            }
+            return response;
+          })
+          .catch(() => {
+            // If network fails and it's a navigation request, serve the index.html
+            console.log('[SW] Network failed, serving offline page');
+            return caches.match('/');
+          });
+      })
     );
     return;
   }
@@ -120,32 +120,29 @@ self.addEventListener('fetch', (event) => {
   // For static assets (CSS, JS, images, icons)
   if (url.origin === self.location.origin) {
     event.respondWith(
-      caches.match(request)
-        .then((response) => {
-          if (response) {
-            console.log('[SW] Serving cached asset:', request.url);
-            return response;
-          }
+      caches.match(request).then(response => {
+        if (response) {
+          console.log('[SW] Serving cached asset:', request.url);
+          return response;
+        }
 
-          // Fetch from network and cache
-          return fetch(request)
-            .then((response) => {
-              if (response.ok || response.status === 0) {
-                const responseClone = response.clone();
-                caches.open(RUNTIME_CACHE)
-                  .then((cache) => {
-                    cache.put(request, responseClone);
-                  });
-              }
-              return response;
+        // Fetch from network and cache
+        return fetch(request).then(response => {
+          if (response.ok || response.status === 0) {
+            const responseClone = response.clone();
+            caches.open(RUNTIME_CACHE).then(cache => {
+              cache.put(request, responseClone);
             });
-        })
+          }
+          return response;
+        });
+      })
     );
   }
 });
 
 // Background sync for form submissions (optional future feature)
-self.addEventListener('sync', (event) => {
+self.addEventListener('sync', event => {
   if (event.tag === 'background-sync') {
     console.log('[SW] Background sync triggered');
     // Handle background sync tasks here
@@ -153,7 +150,7 @@ self.addEventListener('sync', (event) => {
 });
 
 // Push notifications (for Pomodoro Timer)
-self.addEventListener('push', (event) => {
+self.addEventListener('push', event => {
   if (!event.data) return;
 
   const options = event.data.json();
@@ -176,18 +173,16 @@ self.addEventListener('push', (event) => {
 });
 
 // Handle notification clicks
-self.addEventListener('notificationclick', (event) => {
+self.addEventListener('notificationclick', event => {
   event.notification.close();
 
   if (event.action === 'open' || !event.action) {
-    event.waitUntil(
-      self.clients.openWindow('/tools/pomodoro-timer')
-    );
+    event.waitUntil(self.clients.openWindow('/tools/pomodoro-timer'));
   }
 });
 
 // Message handling for cache management
-self.addEventListener('message', (event) => {
+self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
@@ -195,10 +190,9 @@ self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'CACHE_UPDATE') {
     // Manual cache update request
     event.waitUntil(
-      caches.open(RUNTIME_CACHE)
-        .then((cache) => {
-          return cache.add(event.data.url);
-        })
+      caches.open(RUNTIME_CACHE).then(cache => {
+        return cache.add(event.data.url);
+      })
     );
   }
 });

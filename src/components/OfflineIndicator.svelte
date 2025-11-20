@@ -61,7 +61,9 @@
 <!-- Offline Notice -->
 {#if showOfflineNotice}
   <div class="fixed bottom-4 left-4 z-40 slide-in-from-bottom duration-300">
-    <div class="bg-orange-500 text-white backdrop-blur-sm rounded-lg shadow-lg p-3 flex items-center gap-3 min-w-0">
+    <div
+      class="bg-orange-500 text-white backdrop-blur-sm rounded-lg shadow-lg p-3 flex items-center gap-3 min-w-0"
+    >
       <WifiOff class="w-4 h-4 flex-shrink-0" />
       <div class="min-w-0 flex-1">
         <p class="font-semibold text-xs">You're offline</p>
@@ -101,7 +103,9 @@
 <!-- Connection Status Badge (shown when offline for extended time) -->
 {#if !isOnline && !showOfflineNotice}
   <div class="fixed bottom-4 right-4 z-30">
-    <div class="bg-gray-900/90 text-white backdrop-blur-sm rounded-lg px-3 py-2 flex items-center gap-2 text-sm">
+    <div
+      class="bg-gray-900/90 text-white backdrop-blur-sm rounded-lg px-3 py-2 flex items-center gap-2 text-sm"
+    >
       <WifiOff class="w-4 h-4" />
       <span>Offline Mode</span>
     </div>
