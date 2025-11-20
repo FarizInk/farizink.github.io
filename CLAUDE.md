@@ -1,4 +1,4 @@
-# Project Documentation - Fariz Ink Website
+# Project Documentation - Fariz Website
 
 ## Project Overview
 
