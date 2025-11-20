@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Software Engineer based in Surabaya, Indonesia. Built with modern web technologies, the site features a comprehensive collection of 33 developer tools, showcasing expertise in frontend and backend development with a focus on creating practical utilities for the developer community.
+This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Software Engineer based in Surabaya, Indonesia. Built with modern web technologies, the site primarily showcases Fariz's professional profile, skills, and experience while featuring a comprehensive collection of 34 developer tools as a demonstration of technical capabilities and as a value-add service for the developer community. This is a portfolio website that provides real utility beyond just displaying profile information.
 
 ## Technology Stack
 
@@ -64,7 +64,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 
 ### Developer Tools Collection
 
-33 fully implemented developer tools organized into 4 categories:
+34 fully implemented developer tools organized into 4 categories (featured as technical demonstrations and utility services):
 
 **Text & Data Processing (8 tools)**:
 
@@ -96,7 +96,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 - CSS Shadow Generator - Visual box shadow creation
 - Meta Tag Generator - SEO-friendly meta tags
 
-**Utilities & Calculators (12 tools)**:
+**Utilities & Calculators (13 tools)**:
 
 - Age Calculator - Exact age with fun facts
 - BMI Calculator - Health metrics with categories
@@ -109,6 +109,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 - Cron Expression Generator - Visual cron builder
 - ASCII Art Generator - Text and image to ASCII
 - Markdown Preview - Live markdown rendering
+- Pomodoro Timer - Customizable productivity timer with work/break cycles
 
 ### Design System
 
@@ -292,15 +293,31 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 - **Type Safety**: Use TypeScript for all new code
 - **Dark Mode**: Ensure dark mode works across all components
 
+## Portfolio Purpose & Strategy
+
+### Primary Objectives:
+1. **Professional Portfolio** - Showcase Fariz's expertise as a Software Engineer
+2. **Skill Demonstration** - Technical capabilities through real implementation
+3. **Value Proposition** - Provide useful utilities that benefit the developer community
+4. **Personal Branding** - Positioning as a helpful, skilled developer
+
+### Strategic Approach:
+- **Utility-First Portfolio**: Combines traditional portfolio with practical tools
+- **Technical Showcase**: 34 tools demonstrate frontend/backend skills, UX design, and problem-solving
+- **Community Value**: Free tools serve as ongoing contribution to developer community
+- **SEO & Traffic**: Tools provide organic traffic and repeat visitors
+- **Professional Credibility**: Functional products build trust more than descriptions alone
+
 ## Future Roadmap
 
 Potential areas for expansion:
 
-- Additional developer tools based on user feedback
-- Advanced features for existing tools
-- Enhanced analytics and usage tracking
-- API integrations for extended functionality
-- Performance monitoring and optimization
-- Enhanced mobile app-like experience
+- Additional developer tools based on user feedback and technical interests
+- Advanced features for existing tools demonstrating deeper expertise
+- Enhanced analytics and usage tracking for portfolio effectiveness
+- API integrations showing backend integration capabilities
+- Performance monitoring and optimization showcasing technical diligence
+- Enhanced mobile app-like experience demonstrating modern PWA knowledge
+- Case studies and implementation details for selected tools
 
-This project demonstrates modern web development practices with Svelte 5, TypeScript, and Tailwind CSS, creating a maintainable, scalable, and performant portfolio website with practical developer tools. The architecture emphasizes developer experience, performance, and accessibility while maintaining a clean and professional design.
+This project demonstrates modern web development practices with Svelte 5, TypeScript, and Tailwind CSS, creating a maintainable, scalable, and performant portfolio website that goes beyond traditional profile display. The architecture emphasizes developer experience, performance, and accessibility while maintaining a clean and professional design that serves both personal branding and community utility purposes.

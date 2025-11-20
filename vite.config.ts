@@ -8,9 +8,17 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: undefined
+        manualChunks: {
+          vendor: ['svelte', '@lucide/svelte'],
+          router: ['./src/lib/router.js', './src/lib/Router.svelte'],
+          notifications: ['svelte-sonner']
+        }
       }
     }
+  },
+  // Enable PWA build optimizations
+  define: {
+    APP_VERSION: JSON.stringify(process.env.npm_package_version || '1.0.0')
   },
   // Handle client-side routing for SPA
   preview: {

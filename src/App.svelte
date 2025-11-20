@@ -8,6 +8,8 @@
   import LoveIcon from './components/icons/LoveIcon.svelte';
   import Thanks from './components/Thanks.svelte';
   import Modal from './components/Modal.svelte';
+  import PWAInstallPrompt from './components/PWAInstallPrompt.svelte';
+  import OfflineIndicator from './components/OfflineIndicator.svelte';
   import { Toaster } from 'svelte-sonner';
   import { allRoutes } from './routes/index.js';
   import { router } from './lib/router.js';
@@ -67,6 +69,17 @@
   onMount(() => {
     createRouter(routes);
 
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then((registration) => {
+          console.log('Service Worker registered:', registration);
+        })
+        .catch((error) => {
+          console.log('Service Worker registration failed:', error);
+        });
+    }
+
     // Subscribe to router changes to track current path
     const unsubscribe = router.subscribe(routerState => {
       currentPath = routerState.currentPath;
@@ -108,5 +121,9 @@
 <Modal isOpen={showThanksModal} onClose={closeThanksModal} maxW="max-w-2xl">
   <Thanks />
 </Modal>
+
+<!-- PWA Components -->
+<PWAInstallPrompt />
+<OfflineIndicator />
 
 <Toaster position="top-center" theme={isDark ? 'dark' : 'light'} />
