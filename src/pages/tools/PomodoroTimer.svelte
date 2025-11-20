@@ -1,5 +1,15 @@
 <script lang="ts">
-  import { Play, Pause, RotateCcw, Coffee, Clock, Bell, BellOff, BellRing, Settings } from '@lucide/svelte';
+  import {
+    Play,
+    Pause,
+    RotateCcw,
+    Coffee,
+    Clock,
+    Bell,
+    BellOff,
+    BellRing,
+    Settings
+  } from '@lucide/svelte';
 
   // Default timer settings (Pomodoro recommended)
   const DEFAULT_WORK_DURATION = 25 * 60; // 25 minutes in seconds
@@ -11,30 +21,18 @@
   let shortBreakDuration = $state(DEFAULT_SHORT_BREAK);
   let longBreakDuration = $state(DEFAULT_LONG_BREAK);
 
-  // Helper getters for minute values for input fields
-  let workMinutesInput = $state(Math.floor(DEFAULT_WORK_DURATION / 60));
-  let shortBreakMinutesInput = $state(Math.floor(DEFAULT_SHORT_BREAK / 60));
-  let longBreakMinutesInput = $state(Math.floor(DEFAULT_LONG_BREAK / 60));
+  // Helper getters for minute values for input fields with writable derived
+  const workMinutesInput = $derived.by(() => Math.floor(workDuration / 60));
+  const shortBreakMinutesInput = $derived.by(() => Math.floor(shortBreakDuration / 60));
+  const longBreakMinutesInput = $derived.by(() => Math.floor(longBreakDuration / 60));
+
+  // Editor state for modifying values
+  let editingWorkMinutes = $state(Math.floor(DEFAULT_WORK_DURATION / 60));
+  let editingShortBreakMinutes = $state(Math.floor(DEFAULT_SHORT_BREAK / 60));
+  let editingLongBreakMinutes = $state(Math.floor(DEFAULT_LONG_BREAK / 60));
 
   // Backup values for editing
-  let backupWorkMinutes = $state(0);
-  let backupShortBreakMinutes = $state(0);
-  let backupLongBreakMinutes = $state(0);
   let backupSessionCount = $state(0);
-
-  
-  // Update input values when duration changes from other sources
-  $effect(() => {
-    workMinutesInput = Math.floor(workDuration / 60);
-  });
-
-  $effect(() => {
-    shortBreakMinutesInput = Math.floor(shortBreakDuration / 60);
-  });
-
-  $effect(() => {
-    longBreakMinutesInput = Math.floor(longBreakDuration / 60);
-  });
 
   // Timer state
   let timeLeft = $state(DEFAULT_WORK_DURATION);
@@ -103,20 +101,19 @@
     timeLeft = sessionDuration;
   }
 
-  
   function startEditingSettings(): void {
     pauseTimer();
-    backupWorkMinutes = workMinutesInput;
-    backupShortBreakMinutes = shortBreakMinutesInput;
-    backupLongBreakMinutes = longBreakMinutesInput;
+    editingWorkMinutes = workMinutesInput;
+    editingShortBreakMinutes = shortBreakMinutesInput;
+    editingLongBreakMinutes = longBreakMinutesInput;
     backupSessionCount = sessionCount;
     isEditingSettings = true;
   }
 
   function applySettings(): void {
-    workDuration = workMinutesInput * 60;
-    shortBreakDuration = shortBreakMinutesInput * 60;
-    longBreakDuration = longBreakMinutesInput * 60;
+    workDuration = editingWorkMinutes * 60;
+    shortBreakDuration = editingShortBreakMinutes * 60;
+    longBreakDuration = editingLongBreakMinutes * 60;
     isEditingSettings = false;
 
     // Reset timer if it was paused
@@ -126,22 +123,18 @@
   }
 
   function resetToDefaultsInEditor(): void {
-    workMinutesInput = Math.floor(DEFAULT_WORK_DURATION / 60);
-    shortBreakMinutesInput = Math.floor(DEFAULT_SHORT_BREAK / 60);
-    longBreakMinutesInput = Math.floor(DEFAULT_LONG_BREAK / 60);
+    editingWorkMinutes = Math.floor(DEFAULT_WORK_DURATION / 60);
+    editingShortBreakMinutes = Math.floor(DEFAULT_SHORT_BREAK / 60);
+    editingLongBreakMinutes = Math.floor(DEFAULT_LONG_BREAK / 60);
     sessionCount = 0;
   }
 
   function cancelEditingSettings(): void {
-    workMinutesInput = backupWorkMinutes;
-    shortBreakMinutesInput = backupShortBreakMinutes;
-    longBreakMinutesInput = backupLongBreakMinutes;
+    // Restore the actual duration values from backup
+    workDuration = editingWorkMinutes * 60;
+    shortBreakDuration = editingShortBreakMinutes * 60;
+    longBreakDuration = editingLongBreakMinutes * 60;
     sessionCount = backupSessionCount;
-
-    // Restore the actual duration values
-    workDuration = workMinutesInput * 60;
-    shortBreakDuration = shortBreakMinutesInput * 60;
-    longBreakDuration = longBreakMinutesInput * 60;
 
     isEditingSettings = false;
   }
@@ -285,14 +278,12 @@
                 <input
                   id="edit-work-duration"
                   type="number"
-                  bind:value={workMinutesInput}
+                  bind:value={editingWorkMinutes}
                   min="1"
                   max="60"
                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 />
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Recommended: 25 minutes
-                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Recommended: 25 minutes</p>
               </div>
 
               <!-- Short Break -->
@@ -306,14 +297,12 @@
                 <input
                   id="edit-short-break"
                   type="number"
-                  bind:value={shortBreakMinutesInput}
+                  bind:value={editingShortBreakMinutes}
                   min="1"
                   max="30"
                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 />
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Recommended: 5 minutes
-                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Recommended: 5 minutes</p>
               </div>
 
               <!-- Long Break -->
@@ -327,14 +316,12 @@
                 <input
                   id="edit-long-break"
                   type="number"
-                  bind:value={longBreakMinutesInput}
+                  bind:value={editingLongBreakMinutes}
                   min="1"
                   max="60"
                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 />
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Recommended: 15 minutes
-                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Recommended: 15 minutes</p>
               </div>
 
               <!-- Session Count -->
@@ -448,7 +435,9 @@
               <button
                 onclick={startTimer}
                 disabled={isEditingSettings}
-                class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200 {isEditingSettings ? 'opacity-50 cursor-not-allowed' : ''}"
+                class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200 {isEditingSettings
+                  ? 'opacity-50 cursor-not-allowed'
+                  : ''}"
               >
                 <Play class="w-5 h-5" />
                 Start
@@ -457,7 +446,9 @@
               <button
                 onclick={pauseTimer}
                 disabled={isEditingSettings}
-                class="flex items-center gap-2 px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors duration-200 {isEditingSettings ? 'opacity-50 cursor-not-allowed' : ''}"
+                class="flex items-center gap-2 px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors duration-200 {isEditingSettings
+                  ? 'opacity-50 cursor-not-allowed'
+                  : ''}"
               >
                 <Pause class="w-5 h-5" />
                 Pause
@@ -467,7 +458,9 @@
             <button
               onclick={resetTimer}
               disabled={isEditingSettings}
-              class="flex items-center gap-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-200 {isEditingSettings ? 'opacity-50 cursor-not-allowed' : ''}"
+              class="flex items-center gap-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-200 {isEditingSettings
+                ? 'opacity-50 cursor-not-allowed'
+                : ''}"
             >
               <RotateCcw class="w-5 h-5" />
               Reset
@@ -476,7 +469,10 @@
             <button
               onclick={startEditingSettings}
               disabled={isRunning || isEditingSettings}
-              class="flex items-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors duration-200 {isRunning || isEditingSettings ? 'opacity-50 cursor-not-allowed' : ''}"
+              class="flex items-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors duration-200 {isRunning ||
+              isEditingSettings
+                ? 'opacity-50 cursor-not-allowed'
+                : ''}"
               title="Edit Timer Settings"
             >
               <Settings class="w-5 h-5" />
@@ -499,7 +495,9 @@
                 </p>
               {:else if Notification.permission === 'granted'}
                 <div class="space-y-3">
-                  <div class="flex items-center justify-center gap-2 text-sm text-green-600 dark:text-green-400">
+                  <div
+                    class="flex items-center justify-center gap-2 text-sm text-green-600 dark:text-green-400"
+                  >
                     <BellRing class="w-4 h-4" />
                     Notifications enabled
                   </div>
@@ -511,7 +509,9 @@
                   </button>
                 </div>
               {:else if Notification.permission === 'denied'}
-                <div class="flex items-center justify-center gap-2 text-sm text-red-600 dark:text-red-400">
+                <div
+                  class="flex items-center justify-center gap-2 text-sm text-red-600 dark:text-red-400"
+                >
                   <BellOff class="w-4 h-4" />
                   Notifications blocked
                 </div>
