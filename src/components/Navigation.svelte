@@ -1,6 +1,7 @@
 <script lang="ts">
   import { navigate } from '../lib/router.js';
   import { onMount } from 'svelte';
+  import { fly, fade } from 'svelte/transition';
   import {
     Sun,
     Moon,
@@ -333,16 +334,16 @@
 <!-- Floating Menu Icon (Top Right) -->
 <button
   onclick={() => (drawerOpen = true)}
-  class="fixed top-6 right-6 z-50 w-12 h-12 bg-white dark:bg-gray-800 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center hover:scale-105"
+  class="fixed top-6 right-6 z-50 w-12 h-12 bg-white dark:bg-gray-800 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center hover:scale-105 active:scale-95"
   title="Menu"
 >
   <Menu class="w-6 h-6 text-gray-700 dark:text-gray-300" />
 </button>
 
-<!-- Native Sidebar -->
+<!-- Backdrop -->
 {#if drawerOpen}
-  <!-- Backdrop -->
   <div
+    transition:fade={{ duration: 200 }}
     class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
     onclick={() => (drawerOpen = false)}
     onkeydown={e => e.key === 'Escape' && (drawerOpen = false)}
@@ -351,12 +352,13 @@
     aria-label="Navigation menu"
     tabindex="-1"
   ></div>
+{/if}
 
-  <!-- Sidebar -->
+<!-- Sidebar -->
+{#if drawerOpen}
   <div
-    class="fixed top-0 right-0 h-full w-80 max-w-[90vw] bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 z-50 transform transition-transform duration-300 ease-out {drawerOpen
-      ? 'translate-x-0'
-      : 'translate-x-full'}"
+    transition:fly={{ x: 320, duration: 300, opacity: 0 }}
+    class="fixed top-0 right-0 h-full w-80 max-w-[90vw] bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 z-50"
   >
     <div class="flex flex-col h-full">
       <!-- Header -->
