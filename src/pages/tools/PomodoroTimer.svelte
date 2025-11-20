@@ -1,15 +1,40 @@
 <script lang="ts">
-  import { Play, Pause, RotateCcw, Coffee, Settings, Clock } from '@lucide/svelte';
+  import { Play, Pause, RotateCcw, Coffee, Clock, Bell, BellOff, BellRing, Settings } from '@lucide/svelte';
 
   // Default timer settings (Pomodoro recommended)
   const DEFAULT_WORK_DURATION = 25 * 60; // 25 minutes in seconds
   const DEFAULT_SHORT_BREAK = 5 * 60; // 5 minutes in seconds
   const DEFAULT_LONG_BREAK = 15 * 60; // 15 minutes in seconds
 
-  // Customizable timer settings
+  // Customizable timer settings (stored in seconds)
   let workDuration = $state(DEFAULT_WORK_DURATION);
   let shortBreakDuration = $state(DEFAULT_SHORT_BREAK);
   let longBreakDuration = $state(DEFAULT_LONG_BREAK);
+
+  // Helper getters for minute values for input fields
+  let workMinutesInput = $state(Math.floor(DEFAULT_WORK_DURATION / 60));
+  let shortBreakMinutesInput = $state(Math.floor(DEFAULT_SHORT_BREAK / 60));
+  let longBreakMinutesInput = $state(Math.floor(DEFAULT_LONG_BREAK / 60));
+
+  // Backup values for editing
+  let backupWorkMinutes = $state(0);
+  let backupShortBreakMinutes = $state(0);
+  let backupLongBreakMinutes = $state(0);
+  let backupSessionCount = $state(0);
+
+  
+  // Update input values when duration changes from other sources
+  $effect(() => {
+    workMinutesInput = Math.floor(workDuration / 60);
+  });
+
+  $effect(() => {
+    shortBreakMinutesInput = Math.floor(shortBreakDuration / 60);
+  });
+
+  $effect(() => {
+    longBreakMinutesInput = Math.floor(longBreakDuration / 60);
+  });
 
   // Timer state
   let timeLeft = $state(DEFAULT_WORK_DURATION);
@@ -18,6 +43,7 @@
   let sessionCount = $state(0);
   let interval: ReturnType<typeof setInterval> | null = null;
   let showSettings = $state(false);
+  let isEditingSettings = $state(false);
 
   // Format time as MM:SS
   const formattedTime = $derived(formatTime(timeLeft));
@@ -77,25 +103,47 @@
     timeLeft = sessionDuration;
   }
 
-  function applyCustomSettings(): void {
+  
+  function startEditingSettings(): void {
     pauseTimer();
-    // Only reset timeLeft if we're at the beginning of a session
-    if (timeLeft === sessionDuration || timeLeft > sessionDuration) {
-      timeLeft = sessionDuration;
-    }
-    showSettings = false;
+    backupWorkMinutes = workMinutesInput;
+    backupShortBreakMinutes = shortBreakMinutesInput;
+    backupLongBreakMinutes = longBreakMinutesInput;
+    backupSessionCount = sessionCount;
+    isEditingSettings = true;
   }
 
-  function resetToDefaults(): void {
-    workDuration = DEFAULT_WORK_DURATION;
-    shortBreakDuration = DEFAULT_SHORT_BREAK;
-    longBreakDuration = DEFAULT_LONG_BREAK;
-    pauseTimer();
-    // Only reset timeLeft if we're at the beginning of a session
-    if (timeLeft === sessionDuration || timeLeft > sessionDuration) {
+  function applySettings(): void {
+    workDuration = workMinutesInput * 60;
+    shortBreakDuration = shortBreakMinutesInput * 60;
+    longBreakDuration = longBreakMinutesInput * 60;
+    isEditingSettings = false;
+
+    // Reset timer if it was paused
+    if (!isRunning) {
       timeLeft = sessionDuration;
     }
-    showSettings = false;
+  }
+
+  function resetToDefaultsInEditor(): void {
+    workMinutesInput = Math.floor(DEFAULT_WORK_DURATION / 60);
+    shortBreakMinutesInput = Math.floor(DEFAULT_SHORT_BREAK / 60);
+    longBreakMinutesInput = Math.floor(DEFAULT_LONG_BREAK / 60);
+    sessionCount = 0;
+  }
+
+  function cancelEditingSettings(): void {
+    workMinutesInput = backupWorkMinutes;
+    shortBreakMinutesInput = backupShortBreakMinutes;
+    longBreakMinutesInput = backupLongBreakMinutes;
+    sessionCount = backupSessionCount;
+
+    // Restore the actual duration values
+    workDuration = workMinutesInput * 60;
+    shortBreakDuration = shortBreakMinutesInput * 60;
+    longBreakDuration = longBreakMinutesInput * 60;
+
+    isEditingSettings = false;
   }
 
   function completeSession(): void {
@@ -164,7 +212,21 @@
 
   function requestNotificationPermission(): void {
     if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission();
+      Notification.requestPermission().then(permission => {
+        // Update reactive state to trigger UI re-render
+        showSettings = !showSettings;
+        showSettings = showSettings;
+        console.log('Notification permission:', permission);
+      });
+    }
+  }
+
+  function testNotification(): void {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification('Test Notification 🔔', {
+        body: 'Notifications are working! You will receive alerts when sessions end.',
+        icon: '/favicon.ico'
+      });
     }
   }
 
@@ -204,233 +266,301 @@
     <div class="lg:col-span-2">
       <!-- Timer Display -->
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-6">
-        <!-- Session Type -->
-        <div class="text-center mb-6">
-          <div
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium
-        {currentSession === 'work'
-              ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-              : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}"
-          >
-            {#if currentSession === 'work'}
-              <span>🧠 Work Session</span>
-            {:else if currentSession === 'shortBreak'}
-              <span>☕ Short Break</span>
-            {:else}
-              <span>🌟 Long Break</span>
-            {/if}
-          </div>
-        </div>
+        {#if isEditingSettings}
+          <!-- Settings Editor -->
+          <div class="max-w-md mx-auto">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-6 text-center">
+              Timer Settings
+            </h3>
 
-        <!-- Timer Circle -->
-        <div class="relative w-64 h-64 mx-auto mb-8">
-          <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-            <!-- Background circle -->
-            <circle
-              cx="50"
-              cy="50"
-              r="45"
-              stroke="currentColor"
-              stroke-width="8"
-              fill="none"
-              class="text-gray-200 dark:text-gray-700"
-            />
-            <!-- Progress circle -->
-            <circle
-              cx="50"
-              cy="50"
-              r="45"
-              stroke="currentColor"
-              stroke-width="8"
-              fill="none"
-              stroke-dasharray={2 * Math.PI * 45}
-              stroke-dashoffset={2 * Math.PI * 45 * (1 - progress / 100)}
-              class="transition-all duration-1000 ease-linear
-            {currentSession === 'work'
-                ? 'text-blue-600 dark:text-blue-400'
-                : 'text-green-600 dark:text-green-400'}"
-            />
-          </svg>
+            <div class="space-y-4">
+              <!-- Work Duration -->
+              <div>
+                <label
+                  for="edit-work-duration"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
+                  Work Duration (minutes)
+                </label>
+                <input
+                  id="edit-work-duration"
+                  type="number"
+                  bind:value={workMinutesInput}
+                  min="1"
+                  max="60"
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                />
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Recommended: 25 minutes
+                </p>
+              </div>
 
-          <!-- Time Display -->
-          <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <div class="text-5xl font-mono font-bold text-gray-900 dark:text-white mb-2">
-              {formattedTime}
-            </div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">
-              Session {sessionCount + 1}
-            </div>
-          </div>
-        </div>
+              <!-- Short Break -->
+              <div>
+                <label
+                  for="edit-short-break"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
+                  Short Break (minutes)
+                </label>
+                <input
+                  id="edit-short-break"
+                  type="number"
+                  bind:value={shortBreakMinutesInput}
+                  min="1"
+                  max="30"
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                />
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Recommended: 5 minutes
+                </p>
+              </div>
 
-        <!-- Control Buttons -->
-        <div class="flex justify-center gap-4 mb-6">
-          {#if !isRunning}
-            <button
-              onclick={startTimer}
-              class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200"
-            >
-              <Play class="w-5 h-5" />
-              Start
-            </button>
-          {:else}
-            <button
-              onclick={pauseTimer}
-              class="flex items-center gap-2 px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors duration-200"
-            >
-              <Pause class="w-5 h-5" />
-              Pause
-            </button>
-          {/if}
+              <!-- Long Break -->
+              <div>
+                <label
+                  for="edit-long-break"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
+                  Long Break (minutes)
+                </label>
+                <input
+                  id="edit-long-break"
+                  type="number"
+                  bind:value={longBreakMinutesInput}
+                  min="1"
+                  max="60"
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                />
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Recommended: 15 minutes
+                </p>
+              </div>
 
-          <button
-            onclick={resetTimer}
-            class="flex items-center gap-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-200"
-          >
-            <RotateCcw class="w-5 h-5" />
-            Reset
-          </button>
-        </div>
-
-        <!-- Notification Permission -->
-        {#if 'Notification' in window && Notification.permission === 'default'}
-          <div class="text-center">
-            <button
-              onclick={requestNotificationPermission}
-              class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
-            >
-              Enable notifications to know when sessions end
-            </button>
-          </div>
-        {/if}
-      </div>
-    </div>
-
-    <!-- Settings Sidebar -->
-    <div class="lg:col-span-1">
-      <!-- Timer Settings -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <Settings class="w-5 h-5" />
-            Timer Settings
-          </h3>
-          <button
-            onclick={() => (showSettings = !showSettings)}
-            class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
-          >
-            {showSettings ? 'Hide' : 'Show'} Settings
-          </button>
-        </div>
-
-        {#if showSettings}
-          <div class="space-y-4">
-            <!-- Work Duration -->
-            <div>
-              <label
-                for="work-duration"
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
-                Work Duration (minutes)
-              </label>
-              <input
-                id="work-duration"
-                type="number"
-                bind:value={workDuration}
-                min="1"
-                max="60"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-              />
-              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Pomodoro recommends: 25 minutes
-              </p>
+              <!-- Session Count -->
+              <div>
+                <label
+                  for="edit-session-count"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
+                  Sessions Completed
+                </label>
+                <input
+                  id="edit-session-count"
+                  type="number"
+                  bind:value={sessionCount}
+                  min="0"
+                  max="999"
+                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                />
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Number of completed Pomodoro sessions
+                </p>
+              </div>
             </div>
 
-            <!-- Short Break -->
-            <div>
-              <label
-                for="short-break"
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
-                Short Break (minutes)
-              </label>
-              <input
-                id="short-break"
-                type="number"
-                bind:value={shortBreakDuration}
-                min="1"
-                max="30"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-              />
-              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Pomodoro recommends: 5 minutes
-              </p>
-            </div>
-
-            <!-- Long Break -->
-            <div>
-              <label
-                for="long-break"
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
-                Long Break (minutes)
-              </label>
-              <input
-                id="long-break"
-                type="number"
-                bind:value={longBreakDuration}
-                min="1"
-                max="60"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-              />
-              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Pomodoro recommends: 15 minutes
-              </p>
-            </div>
-
-            <!-- Apply/Reset Buttons -->
-            <div class="flex gap-2">
+            <!-- Settings Control Buttons -->
+            <div class="flex gap-2 mt-6">
               <button
-                onclick={applyCustomSettings}
+                onclick={applySettings}
                 class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200"
               >
                 Apply Settings
               </button>
               <button
-                onclick={resetToDefaults}
+                onclick={resetToDefaultsInEditor}
                 class="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-200"
               >
                 Reset to Default
               </button>
+              <button
+                onclick={cancelEditingSettings}
+                class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors duration-200"
+              >
+                Back
+              </button>
             </div>
           </div>
         {:else}
-          <!-- Current Settings Display -->
-          <div class="space-y-3 text-sm">
-            <div class="flex justify-between items-center">
-              <span class="text-gray-600 dark:text-gray-400">Work:</span>
-              <span class="font-medium text-gray-900 dark:text-white"
-                >{Math.floor(workDuration / 60)} min</span
-              >
-            </div>
-            <div class="flex justify-between items-center">
-              <span class="text-gray-600 dark:text-gray-400">Short Break:</span>
-              <span class="font-medium text-gray-900 dark:text-white"
-                >{Math.floor(shortBreakDuration / 60)} min</span
-              >
-            </div>
-            <div class="flex justify-between items-center">
-              <span class="text-gray-600 dark:text-gray-400">Long Break:</span>
-              <span class="font-medium text-gray-900 dark:text-white"
-                >{Math.floor(longBreakDuration / 60)} min</span
-              >
-            </div>
-            <div class="flex justify-between items-center">
-              <span class="text-gray-600 dark:text-gray-400">Sessions:</span>
-              <span class="font-medium text-gray-900 dark:text-white">{sessionCount}</span>
+          <!-- Normal Timer Display -->
+          <!-- Session Type -->
+          <div class="text-center mb-6">
+            <div
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium
+          {currentSession === 'work'
+                ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}"
+            >
+              {#if currentSession === 'work'}
+                <span>🧠 Work Session</span>
+              {:else if currentSession === 'shortBreak'}
+                <span>☕ Short Break</span>
+              {:else}
+                <span>🌟 Long Break</span>
+              {/if}
             </div>
           </div>
+
+          <!-- Timer Circle -->
+          <div class="relative w-64 h-64 mx-auto mb-8">
+            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+              <!-- Background circle -->
+              <circle
+                cx="50"
+                cy="50"
+                r="45"
+                stroke="currentColor"
+                stroke-width="8"
+                fill="none"
+                class="text-gray-200 dark:text-gray-700"
+              />
+              <!-- Progress circle -->
+              <circle
+                cx="50"
+                cy="50"
+                r="45"
+                stroke="currentColor"
+                stroke-width="8"
+                fill="none"
+                stroke-dasharray={2 * Math.PI * 45}
+                stroke-dashoffset={2 * Math.PI * 45 * (1 - progress / 100)}
+                class="transition-all duration-1000 ease-linear
+              {currentSession === 'work'
+                  ? 'text-blue-600 dark:text-blue-400'
+                  : 'text-green-600 dark:text-green-400'}"
+              />
+            </svg>
+
+            <!-- Time Display -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <div class="text-5xl font-mono font-bold text-gray-900 dark:text-white mb-2">
+                {formattedTime}
+              </div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">
+                Session {sessionCount + 1}
+              </div>
+            </div>
+          </div>
+
+          <!-- Control Buttons -->
+          <div class="flex justify-center gap-4 mb-6">
+            {#if !isRunning}
+              <button
+                onclick={startTimer}
+                disabled={isEditingSettings}
+                class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200 {isEditingSettings ? 'opacity-50 cursor-not-allowed' : ''}"
+              >
+                <Play class="w-5 h-5" />
+                Start
+              </button>
+            {:else}
+              <button
+                onclick={pauseTimer}
+                disabled={isEditingSettings}
+                class="flex items-center gap-2 px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors duration-200 {isEditingSettings ? 'opacity-50 cursor-not-allowed' : ''}"
+              >
+                <Pause class="w-5 h-5" />
+                Pause
+              </button>
+            {/if}
+
+            <button
+              onclick={resetTimer}
+              disabled={isEditingSettings}
+              class="flex items-center gap-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-200 {isEditingSettings ? 'opacity-50 cursor-not-allowed' : ''}"
+            >
+              <RotateCcw class="w-5 h-5" />
+              Reset
+            </button>
+
+            <button
+              onclick={startEditingSettings}
+              disabled={isRunning || isEditingSettings}
+              class="flex items-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors duration-200 {isRunning || isEditingSettings ? 'opacity-50 cursor-not-allowed' : ''}"
+              title="Edit Timer Settings"
+            >
+              <Settings class="w-5 h-5" />
+            </button>
+          </div>
+
+          <!-- Notification Permission -->
+          {#if 'Notification' in window}
+            <div class="text-center">
+              {#if Notification.permission === 'default'}
+                <button
+                  onclick={requestNotificationPermission}
+                  class="flex items-center gap-2 mx-auto px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 dark:text-blue-300 rounded-lg font-medium transition-colors duration-200"
+                >
+                  <Bell class="w-4 h-4" />
+                  Enable Notifications
+                </button>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  Get notified when your sessions end
+                </p>
+              {:else if Notification.permission === 'granted'}
+                <div class="space-y-3">
+                  <div class="flex items-center justify-center gap-2 text-sm text-green-600 dark:text-green-400">
+                    <BellRing class="w-4 h-4" />
+                    Notifications enabled
+                  </div>
+                  <button
+                    onclick={testNotification}
+                    class="text-xs text-gray-500 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300 underline"
+                  >
+                    Test notification
+                  </button>
+                </div>
+              {:else if Notification.permission === 'denied'}
+                <div class="flex items-center justify-center gap-2 text-sm text-red-600 dark:text-red-400">
+                  <BellOff class="w-4 h-4" />
+                  Notifications blocked
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Enable in browser settings to receive session alerts
+                </p>
+              {/if}
+            </div>
+          {/if}
         {/if}
+      </div>
+    </div>
+
+    <!-- Info Sidebar -->
+    <div class="lg:col-span-1">
+      <!-- Current Settings Info -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
+        <div class="flex items-center mb-6">
+          <h3 class="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <Clock class="w-5 h-5" />
+            Current Settings
+          </h3>
+        </div>
+
+        <!-- Settings Display -->
+        <div class="space-y-3 text-sm">
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600 dark:text-gray-400">Work Duration:</span>
+            <span class="font-medium text-gray-900 dark:text-white">
+              {Math.floor(workDuration / 60)} minutes
+            </span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600 dark:text-gray-400">Short Break:</span>
+            <span class="font-medium text-gray-900 dark:text-white">
+              {Math.floor(shortBreakDuration / 60)} minutes
+            </span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600 dark:text-gray-400">Long Break:</span>
+            <span class="font-medium text-gray-900 dark:text-white">
+              {Math.floor(longBreakDuration / 60)} minutes
+            </span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600 dark:text-gray-400">Sessions Completed:</span>
+            <span class="font-medium text-gray-900 dark:text-white">{sessionCount}</span>
+          </div>
+        </div>
       </div>
 
       <!-- Pomodoro Info -->
