@@ -156,15 +156,11 @@
               >
                 <div class="flex items-center justify-between">
                   <div class="flex-1 min-w-0">
-                    <div
-                      class="font-medium text-secondary-900 dark:text-secondary-50 truncate"
-                    >
+                    <div class="font-medium text-secondary-900 dark:text-secondary-50 truncate">
                       {route.title?.replace(' - Fariz', '') || route.path}
                     </div>
                     {#if route.path !== '/' && route.path !== '/projects' && route.path !== '/tools'}
-                      <div
-                        class="text-sm text-secondary-500 dark:text-secondary-400 mt-1"
-                      >
+                      <div class="text-sm text-secondary-500 dark:text-secondary-400 mt-1">
                         {route.path}
                       </div>
                     {/if}
@@ -176,9 +172,7 @@
                       </div>
                     {/if}
                   </div>
-                  <div
-                    class="ml-4 text-xs text-secondary-400 dark:text-secondary-500"
-                  >
+                  <div class="ml-4 text-xs text-secondary-400 dark:text-secondary-500">
                     {#if route.path === '/'}Home
                     {:else if route.path === '/projects'}Projects
                     {:else if route.path === '/tools'}Tools
@@ -190,9 +184,7 @@
             {/each}
           </div>
         {:else}
-          <div
-            class="px-4 py-8 text-center text-secondary-500 dark:text-secondary-400"
-          >
+          <div class="px-4 py-8 text-center text-secondary-500 dark:text-secondary-400">
             <Search class="w-8 h-8 mx-auto mb-2 opacity-50" />
             <div>No results found for "{searchQuery}"</div>
           </div>

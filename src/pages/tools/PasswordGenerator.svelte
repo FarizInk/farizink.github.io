@@ -556,9 +556,7 @@
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div
-        class="flex items-center gap-2 mb-2 text-danger-600 dark:text-danger-400"
-      >
+      <div class="flex items-center gap-2 mb-2 text-danger-600 dark:text-danger-400">
         <Shield class="w-5 h-5" />
         <h3 class="font-medium">Strong Security</h3>
       </div>
@@ -567,9 +565,7 @@
       </p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div
-        class="flex items-center gap-2 mb-2 text-danger-600 dark:text-danger-400"
-      >
+      <div class="flex items-center gap-2 mb-2 text-danger-600 dark:text-danger-400">
         <Settings2 class="w-5 h-5" />
         <h3 class="font-medium">Customizable Options</h3>
       </div>
@@ -578,9 +574,7 @@
       </p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div
-        class="flex items-center gap-2 mb-2 text-danger-600 dark:text-danger-400"
-      >
+      <div class="flex items-center gap-2 mb-2 text-danger-600 dark:text-danger-400">
         <History class="w-5 h-5" />
         <h3 class="font-medium">Password History</h3>
       </div>

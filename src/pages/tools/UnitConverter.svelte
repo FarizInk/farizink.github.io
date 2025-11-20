@@ -462,14 +462,10 @@
             <div
               class="bg-primary-100 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-xl p-4"
             >
-              <h3
-                class="text-sm font-medium text-primary-800 dark:text-primary-200 mb-2"
-              >
+              <h3 class="text-sm font-medium text-primary-800 dark:text-primary-200 mb-2">
                 Conversion Formulas
               </h3>
-              <div
-                class="space-y-1 text-xs text-primary-700 dark:text-primary-300"
-              >
+              <div class="space-y-1 text-xs text-primary-700 dark:text-primary-300">
                 <p>°C to °F: (°C × 9/5) + 32</p>
                 <p>°F to °C: (°F - 32) × 5/9</p>
                 <p>°C to K: °C + 273.15</p>
@@ -608,9 +604,7 @@
   <!-- Features Section -->
   <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div
-        class="flex items-center gap-2 mb-2 text-primary-600 dark:text-primary-400"
-      >
+      <div class="flex items-center gap-2 mb-2 text-primary-600 dark:text-primary-400">
         <Calculator class="w-5 h-5" />
         <h3 class="font-medium">Precision</h3>
       </div>
@@ -619,9 +613,7 @@
       </p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div
-        class="flex items-center gap-2 mb-2 text-primary-600 dark:text-primary-400"
-      >
+      <div class="flex items-center gap-2 mb-2 text-primary-600 dark:text-primary-400">
         <History class="w-5 h-5" />
         <h3 class="font-medium">History</h3>
       </div>
@@ -630,9 +622,7 @@
       </p>
     </div>
     <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div
-        class="flex items-center gap-2 mb-2 text-primary-600 dark:text-primary-400"
-      >
+      <div class="flex items-center gap-2 mb-2 text-primary-600 dark:text-primary-400">
         <Zap class="w-5 h-5" />
         <h3 class="font-medium">Fast</h3>
       </div>

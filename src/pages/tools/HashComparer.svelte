@@ -353,9 +353,7 @@
       <div
         class="w-12 h-12 bg-secondary-100 dark:bg-secondary-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <GitCompare
-          class="w-6 h-6 text-secondary-600 dark:text-secondary-400"
-        />
+        <GitCompare class="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Real-time Comparison</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -383,9 +381,7 @@
       <div
         class="w-12 h-12 bg-secondary-100 dark:bg-secondary-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <FileText
-          class="w-6 h-6 text-secondary-600 dark:text-secondary-400"
-        />
+        <FileText class="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Detailed Analysis</h3>
       <p class="text-gray-600 dark:text-gray-400">

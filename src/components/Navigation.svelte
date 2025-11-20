@@ -91,22 +91,14 @@
   function selectItem(items: globalThis.NodeListOf<Element>, index: number) {
     // Remove selection from all items
     items.forEach(item => {
-      item.classList.remove(
-        'bg-secondary-100',
-        'dark:bg-secondary-700',
-        'border-primary-500'
-      );
+      item.classList.remove('bg-secondary-100', 'dark:bg-secondary-700', 'border-primary-500');
       item.classList.add('border-transparent');
       item.setAttribute('data-selected', 'false');
     });
 
     // Add selection to target item
     if (items[index]) {
-      items[index].classList.add(
-        'bg-secondary-100',
-        'dark:bg-secondary-700',
-        'border-primary-500'
-      );
+      items[index].classList.add('bg-secondary-100', 'dark:bg-secondary-700', 'border-primary-500');
       items[index].classList.remove('border-transparent');
       items[index].setAttribute('data-selected', 'true');
 
@@ -153,7 +145,7 @@
     <a
       href="/"
       class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-white hover:bg-primary-50 dark:hover:bg-primary-900 rounded-lg transition-all"
-      onclick={(e) => handleNavigation(e, '/')}
+      onclick={e => handleNavigation(e, '/')}
     >
       Home
     </a>
@@ -162,7 +154,7 @@
     <a
       href="/tools"
       class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-white hover:bg-primary-50 dark:hover:bg-primary-900 rounded-lg transition-all"
-      onclick={(e) => handleNavigation(e, '/tools')}
+      onclick={e => handleNavigation(e, '/tools')}
     >
       Tools
     </a>
@@ -181,4 +173,3 @@
     </button>
   </div>
 </div>
-

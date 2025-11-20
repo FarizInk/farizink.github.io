@@ -355,8 +355,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
                       </div>
                     </div>
                     <div>
-                      <span
-                        class="text-xs font-medium text-primary-600 dark:text-primary-400"
+                      <span class="text-xs font-medium text-primary-600 dark:text-primary-400"
                         >Encoded:</span
                       >
                       <div class="font-mono text-xs text-green-700 dark:text-green-300 break-all">
@@ -364,8 +363,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
                       </div>
                     </div>
                     <div>
-                      <span
-                        class="text-xs font-medium text-primary-600 dark:text-primary-400"
+                      <span class="text-xs font-medium text-primary-600 dark:text-primary-400"
                         >Decoded:</span
                       >
                       <div
@@ -421,9 +419,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
       <div
         class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <CreditCard
-          class="w-6 h-6 text-primary-600 dark:text-primary-400"
-        />
+        <CreditCard class="w-6 h-6 text-primary-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Round-trip Testing</h3>
       <p class="text-gray-600 dark:text-gray-400">

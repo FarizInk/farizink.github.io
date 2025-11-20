@@ -194,9 +194,7 @@
               <div
                 class="w-10 h-10 bg-secondary-100 dark:bg-secondary-900/20 rounded-lg flex items-center justify-center"
               >
-                <Hash
-                  class="w-5 h-5 text-secondary-600 dark:text-secondary-400"
-                />
+                <Hash class="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
               </div>
               <div>
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -281,9 +279,7 @@
       <div
         class="w-12 h-12 bg-amber-100 dark:bg-amber-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <FileText
-          class="w-6 h-6 text-secondary-600 dark:text-secondary-400"
-        />
+        <FileText class="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Data Verification</h3>
       <p class="text-gray-600 dark:text-gray-400">

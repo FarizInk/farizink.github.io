@@ -322,9 +322,7 @@ console.log('Result:', result);`;
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Diff Result</h3>
         {#if getStats()}
           <div class="flex gap-4 text-sm">
-            <span class="text-primary-600 dark:text-primary-400"
-              >+{getStats()!.added} added</span
-            >
+            <span class="text-primary-600 dark:text-primary-400">+{getStats()!.added} added</span>
             <span class="text-red-600 dark:text-red-400">-{getStats()!.removed} removed</span>
             <span class="text-gray-600 dark:text-gray-400">{getStats()!.unchanged} unchanged</span>
           </div>
@@ -352,8 +350,7 @@ console.log('Result:', result);`;
                     >{index + 1}</span
                   >
                 {/if}
-                <span class="text-primary-600 dark:text-primary-400">+</span
-                >
+                <span class="text-primary-600 dark:text-primary-400">+</span>
                 <pre
                   class="text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded flex-1">{diffResult
                     .added[index] || '\u00A0'}</pre>

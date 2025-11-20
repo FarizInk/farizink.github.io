@@ -120,11 +120,7 @@
       <!-- Input Section -->
       <div class="flex flex-col gap-4">
         <div class="flex items-center justify-between">
-          <h3
-            class="text-sm font-medium text-secondary-700 dark:text-secondary-300"
-          >
-            Input JSON
-          </h3>
+          <h3 class="text-sm font-medium text-secondary-700 dark:text-secondary-300">Input JSON</h3>
           <div class="flex gap-2">
             <button onclick={formatJSON} disabled={!input} class="btn btn-primary btn-sm"
               >Format</button
@@ -152,11 +148,7 @@
       <!-- Output Section -->
       <div class="flex flex-col gap-4">
         <div class="flex items-center justify-between">
-          <h3
-            class="text-sm font-medium text-secondary-700 dark:text-secondary-300"
-          >
-            Output
-          </h3>
+          <h3 class="text-sm font-medium text-secondary-700 dark:text-secondary-300">Output</h3>
           <button onclick={copyToClipboard} disabled={!output} class="btn btn-outline btn-sm">
             <Copy class="w-4 h-4 mr-2" />
             Copy

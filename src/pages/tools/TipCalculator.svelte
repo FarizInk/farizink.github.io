@@ -327,8 +327,7 @@
             <div class="flex justify-between items-center">
               <span class="text-gray-600 dark:text-gray-400">Per Person:</span>
               <div class="flex items-center gap-2">
-                <span
-                  class="text-2xl font-bold text-primary-600 dark:text-primary-400"
+                <span class="text-2xl font-bold text-primary-600 dark:text-primary-400"
                   >${amountPerPerson.toFixed(2)}</span
                 >
                 <button
@@ -353,9 +352,7 @@
       <div
         class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <Calculator
-          class="w-6 h-6 text-primary-600 dark:text-primary-400"
-        />
+        <Calculator class="w-6 h-6 text-primary-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Tip Calculation</h3>
       <p class="text-gray-600 dark:text-gray-400">
@@ -383,9 +380,7 @@
       <div
         class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <DollarSign
-          class="w-6 h-6 text-primary-600 dark:text-primary-400"
-        />
+        <DollarSign class="w-6 h-6 text-primary-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Tax Support</h3>
       <p class="text-gray-600 dark:text-gray-400">

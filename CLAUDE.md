@@ -67,6 +67,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 33 fully implemented developer tools organized into 4 categories:
 
 **Text & Data Processing (8 tools)**:
+
 - JSON Parser & Formatter - Validate, format, and minify JSON
 - Text Case Converter - UPPERCASE, lowercase, Title Case, camelCase, snake_case, kebab-case
 - Lorem Ipsum Generator - Custom placeholder text generation
@@ -77,6 +78,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 - Base64 Converter - Encode/decode text and files
 
 **Generators & Converters (7 tools)**:
+
 - QR Code Generator - Custom colors, error correction, logo support
 - Color Converter - HEX, RGB, HSL, HSV, CMYK conversion
 - CSS Gradient Generator - Visual gradient creation
@@ -86,6 +88,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 - Timestamp Converter - Unix timestamp, ISO format, multiple timezones
 
 **Web Development (6 tools)**:
+
 - URL Encoder/Decoder - Safe URL transmission
 - HTML Entity Encoder/Decoder - XSS-safe encoding
 - CSS Minifier/Beautifier - Code optimization
@@ -94,6 +97,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 - Meta Tag Generator - SEO-friendly meta tags
 
 **Utilities & Calculators (12 tools)**:
+
 - Age Calculator - Exact age with fun facts
 - BMI Calculator - Health metrics with categories
 - Percentage Calculator - Various percentage calculations
@@ -109,7 +113,8 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 ### Design System
 
 **Color System**:
-- Tailwind CSS 4 with @theme design tokens (--color-primary-*, --color-secondary-*, etc.)
+
+- Tailwind CSS 4 with @theme design tokens (--color-primary-_, --color-secondary-_, etc.)
 - Primary: Purple-based theme (8b5cf6 - 4c1d95)
 - Secondary: Slate gray scale (f8fafc - 0f172a)
 - Success: Green (22c55e - 14532d)
@@ -118,6 +123,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 - Complete color palette with 50-900 variants for each color
 
 **Component System**:
+
 - CSS classes (.btn, .input, .textarea, .select, .card, .badge, .label)
 - Consistent spacing system (--space-1 to --space-20)
 - Border radius scale (--radius-sm to --radius-full)
@@ -127,6 +133,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 ### Routing & Navigation
 
 **Custom Router Implementation**:
+
 - Client-side routing with history API
 - GitHub Pages SPA routing support (redirect hack)
 - Dynamic meta tag updates for SEO
@@ -135,6 +142,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 - Smooth scroll-to-top functionality
 
 **Navigation Features**:
+
 - Floating bottom navigation bar
 - Theme toggle with localStorage persistence
 - Command palette for quick tool access
@@ -146,12 +154,14 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 ### Svelte 5 Modern Features
 
 **Runes System**:
+
 - `$state` for reactive state management
 - `$derived` for computed values
 - TypeScript integration throughout
 - Modern component syntax with `<script lang="ts">`
 
 **Component Patterns**:
+
 - Composition over inheritance
 - Reusable utility components
 - Consistent prop interfaces
@@ -160,6 +170,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 ### Configuration Management
 
 **Tools Configuration** (toolsConfig.ts):
+
 - TypeScript interfaces for type safety
 - Centralized tool definitions with metadata
 - Helper functions: getAllTools(), getToolById(), searchTools()
@@ -167,6 +178,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 - Icon imports from Lucide Svelte
 
 **Route Organization**:
+
 - Split route configuration (main.ts, tools.ts)
 - SEO metadata per route (title, description, keywords)
 - Component lazy loading support
@@ -175,6 +187,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 ### Build & Development Setup
 
 **Vite Configuration**:
+
 - Modern ES modules
 - Tailwind CSS plugin integration
 - Development server with HMR
@@ -182,6 +195,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 - Manual chunk control for performance
 
 **Development Tools**:
+
 - ESLint with Prettier integration
 - TypeScript strict mode
 - Svelte 5 runes enabled
@@ -225,6 +239,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 ## SEO & Meta Information
 
 **Comprehensive SEO Setup**:
+
 - Open Graph meta tags for social sharing
 - Twitter Card optimization
 - Structured data (JSON-LD) for search engines
@@ -233,6 +248,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 - International language tags
 
 **Analytics & Monitoring**:
+
 - Umami analytics for privacy-focused tracking
 - Performance monitoring ready
 - Error tracking capabilities
@@ -240,6 +256,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 ## Deployment & Production
 
 **GitHub Pages Deployment**:
+
 - SPA routing support with redirect fallback
 - Optimized static asset generation
 - Progressive enhancement
@@ -247,6 +264,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 - Custom domain support
 
 **Build Process**:
+
 - TypeScript compilation
 - Svelte component compilation
 - Tailwind CSS processing
@@ -277,6 +295,7 @@ This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Softwar
 ## Future Roadmap
 
 Potential areas for expansion:
+
 - Additional developer tools based on user feedback
 - Advanced features for existing tools
 - Enhanced analytics and usage tracking

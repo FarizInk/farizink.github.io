@@ -130,7 +130,7 @@
 
   function playNotificationSound(): void {
     // Create a simple beep sound using Web Audio API
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const audioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
@@ -148,13 +148,12 @@
   }
 
   function showNotification(): void {
-    const title = currentSession === 'work'
-      ? 'Break Time! ☕'
-      : 'Work Time! 💪';
+    const title = currentSession === 'work' ? 'Break Time! ☕' : 'Work Time! 💪';
 
-    const body = currentSession === 'work'
-      ? 'Time to take a break and recharge.'
-      : 'Time to focus and get things done.';
+    const body =
+      currentSession === 'work'
+        ? 'Time to take a break and recharge.'
+        : 'Time to focus and get things done.';
 
     new Notification(title, {
       body,
@@ -168,7 +167,6 @@
     }
   }
 
-  
   // Cleanup interval on component destroy
   $effect(() => {
     return () => {
@@ -181,16 +179,20 @@
 
 <svelte:head>
   <title>Pomodoro Timer - Productivity Timer</title>
-  <meta name="description" content="Free Pomodoro timer for productivity and time management. Boost your focus with work/break cycles, notifications, and progress tracking." />
-  <meta name="keywords" content="pomodoro timer, productivity timer, focus timer, time management, work timer, break timer" />
+  <meta
+    name="description"
+    content="Free Pomodoro timer for productivity and time management. Boost your focus with work/break cycles, notifications, and progress tracking."
+  />
+  <meta
+    name="keywords"
+    content="pomodoro timer, productivity timer, focus timer, time management, work timer, break timer"
+  />
 </svelte:head>
 
 <div class="max-w-4xl mx-auto p-6">
   <!-- Header -->
   <div class="text-center mb-8">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-      Pomodoro Timer
-    </h1>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Pomodoro Timer</h1>
     <p class="text-gray-600 dark:text-gray-400">
       Boost your productivity with focused work sessions and regular breaks
     </p>
@@ -199,108 +201,108 @@
   <div class="grid lg:grid-cols-3 gap-6">
     <!-- Main Timer Section -->
     <div class="lg:col-span-2">
-
-  <!-- Timer Display -->
-  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-6">
-    <!-- Session Type -->
-    <div class="text-center mb-6">
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium
+      <!-- Timer Display -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-6">
+        <!-- Session Type -->
+        <div class="text-center mb-6">
+          <div
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium
         {currentSession === 'work'
-          ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-          : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}">
-        {#if currentSession === 'work'}
-          <span>🧠 Work Session</span>
-        {:else if currentSession === 'shortBreak'}
-          <span>☕ Short Break</span>
-        {:else}
-          <span>🌟 Long Break</span>
+              ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+              : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}"
+          >
+            {#if currentSession === 'work'}
+              <span>🧠 Work Session</span>
+            {:else if currentSession === 'shortBreak'}
+              <span>☕ Short Break</span>
+            {:else}
+              <span>🌟 Long Break</span>
+            {/if}
+          </div>
+        </div>
+
+        <!-- Timer Circle -->
+        <div class="relative w-64 h-64 mx-auto mb-8">
+          <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+            <!-- Background circle -->
+            <circle
+              cx="50"
+              cy="50"
+              r="45"
+              stroke="currentColor"
+              stroke-width="8"
+              fill="none"
+              class="text-gray-200 dark:text-gray-700"
+            />
+            <!-- Progress circle -->
+            <circle
+              cx="50"
+              cy="50"
+              r="45"
+              stroke="currentColor"
+              stroke-width="8"
+              fill="none"
+              stroke-dasharray={2 * Math.PI * 45}
+              stroke-dashoffset={2 * Math.PI * 45 * (1 - progress / 100)}
+              class="transition-all duration-1000 ease-linear
+            {currentSession === 'work'
+                ? 'text-blue-600 dark:text-blue-400'
+                : 'text-green-600 dark:text-green-400'}"
+            />
+          </svg>
+
+          <!-- Time Display -->
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <div class="text-5xl font-mono font-bold text-gray-900 dark:text-white mb-2">
+              {formattedTime}
+            </div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">
+              Session {sessionCount + 1}
+            </div>
+          </div>
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="flex justify-center gap-4 mb-6">
+          {#if !isRunning}
+            <button
+              onclick={startTimer}
+              class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200"
+            >
+              <Play class="w-5 h-5" />
+              Start
+            </button>
+          {:else}
+            <button
+              onclick={pauseTimer}
+              class="flex items-center gap-2 px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors duration-200"
+            >
+              <Pause class="w-5 h-5" />
+              Pause
+            </button>
+          {/if}
+
+          <button
+            onclick={resetTimer}
+            class="flex items-center gap-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-200"
+          >
+            <RotateCcw class="w-5 h-5" />
+            Reset
+          </button>
+        </div>
+
+        <!-- Notification Permission -->
+        {#if 'Notification' in window && Notification.permission === 'default'}
+          <div class="text-center">
+            <button
+              onclick={requestNotificationPermission}
+              class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
+            >
+              Enable notifications to know when sessions end
+            </button>
+          </div>
         {/if}
       </div>
-    </div>
-
-    <!-- Timer Circle -->
-    <div class="relative w-64 h-64 mx-auto mb-8">
-      <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-        <!-- Background circle -->
-        <circle
-          cx="50"
-          cy="50"
-          r="45"
-          stroke="currentColor"
-          stroke-width="8"
-          fill="none"
-          class="text-gray-200 dark:text-gray-700"
-        />
-        <!-- Progress circle -->
-        <circle
-          cx="50"
-          cy="50"
-          r="45"
-          stroke="currentColor"
-          stroke-width="8"
-          fill="none"
-          stroke-dasharray="{2 * Math.PI * 45}"
-          stroke-dashoffset="{2 * Math.PI * 45 * (1 - progress / 100)}"
-          class="transition-all duration-1000 ease-linear
-            {currentSession === 'work'
-              ? 'text-blue-600 dark:text-blue-400'
-              : 'text-green-600 dark:text-green-400'}"
-        />
-      </svg>
-
-      <!-- Time Display -->
-      <div class="absolute inset-0 flex flex-col items-center justify-center">
-        <div class="text-5xl font-mono font-bold text-gray-900 dark:text-white mb-2">
-          {formattedTime}
-        </div>
-        <div class="text-sm text-gray-500 dark:text-gray-400">
-          Session {sessionCount + 1}
-        </div>
-      </div>
-    </div>
-
-    <!-- Control Buttons -->
-    <div class="flex justify-center gap-4 mb-6">
-      {#if !isRunning}
-        <button
-          onclick={startTimer}
-          class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200"
-        >
-          <Play class="w-5 h-5" />
-          Start
-        </button>
-      {:else}
-        <button
-          onclick={pauseTimer}
-          class="flex items-center gap-2 px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors duration-200"
-        >
-          <Pause class="w-5 h-5" />
-          Pause
-        </button>
-      {/if}
-
-      <button
-        onclick={resetTimer}
-        class="flex items-center gap-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-200"
-      >
-        <RotateCcw class="w-5 h-5" />
-        Reset
-      </button>
-    </div>
-
-    <!-- Notification Permission -->
-    {#if 'Notification' in window && Notification.permission === 'default'}
-      <div class="text-center">
-        <button
-          onclick={requestNotificationPermission}
-          class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
-        >
-          Enable notifications to know when sessions end
-        </button>
-      </div>
-    {/if}
-  </div>
-
     </div>
 
     <!-- Settings Sidebar -->
@@ -324,7 +326,10 @@
           <div class="space-y-4">
             <!-- Work Duration -->
             <div>
-              <label for="work-duration" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                for="work-duration"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Work Duration (minutes)
               </label>
               <input
@@ -342,7 +347,10 @@
 
             <!-- Short Break -->
             <div>
-              <label for="short-break" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                for="short-break"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Short Break (minutes)
               </label>
               <input
@@ -360,7 +368,10 @@
 
             <!-- Long Break -->
             <div>
-              <label for="long-break" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                for="long-break"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Long Break (minutes)
               </label>
               <input
@@ -397,15 +408,21 @@
           <div class="space-y-3 text-sm">
             <div class="flex justify-between items-center">
               <span class="text-gray-600 dark:text-gray-400">Work:</span>
-              <span class="font-medium text-gray-900 dark:text-white">{Math.floor(workDuration / 60)} min</span>
+              <span class="font-medium text-gray-900 dark:text-white"
+                >{Math.floor(workDuration / 60)} min</span
+              >
             </div>
             <div class="flex justify-between items-center">
               <span class="text-gray-600 dark:text-gray-400">Short Break:</span>
-              <span class="font-medium text-gray-900 dark:text-white">{Math.floor(shortBreakDuration / 60)} min</span>
+              <span class="font-medium text-gray-900 dark:text-white"
+                >{Math.floor(shortBreakDuration / 60)} min</span
+              >
             </div>
             <div class="flex justify-between items-center">
               <span class="text-gray-600 dark:text-gray-400">Long Break:</span>
-              <span class="font-medium text-gray-900 dark:text-white">{Math.floor(longBreakDuration / 60)} min</span>
+              <span class="font-medium text-gray-900 dark:text-white"
+                >{Math.floor(longBreakDuration / 60)} min</span
+              >
             </div>
             <div class="flex justify-between items-center">
               <span class="text-gray-600 dark:text-gray-400">Sessions:</span>
@@ -457,9 +474,7 @@
     </div>
 
     <div class="bg-white dark:bg-gray-800 rounded-lg p-6">
-      <h3 class="font-semibold text-gray-900 dark:text-white mb-4">
-        💡 Pro Tips
-      </h3>
+      <h3 class="font-semibold text-gray-900 dark:text-white mb-4">💡 Pro Tips</h3>
       <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-2">
         <li class="flex items-start gap-2">
           <span>•</span>
@@ -486,15 +501,18 @@
   </div>
 
   <!-- Pomodoro Recommendation Note -->
-  <div class="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-    <h4 class="font-semibold text-blue-900 dark:text-blue-100 mb-2">
-      🍅 Why Pomodoro Technique?
-    </h4>
+  <div
+    class="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4"
+  >
+    <h4 class="font-semibold text-blue-900 dark:text-blue-100 mb-2">🍅 Why Pomodoro Technique?</h4>
     <p class="text-sm text-blue-800 dark:text-blue-200 mb-3">
-      The Pomodoro Technique was developed by Francesco Cirillo in the late 1980s. It's a time management method that uses a timer to break work into intervals, traditionally 25 minutes in length, separated by short breaks.
+      The Pomodoro Technique was developed by Francesco Cirillo in the late 1980s. It's a time
+      management method that uses a timer to break work into intervals, traditionally 25 minutes in
+      length, separated by short breaks.
     </p>
     <div class="text-sm text-blue-800 dark:text-blue-200">
-      <strong>Benefits:</strong> Improved focus, reduced burnout, better time estimation, increased productivity, and sustainable work habits.
+      <strong>Benefits:</strong> Improved focus, reduced burnout, better time estimation, increased productivity,
+      and sustainable work habits.
     </div>
   </div>
 </div>

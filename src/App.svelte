@@ -68,7 +68,7 @@
     createRouter(routes);
 
     // Subscribe to router changes to track current path
-    const unsubscribe = router.subscribe((routerState) => {
+    const unsubscribe = router.subscribe(routerState => {
       currentPath = routerState.currentPath;
     });
 

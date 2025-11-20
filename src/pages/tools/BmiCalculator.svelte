@@ -449,9 +449,7 @@
           <!-- Health Risk -->
           <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
             <div class="flex items-start">
-              <Info
-                class="w-5 h-5 text-primary-600 dark:text-primary-400 mt-0.5 mr-3"
-              />
+              <Info class="w-5 h-5 text-primary-600 dark:text-primary-400 mt-0.5 mr-3" />
               <div>
                 <p class="font-medium text-gray-900 dark:text-white mb-1">Health Risk Assessment</p>
                 <p class="text-sm text-gray-600 dark:text-gray-400">{healthRisk}</p>

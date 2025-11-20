@@ -330,7 +330,14 @@ export const toolsByCategory: Category[] = [
         name: 'Pomodoro Timer',
         description: 'Productivity timer with work/break cycles for focused work sessions',
         icon: Clock,
-        features: ['25-min work sessions', '5-min short breaks', '15-min long breaks', 'Session tracking', 'Audio notifications', 'Browser notifications'],
+        features: [
+          '25-min work sessions',
+          '5-min short breaks',
+          '15-min long breaks',
+          'Session tracking',
+          'Audio notifications',
+          'Browser notifications'
+        ],
         comingSoon: false
       }
     ]

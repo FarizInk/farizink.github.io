@@ -310,15 +310,11 @@
       <div
         class="bg-success-100 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-xl p-4"
       >
-        <div
-          class="flex items-center gap-2 mb-2 text-success-800 dark:text-success-200"
-        >
+        <div class="flex items-center gap-2 mb-2 text-success-800 dark:text-success-200">
           <Info class="w-4 h-4" />
           <h4 class="text-sm font-semibold">Tips</h4>
         </div>
-        <ul
-          class="text-sm text-success-700 dark:text-success-300 space-y-1 list-disc list-inside"
-        >
+        <ul class="text-sm text-success-700 dark:text-success-300 space-y-1 list-disc list-inside">
           <li>QR codes can store up to 4,296 alphanumeric characters</li>
           <li>Higher error correction levels create more complex but more robust codes</li>
           <li>Test your QR code before using it in production</li>

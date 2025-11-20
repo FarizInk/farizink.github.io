@@ -297,9 +297,7 @@
           <Upload class="w-12 h-12 mx-auto mb-4 text-gray-400" />
 
           <label for="file-upload" class="cursor-pointer">
-            <span
-              class="text-primary-600 dark:text-blue-400 hover:underline font-medium"
-            >
+            <span class="text-primary-600 dark:text-blue-400 hover:underline font-medium">
               Click to upload
             </span>
             <span class="text-gray-600 dark:text-gray-400"> or drag and drop </span>

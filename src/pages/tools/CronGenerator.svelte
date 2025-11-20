@@ -301,9 +301,7 @@
                 class="p-2 rounded-lg bg-primary-100 dark:bg-primary-900/20 hover:bg-blue-200 dark:hover:bg-blue-900/30 transition-colors relative group"
                 title="Copy to clipboard"
               >
-                <Copy
-                  class="w-4 h-4 text-primary-600 dark:text-primary-400"
-                />
+                <Copy class="w-4 h-4 text-primary-600 dark:text-primary-400" />
               </button>
             {/if}
           </div>
