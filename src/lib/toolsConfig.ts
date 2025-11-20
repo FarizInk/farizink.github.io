@@ -11,7 +11,8 @@ import {
   Calendar,
   Lock,
   RefreshCw,
-  Zap
+  Zap,
+  Clock
 } from '@lucide/svelte';
 
 export interface Tool {
@@ -322,6 +323,14 @@ export const toolsByCategory: Category[] = [
         description: 'Preview and export Markdown documents',
         icon: FileText,
         features: ['Live preview', 'Export options', 'Syntax highlighting', 'Custom themes'],
+        comingSoon: false
+      },
+      {
+        id: 'pomodoro-timer',
+        name: 'Pomodoro Timer',
+        description: 'Productivity timer with work/break cycles for focused work sessions',
+        icon: Clock,
+        features: ['25-min work sessions', '5-min short breaks', '15-min long breaks', 'Session tracking', 'Audio notifications', 'Browser notifications'],
         comingSoon: false
       }
     ]

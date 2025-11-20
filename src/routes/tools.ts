@@ -31,144 +31,150 @@ import RandomPicker from '../pages/tools/RandomPicker.svelte';
 import CronGenerator from '../pages/tools/CronGenerator.svelte';
 import HashComparer from '../pages/tools/HashComparer.svelte';
 import AsciiArtGenerator from '../pages/tools/AsciiArtGenerator.svelte';
+import PomodoroTimer from '../pages/tools/PomodoroTimer.svelte';
 
 export const toolsRoutes = [
   {
     path: '/tools',
     component: Tools,
-    title: 'Developer Tools - Fariz',
+    title: 'Developer Tools',
     description:
       'Free online developer tools and utilities. JSON parser, color converter, URL encoder, and more productivity tools for developers.',
     keywords:
       'developer tools, online tools, web tools, json parser, color converter, url encoder, productivity tools',
     robots: 'index, follow'
   },
-  { path: '/tools/json-parser', component: JsonParser, title: 'JSON Parser - Fariz' },
-  { path: '/tools/color-converter', component: ColorConverter, title: 'Color Converter - Fariz' },
-  { path: '/tools/url-encoder', component: UrlEncoder, title: 'URL Encoder/Decoder - Fariz' },
+  { path: '/tools/json-parser', component: JsonParser, title: 'JSON Parser' },
+  { path: '/tools/color-converter', component: ColorConverter, title: 'Color Converter' },
+  { path: '/tools/url-encoder', component: UrlEncoder, title: 'URL Encoder/Decoder' },
   {
     path: '/tools/markdown-preview',
     component: MarkdownPreview,
-    title: 'Markdown Preview - Fariz'
+    title: 'Markdown Preview'
   },
   {
     path: '/tools/base64-converter',
     component: Base64Converter,
-    title: 'Base64 Converter - Fariz'
+    title: 'Base64 Converter'
   },
   {
     path: '/tools/password-generator',
     component: PasswordGenerator,
-    title: 'Password Generator - Fariz'
+    title: 'Password Generator'
   },
   {
     path: '/tools/qr-code-generator',
     component: QRCodeGenerator,
-    title: 'QR Code Generator - Fariz'
+    title: 'QR Code Generator'
   },
   {
     path: '/tools/text-case-converter',
     component: TextCaseConverter,
-    title: 'Text Case Converter - Fariz'
+    title: 'Text Case Converter'
   },
   {
     path: '/tools/lorem-ipsum-generator',
     component: LoremIpsumGenerator,
-    title: 'Lorem Ipsum Generator - Fariz'
+    title: 'Lorem Ipsum Generator'
   },
   {
     path: '/tools/character-counter',
     component: CharacterCounter,
-    title: 'Character Counter - Fariz'
+    title: 'Character Counter'
   },
-  { path: '/tools/text-diff', component: TextDiff, title: 'Text Diff Tool - Fariz' },
-  { path: '/tools/url-parser', component: UrlParser, title: 'URL Parser/Analyzer - Fariz' },
+  { path: '/tools/text-diff', component: TextDiff, title: 'Text Diff Tool' },
+  { path: '/tools/url-parser', component: UrlParser, title: 'URL Parser/Analyzer' },
   {
     path: '/tools/css-minifier',
     component: CssMinifier,
-    title: 'CSS Minifier/Beautifier - Fariz'
+    title: 'CSS Minifier/Beautifier'
   },
   {
     path: '/tools/js-minifier',
     component: JsMinifier,
-    title: 'JavaScript Minifier/Beautifier - Fariz'
+    title: 'JavaScript Minifier/Beautifier'
   },
   {
     path: '/tools/html-encoder',
     component: HtmlEncoder,
-    title: 'HTML Entity Encoder/Decoder - Fariz'
+    title: 'HTML Entity Encoder/Decoder'
   },
   {
     path: '/tools/slug-generator',
     component: SlugGenerator,
-    title: 'URL Slug Generator - Fariz'
+    title: 'URL Slug Generator'
   },
   {
     path: '/tools/color-palette',
     component: ColorPalette,
-    title: 'Color Palette Generator - Fariz'
+    title: 'Color Palette Generator'
   },
   {
     path: '/tools/gradient-generator',
     component: GradientGenerator,
-    title: 'CSS Gradient Generator - Fariz'
+    title: 'CSS Gradient Generator'
   },
-  { path: '/tools/hash-generator', component: HashGenerator, title: 'Hash Generator - Fariz' },
-  { path: '/tools/jwt-decoder', component: JwtDecoder, title: 'JWT Decoder - Fariz' },
-  { path: '/tools/tip-calculator', component: TipCalculator, title: 'Tip Calculator - Fariz' },
+  { path: '/tools/hash-generator', component: HashGenerator, title: 'Hash Generator' },
+  { path: '/tools/jwt-decoder', component: JwtDecoder, title: 'JWT Decoder' },
+  { path: '/tools/tip-calculator', component: TipCalculator, title: 'Tip Calculator' },
   {
     path: '/tools/timestamp-converter',
     component: TimestampConverter,
-    title: 'Unix Timestamp Converter - Fariz'
+    title: 'Unix Timestamp Converter'
   },
   {
     path: '/tools/meta-tag-generator',
     component: MetaTagGenerator,
-    title: 'Meta Tag Generator - Fariz'
+    title: 'Meta Tag Generator'
   },
   {
     path: '/tools/css-shadow-generator',
     component: CssShadowGenerator,
-    title: 'CSS Shadow Generator - Fariz'
+    title: 'CSS Shadow Generator'
   },
   {
     path: '/tools/unit-converter',
     component: UnitConverter,
-    title: 'Unit Converter - Fariz'
+    title: 'Unit Converter'
   },
   {
     path: '/tools/percentage-calculator',
     component: PercentageCalculator,
-    title: 'Percentage Calculator - Fariz'
+    title: 'Percentage Calculator'
   },
   {
     path: '/tools/bmi-calculator',
     component: BmiCalculator,
-    title: 'BMI Calculator - Fariz'
+    title: 'BMI Calculator'
   },
   {
     path: '/tools/age-calculator',
     component: AgeCalculator,
-    title: 'Age Calculator - Fariz'
+    title: 'Age Calculator'
   },
   {
     path: '/tools/random-picker',
     component: RandomPicker,
-    title: 'Random Picker - Fariz'
+    title: 'Random Picker'
   },
   {
     path: '/tools/cron-generator',
     component: CronGenerator,
-    title: 'Cron Expression Generator - Fariz'
+    title: 'Cron Expression Generator'
   },
   {
     path: '/tools/hash-comparer',
     component: HashComparer,
-    title: 'Hash Comparer - Fariz'
+    title: 'Hash Comparer'
   },
   {
     path: '/tools/ascii-art-generator',
     component: AsciiArtGenerator,
-    title: 'ASCII Art Generator - Fariz'
+    title: 'ASCII Art Generator'
+  },
+  {
+    path: '/tools/pomodoro-timer',
+    component: PomodoroTimer,
+    title: 'Pomodoro Timer'
   }
 ];
