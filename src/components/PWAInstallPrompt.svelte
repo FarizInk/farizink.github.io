@@ -38,7 +38,7 @@
   function handleBeforeInstallPrompt(e: Event) {
     // Prevent the mini-infobar from appearing on mobile
     e.preventDefault();
-    deferredPrompt = e;
+    deferredPrompt = e as BeforeInstallPromptEvent;
     showInstallPrompt = true;
   }
 

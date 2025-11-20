@@ -16,12 +16,29 @@ export interface RouterState {
   params: Record<string, string>;
 }
 
-// Router store
+// Router store (backward compatibility)
 export const router = writable<RouterState>({
   currentPath: '/',
   currentRoute: null,
   params: {}
 });
+
+// Current router state for direct access
+let currentRouterState: RouterState = {
+  currentPath: '/',
+  currentRoute: null,
+  params: {}
+};
+
+// Subscribe and update local state
+router.subscribe(state => {
+  currentRouterState = state;
+});
+
+// Export current state getter
+export function getCurrentRouterState(): RouterState {
+  return currentRouterState;
+}
 
 let routes: Route[] = [];
 
@@ -54,9 +71,14 @@ export function createRouter(routeList: Route[]) {
 
 // Navigate to a new path
 export function navigate(path: string) {
+  console.log('Navigate function called with:', path);
+  console.log('Current path before navigation:', getCurrentPath());
+
   if (path !== getCurrentPath()) {
     window.history.pushState({}, '', path);
     handleLocationChange();
+  } else {
+    console.log('Path is the same, not navigating');
   }
 }
 
@@ -116,8 +138,12 @@ function updateMetaTags(route: Route) {
 // Handle location changes
 function handleLocationChange() {
   const currentPath = getCurrentPath();
+  console.log('handleLocationChange called with path:', currentPath);
+
   const matchedRoute = findMatchingRoute(currentPath);
   const params = extractParams(currentPath, matchedRoute);
+
+  console.log('Matched route:', matchedRoute?.path || 'null');
 
   // Update document title and meta tags if route has them
   if (matchedRoute) {
@@ -133,11 +159,16 @@ function handleLocationChange() {
 
 // Find matching route
 function findMatchingRoute(path: string): Route | null {
+  console.log('Available routes:', routes.map(r => r.path));
+  console.log('Checking path:', path);
+
   for (const route of routes) {
     if (isRouteMatch(path, route.path)) {
+      console.log('Found matching route:', route.path);
       return route;
     }
   }
+  console.log('No matching route found');
   return null;
 }
 

@@ -1,15 +1,22 @@
 <script lang="ts">
-  import { router, type RouterState } from './router.js';
+  import { router } from './router.js';
+  import type { RouterState } from './router.js';
 
+  // Subscribe to router state changes with proper Svelte 5 runes
   let routerState: RouterState = $state({
     currentPath: '/',
     currentRoute: null,
     params: {}
   });
 
-  // Subscribe to router state changes
-  router.subscribe(state => {
+  // Subscribe to router store and update state
+  const unsubscribe = router.subscribe(state => {
     routerState = state;
+  });
+
+  // Cleanup on destroy
+  $effect(() => {
+    return unsubscribe;
   });
 </script>
 
