@@ -10,8 +10,10 @@
   import Modal from './components/Modal.svelte';
   import { Toaster } from 'svelte-sonner';
   import { allRoutes } from './routes/index.js';
+  import { router } from './lib/router.js';
 
   let isDark = $state(false);
+  let currentPath = $state('/');
 
   onMount(() => {
     // Check for saved theme preference or default to light mode
@@ -64,6 +66,15 @@
 
   onMount(() => {
     createRouter(routes);
+
+    // Subscribe to router changes to track current path
+    const unsubscribe = router.subscribe((routerState) => {
+      currentPath = routerState.currentPath;
+    });
+
+    return () => {
+      unsubscribe();
+    };
   });
 </script>
 
@@ -79,17 +90,19 @@
     </div>
   </div>
 
-  <footer
-    class="flex justify-center items-center text-secondary-600 dark:text-secondary-400 py-8 mt-12 border-t border-secondary-200 dark:border-secondary-800 bg-white/50 dark:bg-black/20 backdrop-blur-sm"
-  >
-    Made with <button
-      type="button"
-      onclick={openThanksModal}
-      class="hover:cursor-pointer hover:scale-110 transition-transform duration-200"
+  {#if currentPath !== '/'}
+    <footer
+      class="flex justify-center items-center text-secondary-600 dark:text-secondary-400 py-8 mt-12 border-t border-secondary-200 dark:border-secondary-800 bg-white/50 dark:bg-black/20 backdrop-blur-sm"
     >
-      <LoveIcon class="w-5 h-5 mx-1 text-rose-600" />
-    </button> in Surabaya.
-  </footer>
+      Made with <button
+        type="button"
+        onclick={openThanksModal}
+        class="hover:cursor-pointer hover:scale-110 transition-transform duration-200"
+      >
+        <LoveIcon class="w-5 h-5 mx-1 text-rose-600" />
+      </button> in Surabaya.
+    </footer>
+  {/if}
 </div>
 
 <Modal isOpen={showThanksModal} onClose={closeThanksModal} maxW="max-w-2xl">
