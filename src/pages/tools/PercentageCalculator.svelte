@@ -7,10 +7,9 @@
     DollarSign,
     Tag,
     Copy,
-    RotateCcw,
-    ChevronLeft
+    RotateCcw
   } from '@lucide/svelte';
-  import { navigate } from '../../lib/router.js';
+  import ToolLayout from '../../components/ToolLayout.svelte';
 
   // Calculator modes
   const modes = [
@@ -256,10 +255,6 @@
       currency: 'USD'
     }).format(parseFloat(value) || 0);
   }
-
-  function handleBackToTools() {
-    navigate('/tools');
-  }
 </script>
 
 <svelte:head>
@@ -270,57 +265,12 @@
   />
 </svelte:head>
 
-<div class="max-w-6xl mx-auto p-6">
-  <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 mb-4">
-      <button
-        onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        <ChevronLeft class="w-5 h-5" />
-        Back to Tools
-      </button>
-    </div>
-
-    <div class="text-center mb-8">
-      <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
-      >
-        <Percent class="w-10 h-10 text-white" />
-      </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Percentage Calculator</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Calculate percentages, discounts, tips, and more with precision
-      </p>
-    </div>
-  </div>
-
-  <!-- Breadcrumb -->
-  <nav class="mb-8">
-    <ol class="flex items-center justify-center space-x-2 text-sm">
-      <li>
-        <a
-          href="/"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Home
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li>
-        <a
-          href="/tools"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Tools
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li class="text-gray-900 dark:text-white font-medium">Percentage Calculator</li>
-    </ol>
-  </nav>
-
+<ToolLayout
+  title="Percentage Calculator"
+  description="Calculate percentages, percentage changes, and ratios with ease."
+  icon={Calculator}
+  color="primary"
+>
   <!-- Mode Selection -->
   <div
     class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6"
@@ -519,6 +469,7 @@
                       ).toFixed(2)}%)
                     </p>
                   </div>
+
                   <button
                     onclick={() => copyToClipboard(changedResult)}
                     class="p-2 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300"
@@ -577,13 +528,14 @@
                     <p class="text-2xl font-bold text-purple-700 dark:text-purple-300">
                       {differenceResult}%
                     </p>
+
+                    <button
+                      onclick={() => copyToClipboard(differenceResult + '%')}
+                      class="p-2 text-primary-600 dark:text-primary-400 hover:text-purple-700 dark:hover:text-purple-300"
+                    >
+                      <Copy class="w-5 h-5" />
+                    </button>
                   </div>
-                  <button
-                    onclick={() => copyToClipboard(differenceResult + '%')}
-                    class="p-2 text-primary-600 dark:text-primary-400 hover:text-purple-700 dark:hover:text-purple-300"
-                  >
-                    <Copy class="w-5 h-5" />
-                  </button>
                 </div>
               </div>
             {/if}
@@ -611,6 +563,7 @@
                   />
                 </div>
               </div>
+
               <div>
                 <label
                   for="discount-percent"
@@ -761,6 +714,7 @@
                           {formatCurrency(amountPerPerson)}
                         </p>
                       </div>
+
                       <button
                         onclick={() => copyToClipboard(amountPerPerson)}
                         class="p-2 text-primary-600 dark:text-primary-400 hover:text-purple-700 dark:hover:text-purple-300"
@@ -856,4 +810,4 @@
       </div>
     </div>
   </div>
-</div>
+</ToolLayout>

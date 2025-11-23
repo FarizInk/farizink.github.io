@@ -1,7 +1,6 @@
 <script lang="ts">
   import {
     Copy,
-    Key,
     Eye,
     EyeOff,
     RefreshCw,
@@ -9,9 +8,9 @@
     X,
     Info,
     AlertCircle,
-    ChevronLeft
+    FileText
   } from '@lucide/svelte';
-  import { navigate } from '../../lib/router.js';
+  import ToolLayout from '../../components/ToolLayout.svelte';
 
   let jwtToken = $state('');
   let showToken = $state(false);
@@ -144,10 +143,6 @@
     if (hours > 0) return `${hours}h ${minutes}m`;
     return `${minutes}m`;
   }
-
-  function handleBackToTools() {
-    navigate('/tools');
-  }
 </script>
 
 <svelte:head>
@@ -158,57 +153,12 @@
   />
 </svelte:head>
 
-<div class="max-w-6xl mx-auto p-6">
-  <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 mb-4">
-      <button
-        onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        <ChevronLeft class="w-5 h-5" />
-        Back to Tools
-      </button>
-    </div>
-
-    <div class="text-center mb-8">
-      <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-slate-400 to-slate-600 rounded-2xl mb-4"
-      >
-        <Key class="w-10 h-10 text-white" />
-      </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">JWT Decoder</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Decode and analyze JSON Web Tokens (JWT) safely in your browser
-      </p>
-    </div>
-  </div>
-
-  <!-- Breadcrumb -->
-  <nav class="mb-8">
-    <ol class="flex items-center justify-center space-x-2 text-sm">
-      <li>
-        <a
-          href="/"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Home
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li>
-        <a
-          href="/tools"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Tools
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li class="text-gray-900 dark:text-white font-medium">JWT Decoder</li>
-    </ol>
-  </nav>
-
+<ToolLayout
+  title="JWT Decoder"
+  description="Decode and validate JSON Web Tokens (JWT) with header, payload, and signature analysis."
+  icon={FileText}
+  color="danger"
+>
   <!-- Input Section -->
   <div
     class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6"
@@ -380,6 +330,7 @@
               {copied ? 'Copied!' : 'Copy'}
             </button>
           </div>
+
           <pre
             class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm text-gray-700 dark:text-gray-300"><code
               >{decodedHeader}</code
@@ -398,6 +349,7 @@
               {copied ? 'Copied!' : 'Copy'}
             </button>
           </div>
+
           <pre
             class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm text-gray-700 dark:text-gray-300"><code
               >{decodedPayload}</code
@@ -416,6 +368,7 @@
               {copied ? 'Copied!' : 'Copy'}
             </button>
           </div>
+
           <div
             class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-4"
           >
@@ -432,6 +385,7 @@
               </div>
             </div>
           </div>
+
           <pre
             class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm text-gray-700 dark:text-gray-300 break-all"><code
               >{signature}</code
@@ -440,4 +394,4 @@
       </div>
     </div>
   {/if}
-</div>
+</ToolLayout>

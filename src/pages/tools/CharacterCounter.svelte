@@ -1,15 +1,6 @@
 <script lang="ts">
-  import {
-    Copy,
-    FileText,
-    Calculator,
-    Hash,
-    Clock,
-    Type,
-    BarChart3,
-    ChevronLeft
-  } from '@lucide/svelte';
-  import { navigate } from '../../lib/router.js';
+  import ToolLayout from '../../components/ToolLayout.svelte';
+  import { Copy, FileText, Calculator, Hash, Clock, Type, BarChart3 } from '@lucide/svelte';
 
   // Component state
   let inputText = $state('');
@@ -146,10 +137,6 @@ ${inputText}
     URL.revokeObjectURL(url);
   }
 
-  function handleBackToTools() {
-    navigate('/tools');
-  }
-
   // Character limit indicators
   const commonLimits = [
     { name: 'Twitter', limit: 280 },
@@ -160,62 +147,12 @@ ${inputText}
   ];
 </script>
 
-<svelte:head>
-  <title>Character Counter - Developer Tools</title>
-  <meta
-    name="description"
-    content="Count characters, words, and analyze text with detailed statistics including reading time and frequency analysis"
-  />
-</svelte:head>
-
-<div class="max-w-6xl mx-auto p-6">
-  <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 mb-4">
-      <button class="btn btn-primary" onclick={handleBackToTools}>
-        <ChevronLeft class="w-5 h-5 mr-2" />
-        Back to Tools
-      </button>
-    </div>
-
-    <div class="text-center mb-8">
-      <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
-      >
-        <Calculator class="w-10 h-10 text-white" />
-      </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Character Counter</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Count characters, words, and analyze text with detailed statistics
-      </p>
-    </div>
-  </div>
-
-  <!-- Breadcrumb -->
-  <nav class="mb-8">
-    <ol class="flex items-center justify-center space-x-2 text-sm">
-      <li>
-        <a
-          href="/"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Home
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li>
-        <a
-          href="/tools"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Tools
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li class="text-gray-900 dark:text-white font-medium">Character Counter</li>
-    </ol>
-  </nav>
-
+<ToolLayout
+  title="Character Counter"
+  description="Count characters, words, and analyze text with detailed statistics including reading time and frequency analysis"
+  icon={Calculator}
+  color="primary"
+>
   <!-- Main Content Grid -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Text Input Area -->
@@ -481,4 +418,4 @@ ${inputText}
       </div>
     {/if}
   {/if}
-</div>
+</ToolLayout>

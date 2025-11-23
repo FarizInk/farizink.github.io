@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, GitCompare, FileText, Zap } from '@lucide/svelte';
+  import ToolLayout from '../../components/ToolLayout.svelte';
+  import { GitCompare, FileText, Zap } from '@lucide/svelte';
 
   let text1 = $state('');
   let text2 = $state('');
@@ -155,63 +155,14 @@ console.log('Result:', result);`;
       total: diffResult.added.length + diffResult.removed.length + diffResult.unchanged.length
     };
   }
-
-  function handleBackToTools() {
-    navigate('/tools');
-  }
 </script>
 
-<div class="max-w-6xl mx-auto p-6">
-  <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 mb-4">
-      <button
-        onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        <ChevronLeft class="w-5 h-5" />
-        Back to Tools
-      </button>
-    </div>
-
-    <div class="text-center mb-8">
-      <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
-      >
-        <GitCompare class="w-10 h-10 text-white" />
-      </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Text Diff Tool</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Compare two text blocks and highlight differences with detailed analysis.
-      </p>
-    </div>
-  </div>
-
-  <!-- Breadcrumb -->
-  <nav class="mb-8">
-    <ol class="flex items-center justify-center space-x-2 text-sm">
-      <li>
-        <a
-          href="/"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Home
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li>
-        <a
-          href="/tools"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Tools
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li class="text-gray-900 dark:text-white font-medium">Text Diff Tool</li>
-    </ol>
-  </nav>
-
+<ToolLayout
+  title="Text Diff Tool"
+  description="Compare two texts side-by-side and highlight differences."
+  icon={GitCompare}
+  color="primary"
+>
   <!-- Options -->
   <div
     class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
@@ -266,7 +217,10 @@ console.log('Result:', result);`;
     >
       Clear All
     </button>
-    {#if diffResult}
+  </div>
+
+  {#if diffResult}
+    <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
       <button
         onclick={copyDiff}
         class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -279,8 +233,8 @@ console.log('Result:', result);`;
       >
         Download Diff
       </button>
-    {/if}
-  </div>
+    </div>
+  {/if}
 
   <!-- Input Text Areas -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -291,6 +245,7 @@ console.log('Result:', result);`;
           {text1.split('\n').length} lines
         </span>
       </div>
+
       <textarea
         bind:value={text1}
         placeholder="Enter the original text here..."
@@ -305,6 +260,7 @@ console.log('Result:', result);`;
           {text2.split('\n').length} lines
         </span>
       </div>
+
       <textarea
         bind:value={text2}
         placeholder="Enter the modified text here..."
@@ -327,64 +283,64 @@ console.log('Result:', result);`;
             <span class="text-gray-600 dark:text-gray-400">{getStats()!.unchanged} unchanged</span>
           </div>
         {/if}
-      </div>
 
-      <div class="overflow-x-auto">
-        <div class="min-w-full">
-          {#each diffResult.removed as line, index (line + index + 'removed')}
-            <div class="flex items-start gap-2 py-1">
-              {#if showLineNumbers}
-                <span class="text-xs text-gray-500 dark:text-gray-400 w-8 text-right"
-                  >{index + 1}</span
-                >
-              {/if}
-              <span class="text-red-600 dark:text-red-400">-</span>
-              <pre
-                class="text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded flex-1">{line ||
-                  '\u00A0'}</pre>
-            </div>
-            {#if diffResult.added[index]}
+        <div class="overflow-x-auto">
+          <div class="min-w-full">
+            {#each diffResult.removed as line, index (line + index + 'removed')}
               <div class="flex items-start gap-2 py-1">
                 {#if showLineNumbers}
                   <span class="text-xs text-gray-500 dark:text-gray-400 w-8 text-right"
                     >{index + 1}</span
                   >
                 {/if}
+                <span class="text-red-600 dark:text-red-400">-</span>
+                <pre
+                  class="text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded flex-1">{line ||
+                    '\u00A0'}</pre>
+              </div>
+              {#if diffResult.added[index]}
+                <div class="flex items-start gap-2 py-1">
+                  {#if showLineNumbers}
+                    <span class="text-xs text-gray-500 dark:text-gray-400 w-8 text-right"
+                      >{index + 1}</span
+                    >
+                  {/if}
+                  <span class="text-primary-600 dark:text-primary-400">+</span>
+                  <pre
+                    class="text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded flex-1">{diffResult
+                      .added[index] || '\u00A0'}</pre>
+                </div>
+              {/if}
+            {/each}
+
+            {#each diffResult.unchanged as line, index (line + index + 'unchanged')}
+              <div class="flex items-start gap-2 py-1">
+                {#if showLineNumbers}
+                  <span class="text-xs text-gray-500 dark:text-gray-400 w-8 text-right"
+                    >{diffResult.removed.length + index + 1}</span
+                  >
+                {/if}
+                <span class="text-gray-400 dark:text-gray-600"> </span>
+                <pre
+                  class="text-sm text-gray-700 dark:text-gray-300 px-2 py-1 rounded flex-1">{line ||
+                    '\u00A0'}</pre>
+              </div>
+            {/each}
+
+            {#each diffResult.added.slice(diffResult.removed.length) as line, index (line + index + 'added')}
+              <div class="flex items-start gap-2 py-1">
+                {#if showLineNumbers}
+                  <span class="text-xs text-gray-500 dark:text-gray-400 w-8 text-right"
+                    >{diffResult.removed.length + diffResult.unchanged.length + index + 1}</span
+                  >
+                {/if}
                 <span class="text-primary-600 dark:text-primary-400">+</span>
                 <pre
-                  class="text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded flex-1">{diffResult
-                    .added[index] || '\u00A0'}</pre>
+                  class="text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded flex-1">{line ||
+                    '\u00A0'}</pre>
               </div>
-            {/if}
-          {/each}
-
-          {#each diffResult.unchanged as line, index (line + index + 'unchanged')}
-            <div class="flex items-start gap-2 py-1">
-              {#if showLineNumbers}
-                <span class="text-xs text-gray-500 dark:text-gray-400 w-8 text-right"
-                  >{diffResult.removed.length + index + 1}</span
-                >
-              {/if}
-              <span class="text-gray-400 dark:text-gray-600"> </span>
-              <pre
-                class="text-sm text-gray-700 dark:text-gray-300 px-2 py-1 rounded flex-1">{line ||
-                  '\u00A0'}</pre>
-            </div>
-          {/each}
-
-          {#each diffResult.added.slice(diffResult.removed.length) as line, index (line + index + 'added')}
-            <div class="flex items-start gap-2 py-1">
-              {#if showLineNumbers}
-                <span class="text-xs text-gray-500 dark:text-gray-400 w-8 text-right"
-                  >{diffResult.removed.length + diffResult.unchanged.length + index + 1}</span
-                >
-              {/if}
-              <span class="text-primary-600 dark:text-primary-400">+</span>
-              <pre
-                class="text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded flex-1">{line ||
-                  '\u00A0'}</pre>
-            </div>
-          {/each}
+            {/each}
+          </div>
         </div>
       </div>
     </div>
@@ -437,4 +393,4 @@ console.log('Result:', result);`;
       </p>
     </div>
   </div>
-</div>
+</ToolLayout>

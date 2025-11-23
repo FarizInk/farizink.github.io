@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, Hash, Upload, Shield, FileText, Zap } from '@lucide/svelte';
+  import { Hash, Upload, Shield, FileText, Zap } from '@lucide/svelte';
+  import ToolLayout from '../../components/ToolLayout.svelte';
 
   let inputText = $state('');
   let encodedText = $state('');
@@ -119,60 +119,14 @@
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
-  function handleBackToTools() {
-    navigate('/tools');
-  }
 </script>
 
-<div class="max-w-6xl mx-auto p-6">
-  <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 mb-4">
-      <button class="btn btn-primary" onclick={handleBackToTools}>
-        <ChevronLeft class="w-5 h-5 mr-2" />
-        Back to Tools
-      </button>
-    </div>
-
-    <div class="text-center mb-8">
-      <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
-      >
-        <Hash class="w-10 h-10 text-white" />
-      </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Base64 Converter</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Encode and decode Base64 strings with support for text and file conversion.
-      </p>
-    </div>
-  </div>
-
-  <!-- Breadcrumb -->
-  <nav class="mb-8">
-    <ol class="flex items-center justify-center space-x-2 text-sm">
-      <li>
-        <a
-          href="/"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Home
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li>
-        <a
-          href="/tools"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Tools
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li class="text-gray-900 dark:text-white font-medium">Base64 Converter</li>
-    </ol>
-  </nav>
-
+<ToolLayout
+  title="Base64 Converter"
+  description="Encode and decode Base64 strings with support for text and file conversion"
+  icon={Hash}
+  color="primary"
+>
   <!-- Tab Navigation -->
   <div class="mb-6">
     <div class="flex justify-center">
@@ -438,4 +392,4 @@
       </p>
     </div>
   </div>
-</div>
+</ToolLayout>

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, Link, Shield, Zap, CreditCard } from '@lucide/svelte';
+  import ToolLayout from '../../components/ToolLayout.svelte';
+  import { Link, Shield, Zap, CreditCard } from '@lucide/svelte';
 
   let inputText = $state('');
   let encodedText = $state('');
@@ -87,10 +87,6 @@ https://site.com/page?param=value with spaces&another=special!@#$%^&*()chars
 https://demo.com/search?query=测试&lang=zh-CN`;
   }
 
-  function handleBackToTools() {
-    navigate('/tools');
-  }
-
   // Auto-encode/decode when input changes
   $effect(() => {
     if (inputText && activeTab === 'single') {
@@ -99,55 +95,12 @@ https://demo.com/search?query=测试&lang=zh-CN`;
   });
 </script>
 
-<div class="max-w-6xl mx-auto p-6">
-  <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 mb-4">
-      <button class="btn btn-primary" onclick={handleBackToTools}>
-        <ChevronLeft class="w-5 h-5 mr-2" />
-        Back to Tools
-      </button>
-    </div>
-
-    <div class="text-center mb-8">
-      <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
-      >
-        <Link class="w-10 h-10 text-white" />
-      </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">URL Encoder/Decoder</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Encode and decode URLs safely. Perfect for handling special characters and international
-        content.
-      </p>
-    </div>
-  </div>
-
-  <!-- Breadcrumb -->
-  <nav class="mb-8">
-    <ol class="flex items-center justify-center space-x-2 text-sm">
-      <li>
-        <a
-          href="/"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Home
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li>
-        <a
-          href="/tools"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Tools
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li class="text-gray-900 dark:text-white font-medium">URL Encoder/Decoder</li>
-    </ol>
-  </nav>
-
+<ToolLayout
+  title="URL Encoder"
+  description="Encode and decode URLs for safe transmission and parameter handling."
+  icon={Link}
+  color="primary"
+>
   <!-- Tab Navigation -->
   <div class="mb-6">
     <div class="flex justify-center">
@@ -197,6 +150,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
             {inputText.length} characters
           </span>
         </div>
+
         <textarea
           bind:value={inputText}
           placeholder="Enter text or URL to encode/decode..."
@@ -253,6 +207,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
               </button>
             {/if}
           </div>
+
           <div class="relative">
             <textarea
               bind:value={encodedText}
@@ -284,6 +239,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
               </button>
             {/if}
           </div>
+
           <div class="relative">
             <textarea
               bind:value={decodedText}
@@ -314,6 +270,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
             {batchInput.split('\n').filter(line => line.trim()).length} URLs
           </span>
         </div>
+
         <textarea
           bind:value={batchInput}
           placeholder="Enter multiple URLs or text strings, one per line..."
@@ -331,6 +288,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
             </button>
           {/if}
         </div>
+
         <div
           class="h-96 overflow-y-auto border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 p-4"
         >
@@ -427,4 +385,4 @@ https://demo.com/search?query=测试&lang=zh-CN`;
       </p>
     </div>
   </div>
-</div>
+</ToolLayout>

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { navigate } from '../../lib/router.js';
+  import ToolLayout from '../../components/ToolLayout.svelte';
   import QRCode from 'qrcode';
-  import { QrCode, Download, Copy, RefreshCw, Settings2, Info, ChevronLeft } from '@lucide/svelte';
+  import { QrCode, Download, Copy, RefreshCw, Settings2, Info } from '@lucide/svelte';
   import { toast } from 'svelte-sonner';
 
   let text = $state('');
@@ -87,64 +87,18 @@
     toast.success('Form reset');
   }
 
-  function handleBackToTools() {
-    navigate('/tools');
-  }
-
   onMount(() => {
     text = 'https://farizink.dev';
     generateQRCode();
   });
 </script>
 
-<div class="max-w-6xl mx-auto p-6">
-  <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 mb-4">
-      <button class="btn btn-primary" onclick={handleBackToTools}>
-        <ChevronLeft class="w-5 h-5 mr-2" />
-        Back to Tools
-      </button>
-    </div>
-
-    <div class="text-center mb-8">
-      <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-success-400 to-success-600 rounded-2xl mb-4"
-      >
-        <QrCode class="w-10 h-10 text-white" />
-      </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">QR Code Generator</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Generate custom QR codes for URLs, text, or any data with customizable options.
-      </p>
-    </div>
-  </div>
-
-  <!-- Breadcrumb -->
-  <nav class="mb-8">
-    <ol class="flex items-center justify-center space-x-2 text-sm">
-      <li>
-        <a
-          href="/"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Home
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li>
-        <a
-          href="/tools"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Tools
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li class="text-gray-900 dark:text-white font-medium">QR Code Generator</li>
-    </ol>
-  </nav>
-
+<ToolLayout
+  title="QR Code Generator"
+  description="Generate custom QR codes for URLs, text, or any data with customizable options."
+  icon={QrCode}
+  color="success"
+>
   <!-- Controls -->
   <div class="mb-6 flex justify-center flex-wrap gap-2">
     <button onclick={generateQRCode} class="btn btn-primary btn-sm">
@@ -323,4 +277,4 @@
       </div>
     </div>
   </div>
-</div>
+</ToolLayout>

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Copy, Type, ArrowRight, ChevronLeft } from '@lucide/svelte';
-  import { navigate } from '../../lib/router.js';
+  import { Copy, Type, ArrowRight } from '@lucide/svelte';
+  import ToolLayout from '../../components/ToolLayout.svelte';
 
   // Component state
   let inputText = $state('');
@@ -119,10 +119,6 @@
     URL.revokeObjectURL(url);
   }
 
-  function handleBackToTools() {
-    navigate('/tools');
-  }
-
   // Get text statistics
   const textStats = $derived(
     inputText
@@ -147,54 +143,12 @@
   />
 </svelte:head>
 
-<div class="max-w-6xl mx-auto p-6">
-  <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 mb-4">
-      <button class="btn btn-primary" onclick={handleBackToTools}>
-        <ChevronLeft class="w-5 h-5 mr-2" />
-        Back to Tools
-      </button>
-    </div>
-
-    <div class="text-center mb-8">
-      <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-secondary-400 to-secondary-600 rounded-2xl mb-4"
-      >
-        <Type class="w-10 h-10 text-white" />
-      </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Text Case Converter</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Convert text between different case formats with ease
-      </p>
-    </div>
-  </div>
-
-  <!-- Breadcrumb -->
-  <nav class="mb-8">
-    <ol class="flex items-center justify-center space-x-2 text-sm">
-      <li>
-        <a
-          href="/"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Home
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li>
-        <a
-          href="/tools"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Tools
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li class="text-gray-900 dark:text-white font-medium">Text Case Converter</li>
-    </ol>
-  </nav>
-
+<ToolLayout
+  title="Text Case Converter"
+  description="Convert text between different cases: UPPERCASE, lowercase, Title Case, and more."
+  icon={Type}
+  color="secondary"
+>
   <!-- Case Selection -->
   <div
     class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6"
@@ -258,77 +212,77 @@
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Input Text</h2>
         <button class="btn btn-primary btn-sm" onclick={clearAll}> Clear </button>
-      </div>
 
-      <textarea class="textarea" bind:value={inputText} placeholder="Enter your text here..."
-      ></textarea>
+        <textarea class="textarea" bind:value={inputText} placeholder="Enter your text here..."
+        ></textarea>
 
-      {#if textStats}
-        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-          <div
-            class="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm text-gray-600 dark:text-gray-400"
-          >
-            <div>
-              <span class="font-medium">Characters:</span>
-              {textStats.characters}
-            </div>
-            <div>
-              <span class="font-medium">No spaces:</span>
-              {textStats.charactersNoSpaces}
-            </div>
-            <div>
-              <span class="font-medium">Words:</span>
-              {textStats.words}
-            </div>
-            <div>
-              <span class="font-medium">Sentences:</span>
-              {textStats.sentences}
-            </div>
-            <div>
-              <span class="font-medium">Lines:</span>
-              {textStats.lines}
+        {#if textStats}
+          <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div
+              class="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm text-gray-600 dark:text-gray-400"
+            >
+              <div>
+                <span class="font-medium">Characters:</span>
+                {textStats.characters}
+              </div>
+              <div>
+                <span class="font-medium">No spaces:</span>
+                {textStats.charactersNoSpaces}
+              </div>
+              <div>
+                <span class="font-medium">Words:</span>
+                {textStats.words}
+              </div>
+              <div>
+                <span class="font-medium">Sentences:</span>
+                {textStats.sentences}
+              </div>
+              <div>
+                <span class="font-medium">Lines:</span>
+                {textStats.lines}
+              </div>
             </div>
           </div>
-        </div>
-      {/if}
-    </div>
-
-    <!-- Output Section -->
-    <div
-      class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
-    >
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Converted Text</h2>
-        <div class="flex items-center gap-2">
-          <button
-            onclick={swapTexts}
-            disabled={!inputText || !convertedText}
-            class="btn btn-primary btn-sm"
-            title="Swap input and output"
-          >
-            <ArrowRight class="w-4 h-4 rotate-180" />
-          </button>
-          <button
-            onclick={copyToClipboard}
-            disabled={!convertedText}
-            class="btn btn-primary btn-sm"
-          >
-            <Copy class="w-4 h-4 mr-1" />
-            {copied ? 'Copied!' : 'Copy'}
-          </button>
-        </div>
+        {/if}
       </div>
 
-      <textarea
-        class="textarea"
-        bind:value={convertedText}
-        placeholder="Converted text will appear here..."
-      ></textarea>
+      <!-- Output Section -->
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Converted Text</h2>
+          <div class="flex items-center gap-2">
+            <button
+              onclick={swapTexts}
+              disabled={!inputText || !convertedText}
+              class="btn btn-primary btn-sm"
+              title="Swap input and output"
+            >
+              <ArrowRight class="w-4 h-4 rotate-180" />
+            </button>
+            <button
+              onclick={copyToClipboard}
+              disabled={!convertedText}
+              class="btn btn-primary btn-sm"
+            >
+              <Copy class="w-4 h-4 mr-1" />
+              {copied ? 'Copied!' : 'Copy'}
+            </button>
+          </div>
+        </div>
 
-      <div class="mt-4 flex gap-2">
-        <button class="btn btn-primary w-full" onclick={downloadAsFile} disabled={!convertedText}>
-          Download as File
-        </button>
+        <textarea
+          class="textarea"
+          bind:value={convertedText}
+          placeholder="Converted text will appear here..."
+        ></textarea>
+
+        <div class="mt-4 flex gap-2">
+          <button class="btn btn-primary w-full" onclick={downloadAsFile} disabled={!convertedText}>
+            Download as File
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -361,4 +315,4 @@
       </button>
     </div>
   </div>
-</div>
+</ToolLayout>

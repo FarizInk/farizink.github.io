@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Copy, RefreshCw, FileText, Hash, Type, ChevronLeft } from '@lucide/svelte';
-  import { navigate } from '../../lib/router.js';
+  import { Copy, RefreshCw, FileText, Hash, Type } from '@lucide/svelte';
+  import ToolLayout from '../../components/ToolLayout.svelte';
 
   // Component state
   let amount = $state(5);
@@ -300,10 +300,6 @@
     URL.revokeObjectURL(url);
   }
 
-  function handleBackToTools() {
-    navigate('/tools');
-  }
-
   // Generate initial text
   generateLoremText();
 </script>
@@ -316,57 +312,12 @@
   />
 </svelte:head>
 
-<div class="max-w-6xl mx-auto p-6">
-  <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 mb-4">
-      <button
-        onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        <ChevronLeft class="w-5 h-5" />
-        Back to Tools
-      </button>
-    </div>
-
-    <div class="text-center mb-8">
-      <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
-      >
-        <FileText class="w-10 h-10 text-white" />
-      </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Lorem Ipsum Generator</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Generate placeholder text for your designs and prototypes
-      </p>
-    </div>
-  </div>
-
-  <!-- Breadcrumb -->
-  <nav class="mb-8">
-    <ol class="flex items-center justify-center space-x-2 text-sm">
-      <li>
-        <a
-          href="/"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Home
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li>
-        <a
-          href="/tools"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Tools
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li class="text-gray-900 dark:text-white font-medium">Lorem Ipsum Generator</li>
-    </ol>
-  </nav>
-
+<ToolLayout
+  title="Lorem Ipsum Generator"
+  description="Generate placeholder text with customizable length and formatting options."
+  icon={FileText}
+  color="secondary"
+>
   <!-- Controls -->
   <div
     class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6"
@@ -472,4 +423,4 @@
       </div>
     </div>
   </div>
-</div>
+</ToolLayout>

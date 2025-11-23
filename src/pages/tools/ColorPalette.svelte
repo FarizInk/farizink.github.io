@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, Palette, Copy, Zap, RefreshCw } from '@lucide/svelte';
+  import { Palette, Copy, Zap, RefreshCw } from '@lucide/svelte';
+  import ToolLayout from '../../components/ToolLayout.svelte';
 
   let baseColor = $state('#3B82F6');
   let paletteType = $state('complementary');
@@ -218,10 +218,6 @@
     generatePalette();
   }
 
-  function handleBackToTools() {
-    navigate('/tools');
-  }
-
   // React to changes in base color or palette type
   $effect(() => {
     if (baseColor && paletteType) {
@@ -230,58 +226,12 @@
   });
 </script>
 
-<div class="max-w-6xl mx-auto p-6">
-  <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 mb-4">
-      <button
-        onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        <ChevronLeft class="w-5 h-5" />
-        Back to Tools
-      </button>
-    </div>
-
-    <div class="text-center mb-8">
-      <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-pink-400 to-pink-600 rounded-2xl mb-4"
-        style="background: linear-gradient(to bottom right, var(--color-palette-pink-light), var(--color-palette-pink))"
-      >
-        <Palette class="w-10 h-10 text-white" />
-      </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Color Palette Generator</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Generate harmonious color palettes with complementary, triadic, and analogous colors.
-      </p>
-    </div>
-  </div>
-
-  <!-- Breadcrumb -->
-  <nav class="mb-8">
-    <ol class="flex items-center justify-center space-x-2 text-sm">
-      <li>
-        <a
-          href="/"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Home
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li>
-        <a
-          href="/tools"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Tools
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li class="text-gray-900 dark:text-white font-medium">Color Palette Generator</li>
-    </ol>
-  </nav>
-
+<ToolLayout
+  title="Color Palette Generator"
+  description="Generate harmonious color palettes with complementary, triadic, and analogous colors."
+  icon={Palette}
+  color="success"
+>
   <!-- Controls -->
   <div
     class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
@@ -307,7 +257,6 @@
           </button>
         </div>
       </div>
-
       <div>
         <label
           for="palette-type-select"
@@ -325,147 +274,148 @@
           <option value="analogous">Analogous</option>
           <option value="monochromatic">Monochromatic</option>
         </select>
-      </div>
 
-      <div class="flex items-end">
-        <button class="btn btn-primary w-full" onclick={loadSamplePalette}>
-          Load Sample Palette
-        </button>
+        <div class="flex items-end">
+          <button class="btn btn-primary w-full" onclick={loadSamplePalette}>
+            Load Sample Palette
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Color Palette -->
-  {#if palette.length > 0}
-    <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
-    >
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Generated Palette</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-        {#each palette as color, i (color.hex + i)}
-          <div
-            class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
-          >
-            <div class="h-24 w-full" style="background-color: {color.hex}"></div>
-            <div class="p-3">
-              <h4 class="font-medium text-gray-900 dark:text-white mb-2">{color.name}</h4>
-              <div class="space-y-1 text-xs">
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-600 dark:text-gray-400">HEX:</span>
-                  <button
-                    onclick={() => copyToClipboard(color.hex)}
-                    class="font-mono text-gray-900 dark:text-white hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
-                    title="Copy HEX"
-                  >
-                    {color.hex}
-                  </button>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-600 dark:text-gray-400">HSL:</span>
-                  <button
-                    onclick={() => copyToClipboard(`hsl(${color.hsl})`)}
-                    class="font-mono text-gray-900 dark:text-white hover:text-pink-600 dark:hover:text-pink-400 transition-colors text-xs"
-                    title="Copy HSL"
-                  >
-                    {color.hsl}
-                  </button>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-600 dark:text-gray-400">RGB:</span>
-                  <button
-                    onclick={() => copyToClipboard(`rgb(${color.rgb})`)}
-                    class="font-mono text-gray-900 dark:text-white hover:text-pink-600 dark:hover:text-pink-400 transition-colors text-xs"
-                    title="Copy RGB"
-                  >
-                    {color.rgb}
-                  </button>
+    <!-- Color Palette -->
+    {#if palette.length > 0}
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+      >
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Generated Palette</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          {#each palette as color, i (color.hex + i)}
+            <div
+              class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
+            >
+              <div class="h-24 w-full" style="background-color: {color.hex}"></div>
+              <div class="p-3">
+                <h4 class="font-medium text-gray-900 dark:text-white mb-2">{color.name}</h4>
+                <div class="space-y-1 text-xs">
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600 dark:text-gray-400">HEX:</span>
+                    <button
+                      onclick={() => copyToClipboard(color.hex)}
+                      class="font-mono text-gray-900 dark:text-white hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
+                      title="Copy HEX"
+                    >
+                      {color.hex}
+                    </button>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600 dark:text-gray-400">HSL:</span>
+                    <button
+                      onclick={() => copyToClipboard(`hsl(${color.hsl})`)}
+                      class="font-mono text-gray-900 dark:text-white hover:text-pink-600 dark:hover:text-pink-400 transition-colors text-xs"
+                      title="Copy HSL"
+                    >
+                      {color.hsl}
+                    </button>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-600 dark:text-gray-400">RGB:</span>
+                    <button
+                      onclick={() => copyToClipboard(`rgb(${color.rgb})`)}
+                      class="font-mono text-gray-900 dark:text-white hover:text-pink-600 dark:hover:text-pink-400 transition-colors text-xs"
+                      title="Copy RGB"
+                    >
+                      {color.rgb}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        {/each}
+          {/each}
+        </div>
+      </div>
+    {/if}
+
+    <!-- Palette Types Information -->
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+    >
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Palette Types</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <h4 class="font-medium text-gray-900 dark:text-white mb-2">Complementary</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Two colors opposite each other on the color wheel. Creates high contrast and visual
+            interest.
+          </p>
+        </div>
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <h4 class="font-medium text-gray-900 dark:text-white mb-2">Triadic</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Three colors evenly spaced on the color wheel. Creates vibrant, balanced color schemes.
+          </p>
+        </div>
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <h4 class="font-medium text-gray-900 dark:text-white mb-2">Analogous</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Colors adjacent to each other on the color wheel. Creates harmonious and pleasing
+            combinations.
+          </p>
+        </div>
+        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <h4 class="font-medium text-gray-900 dark:text-white mb-2">Monochromatic</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Variations of a single color with different lightness values. Creates subtle and
+            sophisticated looks.
+          </p>
+        </div>
       </div>
     </div>
-  {/if}
 
-  <!-- Palette Types Information -->
-  <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
-  >
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Palette Types</h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-2">Complementary</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
-          Two colors opposite each other on the color wheel. Creates high contrast and visual
-          interest.
+    <!-- Features Section -->
+    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div
+        class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      >
+        <div
+          class="w-12 h-12 bg-pink-100 dark:bg-pink-900/20 rounded-lg flex items-center justify-center mb-4"
+        >
+          <Palette class="w-6 h-6 text-pink-600 dark:text-pink-400" />
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Color Harmony</h3>
+        <p class="text-gray-600 dark:text-gray-400">
+          Generate color schemes based on color theory principles for professional designs
         </p>
       </div>
-      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-2">Triadic</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
-          Three colors evenly spaced on the color wheel. Creates vibrant, balanced color schemes.
+
+      <div
+        class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      >
+        <div
+          class="w-12 h-12 bg-pink-100 dark:bg-pink-900/20 rounded-lg flex items-center justify-center mb-4"
+        >
+          <Copy class="w-6 h-6 text-pink-600 dark:text-pink-400" />
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Multiple Formats</h3>
+        <p class="text-gray-600 dark:text-gray-400">
+          Export colors in HEX, RGB, and HSL formats for use in any design tool
         </p>
       </div>
-      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-2">Analogous</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
-          Colors adjacent to each other on the color wheel. Creates harmonious and pleasing
-          combinations.
+
+      <div
+        class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      >
+        <div
+          class="w-12 h-12 bg-pink-100 dark:bg-pink-900/20 rounded-lg flex items-center justify-center mb-4"
+        >
+          <Zap class="w-6 h-6 text-pink-600 dark:text-pink-400" />
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Instant Preview</h3>
+        <p class="text-gray-600 dark:text-gray-400">
+          See your color palette in real-time as you adjust settings
         </p>
-      </div>
-      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-2">Monochromatic</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
-          Variations of a single color with different lightness values. Creates subtle and
-          sophisticated looks.
-        </p>
+        <p>See your color palette in real-time as you adjust settings</p>
       </div>
     </div>
   </div>
-
-  <!-- Features Section -->
-  <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-pink-100 dark:bg-pink-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <Palette class="w-6 h-6 text-pink-600 dark:text-pink-400" />
-      </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Color Harmony</h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        Generate color schemes based on color theory principles for professional designs
-      </p>
-    </div>
-
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-pink-100 dark:bg-pink-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <Copy class="w-6 h-6 text-pink-600 dark:text-pink-400" />
-      </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Multiple Formats</h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        Export colors in HEX, RGB, and HSL formats for use in any design tool
-      </p>
-    </div>
-
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-pink-100 dark:bg-pink-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <Zap class="w-6 h-6 text-pink-600 dark:text-pink-400" />
-      </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Instant Preview</h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        See your color palette in real-time as you adjust settings
-      </p>
-    </div>
-  </div>
-</div>
+</ToolLayout>

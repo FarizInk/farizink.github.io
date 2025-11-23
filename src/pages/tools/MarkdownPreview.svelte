@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, FileText, Eye, Edit, Zap, Code, Download } from '@lucide/svelte';
+  import ToolLayout from '../../components/ToolLayout.svelte';
+  import { FileText, Eye, Edit, Zap, Code, Download } from '@lucide/svelte';
 
   let markdownText = $state(
     '# Welcome to Markdown Preview' +
@@ -48,245 +48,63 @@
       '    middle = [x for x in arr if x == pivot]' +
       '    right = [x for x in arr if x > pivot]' +
       '\n    return quick_sort(left) + middle + quick_sort(right)' +
-      '\n# Test the function' +
-      'numbers = [3, 6, 8, 10, 1, 2, 1]' +
-      'sorted_numbers = quick_sort(numbers)' +
-      'print("Sorted: {}".format(sorted_numbers))' +
       '```' +
+      '\n\n## Blockquotes' +
+      '\n\n> This is a blockquote.' +
+      '> It can span multiple lines.' +
       '\n\n## Tables' +
       '\n\n| Feature | Status | Priority |' +
       '|---------|--------|----------|' +
-      '| Live Preview | ✅ Complete | High |' +
-      '| Export | ✅ Complete | Medium |' +
-      '| Themes | 🚧 In Progress | Low |' +
-      '\n\n## Blockquotes' +
-      '\n\n> "The best way to learn is by doing."' +
-      '\n> — Anonymous Developer' +
-      '\n\n> This is a multi-line blockquote that demonstrates' +
-      '> how line breaks are preserved within blockquote' +
-      '> sections.' +
-      '\n\n## Task Lists' +
-      '\n\n- [x] Set up development environment' +
-      '- [x] Implement basic markdown parsing' +
-      '- [x] Add syntax highlighting' +
-      '- [ ] Add dark theme support' +
-      '- [ ] Implement export to PDF' +
-      '- [ ] Add collaborative editing' +
+      '| Live Preview | ✅ Done | High |' +
+      '| Syntax Highlighting | ✅ Done | Medium |' +
+      '| Export Options | ✅ Done | Medium |' +
       '\n\n---' +
-      '\n\n## Horizontal Rules' +
-      '\n\nYou can use horizontal rules to separate content sections.' +
-      '\n\n## Math Support' +
-      '\n\nInline math: $E = mc^2$' +
-      '\n\nBlock math:' +
-      '\n\n$$' +
-      '\\sum_{i=1}^{n} i = \\frac{n(n+1)}{2}' +
-      '$$' +
-      '\n\n## Footnotes' +
-      "\n\nHere's a sentence with a footnote [^1]." +
-      '\n\n[^1]: This is the footnote content.' +
-      '\n\nHappy markdown editing! 🎉'
+      '\n\n*Thank you for using Markdown Preview!*'
   );
 
-  let htmlOutput = $state('');
+  let htmlContent = $state('');
   let copiedText = $state('');
-  let wordCount = $state(0);
-  let charCount = $state(0);
-  let lineCount = $state(0);
-
-  function parseMarkdown(markdown: string): string {
-    let html = markdown;
-
-    // Headers
-    html = html.replace(/^### (.*$)/gim, '<h3 class="text-xl font-semibold mb-3 mt-6">$1</h3>');
-    html = html.replace(/^## (.*$)/gim, '<h2 class="text-2xl font-semibold mb-4 mt-8">$1</h2>');
-    html = html.replace(/^# (.*$)/gim, '<h1 class="text-3xl font-bold mb-6 mt-8">$1</h1>');
-
-    // Bold
-    html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>');
-
-    // Italic
-    html = html.replace(/\*(.+?)\*/g, '<em class="italic">$1</em>');
-    html = html.replace(/_(.+?)_/g, '<em class="italic">$1</em>');
-
-    // Strikethrough
-    html = html.replace(/~~(.+?)~~/g, '<del class="line-through">$1</del>');
-
-    // Links
-    html = html.replace(
-      /\[([^\]]+)\]\(([^)]+)\)/g,
-      '<a href="$2" class="text-primary-600 dark:text-primary-400 hover:underline" target="_blank" rel="noopener noreferrer">$1</a>'
-    );
-
-    // Inline code
-    html = html.replace(
-      /`([^`]+)`/g,
-      '<code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm font-mono text-red-600 dark:text-red-400">$1</code>'
-    );
-
-    // Code blocks
-    html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
-      const language = lang || 'text';
-      return `<div class="bg-gray-900 text-gray-100 rounded-lg p-4 my-4 overflow-x-auto">
-        <div class="text-xs text-gray-400 mb-2 font-mono">${language}</div>
-        <pre class="font-mono text-sm"><code>${escapeHtml(code.trim())}</code></pre>
-      </div>`;
-    });
-
-    // Blockquotes
-    html = html.replace(
-      /^> (.*$)/gim,
-      '<blockquote class="border-l-4 border-gray-300 dark:border-gray-600 pl-4 py-2 my-4 italic text-gray-700 dark:text-gray-300">$1</blockquote>'
-    );
-    html = html.replace(
-      /^> (.+?)\n> (.+?)\n> (.+?)$/gim,
-      '<blockquote class="border-l-4 border-gray-300 dark:border-gray-600 pl-4 py-2 my-4 italic text-gray-700 dark:text-gray-300">$1<br>$2<br>$3</blockquote>'
-    );
-
-    // Lists - Unordered
-    html = html.replace(/^\* (.+)$/gim, '<li class="ml-4">• $1</li>');
-    html = html.replace(/^- (.+)$/gim, '<li class="ml-4">• $1</li>');
-
-    // Lists - Ordered
-    html = html.replace(/^\d+\. (.+)$/gim, '<li class="ml-4 list-decimal list-inside">$1</li>');
-
-    // Horizontal rules
-    html = html.replace(/^---$/gim, '<hr class="my-8 border-gray-300 dark:border-gray-600">');
-    html = html.replace(/^\*\*\*$/gim, '<hr class="my-8 border-gray-300 dark:border-gray-600">');
-
-    // Line breaks
-    html = html.replace(/\n\n/g, '</p><p class="mb-4">');
-    html = '<p class="mb-4">' + html + '</p>';
-
-    // Clean up empty paragraphs
-    html = html.replace(/<p class="mb-4"><\/p>/g, '');
-    html = html.replace(/<p class="mb-4"><h/g, '<h');
-    html = html.replace(/<\/h[1-6]><\/p>/g, '</h$1>');
-    html = html.replace(/<p class="mb-4"><blockquote/g, '<blockquote');
-    html = html.replace(/<\/blockquote><\/p>/g, '</blockquote>');
-    html = html.replace(/<p class="mb-4"><div/g, '<div');
-    html = html.replace(/<\/div><\/p>/g, '</div>');
-    html = html.replace(/<p class="mb-4"><hr/g, '<hr');
-    html = html.replace(/<\/p><li/g, '<li');
-    html = html.replace(/<\/li><\/p>/g, '</li>');
-
-    // Math (basic support)
-    html = html.replace(
-      /\$\$([^$]+)\$\$/g,
-      '<div class="bg-gray-100 dark:bg-gray-800 p-4 my-4 rounded text-center font-mono text-lg">$1</div>'
-    );
-    html = html.replace(
-      /\$([^$]+)\$/g,
-      '<span class="font-mono bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">$1</span>'
-    );
-
-    // Task lists
-    html = html.replace(
-      /- \[ \] (.+)$/gim,
-      '<div class="flex items-center gap-2 ml-4"><input type="checkbox" disabled class="rounded"> <span>$1</span></div>'
-    );
-    html = html.replace(
-      /- \[x\] (.+)$/gim,
-      '<div class="flex items-center gap-2 ml-4"><input type="checkbox" checked disabled class="rounded"> <span>$1</span></div>'
-    );
-
-    // Tables (basic support)
-    const tableRegex = /\|(.+)\|\n\|(.+)\|\n((?:\|.+\|\n?)*)/gim;
-    html = html.replace(
-      tableRegex,
-      (match: string, headers: string, separator: string, rows: string) => {
-        const headerCells = headers
-          .split('|')
-          .map(
-            (cell: string) =>
-              `<th class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left bg-gray-50 dark:bg-gray-800">${cell.trim()}</th>`
-          )
-          .join('');
-        const rowCells = rows
-          .split('\n')
-          .filter(row => row.trim())
-          .map(row => {
-            const cells = row
-              .split('|')
-              .slice(1, -1)
-              .map(
-                cell =>
-                  `<td class="border border-gray-300 dark:border-gray-600 px-4 py-2">${cell.trim()}</td>`
-              )
-              .join('');
-            return `<tr>${cells}</tr>`;
-          })
-          .join('');
-
-        return `<div class="overflow-x-auto my-4"><table class="w-full border-collapse border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-        <thead><tr>${headerCells}</tr></thead>
-        <tbody>${rowCells}</tbody>
-      </table></div>`;
-      }
-    );
-
-    // Emojis (basic support)
-    const emojis: { [key: string]: string } = {
-      ':)': '😊',
-      ':-)': '😊',
-      ':(': '😢',
-      ':-(': '😢',
-      ':D': '😃',
-      ':-D': '😃',
-      ':P': '😛',
-      ':-P': '😛',
-      ';)': '😉',
-      ';-)': '😉',
-      ':heart:': '❤️',
-      ':+1:': '👍',
-      ':-1:': '👎',
-      ':fire:': '🔥',
-      ':star:': '⭐',
-      ':check:': '✅',
-      ':x:': '❌',
-      ':warning:': '⚠️',
-      ':rocket:': '🚀'
-    };
-
-    for (const [emoji, unicode] of Object.entries(emojis)) {
-      html = html.replace(new RegExp(emoji.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), unicode);
-    }
-
-    return html;
-  }
-
-  function escapeHtml(text: string): string {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
 
   function updatePreview() {
-    htmlOutput = parseMarkdown(markdownText);
-    updateStats();
-  }
+    // Basic markdown to HTML conversion
+    htmlContent = markdownText
+      // Headers
+      .replace(/^### (.*$)/gm, '<h3 class="text-xl font-semibold mb-3 mt-6">$1</h3>')
+      .replace(/^## (.*$)/gm, '<h2 class="text-2xl font-semibold mb-4 mt-8">$1</h2>')
+      .replace(/^# (.*$)/gm, '<h1 class="text-3xl font-bold mb-6 mt-8">$1</h1>')
+      // Bold
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      // Italic
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      // Code blocks
+      .replace(
+        /```(.*?)\n([\s\S]*?)```/g,
+        '<pre class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto mb-4"><code class="text-sm font-mono">$2</code></pre>'
+      )
+      // Inline code
+      .replace(
+        /`(.*?)`/g,
+        '<code class="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm font-mono">$1</code>'
+      )
+      // Links
+      .replace(
+        /\[([^\]]+)\]\(([^)]+)\)/g,
+        '<a href="$2" class="text-primary-600 dark:text-primary-400 hover:underline" target="_blank" rel="noopener noreferrer">$1</a>'
+      )
+      // Lists
+      .replace(/^- (.*$)/gm, '<li class="ml-4">$1</li>')
+      .replace(/(<li.*>.*<\/li>)/s, '<ul class="list-disc mb-4">$1</ul>')
+      // Line breaks
+      .replace(/\n\n/g, '</p><p class="mb-4">')
+      .replace(/\n/g, '<br>');
 
-  function updateStats() {
-    const lines = markdownText.split('\n');
-    lineCount = lines.length;
-    charCount = markdownText.length;
-    wordCount = markdownText.trim() ? markdownText.trim().split(/\s+/).length : 0;
-  }
-
-  function clearAll() {
-    markdownText = '';
-    htmlOutput = '';
-    updateStats();
+    // Wrap in paragraphs
+    if (htmlContent && !htmlContent.startsWith('<')) {
+      htmlContent = '<p class="mb-4">' + htmlContent + '</p>';
+    }
   }
 
   function copyToClipboard() {
-    navigator.clipboard.writeText(htmlOutput);
-    copiedText = 'html';
-    setTimeout(() => {
-      copiedText = '';
-    }, 2000);
-  }
-
-  function copyMarkdown() {
     navigator.clipboard.writeText(markdownText);
     copiedText = 'markdown';
     setTimeout(() => {
@@ -294,93 +112,75 @@
     }, 2000);
   }
 
-  function exportAsHtml() {
-    const scriptTag = '</scr' + 'ipt>';
-    const fullHtml =
-      '<!DOCTYPE html>' +
-      '<html lang="en">' +
-      '<head>' +
-      '<meta charset="UTF-8">' +
-      '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
-      '<title>Markdown Export</title>' +
-      '<script src="https://cdn.tailwindcss.com">' +
-      scriptTag +
-      '</head>' +
-      '<body class="max-w-4xl mx-auto p-8 bg-white dark:bg-gray-900 text-gray-900 dark:text-white">' +
-      '<div class="prose prose-lg dark:prose-invert max-w-none">' +
-      htmlOutput +
-      '</div>' +
-      '</body>' +
-      '</html>';
+  function copyHtmlToClipboard() {
+    navigator.clipboard.writeText(htmlContent);
+    copiedText = 'html';
+    setTimeout(() => {
+      copiedText = '';
+    }, 2000);
+  }
 
-    const blob = new Blob([fullHtml], { type: 'text/html' });
+  function downloadHtml() {
+    const blob = new Blob([htmlContent], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'markdown-export.html';
+    a.download = 'markdown-preview.html';
     a.click();
     URL.revokeObjectURL(url);
   }
 
   function loadSample() {
-    markdownText =
-      '# Project Documentation' +
-      '\n\n## Overview' +
-      '\n\nThis project demonstrates a **real-time markdown preview** application built with modern web technologies.' +
-      '\n\n## Features' +
-      '\n\n### Core Functionality' +
-      '- [x] **Live Preview**: Real-time markdown rendering' +
-      '- [x] **Syntax Highlighting**: Beautiful code blocks' +
-      '- [x] **Export Options**: HTML export functionality' +
-      '- [ ] **Dark Theme**: Automatic theme switching' +
-      '- [ ] **File Upload**: Import .md files' +
-      '- [ ] **Cloud Sync**: Save to cloud storage' +
-      '\n\n### Technical Stack' +
-      '\n\n```javascript' +
-      'const techStack = {' +
-      "  frontend: ['Svelte', 'Tailwind CSS']," +
-      "  backend: ['Node.js', 'Express']," +
-      "  deployment: ['Vercel', 'GitHub Actions']" +
-      '};' +
-      '```' +
-      '\n\n## Quick Start' +
-      '\n\n1. **Installation**' +
-      '   ```bash' +
-      '   npm install' +
-      '   npm run dev' +
-      '   ```' +
-      '\n\n2. **Usage**' +
-      '   Simply start typing markdown in the editor and see the live preview!' +
-      '\n\n## API Reference' +
-      '\n\n### Endpoints' +
-      '\n\n| Method | Endpoint | Description |' +
-      '|--------|----------|-------------|' +
-      '| GET    | /api/render | Render markdown to HTML |' +
-      '| POST   | /api/export | Export as HTML file |' +
-      '\n\n### Code Example' +
-      '\n\n```python' +
-      'def process_markdown(content):' +
-      '    """' +
-      '    Process markdown content and return HTML' +
-      '    """' +
-      '    # Processing logic here' +
-      '    return render_html(content)' +
-      '```' +
-      '\n\n## Contributing' +
-      '\n> "Great things are built by passionate people"' +
-      '\nWe welcome contributions! Please read our [contributing guidelines](https://github.com/example/contributing).' +
-      '\n\n## License' +
-      '\nThis project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.' +
-      '\n\n---' +
-      '\n\n*Last updated: ' +
-      new Date().toLocaleDateString() +
-      '*';
+    markdownText = `# Sample Markdown Document
+
+## Introduction
+
+This is a **sample document** to demonstrate the *capabilities* of our markdown previewer.
+
+## Code Examples
+
+### JavaScript
+
+\`\`\`javascript
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}
+
+console.log(greet("World"));
+\`\`\`
+
+### Python
+
+\`\`\`python
+def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+print([fibonacci(i) for i in range(10)])
+\`\`\`
+
+## Features
+
+- ✅ Live preview
+- ✅ Syntax highlighting
+- ✅ Export capabilities
+- ✅ Responsive design
+
+> "The best way to learn is by doing." - Anonymous
+
+Visit [GitHub](https://github.com) for more resources!`;
+
     updatePreview();
   }
 
-  function handleBackToTools() {
-    navigate('/tools');
+  function clearAll() {
+    markdownText = '';
+    htmlContent = '';
   }
+
+  // Calculate line count
+  const lineCount = $derived(markdownText.split('\n').length);
 
   // Auto-update preview when markdown changes
   $effect(() => {
@@ -388,105 +188,23 @@
   });
 </script>
 
-<div class="max-w-7xl mx-auto p-6">
-  <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 mb-4">
-      <button
-        onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        <ChevronLeft class="w-5 h-5" />
-        Back to Tools
-      </button>
-    </div>
-
-    <div class="text-center mb-8">
-      <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
-      >
-        <FileText class="w-10 h-10 text-white" />
-      </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Markdown Preview</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Preview and write markdown with live formatting. Perfect for documentation and content
-        creation.
-      </p>
-    </div>
-  </div>
-
-  <!-- Breadcrumb -->
-  <nav class="mb-8">
-    <ol class="flex items-center justify-center space-x-2 text-sm">
-      <li>
-        <a
-          href="/"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Home
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li>
-        <a
-          href="/tools"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Tools
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li class="text-gray-900 dark:text-white font-medium">Markdown Preview</li>
-    </ol>
-  </nav>
-
+<ToolLayout
+  title="Markdown Preview"
+  description="Preview markdown text with live rendering and syntax highlighting."
+  icon={FileText}
+  color="secondary"
+>
   <!-- Controls -->
-  <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
-    <button
-      onclick={loadSample}
-      class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-    >
-      Load Sample
-    </button>
-    <button
-      onclick={clearAll}
-      class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-    >
-      Clear All
-    </button>
-    <button
-      onclick={copyMarkdown}
-      class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-    >
-      {copiedText === 'markdown' ? '✓ Copied!' : 'Copy Markdown'}
-    </button>
-    <button
-      onclick={copyToClipboard}
-      class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-    >
-      {copiedText === 'html' ? '✓ Copied!' : 'Copy HTML'}
-    </button>
-    <button
-      onclick={exportAsHtml}
-      class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-    >
-      Export HTML
-    </button>
-  </div>
-
-  <!-- Stats -->
-  <div class="mb-6 flex justify-center gap-6 text-sm text-gray-600 dark:text-gray-400">
-    <div class="flex items-center gap-1">
-      <FileText class="w-4 h-4" />
-      <span>{wordCount} words</span>
+  <div class="mb-6 flex flex-wrap gap-4 items-center justify-between">
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+        <FileText class="w-4 h-4" />
+        <span>{lineCount} lines</span>
+      </div>
     </div>
-    <div class="flex items-center gap-1">
-      <FileText class="w-4 h-4" />
-      <span>{charCount} characters</span>
-    </div>
-    <div class="flex items-center gap-1">
-      <FileText class="w-4 h-4" />
-      <span>{lineCount} lines</span>
+    <div class="flex gap-2">
+      <button onclick={loadSample} class="btn btn-secondary btn-sm"> Load Sample </button>
+      <button onclick={clearAll} class="btn btn-secondary btn-sm"> Clear </button>
     </div>
   </div>
 
@@ -497,21 +215,23 @@
       class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"
     >
       <div
-        class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600"
+        class="bg-gray-50 dark:bg-gray-700 px-4 py-3 border-b border-gray-200 dark:border-gray-600"
       >
         <div class="flex items-center justify-between">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <Edit class="w-5 h-5" />
-            Markdown Editor
-          </h2>
-          <span class="text-sm text-gray-500 dark:text-gray-400">.md</span>
+          <div class="flex items-center gap-2">
+            <Edit class="w-4 h-4 text-gray-600 dark:text-gray-400" />
+            <span class="text-sm font-medium text-gray-900 dark:text-white">Markdown Editor</span>
+          </div>
+          <button onclick={copyToClipboard} class="btn btn-primary btn-sm">
+            {copiedText === 'markdown' ? '✓ Copied!' : 'Copy Markdown'}
+          </button>
         </div>
       </div>
-      <div class="p-6">
+      <div class="relative">
         <textarea
           bind:value={markdownText}
-          placeholder="Start typing your markdown here..."
-          class="w-full h-96 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          placeholder="Enter your markdown text here..."
+          class="w-full h-96 p-4 font-mono text-sm border-0 resize-none focus:ring-0 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         ></textarea>
       </div>
     </div>
@@ -521,21 +241,37 @@
       class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"
     >
       <div
-        class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600"
+        class="bg-gray-50 dark:bg-gray-700 px-4 py-3 border-b border-gray-200 dark:border-gray-600"
       >
         <div class="flex items-center justify-between">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <Eye class="w-5 h-5" />
-            Live Preview
-          </h2>
-          <span class="text-sm text-gray-500 dark:text-gray-400">HTML</span>
+          <div class="flex items-center gap-2">
+            <Eye class="w-4 h-4 text-gray-600 dark:text-gray-400" />
+            <span class="text-sm font-medium text-gray-900 dark:text-white">Live Preview</span>
+          </div>
+          <div class="flex gap-2">
+            <button onclick={copyHtmlToClipboard} class="btn btn-primary btn-sm">
+              {copiedText === 'html' ? '✓ Copied!' : 'Copy HTML'}
+            </button>
+            <button onclick={downloadHtml} class="btn btn-primary btn-sm">
+              <Download class="w-4 h-4 mr-1" />
+              Download
+            </button>
+          </div>
         </div>
       </div>
-      <div class="p-6 h-96 overflow-y-auto">
-        <div class="prose prose-sm sm:prose-base dark:prose-invert max-w-none">
+      <div class="h-96 overflow-y-auto p-6 prose prose-sm dark:prose-invert max-w-none">
+        {#if htmlContent}
           <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-          {@html htmlOutput}
-        </div>
+          {@html htmlContent}
+        {:else}
+          <div class="flex items-center justify-center h-full text-gray-400 dark:text-gray-600">
+            <div class="text-center">
+              <Eye class="w-12 h-12 mx-auto mb-4 opacity-50" />
+              <p>Your markdown preview will appear here</p>
+              <p class="text-sm">Start typing in the editor to see the live preview</p>
+            </div>
+          </div>
+        {/if}
       </div>
     </div>
   </div>
@@ -546,13 +282,13 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-secondary-100 dark:bg-secondary-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <Zap class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <Zap class="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Live Preview</h3>
       <p class="text-gray-600 dark:text-gray-400">
-        Real-time markdown rendering as you type with instant visual feedback
+        See your markdown rendered in real-time as you type with instant updates
       </p>
     </div>
 
@@ -560,13 +296,13 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-secondary-100 dark:bg-secondary-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <Code class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <Code class="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Syntax Highlighting</h3>
       <p class="text-gray-600 dark:text-gray-400">
-        Beautiful code blocks with syntax highlighting for multiple programming languages
+        Code blocks with proper formatting and highlighting for better readability
       </p>
     </div>
 
@@ -574,14 +310,14 @@
       class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
     >
       <div
-        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 bg-secondary-100 dark:bg-secondary-900/20 rounded-lg flex items-center justify-center mb-4"
       >
-        <Download class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <Download class="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Export Options</h3>
       <p class="text-gray-600 dark:text-gray-400">
-        Export your markdown as styled HTML with one click for easy sharing
+        Download your formatted content as HTML or copy to clipboard with one click
       </p>
     </div>
   </div>
-</div>
+</ToolLayout>

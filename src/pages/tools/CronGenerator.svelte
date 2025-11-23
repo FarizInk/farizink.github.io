@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, Timer, Copy, Calendar, RefreshCw, Info, Clock } from '@lucide/svelte';
+  import { Timer, Copy, Calendar, RefreshCw, Info, Clock } from '@lucide/svelte';
+  import ToolLayout from '../../components/ToolLayout.svelte';
 
   let cronExpression = $state('0 0 * * *');
   let nextRunTimes = $state<string[]>([]);
@@ -217,59 +217,12 @@
   />
 </svelte:head>
 
-<div class="max-w-6xl mx-auto p-6">
-  <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 mb-4">
-      <button
-        onclick={() => navigate('/tools')}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        <ChevronLeft class="w-5 h-5" />
-        Back to Tools
-      </button>
-    </div>
-
-    <div class="text-center mb-8">
-      <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
-      >
-        <Timer class="w-10 h-10 text-white" />
-      </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        Cron Expression Generator
-      </h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Create and validate cron expressions with visual builder and next run times
-      </p>
-    </div>
-  </div>
-
-  <!-- Breadcrumb -->
-  <nav class="mb-8">
-    <ol class="flex items-center justify-center space-x-2 text-sm">
-      <li>
-        <a
-          href="/"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Home
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li>
-        <a
-          href="/tools"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Tools
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li class="text-gray-900 dark:text-white font-medium">Cron Generator</li>
-    </ol>
-  </nav>
-
+<ToolLayout
+  title="Cron Expression Generator"
+  description="Generate and validate cron expressions with visual builder and next run times."
+  icon={Timer}
+  color="warning"
+>
   <!-- Main Content -->
   <div class="grid lg:grid-cols-2 gap-6">
     <!-- Left Column: Expression Builder -->
@@ -304,223 +257,256 @@
                 <Copy class="w-4 h-4 text-primary-600 dark:text-primary-400" />
               </button>
             {/if}
-          </div>
-        </div>
 
-        <div class="space-y-4">
-          <input
-            type="text"
-            bind:value={cronExpression}
-            oninput={updateFromExpression}
-            class={`w-full px-4 py-3 rounded-lg border ${isValidCron ? 'border-gray-300 dark:border-gray-600' : 'border-red-300 dark:border-red-600'} bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-mono text-lg focus:outline-none focus:ring-2 focus:ring-primary-500`}
-            placeholder="* * * * *"
-          />
+            <div class="space-y-4">
+              <input
+                type="text"
+                bind:value={cronExpression}
+                oninput={updateFromExpression}
+                class={`w-full px-4 py-3 rounded-lg border ${isValidCron ? 'border-gray-300 dark:border-gray-600' : 'border-red-300 dark:border-red-600'} bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-mono text-lg focus:outline-none focus:ring-2 focus:ring-primary-500`}
+                placeholder="* * * * *"
+              />
 
-          <div class="text-sm text-gray-600 dark:text-gray-400">
-            <span class="font-medium">Format:</span> [Minute] [Hour] [Day of Month] [Month] [Day of Week]
-          </div>
+              <div class="text-sm text-gray-600 dark:text-gray-400">
+                <span class="font-medium">Format:</span> [Minute] [Hour] [Day of Month] [Month] [Day
+                of Week]
 
-          {#if !isValidCron}
-            <div class="flex items-center gap-2 text-red-600 dark:text-red-400 text-sm">
-              <Info class="w-4 h-4" />
-              Invalid cron expression format
+                {#if !isValidCron}
+                  <div class="flex items-center gap-2 text-red-600 dark:text-red-400 text-sm">
+                    <Info class="w-4 h-4" />
+                    Invalid cron expression format
+                  </div>
+                {/if}
+
+                <!-- Manual Components -->
+                <div
+                  class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+                >
+                  <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                    Manual Builder
+                  </h3>
+                  <div class="space-y-4">
+                    <div>
+                      <label
+                        for="minute"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                        >Minute (0-59)</label
+                      >
+                      <input
+                        id="minute"
+                        type="text"
+                        bind:value={minute}
+                        oninput={updateFromComponents}
+                        class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        placeholder="0"
+                      />
+
+                      <div>
+                        <label
+                          for="hour"
+                          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                          >Hour (0-23)</label
+                        >
+                        <input
+                          id="hour"
+                          type="text"
+                          bind:value={hour}
+                          oninput={updateFromComponents}
+                          class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                          placeholder="0"
+                        />
+
+                        <div>
+                          <label
+                            for="day-of-month"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                            >Day of Month (1-31)</label
+                          >
+                          <input
+                            id="day-of-month"
+                            type="text"
+                            bind:value={dayOfMonth}
+                            oninput={updateFromComponents}
+                            class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            placeholder="*"
+                          />
+
+                          <div>
+                            <label
+                              for="month"
+                              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                              >Month (1-12)</label
+                            >
+                            <input
+                              id="month"
+                              type="text"
+                              bind:value={month}
+                              oninput={updateFromComponents}
+                              class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                              placeholder="*"
+                            />
+
+                            <div>
+                              <label
+                                for="day-of-week"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                                >Day of Week (0-6, 0=Sunday)</label
+                              >
+                              <input
+                                id="day-of-week"
+                                type="text"
+                                bind:value={dayOfWeek}
+                                oninput={updateFromComponents}
+                                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                placeholder="*"
+                              />
+
+                              <!-- Right Column: Description and Presets -->
+                              <div class="space-y-6">
+                                <!-- Description -->
+                                {#if isValidCron}
+                                  <div
+                                    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+                                  >
+                                    <h3
+                                      class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2"
+                                    >
+                                      <Info class="w-5 h-5" />
+                                      Description
+                                    </h3>
+                                    <p class="text-gray-700 dark:text-gray-300">
+                                      {getCronDescription(cronExpression)}
+                                    </p>
+                                  </div>
+                                {/if}
+
+                                <!-- Next Run Times -->
+                                {#if isValidCron && nextRunTimes.length > 0}
+                                  <div
+                                    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+                                  >
+                                    <h3
+                                      class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2"
+                                    >
+                                      <Calendar class="w-5 h-5" />
+                                      Next Run Times
+                                    </h3>
+                                    <div class="space-y-2">
+                                      {#each nextRunTimes.slice(0, 5) as time (time)}
+                                        <div
+                                          class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
+                                        >
+                                          <Clock class="w-4 h-4" />
+                                          {time}
+                                        </div>
+                                      {/each}
+                                    </div>
+                                  </div>
+                                {/if}
+
+                                <!-- Presets -->
+                                <div
+                                  class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+                                >
+                                  <h3
+                                    class="text-lg font-semibold text-gray-900 dark:text-white mb-4"
+                                  >
+                                    Common Presets
+                                  </h3>
+                                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    {#each presets as preset (preset.name)}
+                                      <button
+                                        onclick={() => applyPreset(preset.expression)}
+                                        class="text-left p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors group"
+                                      >
+                                        <div
+                                          class="font-medium text-gray-900 dark:text-white text-sm"
+                                        >
+                                          {preset.name}
+                                        </div>
+                                        <div
+                                          class="text-xs text-gray-500 dark:text-gray-400 font-mono mt-1"
+                                        >
+                                          {preset.expression}
+                                        </div></button
+                                      >
+                                    {/each}
+
+                                    <!-- Help Information -->
+                                    <div
+                                      class="bg-primary-100 dark:bg-primary-900/20 rounded-xl border border-primary-200 dark:border-primary-800 p-6"
+                                    >
+                                      <h3
+                                        class="text-lg font-semibold text-blue-900 dark:text-blue-400 mb-4 flex items-center gap-2"
+                                      >
+                                        <Info class="w-5 h-5" />
+                                        Cron Syntax Help
+                                      </h3>
+                                      <div
+                                        class="space-y-3 text-sm text-blue-800 dark:text-blue-300"
+                                      >
+                                        <div>
+                                          <strong class="font-semibold">* (asterisk)</strong> - any
+                                          value
+
+                                          <div>
+                                            <strong class="font-semibold">, (comma)</strong> - value
+                                            list separator
+
+                                            <div>
+                                              <strong class="font-semibold">- (hyphen)</strong> -
+                                              range of values
+
+                                              <div>
+                                                <strong class="font-semibold"
+                                                  >/ (forward slash)</strong
+                                                >
+                                                - step values
+
+                                                <div>
+                                                  <strong class="font-semibold">Examples:</strong>
+                                                  <ul class="mt-2 space-y-1 ml-4">
+                                                    <li>
+                                                      • <code
+                                                        class="bg-blue-100 dark:bg-blue-900/30 px-1 rounded"
+                                                        >*/15 * * * *</code
+                                                      > - Every 15 minutes
+                                                    </li>
+                                                    <li>
+                                                      • <code
+                                                        class="bg-blue-100 dark:bg-blue-900/30 px-1 rounded"
+                                                        >0 9 * * 1-5</code
+                                                      > - Weekdays at 9 AM
+                                                    </li>
+                                                    <li>
+                                                      • <code
+                                                        class="bg-blue-100 dark:bg-blue-900/30 px-1 rounded"
+                                                        >0 0 1 * *</code
+                                                      > - First day of every month
+                                                    </li>
+                                                  </ul>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          {/if}
-        </div>
-      </div>
-
-      <!-- Manual Components -->
-      <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
-      >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Manual Builder</h3>
-        <div class="space-y-4">
-          <div>
-            <label
-              for="minute"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Minute (0-59)</label
-            >
-            <input
-              id="minute"
-              type="text"
-              bind:value={minute}
-              oninput={updateFromComponents}
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-              placeholder="0"
-            />
-          </div>
-
-          <div>
-            <label
-              for="hour"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Hour (0-23)</label
-            >
-            <input
-              id="hour"
-              type="text"
-              bind:value={hour}
-              oninput={updateFromComponents}
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-              placeholder="0"
-            />
-          </div>
-
-          <div>
-            <label
-              for="day-of-month"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Day of Month (1-31)</label
-            >
-            <input
-              id="day-of-month"
-              type="text"
-              bind:value={dayOfMonth}
-              oninput={updateFromComponents}
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-              placeholder="*"
-            />
-          </div>
-
-          <div>
-            <label
-              for="month"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Month (1-12)</label
-            >
-            <input
-              id="month"
-              type="text"
-              bind:value={month}
-              oninput={updateFromComponents}
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-              placeholder="*"
-            />
-          </div>
-
-          <div>
-            <label
-              for="day-of-week"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Day of Week (0-6, 0=Sunday)</label
-            >
-            <input
-              id="day-of-week"
-              type="text"
-              bind:value={dayOfWeek}
-              oninput={updateFromComponents}
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-              placeholder="*"
-            />
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Right Column: Description and Presets -->
-    <div class="space-y-6">
-      <!-- Description -->
-      {#if isValidCron}
-        <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
-        >
-          <h3
-            class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2"
-          >
-            <Info class="w-5 h-5" />
-            Description
-          </h3>
-          <p class="text-gray-700 dark:text-gray-300">
-            {getCronDescription(cronExpression)}
-          </p>
-        </div>
-      {/if}
-
-      <!-- Next Run Times -->
-      {#if isValidCron && nextRunTimes.length > 0}
-        <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
-        >
-          <h3
-            class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2"
-          >
-            <Calendar class="w-5 h-5" />
-            Next Run Times
-          </h3>
-          <div class="space-y-2">
-            {#each nextRunTimes.slice(0, 5) as time (time)}
-              <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                <Clock class="w-4 h-4" />
-                {time}
-              </div>
-            {/each}
-          </div>
-        </div>
-      {/if}
-
-      <!-- Presets -->
-      <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
-      >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Common Presets</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {#each presets as preset (preset.name)}
-            <button
-              onclick={() => applyPreset(preset.expression)}
-              class="text-left p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors group"
-            >
-              <div class="font-medium text-gray-900 dark:text-white text-sm">{preset.name}</div>
-              <div class="text-xs text-gray-500 dark:text-gray-400 font-mono mt-1">
-                {preset.expression}
-              </div>
-            </button>
-          {/each}
-        </div>
-      </div>
-
-      <!-- Help Information -->
-      <div
-        class="bg-primary-100 dark:bg-primary-900/20 rounded-xl border border-primary-200 dark:border-primary-800 p-6"
-      >
-        <h3
-          class="text-lg font-semibold text-blue-900 dark:text-blue-400 mb-4 flex items-center gap-2"
-        >
-          <Info class="w-5 h-5" />
-          Cron Syntax Help
-        </h3>
-        <div class="space-y-3 text-sm text-blue-800 dark:text-blue-300">
-          <div>
-            <strong class="font-semibold">* (asterisk)</strong> - any value
-          </div>
-          <div>
-            <strong class="font-semibold">, (comma)</strong> - value list separator
-          </div>
-          <div>
-            <strong class="font-semibold">- (hyphen)</strong> - range of values
-          </div>
-          <div>
-            <strong class="font-semibold">/ (forward slash)</strong> - step values
-          </div>
-          <div>
-            <strong class="font-semibold">Examples:</strong>
-            <ul class="mt-2 space-y-1 ml-4">
-              <li>
-                • <code class="bg-blue-100 dark:bg-blue-900/30 px-1 rounded">*/15 * * * *</code> - Every
-                15 minutes
-              </li>
-              <li>
-                • <code class="bg-blue-100 dark:bg-blue-900/30 px-1 rounded">0 9 * * 1-5</code> - Weekdays
-                at 9 AM
-              </li>
-              <li>
-                • <code class="bg-blue-100 dark:bg-blue-900/30 px-1 rounded">0 0 1 * *</code> - First
-                day of every month
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+  </div></ToolLayout
+>

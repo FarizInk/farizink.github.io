@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { navigate } from '../../lib/router.js';
-  import { FileJson, Copy, Trash2, Check, AlertCircle, ChevronLeft } from '@lucide/svelte';
+  import ToolLayout from '../../components/ToolLayout.svelte';
+  import { FileJson, Copy, Trash2, Check, AlertCircle } from '@lucide/svelte';
   import { toast } from 'svelte-sonner';
 
   let input = $state('');
@@ -70,41 +70,14 @@
     error = '';
     output = '';
   }
-
-  function handleBackToTools() {
-    navigate('/tools');
-  }
 </script>
 
-<div class="max-w-6xl mx-auto p-6 animate-fade-in">
-  <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 mb-6">
-      <button class="btn btn-primary" onclick={handleBackToTools}>
-        <ChevronLeft class="w-5 h-5 mr-2" />
-        Back to Tools
-      </button>
-    </div>
-
-    <div class="text-center mb-12">
-      <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-success-400 to-success-600 rounded-2xl mb-6 shadow-lg animate-scale-in"
-      >
-        <FileJson class="w-10 h-10 text-white" />
-      </div>
-      <h1
-        class="text-4xl md:text-5xl font-bold text-secondary-900 dark:text-white mb-4 tracking-tight"
-      >
-        JSON Parser
-      </h1>
-      <p
-        class="text-xl text-secondary-600 dark:text-secondary-400 max-w-2xl mx-auto leading-relaxed"
-      >
-        Parse, validate, format, and minify JSON data with syntax highlighting and error detection.
-      </p>
-    </div>
-  </div>
-
+<ToolLayout
+  title="JSON Parser"
+  description="Parse, validate, format, and minify JSON data with syntax highlighting and error detection."
+  icon={FileJson}
+  color="success"
+>
   <!-- Controls -->
   <div class="mb-8 flex flex-wrap gap-2 items-center justify-center">
     <button onclick={loadSample} class="btn btn-primary btn-sm">Load Sample</button>
@@ -208,4 +181,4 @@
       </p>
     </div>
   </div>
-</div>
+</ToolLayout>

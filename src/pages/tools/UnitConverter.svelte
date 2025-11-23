@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { navigate } from '../../lib/router.js';
+  import ToolLayout from '../../components/ToolLayout.svelte';
   import {
     Calculator,
     Ruler,
@@ -12,8 +12,7 @@
     RotateCcw,
     Copy,
     History,
-    Trash2,
-    ChevronLeft
+    Trash2
   } from '@lucide/svelte';
   import { toast } from 'svelte-sonner';
 
@@ -289,60 +288,14 @@
     toUnit = units[1];
     toast.success('Reset converter');
   }
-
-  function handleBackToTools() {
-    navigate('/tools');
-  }
 </script>
 
-<div class="max-w-6xl mx-auto p-6">
-  <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 mb-4">
-      <button class="btn btn-primary" onclick={handleBackToTools}>
-        <ChevronLeft class="w-5 h-5 mr-2" />
-        Back to Tools
-      </button>
-    </div>
-
-    <div class="text-center mb-8">
-      <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
-      >
-        <Calculator class="w-10 h-10 text-white" />
-      </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Unit Converter</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Convert between different units of measurement with precision.
-      </p>
-    </div>
-  </div>
-
-  <!-- Breadcrumb -->
-  <nav class="mb-8">
-    <ol class="flex items-center justify-center space-x-2 text-sm">
-      <li>
-        <a
-          href="/"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Home
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li>
-        <a
-          href="/tools"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Tools
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li class="text-gray-900 dark:text-white font-medium">Unit Converter</li>
-    </ol>
-  </nav>
-
+<ToolLayout
+  title="Unit Converter"
+  description="Convert between different units of measurement with precision."
+  icon={Calculator}
+  color="primary"
+>
   <!-- Controls -->
   <div class="mb-6 flex justify-center flex-wrap gap-2">
     <button onclick={reset} class="btn btn-primary btn-sm">
@@ -631,4 +584,4 @@
       </p>
     </div>
   </div>
-</div>
+</ToolLayout>

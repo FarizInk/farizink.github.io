@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, Image, Copy, Download, Type, Zap, Palette, Check } from '@lucide/svelte';
+  import { Image, Copy, Download, Type, Zap, Palette, Check } from '@lucide/svelte';
+  import ToolLayout from '../../components/ToolLayout.svelte';
 
   let inputText = $state('');
   let asciiArt = $state('');
@@ -207,68 +207,18 @@
     generateAsciiArt();
   }
 
-  function handleBackToTools() {
-    navigate('/tools');
-  }
-
   // React to changes in input text or style
   $effect(() => {
     generateAsciiArt();
   });
 </script>
 
-<div class="max-w-6xl mx-auto p-6">
-  <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 mb-4">
-      <button
-        onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        <ChevronLeft class="w-5 h-5" />
-        Back to Tools
-      </button>
-    </div>
-
-    <div class="text-center mb-8">
-      <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl mb-4"
-      >
-        <Image class="w-10 h-10 text-white" />
-      </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">ASCII Art Generator</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Convert text into ASCII art with different styles. Perfect for terminal displays and
-        creative text art.
-      </p>
-    </div>
-  </div>
-
-  <!-- Breadcrumb -->
-  <nav class="mb-8">
-    <ol class="flex items-center justify-center space-x-2 text-sm">
-      <li>
-        <a
-          href="/"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Home
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li>
-        <a
-          href="/tools"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Tools
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li class="text-gray-900 dark:text-white font-medium">ASCII Art Generator</li>
-    </ol>
-  </nav>
-
+<ToolLayout
+  title="ASCII Art Generator"
+  description="Convert text into ASCII art with different styles. Perfect for terminal displays and creative text art."
+  icon={Image}
+  color="secondary"
+>
   <!-- Controls -->
   <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
     <button
@@ -470,4 +420,4 @@
       </p>
     </div>
   </div>
-</div>
+</ToolLayout>

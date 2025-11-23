@@ -8,8 +8,10 @@
     Bell,
     BellOff,
     BellRing,
-    Settings
+    Settings,
+    Timer
   } from '@lucide/svelte';
+  import ToolLayout from '../../components/ToolLayout.svelte';
 
   // Default timer settings (Pomodoro recommended)
   const DEFAULT_WORK_DURATION = 25 * 60; // 25 minutes in seconds
@@ -233,112 +235,79 @@
   });
 </script>
 
-<svelte:head>
-  <title>Pomodoro Timer - Productivity Timer</title>
-  <meta
-    name="description"
-    content="Free Pomodoro timer for productivity and time management. Boost your focus with work/break cycles, notifications, and progress tracking."
-  />
-  <meta
-    name="keywords"
-    content="pomodoro timer, productivity timer, focus timer, time management, work timer, break timer"
-  />
-</svelte:head>
-
-<div class="max-w-4xl mx-auto p-6">
-  <!-- Header -->
-  <div class="text-center mb-8">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Pomodoro Timer</h1>
-    <p class="text-gray-600 dark:text-gray-400">
-      Boost your productivity with focused work sessions and regular breaks
-    </p>
-  </div>
-
-  <div class="grid lg:grid-cols-3 gap-6">
+<ToolLayout
+  title="Pomodoro Timer"
+  description="Boost your productivity with focused work sessions and regular breaks"
+  icon={Timer}
+  color="primary"
+>
+  <div class="grid xl:grid-cols-3 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
     <!-- Main Timer Section -->
-    <div class="lg:col-span-2">
+    <div class="xl:col-span-2 lg:col-span-1">
       <!-- Timer Display -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-6">
+      <div class="card card-elevated mb-4 sm:mb-6 lg:mb-8">
         {#if isEditingSettings}
           <!-- Settings Editor -->
-          <div class="max-w-md mx-auto">
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-6 text-center">
+          <div class="max-w-md mx-auto w-full">
+            <h3
+              class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-6 text-center"
+            >
               Timer Settings
             </h3>
 
-            <div class="space-y-4">
+            <div class="space-y-3 sm:space-y-4">
               <!-- Work Duration -->
               <div>
-                <label
-                  for="edit-work-duration"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
-                  Work Duration (minutes)
-                </label>
+                <label for="edit-work-duration" class="label"> Work Duration (minutes) </label>
                 <input
                   id="edit-work-duration"
                   type="number"
                   bind:value={editingWorkMinutes}
                   min="1"
                   max="60"
-                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  class="input"
                 />
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Recommended: 25 minutes</p>
               </div>
 
               <!-- Short Break -->
               <div>
-                <label
-                  for="edit-short-break"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
-                  Short Break (minutes)
-                </label>
+                <label for="edit-short-break" class="label"> Short Break (minutes) </label>
                 <input
                   id="edit-short-break"
                   type="number"
                   bind:value={editingShortBreakMinutes}
                   min="1"
                   max="30"
-                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  class="input"
                 />
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Recommended: 5 minutes</p>
               </div>
 
               <!-- Long Break -->
               <div>
-                <label
-                  for="edit-long-break"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
-                  Long Break (minutes)
-                </label>
+                <label for="edit-long-break" class="label"> Long Break (minutes) </label>
                 <input
                   id="edit-long-break"
                   type="number"
                   bind:value={editingLongBreakMinutes}
                   min="1"
                   max="60"
-                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  class="input"
                 />
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Recommended: 15 minutes</p>
               </div>
 
               <!-- Session Count -->
               <div>
-                <label
-                  for="edit-session-count"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
-                  Sessions Completed
-                </label>
+                <label for="edit-session-count" class="label"> Sessions Completed </label>
                 <input
                   id="edit-session-count"
                   type="number"
                   bind:value={sessionCount}
                   min="0"
                   max="999"
-                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  class="input"
                 />
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   Number of completed Pomodoro sessions
@@ -347,33 +316,22 @@
             </div>
 
             <!-- Settings Control Buttons -->
-            <div class="flex gap-2 mt-6">
-              <button
-                onclick={applySettings}
-                class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200"
-              >
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-6">
+              <button onclick={applySettings} class="btn btn-primary flex-1">
                 Apply Settings
               </button>
-              <button
-                onclick={resetToDefaultsInEditor}
-                class="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-200"
-              >
+              <button onclick={resetToDefaultsInEditor} class="btn btn-secondary flex-1">
                 Reset to Default
               </button>
-              <button
-                onclick={cancelEditingSettings}
-                class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors duration-200"
-              >
-                Back
-              </button>
+              <button onclick={cancelEditingSettings} class="btn btn-danger flex-1"> Back </button>
             </div>
           </div>
         {:else}
           <!-- Normal Timer Display -->
           <!-- Session Type -->
-          <div class="text-center mb-6">
+          <div class="text-center mb-4 sm:mb-6">
             <div
-              class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium
+              class="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium
           {currentSession === 'work'
                 ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                 : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}"
@@ -389,7 +347,7 @@
           </div>
 
           <!-- Timer Circle -->
-          <div class="relative w-64 h-64 mx-auto mb-8">
+          <div class="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 mx-auto mb-6 sm:mb-8">
             <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
               <!-- Background circle -->
               <circle
@@ -420,62 +378,58 @@
 
             <!-- Time Display -->
             <div class="absolute inset-0 flex flex-col items-center justify-center">
-              <div class="text-5xl font-mono font-bold text-gray-900 dark:text-white mb-2">
+              <div
+                class="text-3xl sm:text-4xl lg:text-5xl font-mono font-bold text-gray-900 dark:text-white mb-1 sm:mb-2"
+              >
                 {formattedTime}
               </div>
-              <div class="text-sm text-gray-500 dark:text-gray-400">
+              <div class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                 Session {sessionCount + 1}
               </div>
             </div>
           </div>
 
           <!-- Control Buttons -->
-          <div class="flex justify-center gap-4 mb-6">
+          <div class="flex flex-wrap justify-center gap-3 sm:gap-4 mb-4 sm:mb-6">
             {#if !isRunning}
               <button
                 onclick={startTimer}
                 disabled={isEditingSettings}
-                class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200 {isEditingSettings
-                  ? 'opacity-50 cursor-not-allowed'
-                  : ''}"
+                class="btn btn-primary flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3"
               >
-                <Play class="w-5 h-5" />
-                Start
+                <Play class="w-4 h-4 sm:w-5 sm:h-5" />
+                <span class="text-sm sm:text-base">Start</span>
               </button>
             {:else}
               <button
                 onclick={pauseTimer}
                 disabled={isEditingSettings}
-                class="flex items-center gap-2 px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors duration-200 {isEditingSettings
-                  ? 'opacity-50 cursor-not-allowed'
-                  : ''}"
+                class="btn btn-warning flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3"
+                style="background-color: var(--color-warning-600);"
               >
-                <Pause class="w-5 h-5" />
-                Pause
+                <Pause class="w-4 h-4 sm:w-5 sm:h-5" />
+                <span class="text-sm sm:text-base">Pause</span>
               </button>
             {/if}
 
             <button
               onclick={resetTimer}
               disabled={isEditingSettings}
-              class="flex items-center gap-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-200 {isEditingSettings
-                ? 'opacity-50 cursor-not-allowed'
-                : ''}"
+              class="btn btn-secondary flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3"
             >
-              <RotateCcw class="w-5 h-5" />
-              Reset
+              <RotateCcw class="w-4 h-4 sm:w-5 sm:h-5" />
+              <span class="text-sm sm:text-base">Reset</span>
             </button>
 
             <button
               onclick={startEditingSettings}
               disabled={isRunning || isEditingSettings}
-              class="flex items-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors duration-200 {isRunning ||
-              isEditingSettings
-                ? 'opacity-50 cursor-not-allowed'
-                : ''}"
+              class="btn flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3"
+              style="background-color: var(--color-primary-600); color: white;"
               title="Edit Timer Settings"
             >
-              <Settings class="w-5 h-5" />
+              <Settings class="w-4 h-4 sm:w-5 sm:h-5" />
+              <span class="hidden sm:inline text-sm sm:text-base">Settings</span>
             </button>
           </div>
 
@@ -485,21 +439,22 @@
               {#if Notification.permission === 'default'}
                 <button
                   onclick={requestNotificationPermission}
-                  class="flex items-center gap-2 mx-auto px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 dark:text-blue-300 rounded-lg font-medium transition-colors duration-200"
+                  class="btn btn-outline btn-sm flex items-center gap-2 mx-auto"
+                  style="border-color: var(--color-primary-300); color: var(--color-primary-700);"
                 >
                   <Bell class="w-4 h-4" />
-                  Enable Notifications
+                  <span class="text-xs sm:text-sm">Enable Notifications</span>
                 </button>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
                   Get notified when your sessions end
                 </p>
               {:else if Notification.permission === 'granted'}
-                <div class="space-y-3">
+                <div class="space-y-2 sm:space-y-3">
                   <div
-                    class="flex items-center justify-center gap-2 text-sm text-green-600 dark:text-green-400"
+                    class="flex items-center justify-center gap-2 text-xs sm:text-sm text-green-600 dark:text-green-400"
                   >
                     <BellRing class="w-4 h-4" />
-                    Notifications enabled
+                    <span>Notifications enabled</span>
                   </div>
                   <button
                     onclick={testNotification}
@@ -510,10 +465,10 @@
                 </div>
               {:else if Notification.permission === 'denied'}
                 <div
-                  class="flex items-center justify-center gap-2 text-sm text-red-600 dark:text-red-400"
+                  class="flex items-center justify-center gap-2 text-xs sm:text-sm text-red-600 dark:text-red-400"
                 >
                   <BellOff class="w-4 h-4" />
-                  Notifications blocked
+                  <span>Notifications blocked</span>
                 </div>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   Enable in browser settings to receive session alerts
@@ -526,34 +481,36 @@
     </div>
 
     <!-- Info Sidebar -->
-    <div class="lg:col-span-1">
+    <div class="xl:col-span-1 lg:col-span-1">
       <!-- Current Settings Info -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
-        <div class="flex items-center mb-6">
-          <h3 class="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <Clock class="w-5 h-5" />
+      <div class="card card-elevated mb-4 sm:mb-6">
+        <div class="flex items-center mb-4 sm:mb-6">
+          <h3
+            class="font-semibold text-gray-900 dark:text-white flex items-center gap-2 text-base sm:text-lg"
+          >
+            <Clock class="w-4 h-4 sm:w-5 sm:h-5" />
             Current Settings
           </h3>
         </div>
 
         <!-- Settings Display -->
-        <div class="space-y-3 text-sm">
+        <div class="space-y-2 sm:space-y-3 text-xs sm:text-sm">
           <div class="flex justify-between items-center">
             <span class="text-gray-600 dark:text-gray-400">Work Duration:</span>
             <span class="font-medium text-gray-900 dark:text-white">
-              {Math.floor(workDuration / 60)} minutes
+              {Math.floor(workDuration / 60)} min
             </span>
           </div>
           <div class="flex justify-between items-center">
             <span class="text-gray-600 dark:text-gray-400">Short Break:</span>
             <span class="font-medium text-gray-900 dark:text-white">
-              {Math.floor(shortBreakDuration / 60)} minutes
+              {Math.floor(shortBreakDuration / 60)} min
             </span>
           </div>
           <div class="flex justify-between items-center">
             <span class="text-gray-600 dark:text-gray-400">Long Break:</span>
             <span class="font-medium text-gray-900 dark:text-white">
-              {Math.floor(longBreakDuration / 60)} minutes
+              {Math.floor(longBreakDuration / 60)} min
             </span>
           </div>
           <div class="flex justify-between items-center">
@@ -564,22 +521,33 @@
       </div>
 
       <!-- Pomodoro Info -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-        <h3 class="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-          <Coffee class="w-5 h-5" />
+      <div class="card card-elevated">
+        <h3
+          class="font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center gap-2 text-base sm:text-lg"
+        >
+          <Coffee class="w-4 h-4 sm:w-5 sm:h-5" />
           Pomodoro Method
         </h3>
-        <div class="space-y-3 text-sm text-gray-600 dark:text-gray-400">
+        <div class="space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
           <div class="flex items-start gap-2">
-            <div class="w-2 h-2 bg-blue-600 rounded-full mt-1.5 flex-shrink-0"></div>
+            <div
+              class="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
+              style="background-color: var(--color-primary-600);"
+            ></div>
             <p><strong>Work Session:</strong> 25 minutes of focused work</p>
           </div>
           <div class="flex items-start gap-2">
-            <div class="w-2 h-2 bg-green-600 rounded-full mt-1.5 flex-shrink-0"></div>
+            <div
+              class="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
+              style="background-color: var(--color-success-600);"
+            ></div>
             <p><strong>Short Break:</strong> 5 minutes to recharge</p>
           </div>
           <div class="flex items-start gap-2">
-            <div class="w-2 h-2 bg-purple-600 rounded-full mt-1.5 flex-shrink-0"></div>
+            <div
+              class="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
+              style="background-color: var(--color-warning-600);"
+            ></div>
             <p><strong>Long Break:</strong> 15 minutes after 4 sessions</p>
           </div>
         </div>
@@ -588,13 +556,17 @@
   </div>
 
   <!-- How to Use Section -->
-  <div class="mt-8 grid md:grid-cols-2 gap-6">
-    <div class="bg-white dark:bg-gray-800 rounded-lg p-6">
-      <h3 class="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-        <Clock class="w-5 h-5" />
+  <div class="mt-6 sm:mt-8 grid md:grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+    <div class="card">
+      <h3
+        class="font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center gap-2 text-base sm:text-lg"
+      >
+        <Clock class="w-4 h-4 sm:w-5 sm:h-5" />
         How to Use
       </h3>
-      <ol class="space-y-2 text-sm text-gray-600 dark:text-gray-400 list-decimal list-inside">
+      <ol
+        class="space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-600 dark:text-gray-400 list-decimal list-inside"
+      >
         <li>Customize your timer settings or use Pomodoro defaults</li>
         <li>Click "Start" to begin your work session</li>
         <li>Work continuously without distractions until the timer ends</li>
@@ -604,27 +576,29 @@
       </ol>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg p-6">
-      <h3 class="font-semibold text-gray-900 dark:text-white mb-4">💡 Pro Tips</h3>
-      <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+    <div class="card">
+      <h3 class="font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 text-base sm:text-lg">
+        💡 Pro Tips
+      </h3>
+      <ul class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 space-y-2 sm:space-y-3">
         <li class="flex items-start gap-2">
-          <span>•</span>
+          <span class="text-primary-600 dark:text-primary-400">•</span>
           <span>Use the timer for focused work without distractions</span>
         </li>
         <li class="flex items-start gap-2">
-          <span>•</span>
+          <span class="text-primary-600 dark:text-primary-400">•</span>
           <span>During breaks, step away from your screen and move around</span>
         </li>
         <li class="flex items-start gap-2">
-          <span>•</span>
+          <span class="text-primary-600 dark:text-primary-400">•</span>
           <span>Combine with a to-do list for maximum productivity</span>
         </li>
         <li class="flex items-start gap-2">
-          <span>•</span>
+          <span class="text-primary-600 dark:text-primary-400">•</span>
           <span>Adjust timing based on your personal workflow and energy</span>
         </li>
         <li class="flex items-start gap-2">
-          <span>•</span>
+          <span class="text-primary-600 dark:text-primary-400">•</span>
           <span>Stay hydrated and take care of your posture during sessions</span>
         </li>
       </ul>
@@ -633,20 +607,21 @@
 
   <!-- Pomodoro Recommendation Note -->
   <div
-    class="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4"
+    class="mt-4 sm:mt-6 p-4 sm:p-6 rounded-lg border dark:bg-primary-900/20 dark:border-primary-800 dark:text-primary-100"
+    style="background-color: var(--color-primary-50); border-color: var(--color-primary-200); color: var(--color-primary-900);"
   >
-    <h4 class="font-semibold text-blue-900 dark:text-blue-100 mb-2">🍅 Why Pomodoro Technique?</h4>
-    <p class="text-sm text-blue-800 dark:text-blue-200 mb-3">
+    <h4 class="font-semibold mb-2 sm:mb-3 text-sm sm:text-base">🍅 Why Pomodoro Technique?</h4>
+    <p class="text-xs sm:text-sm mb-3 sm:mb-4">
       The Pomodoro Technique was developed by Francesco Cirillo in the late 1980s. It's a time
       management method that uses a timer to break work into intervals, traditionally 25 minutes in
       length, separated by short breaks.
     </p>
-    <div class="text-sm text-blue-800 dark:text-blue-200">
+    <div class="text-xs sm:text-sm">
       <strong>Benefits:</strong> Improved focus, reduced burnout, better time estimation, increased productivity,
       and sustainable work habits.
     </div>
   </div>
-</div>
+</ToolLayout>
 
 <style>
   /* Ensure smooth transitions */

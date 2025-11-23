@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { navigate } from '../../lib/router.js';
-  import { ChevronLeft, GitCompare, Copy, Check, AlertCircle, FileText } from '@lucide/svelte';
+  import { GitCompare, Copy, Check, AlertCircle, FileText, Hash } from '@lucide/svelte';
+  import ToolLayout from '../../components/ToolLayout.svelte';
 
   let hash1 = $state('');
   let hash2 = $state('');
@@ -49,10 +49,6 @@
     hash1 = 'a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e';
     hash2 = 'b591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e';
     compareHashes();
-  }
-
-  function handleBackToTools() {
-    navigate('/tools');
   }
 
   // React to changes in hash inputs
@@ -108,57 +104,12 @@
   }
 </script>
 
-<div class="max-w-6xl mx-auto p-6">
-  <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 mb-4">
-      <button
-        onclick={handleBackToTools}
-        class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-      >
-        <ChevronLeft class="w-5 h-5" />
-        Back to Tools
-      </button>
-    </div>
-
-    <div class="text-center mb-8">
-      <div
-        class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-secondary-400 to-secondary-600 rounded-2xl mb-4"
-      >
-        <GitCompare class="w-10 h-10 text-white" />
-      </div>
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Hash Comparer</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        Compare two hash values to verify data integrity and check for matches.
-      </p>
-    </div>
-  </div>
-
-  <!-- Breadcrumb -->
-  <nav class="mb-8">
-    <ol class="flex items-center justify-center space-x-2 text-sm">
-      <li>
-        <a
-          href="/"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Home
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li>
-        <a
-          href="/tools"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          Tools
-        </a>
-      </li>
-      <li class="text-gray-300 dark:text-gray-600">/</li>
-      <li class="text-gray-900 dark:text-white font-medium">Hash Comparer</li>
-    </ol>
-  </nav>
-
+<ToolLayout
+  title="Hash Comparer"
+  description="Compare file hashes to verify integrity and detect modifications."
+  icon={Hash}
+  color="danger"
+>
   <!-- Controls -->
   <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
     <button
@@ -179,214 +130,255 @@
     >
       Clear All
     </button>
-  </div>
 
-  <!-- Comparison Status -->
-  <div class="mb-6">
-    <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center"
-    >
-      <div class="flex items-center justify-center gap-3">
-        <div class="w-12 h-12 {getComparisonColor()} rounded-lg flex items-center justify-center">
-          <CurrentIcon class="w-6 h-6" />
-        </div>
-        <div>
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            {getComparisonMessage()}
-          </h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">
-            {comparisonResult === 'match'
-              ? 'Both hash values are identical'
-              : comparisonResult === 'different'
-                ? 'Hash values are different'
-                : 'Enter two hash values to compare'}
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Hash Input Section -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-    <!-- Hash 1 -->
-    <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
-    >
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Hash 1</h3>
-        <div class="flex items-center gap-2">
-          <span class="text-sm text-gray-500 dark:text-gray-400">
-            {hash1.length} characters
-          </span>
-          <button
-            onclick={() => copyToClipboard(hash1, 'hash1')}
-            disabled={!hash1.trim()}
-            class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {#if copiedText === 'hash1'}
-              <Check class="w-4 h-4 text-green-600" />
-            {:else}
-              <Copy class="w-4 h-4" />
-            {/if}
-          </button>
-        </div>
-      </div>
-      <textarea
-        bind:value={hash1}
-        placeholder="Enter first hash value..."
-        class="w-full h-32 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-secondary-500 focus:border-transparent"
-      ></textarea>
-    </div>
-
-    <!-- Hash 2 -->
-    <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
-    >
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Hash 2</h3>
-        <div class="flex items-center gap-2">
-          <span class="text-sm text-gray-500 dark:text-gray-400">
-            {hash2.length} characters
-          </span>
-          <button
-            onclick={() => copyToClipboard(hash2, 'hash2')}
-            disabled={!hash2.trim()}
-            class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {#if copiedText === 'hash2'}
-              <Check class="w-4 h-4 text-green-600" />
-            {:else}
-              <Copy class="w-4 h-4" />
-            {/if}
-          </button>
-        </div>
-      </div>
-      <textarea
-        bind:value={hash2}
-        placeholder="Enter second hash value..."
-        class="w-full h-32 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-secondary-500 focus:border-transparent"
-      ></textarea>
-    </div>
-  </div>
-
-  <!-- Detailed Comparison Results -->
-  {#if comparisonResult && comparisonResult !== 'empty'}
-    <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
-    >
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Comparison Details</h3>
-      <div class="space-y-4">
-        <div class="flex items-center justify-between">
-          <span class="text-gray-600 dark:text-gray-400">Match Status:</span>
-          <span
-            class="font-medium {comparisonResult === 'match'
-              ? 'text-green-600 dark:text-green-400'
-              : 'text-red-600 dark:text-red-400'}"
-          >
-            {comparisonResult === 'match' ? '✓ Identical' : '✗ Different'}
-          </span>
-        </div>
-        <div class="flex items-center justify-between">
-          <span class="text-gray-600 dark:text-gray-400">Hash 1 Length:</span>
-          <span class="font-medium text-gray-900 dark:text-white">
-            {hash1.trim().length} characters
-          </span>
-        </div>
-        <div class="flex items-center justify-between">
-          <span class="text-gray-600 dark:text-gray-400">Hash 2 Length:</span>
-          <span class="font-medium text-gray-900 dark:text-white">
-            {hash2.trim().length} characters
-          </span>
-        </div>
-        <div class="flex items-center justify-between">
-          <span class="text-gray-600 dark:text-gray-400">Length Match:</span>
-          <span
-            class="font-medium {hash1.trim().length === hash2.trim().length
-              ? 'text-green-600 dark:text-green-400'
-              : 'text-red-600 dark:text-red-400'}"
-          >
-            {hash1.trim().length === hash2.trim().length ? '✓ Yes' : '✗ No'}
-          </span>
-        </div>
-      </div>
-    </div>
-  {/if}
-
-  <!-- Use Cases -->
-  <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
-  >
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Common Use Cases</h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-2">File Integrity Check</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
-          Verify downloaded files by comparing hash values with original sources
-        </p>
-      </div>
-      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-2">Password Verification</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
-          Compare stored password hashes with user-provided password hashes
-        </p>
-      </div>
-      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-2">Data Deduplication</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
-          Identify duplicate files or data blocks by comparing their hash values
-        </p>
-      </div>
-      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-2">Blockchain Verification</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
-          Validate blockchain transactions and smart contract hashes
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Features Section -->
-  <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
+    <!-- Comparison Status -->
+    <div class="mb-6">
       <div
-        class="w-12 h-12 bg-secondary-100 dark:bg-secondary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center"
       >
-        <GitCompare class="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
-      </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Real-time Comparison</h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        Instantly compare hash values as you type with automatic result updates
-      </p>
-    </div>
+        <div class="flex items-center justify-center gap-3">
+          <div class="w-12 h-12 {getComparisonColor()} rounded-lg flex items-center justify-center">
+            <CurrentIcon class="w-6 h-6" />
 
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-secondary-100 dark:bg-secondary-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <Copy class="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
-      </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Easy Copy & Paste</h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        Quickly copy hash values and paste them for seamless data verification
-      </p>
-    </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                {getComparisonMessage()}
+              </h3>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                {comparisonResult === 'match'
+                  ? 'Both hash values are identical'
+                  : comparisonResult === 'different'
+                    ? 'Hash values are different'
+                    : 'Enter two hash values to compare'}
+              </p>
 
-    <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-    >
-      <div
-        class="w-12 h-12 bg-secondary-100 dark:bg-secondary-900/20 rounded-lg flex items-center justify-center mb-4"
-      >
-        <FileText class="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
+              <!-- Hash Input Section -->
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <!-- Hash 1 -->
+                <div
+                  class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+                >
+                  <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Hash 1</h3>
+                    <div class="flex items-center gap-2">
+                      <span class="text-sm text-gray-500 dark:text-gray-400">
+                        {hash1.length} characters
+                      </span>
+                      <button
+                        onclick={() => copyToClipboard(hash1, 'hash1')}
+                        disabled={!hash1.trim()}
+                        class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {#if copiedText === 'hash1'}
+                          <Check class="w-4 h-4 text-green-600" />
+                        {:else}
+                          <Copy class="w-4 h-4" />
+                        {/if}
+                      </button>
+                    </div>
+
+                    <textarea
+                      bind:value={hash1}
+                      placeholder="Enter first hash value..."
+                      class="w-full h-32 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-secondary-500 focus:border-transparent"
+                    ></textarea>
+                  </div>
+
+                  <!-- Hash 2 -->
+                  <div
+                    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+                  >
+                    <div class="flex justify-between items-center mb-4">
+                      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Hash 2</h3>
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                          {hash2.length} characters
+                        </span>
+                        <button
+                          onclick={() => copyToClipboard(hash2, 'hash2')}
+                          disabled={!hash2.trim()}
+                          class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {#if copiedText === 'hash2'}
+                            <Check class="w-4 h-4 text-green-600" />
+                          {:else}
+                            <Copy class="w-4 h-4" />
+                          {/if}
+                        </button>
+                      </div>
+
+                      <textarea
+                        bind:value={hash2}
+                        placeholder="Enter second hash value..."
+                        class="w-full h-32 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-secondary-500 focus:border-transparent"
+                      ></textarea>
+                    </div>
+                  </div>
+
+                  <!-- Detailed Comparison Results -->
+                  {#if comparisonResult && comparisonResult !== 'empty'}
+                    <div
+                      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+                    >
+                      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                        Comparison Details
+                      </h3>
+                      <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                          <span class="text-gray-600 dark:text-gray-400">Match Status:</span>
+                          <span
+                            class="font-medium {comparisonResult === 'match'
+                              ? 'text-green-600 dark:text-green-400'
+                              : 'text-red-600 dark:text-red-400'}"
+                          >
+                            {comparisonResult === 'match' ? '✓ Identical' : '✗ Different'}
+                          </span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-gray-600 dark:text-gray-400">Hash 1 Length:</span>
+                          <span class="font-medium text-gray-900 dark:text-white">
+                            {hash1.trim().length} characters
+                          </span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-gray-600 dark:text-gray-400">Hash 2 Length:</span>
+                          <span class="font-medium text-gray-900 dark:text-white">
+                            {hash2.trim().length} characters
+                          </span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-gray-600 dark:text-gray-400">Length Match:</span>
+                          <span
+                            class="font-medium {hash1.trim().length === hash2.trim().length
+                              ? 'text-green-600 dark:text-green-400'
+                              : 'text-red-600 dark:text-red-400'}"
+                          >
+                            {hash1.trim().length === hash2.trim().length ? '✓ Yes' : '✗ No'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  {/if}
+
+                  <!-- Use Cases -->
+                  <div
+                    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+                  >
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                      Common Use Cases
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <h4 class="font-medium text-gray-900 dark:text-white mb-2">
+                          File Integrity Check
+                        </h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                          Verify downloaded files by comparing hash values with original sources
+                        </p>
+
+                        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                          <h4 class="font-medium text-gray-900 dark:text-white mb-2">
+                            Password Verification
+                          </h4>
+                          <p class="text-sm text-gray-600 dark:text-gray-400">
+                            Compare stored password hashes with user-provided password hashes
+                          </p>
+
+                          <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <h4 class="font-medium text-gray-900 dark:text-white mb-2">
+                              Data Deduplication
+                            </h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">
+                              Identify duplicate files or data blocks by comparing their hash values
+                            </p>
+
+                            <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                              <h4 class="font-medium text-gray-900 dark:text-white mb-2">
+                                Blockchain Verification
+                              </h4>
+                              <p class="text-sm text-gray-600 dark:text-gray-400">
+                                Validate blockchain transactions and smart contract hashes
+                              </p>
+
+                              <!-- Features Section -->
+                              <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div
+                                  class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+                                >
+                                  <div
+                                    class="w-12 h-12 bg-secondary-100 dark:bg-secondary-900/20 rounded-lg flex items-center justify-center mb-4"
+                                  >
+                                    <GitCompare
+                                      class="w-6 h-6 text-secondary-600 dark:text-secondary-400"
+                                    />
+
+                                    <h3
+                                      class="text-lg font-semibold text-gray-900 dark:text-white mb-2"
+                                    >
+                                      Real-time Comparison
+                                    </h3>
+                                    <p class="text-gray-600 dark:text-gray-400">
+                                      Instantly compare hash values as you type with automatic
+                                      result updates
+                                    </p>
+
+                                    <div
+                                      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+                                    >
+                                      <div
+                                        class="w-12 h-12 bg-secondary-100 dark:bg-secondary-900/20 rounded-lg flex items-center justify-center mb-4"
+                                      >
+                                        <Copy
+                                          class="w-6 h-6 text-secondary-600 dark:text-secondary-400"
+                                        />
+
+                                        <h3
+                                          class="text-lg font-semibold text-gray-900 dark:text-white mb-2"
+                                        >
+                                          Easy Copy & Paste
+                                        </h3>
+                                        <p class="text-gray-600 dark:text-gray-400">
+                                          Quickly copy hash values and paste them for seamless data
+                                          verification
+                                        </p>
+                                      </div>
+
+                                      <div
+                                        class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+                                      >
+                                        <div
+                                          class="w-12 h-12 bg-secondary-100 dark:bg-secondary-900/20 rounded-lg flex items-center justify-center mb-4"
+                                        >
+                                          <FileText
+                                            class="w-6 h-6 text-secondary-600 dark:text-secondary-400"
+                                          />
+                                        </div>
+                                        <h3
+                                          class="text-lg font-semibold text-gray-900 dark:text-white mb-2"
+                                        >
+                                          Detailed Analysis
+                                        </h3>
+                                        <p class="text-gray-600 dark:text-gray-400">
+                                          Get comprehensive comparison details including length and
+                                          character analysis
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Detailed Analysis</h3>
-      <p class="text-gray-600 dark:text-gray-400">
-        Get comprehensive comparison details including length and character analysis
-      </p>
     </div>
-  </div>
-</div>
+  </div></ToolLayout
+>
