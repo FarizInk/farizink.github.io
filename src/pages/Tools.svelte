@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { navigate } from '../lib/router.js';
+  import { navigate } from '../lib/router';
   import { Search, ChevronRight } from '@lucide/svelte';
-  import { toolsByCategory } from '../lib/toolsConfig.js';
+  import { toolsByCategory } from '../lib/toolsConfig';
 
   let searchQuery = $state('');
   let selectedCategory = $state('All');

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { router } from './router.js';
-  import type { RouterState } from './router.js';
+  import { router } from './router';
+  import type { RouterState } from './router';
 
   // Subscribe to router state changes with proper Svelte 5 runes
   let routerState: RouterState = $state({

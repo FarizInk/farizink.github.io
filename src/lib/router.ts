@@ -3,7 +3,7 @@ import type { Component } from 'svelte';
 
 export interface Route {
   path: string;
-  component: Component<any>;
+  component: Component<any> | null;
   title?: string;
   description?: string;
   keywords?: string;
@@ -71,14 +71,9 @@ export function createRouter(routeList: Route[]) {
 
 // Navigate to a new path
 export function navigate(path: string) {
-  console.log('Navigate function called with:', path);
-  console.log('Current path before navigation:', getCurrentPath());
-
   if (path !== getCurrentPath()) {
     window.history.pushState({}, '', path);
     handleLocationChange();
-  } else {
-    console.log('Path is the same, not navigating');
   }
 }
 
@@ -138,12 +133,9 @@ function updateMetaTags(route: Route) {
 // Handle location changes
 function handleLocationChange() {
   const currentPath = getCurrentPath();
-  console.log('handleLocationChange called with path:', currentPath);
 
   const matchedRoute = findMatchingRoute(currentPath);
   const params = extractParams(currentPath, matchedRoute);
-
-  console.log('Matched route:', matchedRoute?.path || 'null');
 
   // Update document title and meta tags if route has them
   if (matchedRoute) {
@@ -159,19 +151,11 @@ function handleLocationChange() {
 
 // Find matching route
 function findMatchingRoute(path: string): Route | null {
-  console.log(
-    'Available routes:',
-    routes.map(r => r.path)
-  );
-  console.log('Checking path:', path);
-
   for (const route of routes) {
     if (isRouteMatch(path, route.path)) {
-      console.log('Found matching route:', route.path);
       return route;
     }
   }
-  console.log('No matching route found');
   return null;
 }
 

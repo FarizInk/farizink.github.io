@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { navigate } from './router.js';
+  import { navigate } from './router';
 
   interface Props {
     href: string;

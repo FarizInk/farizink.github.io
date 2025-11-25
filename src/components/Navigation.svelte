@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { navigate } from '../lib/router.js';
+  import { navigate } from '../lib/router';
   import { onMount } from 'svelte';
   import { fly, fade } from 'svelte/transition';
   import {
@@ -12,13 +12,20 @@
     X,
     RefreshCw,
     Wifi,
-    WifiOff
+    WifiOff,
+    ChevronDown,
+    ChevronUp,
+    Settings
   } from '@lucide/svelte';
   import CommandPalette from './CommandPalette.svelte';
+  import LoginModal from './LoginModal.svelte';
+  import HealthChecker from './HealthChecker.svelte';
 
   let isDark = $state(false);
   let isCommandPaletteOpen = $state(false);
   let drawerOpen = $state(false);
+  let isLoginModalOpen = $state(false);
+  let isSettingsExpanded = $state(false);
   let deferredPrompt: Event | null = null;
   let isIOS = $state(false);
   let canInstall = $state(false);
@@ -34,6 +41,11 @@
     event.preventDefault();
     console.log('Navigating to:', href);
     navigate(href);
+    drawerOpen = false;
+  }
+
+  function handleOpenLoginModal() {
+    isLoginModalOpen = true;
     drawerOpen = false;
   }
 
@@ -313,9 +325,11 @@
 
     // Add global event listeners
     document.addEventListener('keydown', handleKeydown);
+    document.addEventListener('open-login-modal', handleOpenLoginModal);
 
     return () => {
       document.removeEventListener('keydown', handleKeydown);
+      document.removeEventListener('open-login-modal', handleOpenLoginModal);
     };
   });
 </script>
@@ -330,6 +344,9 @@
 
 <!-- Command Palette Modal -->
 <CommandPalette bind:isOpen={isCommandPaletteOpen} />
+
+<!-- Login Modal -->
+<LoginModal bind:isOpen={isLoginModalOpen} />
 
 <!-- Floating Menu Icon (Top Right) -->
 <button
@@ -409,184 +426,209 @@
       </div>
 
       <!-- Settings (Bottom Section) -->
-      <div class="p-6 border-t border-gray-200 dark:border-gray-700">
-        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Settings</h3>
+      <div class="border-t border-gray-200 dark:border-gray-700">
+        <!-- Settings Header with Summary/Detail Toggle -->
+        <button
+          onclick={() => (isSettingsExpanded = !isSettingsExpanded)}
+          class="w-full text-left hover:bg-gray-50 dark:hover:bg-gray-800 px-6 py-3 transition-colors"
+        >
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <Settings class="w-4 h-4 text-gray-600 dark:text-gray-400" />
+              <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Settings</h3>
+            </div>
+            <div class="flex items-center">
+              {#if isSettingsExpanded}
+                <ChevronUp class="w-4 h-4 text-gray-500 dark:text-gray-400" />
+              {:else}
+                <ChevronDown class="w-4 h-4 text-gray-500 dark:text-gray-400" />
+              {/if}
+            </div>
+          </div>
+        </button>
 
-        <div class="space-y-3">
-          <!-- Theme Toggle -->
-          <button
-            onclick={toggleTheme}
-            class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        <div class="p-6 overflow-hidden">
+          <!-- Settings Content -->
+          <!-- Summary View (Always present, hidden with CSS) -->
+          <div
+            class="space-y-2 transition-all duration-300 ease-in-out transform {isSettingsExpanded
+              ? 'opacity-0 -translate-y-2 pointer-events-none absolute'
+              : 'opacity-100 translate-y-0 relative'}"
           >
-            <div class="flex items-center gap-3">
-              <div
-                class="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center"
-              >
+            <!-- Status Row: All indicators in one line -->
+            <div class="flex items-center gap-1 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg text-xs">
+              <!-- Theme Status -->
+              <div class="flex items-center gap-1 px-2 py-1 rounded-md bg-white dark:bg-gray-700">
                 {#if isDark}
-                  <Sun class="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
+                  <Moon class="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
+                  <span class="text-gray-700 dark:text-gray-300 font-medium">Dark</span>
                 {:else}
-                  <Moon class="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                  <Sun class="w-3 h-3 text-yellow-600 dark:text-yellow-400" />
+                  <span class="text-gray-700 dark:text-gray-300 font-medium">Light</span>
                 {/if}
               </div>
-              <span class="text-sm font-medium text-gray-900 dark:text-white">
-                {isDark ? 'Light Mode' : 'Dark Mode'}
-              </span>
-            </div>
-            <div
-              class="w-10 h-6 rounded-full bg-gray-300 dark:bg-gray-600 relative transition-colors"
-            >
-              <div
-                class="absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform {isDark
-                  ? 'translate-x-4.5'
-                  : 'translate-x-0.5'}"
-              ></div>
-            </div>
-          </button>
 
-          <!-- Service Worker Toggle -->
+              <!-- Divider -->
+              <div class="w-px h-3 bg-gray-300 dark:bg-gray-600"></div>
+
+              <!-- Service Worker Status -->
+              <div class="flex items-center gap-1 px-2 py-1 rounded-md bg-white dark:bg-gray-700">
+                {#if serviceWorkerEnabled}
+                  <Wifi class="w-3 h-3 text-green-600 dark:text-green-400" />
+                  <span class="text-gray-700 dark:text-gray-300">SW On</span>
+                {:else}
+                  <WifiOff class="w-3 h-3 text-gray-500 dark:text-gray-400" />
+                  <span class="text-gray-500 dark:text-gray-400">SW Off</span>
+                {/if}
+              </div>
+
+              <!-- Divider -->
+              <div class="w-px h-3 bg-gray-300 dark:bg-gray-600"></div>
+
+              <!-- API Health -->
+              <div
+                class="flex items-center gap-1 px-2 py-1 rounded-md bg-green-50 dark:bg-green-900/30"
+              >
+                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span class="text-green-700 dark:text-green-300">API OK</span>
+              </div>
+
+              <!-- PWA Status (Inline) -->
+              {#if isPWAInstalled}
+                <div
+                  class="flex items-center gap-1 px-2 py-1 rounded-md bg-green-100 dark:bg-green-900/50"
+                >
+                  <div class="w-2 h-2 bg-green-600 rounded"></div>
+                  <span class="text-green-800 dark:text-green-200">App</span>
+                </div>
+              {:else if canInstall}
+                <div
+                  class="flex items-center gap-1 px-2 py-1 rounded-md bg-blue-100 dark:bg-blue-900/50"
+                >
+                  <Download class="w-3 h-3 text-blue-600 dark:text-blue-400" />
+                  <span class="text-blue-800 dark:text-blue-200">Install</span>
+                </div>
+              {/if}
+            </div>
+          </div>
+
+          <!-- Detailed View (Always present, hidden with CSS) -->
           <div
-            class="w-full p-3 rounded-lg {serviceWorkerCanToggle
-              ? 'hover:bg-gray-100 dark:hover:bg-gray-800'
-              : 'bg-gray-50 dark:bg-gray-800'} transition-colors"
+            class="space-y-3 transition-all duration-300 ease-in-out transform {isSettingsExpanded
+              ? 'opacity-100 translate-y-0 relative'
+              : 'opacity-0 -translate-y-2 pointer-events-none absolute'}"
+            style="min-height: 0;"
           >
-            <div class="flex items-center justify-between">
+            <!-- Health Checker -->
+            <HealthChecker />
+
+            <!-- Theme Toggle -->
+            <button
+              onclick={toggleTheme}
+              class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
               <div class="flex items-center gap-3">
                 <div
-                  class="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center"
+                  class="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center"
                 >
-                  {#if serviceWorkerEnabled}
-                    <Wifi class="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  {#if isDark}
+                    <Sun class="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
                   {:else}
-                    <WifiOff class="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                    <Moon class="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                   {/if}
                 </div>
-                <div class="text-left">
-                  <span class="text-sm font-medium text-gray-900 dark:text-white">Offline Mode</span
-                  >
-                  <p class="text-xs text-gray-500 dark:text-gray-400">
-                    {#if isPWAInstalled}
-                      Always enabled (PWA Installed)
-                    {:else if serviceWorkerEnabled}
-                      34 tools work offline
-                    {:else}
-                      Enable for offline access
-                    {/if}
-                  </p>
-                </div>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">
+                  {isDark ? 'Light Mode' : 'Dark Mode'}
+                </span>
               </div>
-              <button
-                onclick={toggleServiceWorker}
-                class="w-10 h-6 rounded-full {serviceWorkerEnabled
-                  ? 'bg-blue-600'
-                  : 'bg-gray-300 dark:bg-gray-600'} relative transition-colors {serviceWorkerCanToggle
-                  ? 'cursor-pointer'
-                  : 'cursor-not-allowed opacity-60'}"
-                disabled={!serviceWorkerCanToggle}
-                aria-label={serviceWorkerCanToggle
-                  ? serviceWorkerEnabled
-                    ? 'Disable Offline Mode'
-                    : 'Enable Offline Mode'
-                  : 'Offline Mode cannot be changed (PWA Installed)'}
+              <div
+                class="w-10 h-6 rounded-full bg-gray-300 dark:bg-gray-600 relative transition-colors"
               >
                 <div
-                  class="absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform {serviceWorkerEnabled
+                  class="absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform {isDark
                     ? 'translate-x-4.5'
                     : 'translate-x-0.5'}"
                 ></div>
-              </button>
-            </div>
-            {#if isPWAInstalled && !serviceWorkerCanToggle}
-              <p class="text-xs text-orange-600 dark:text-orange-400 mt-1">
-                Uninstall app to disable offline mode
-              </p>
-            {/if}
-          </div>
+              </div>
+            </button>
 
-          <!-- Install PWA (only show when SW is enabled) -->
-          {#if serviceWorkerEnabled}
-            {#if canInstall && !isIOS}
-              <button
-                onclick={installPWA}
-                class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              >
-                <div class="flex items-center gap-3">
-                  <div
-                    class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center"
-                  >
-                    <Download class="w-4 h-4 text-green-600 dark:text-green-400" />
-                  </div>
-                  <span class="text-sm font-medium text-gray-900 dark:text-white">Install App</span>
-                </div>
-                <svg
-                  class="w-4 h-4 text-gray-400"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path d="M9 18l6-6-6-6" />
-                </svg>
-              </button>
-            {:else if isIOS}
-              <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <!-- Service Worker Toggle -->
+            <div
+              class="w-full p-3 rounded-lg {serviceWorkerCanToggle
+                ? 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                : 'bg-gray-50 dark:bg-gray-800'} transition-colors"
+            >
+              <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
                   <div
                     class="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center"
                   >
-                    <svg
-                      class="w-4 h-4 text-blue-600 dark:text-blue-400"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
+                    {#if serviceWorkerEnabled}
+                      <Wifi class="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    {:else}
+                      <WifiOff class="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                    {/if}
+                  </div>
+                  <div class="text-left">
+                    <span class="text-sm font-medium text-gray-900 dark:text-white"
+                      >Offline Mode</span
                     >
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M12 6v6l4 2" />
-                    </svg>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-blue-900 dark:text-blue-100">
-                      iOS Instructions
-                    </p>
-                    <p class="text-xs text-blue-700 dark:text-blue-300">
-                      Tap Share → Add to Home Screen
+                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                      {#if isPWAInstalled}
+                        Always enabled (PWA Installed)
+                      {:else if serviceWorkerEnabled}
+                        34 tools work offline
+                      {:else}
+                        Enable for offline access
+                      {/if}
                     </p>
                   </div>
                 </div>
-              </div>
-            {/if}
-          {/if}
-
-          <!-- Service Worker Refresh (only show when SW is enabled) -->
-          {#if serviceWorkerEnabled}
-            <button
-              onclick={refreshServiceWorker}
-              class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              disabled={isRefreshing}
-            >
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-8 h-8 bg-orange-100 dark:bg-orange-900 rounded-lg flex items-center justify-center"
+                <button
+                  onclick={toggleServiceWorker}
+                  class="w-10 h-6 rounded-full {serviceWorkerEnabled
+                    ? 'bg-blue-600'
+                    : 'bg-gray-300 dark:bg-gray-600'} relative transition-colors {serviceWorkerCanToggle
+                    ? 'cursor-pointer'
+                    : 'cursor-not-allowed opacity-60'}"
+                  disabled={!serviceWorkerCanToggle}
+                  aria-label={serviceWorkerCanToggle
+                    ? serviceWorkerEnabled
+                      ? 'Disable Offline Mode'
+                      : 'Enable Offline Mode'
+                    : 'Offline Mode cannot be changed (PWA Installed)'}
                 >
-                  <RefreshCw
-                    class="w-4 h-4 text-orange-600 dark:text-orange-400 {isRefreshing
-                      ? 'animate-spin'
-                      : ''}"
-                  />
-                </div>
-                <div class="text-left">
-                  <span class="text-sm font-medium text-gray-900 dark:text-white"
-                    >Refresh Cache</span
-                  >
-                  {#if swUpdateAvailable}
-                    <p class="text-xs text-green-600 dark:text-green-400">Update available</p>
-                  {/if}
-                </div>
+                  <div
+                    class="absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform {serviceWorkerEnabled
+                      ? 'translate-x-4.5'
+                      : 'translate-x-0.5'}"
+                  ></div>
+                </button>
               </div>
-              <div class="flex items-center gap-2">
-                {#if isRefreshing}
-                  <span class="text-xs text-gray-500">Refreshing...</span>
-                {:else}
+              {#if isPWAInstalled && !serviceWorkerCanToggle}
+                <p class="text-xs text-orange-600 dark:text-orange-400 mt-1">
+                  Uninstall app to disable offline mode
+                </p>
+              {/if}
+            </div>
+
+            <!-- Install PWA (only show when SW is enabled) -->
+            {#if serviceWorkerEnabled}
+              {#if canInstall && !isIOS}
+                <button
+                  onclick={installPWA}
+                  class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                >
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center"
+                    >
+                      <Download class="w-4 h-4 text-green-600 dark:text-green-400" />
+                    </div>
+                    <span class="text-sm font-medium text-gray-900 dark:text-white"
+                      >Install App</span
+                    >
+                  </div>
                   <svg
                     class="w-4 h-4 text-gray-400"
                     viewBox="0 0 24 24"
@@ -596,10 +638,81 @@
                   >
                     <path d="M9 18l6-6-6-6" />
                   </svg>
-                {/if}
-              </div>
-            </button>
-          {/if}
+                </button>
+              {:else if isIOS}
+                <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center"
+                    >
+                      <svg
+                        class="w-4 h-4 text-blue-600 dark:text-blue-400"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 6v6l4 2" />
+                      </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-blue-900 dark:text-blue-100">
+                        iOS Instructions
+                      </p>
+                      <p class="text-xs text-blue-700 dark:text-blue-300">
+                        Tap Share → Add to Home Screen
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              {/if}
+            {/if}
+
+            <!-- Service Worker Refresh (only show when SW is enabled) -->
+            {#if serviceWorkerEnabled}
+              <button
+                onclick={refreshServiceWorker}
+                class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                disabled={isRefreshing}
+              >
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-8 h-8 bg-orange-100 dark:bg-orange-900 rounded-lg flex items-center justify-center"
+                  >
+                    <RefreshCw
+                      class="w-4 h-4 text-orange-600 dark:text-orange-400 {isRefreshing
+                        ? 'animate-spin'
+                        : ''}"
+                    />
+                  </div>
+                  <div class="text-left">
+                    <span class="text-sm font-medium text-gray-900 dark:text-white"
+                      >Refresh Cache</span
+                    >
+                    {#if swUpdateAvailable}
+                      <p class="text-xs text-green-600 dark:text-green-400">Update available</p>
+                    {/if}
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  {#if isRefreshing}
+                    <span class="text-xs text-gray-500">Refreshing...</span>
+                  {:else}
+                    <svg
+                      class="w-4 h-4 text-gray-400"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M9 18l6-6-6-6" />
+                    </svg>
+                  {/if}
+                </div>
+              </button>
+            {/if}
+          </div>
         </div>
       </div>
     </div>

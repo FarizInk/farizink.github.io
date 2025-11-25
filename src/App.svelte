@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { createRouter } from './lib/router.js';
+  import { createRouter } from './lib/router';
   import Router from './lib/Router.svelte';
   import Navigation from './components/Navigation.svelte';
   import ScrollToTop from './components/ScrollToTop.svelte';
@@ -10,8 +10,8 @@
   import Modal from './components/Modal.svelte';
   import OfflineIndicator from './components/OfflineIndicator.svelte';
   import { Toaster } from 'svelte-sonner';
-  import { allRoutes } from './routes/index.js';
-  import { router } from './lib/router.js';
+  import { allRoutes } from './routes/index';
+  import { router } from './lib/router';
 
   let isDark = $state(false);
   let currentPath = $state('/');

@@ -1,4 +1,5 @@
 import Home from '../pages/Home.svelte';
+import Notes from '../pages/Notes.svelte';
 
 export const mainRoutes = [
   {
@@ -10,5 +11,22 @@ export const mainRoutes = [
     keywords:
       'fariz, software engineer, developer tools, web development, programming, javascript, typescript, svelte',
     robots: 'index, follow'
+  },
+  {
+    path: '/notes',
+    component: Notes,
+    title: 'Notes - Fariz',
+    description:
+      'Manage your personal notes, thoughts, and ideas with our intuitive note-taking application.',
+    keywords: 'notes, notebook, writing, personal notes, ideas, thoughts, documentation',
+    robots: 'index, follow'
+  },
+  {
+    path: '/login',
+    component: null, // Modal component, handled by Navigation
+    title: 'Login - Fariz',
+    description: 'Sign in to your account to access personalized features.',
+    keywords: 'login, sign in, authentication, account',
+    robots: 'noindex, nofollow'
   }
 ];

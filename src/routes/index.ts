@@ -1,5 +1,5 @@
-import { mainRoutes } from './main.js';
-import { toolsRoutes } from './tools.js';
+import { mainRoutes } from './main';
+import { toolsRoutes } from './tools';
 
 export { mainRoutes, toolsRoutes };
 

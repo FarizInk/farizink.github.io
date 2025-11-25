@@ -8,7 +8,7 @@
 /**
  * API Base URLs
  */
-export const API_BASE_URL = 'https://core.fariz.dev';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://core.fariz.dev';
 
 /**
  * Spotify API Configuration

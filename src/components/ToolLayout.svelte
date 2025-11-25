@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ChevronLeft } from '@lucide/svelte';
-  import { navigate } from '../lib/router.js';
+  import { navigate } from '../lib/router';
 
   interface Props {
     title: string;

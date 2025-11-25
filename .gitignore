@@ -34,3 +34,6 @@ lib/**/*.js
 lib/**/*.js.map
 routes/**/*.js
 routes/**/*.js.map
+
+
+.env

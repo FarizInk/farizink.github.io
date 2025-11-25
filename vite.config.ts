@@ -10,7 +10,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['svelte', '@lucide/svelte'],
-          router: ['./src/lib/router.js', './src/lib/Router.svelte'],
+          router: ['./src/lib/router.ts', './src/lib/Router.svelte'],
           notifications: ['svelte-sonner']
         }
       }

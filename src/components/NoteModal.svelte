@@ -1,0 +1,347 @@
+<script lang="ts">
+  import type { Note, CreateNoteData } from '../lib/notes';
+  import { createNote, updateNote } from '../lib/notes';
+  import { X, Link2, Tag } from '@lucide/svelte';
+  import { toast } from 'svelte-sonner';
+
+  let {
+    isOpen = $bindable(false),
+    mode = 'create',
+    note = null,
+    onSuccess
+  } = $props<{
+    isOpen: boolean;
+    mode?: 'create' | 'edit';
+    note?: Note | null;
+    onSuccess?: () => void;
+  }>();
+
+  let isLoading = $state(false);
+  let formData = $state<CreateNoteData>({
+    name: '',
+    link: '',
+    description: '',
+    isPublic: true,
+    isFavorite: false,
+    tags: []
+  });
+
+  let tagInput = $state('');
+  let showTagsInput = $state(false);
+
+  // Initialize form data when editing
+  $effect(() => {
+    if (mode === 'edit' && note && isOpen) {
+      formData = {
+        name: note.name || '',
+        link: note.link || '',
+        description: note.description || '',
+        isPublic: note.isPublic,
+        isFavorite: note.isFavorite,
+        tags: [...(note.tags || [])]
+      };
+    } else if (mode === 'create' && isOpen) {
+      formData = {
+        name: '',
+        link: '',
+        description: '',
+        isPublic: true,
+        isFavorite: false,
+        tags: []
+      };
+      tagInput = '';
+      showTagsInput = false;
+    }
+  });
+
+  function closeModal() {
+    isOpen = false;
+    formData = {
+      name: '',
+      link: '',
+      description: '',
+      isPublic: true,
+      isFavorite: false,
+      tags: []
+    };
+    tagInput = '';
+    showTagsInput = false;
+  }
+
+  function addTag() {
+    const trimmedTag = tagInput.trim();
+    if (trimmedTag && !formData.tags?.includes(trimmedTag)) {
+      formData.tags = [...(formData.tags || []), trimmedTag];
+      tagInput = '';
+    }
+  }
+
+  function removeTag(tagToRemove: string) {
+    formData.tags = (formData.tags || []).filter(tag => tag !== tagToRemove);
+  }
+
+  function handleTagKeydown(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      addTag();
+    } else if (event.key === 'Escape') {
+      tagInput = '';
+    }
+  }
+
+  async function handleSubmit(event: Event) {
+    event.preventDefault();
+
+    if (!formData.name?.trim()) {
+      toast.error('Note name is required');
+      return;
+    }
+
+    isLoading = true;
+
+    try {
+      if (mode === 'create') {
+        await createNote(formData);
+        toast.success('Note created successfully!');
+        onSuccess?.();
+      } else if (mode === 'edit' && note) {
+        await updateNote(note.id, formData);
+        toast.success('Note updated successfully!');
+        onSuccess?.();
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(mode === 'create' ? 'Failed to create note' : 'Failed to update note');
+      } else {
+        toast.error('An unexpected error occurred');
+      }
+      console.error('Note save error:', error);
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  function toggleTagsInput() {
+    showTagsInput = !showTagsInput;
+    if (showTagsInput) {
+      setTimeout(() => {
+        const input = document.getElementById('tag-input');
+        if (input) {
+          input.focus();
+        }
+      }, 100);
+    }
+  }
+
+  const title = $derived(mode === 'create' ? 'Create Note' : 'Edit Note');
+</script>
+
+<!-- Backdrop -->
+{#if isOpen}
+  <div
+    class="fixed inset-0 bg-black/20 backdrop-blur-sm z-[50] flex items-center justify-center p-4"
+    onclick={e => {
+      if (e.target === e.currentTarget) {
+        closeModal();
+      }
+    }}
+    onkeydown={e => e.key === 'Escape' && closeModal()}
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="note-modal-title"
+    tabindex="-1"
+  >
+    <!-- Modal -->
+    <div
+      class="bg-white dark:bg-secondary-800 rounded-lg shadow-2xl w-full max-w-2xl border border-secondary-200 dark:border-secondary-700 overflow-hidden max-h-[90vh] overflow-y-auto"
+      role="document"
+    >
+      <!-- Header -->
+      <div
+        class="flex items-center justify-between p-6 border-b border-secondary-200 dark:border-secondary-700"
+      >
+        <h2
+          id="note-modal-title"
+          class="text-xl font-semibold text-secondary-900 dark:text-secondary-50"
+        >
+          {title}
+        </h2>
+        <button
+          onclick={closeModal}
+          class="w-8 h-8 rounded-lg hover:bg-secondary-100 dark:hover:bg-secondary-700 flex items-center justify-center transition-colors"
+          aria-label="Close modal"
+        >
+          <X class="w-4 h-4 text-secondary-500 dark:text-secondary-400" />
+        </button>
+      </div>
+
+      <!-- Form -->
+      <form onsubmit={handleSubmit} class="p-6 space-y-4">
+        <!-- Name -->
+        <div>
+          <label for="name" class="label">Name *</label>
+          <input
+            id="name"
+            type="text"
+            placeholder="Enter note name"
+            class="input"
+            bind:value={formData.name}
+            disabled={isLoading}
+            required
+          />
+        </div>
+
+        <!-- Link -->
+        <div>
+          <label for="link" class="label">Link (Optional)</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Link2 class="w-4 h-4 text-secondary-400" />
+            </div>
+            <input
+              id="link"
+              type="url"
+              placeholder="https://example.com"
+              class="input !pl-10"
+              bind:value={formData.link}
+              disabled={isLoading}
+            />
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label for="description" class="label">Description (Optional)</label>
+          <textarea
+            id="description"
+            placeholder="Enter note description"
+            class="textarea"
+            rows={4}
+            bind:value={formData.description}
+            disabled={isLoading}
+          ></textarea>
+        </div>
+
+        <!-- Tags -->
+        <div>
+          <h3 class="label mb-2">Tags (Optional)</h3>
+          <div class="space-y-2">
+            <!-- Tags Display -->
+            {#if formData.tags && formData.tags.length > 0}
+              <div class="flex flex-wrap gap-2">
+                {#each formData.tags as tag (tag)}
+                  <span
+                    class="inline-flex items-center gap-1 px-2 py-1 bg-primary-50 dark:bg-primary-900/20 rounded-full text-sm"
+                  >
+                    <Tag class="w-3 h-3 text-primary-600 dark:text-primary-400" />
+                    <span class="text-primary-700 dark:text-primary-300">{tag}</span>
+                    <button
+                      type="button"
+                      onclick={() => removeTag(tag)}
+                      class="text-primary-500 hover:text-primary-700 dark:hover:text-primary-300"
+                      aria-label={`Remove ${tag} tag`}
+                    >
+                      ×
+                    </button>
+                  </span>
+                {/each}
+              </div>
+            {/if}
+
+            <!-- Add Tag Input -->
+            {#if showTagsInput}
+              <div class="flex gap-2">
+                <div class="relative flex-1">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Tag class="w-4 h-4 text-secondary-400" />
+                  </div>
+                  <input
+                    id="tag-input"
+                    type="text"
+                    placeholder="Add tag..."
+                    class="input pl-10"
+                    bind:value={tagInput}
+                    onkeydown={handleTagKeydown}
+                    disabled={isLoading}
+                  />
+                </div>
+                <button
+                  type="button"
+                  onclick={addTag}
+                  disabled={!tagInput.trim()}
+                  class="px-3 py-2 bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white rounded-lg text-sm transition-colors disabled:cursor-not-allowed"
+                >
+                  Add
+                </button>
+                <button
+                  type="button"
+                  onclick={toggleTagsInput}
+                  class="px-3 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            {:else}
+              <button
+                type="button"
+                onclick={toggleTagsInput}
+                class="w-full px-3 py-2 border border-dashed border-secondary-300 dark:border-secondary-600 rounded-lg text-secondary-600 dark:text-secondary-400 hover:border-secondary-400 dark:hover:border-secondary-500 hover:text-secondary-700 dark:hover:text-secondary-300 transition-colors text-sm"
+              >
+                + Add Tag
+              </button>
+            {/if}
+          </div>
+        </div>
+
+        <!-- Options -->
+        <div class="flex items-center gap-6">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              bind:checked={formData.isPublic}
+              class="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+              disabled={isLoading}
+            />
+            <span class="text-sm text-gray-700 dark:text-gray-300">Public</span>
+          </label>
+
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              bind:checked={formData.isFavorite}
+              class="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+              disabled={isLoading}
+            />
+            <span class="text-sm text-gray-700 dark:text-gray-300">Favorite</span>
+          </label>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex gap-3 pt-4 border-t border-secondary-200 dark:border-secondary-700">
+          <button
+            type="button"
+            onclick={closeModal}
+            class="flex-1 px-4 py-2 border border-secondary-300 dark:border-secondary-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
+            disabled={isLoading}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="flex-1 btn btn-primary"
+            disabled={isLoading || !formData.name?.trim()}
+          >
+            {#if isLoading}
+              <div
+                class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"
+              ></div>
+              {mode === 'create' ? 'Creating...' : 'Updating...'}
+            {:else}
+              {mode === 'create' ? 'Create Note' : 'Update Note'}
+            {/if}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+{/if}

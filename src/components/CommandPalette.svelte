@@ -1,13 +1,18 @@
 <script lang="ts">
-  import { navigate } from '../lib/router.js';
-  import { allRoutes } from '../routes/index.js';
-  import { Search, Command } from '@lucide/svelte';
+  import { navigate, type Route } from '../lib/router';
+  import { allRoutes } from '../routes/index';
+  import { Search, Command, LogOut, User } from '@lucide/svelte';
+  import { getValidatedAuthState, logout } from '../lib/auth';
 
   let { isOpen = $bindable(false) } = $props();
 
   let searchQuery = $state('');
   let selectedIndex = $state(0);
-  let filteredRoutes = $state(allRoutes);
+  let filteredRoutes = $state<Route[]>(allRoutes);
+  let authState = $state<{ isLoggedIn: boolean; username: string | null }>({
+    isLoggedIn: false,
+    username: null
+  });
 
   function closeModal() {
     isOpen = false;
@@ -15,33 +20,88 @@
     selectedIndex = 0;
   }
 
-  function navigateToRoute(route: { path: string; title?: string; description?: string }) {
-    navigate(route.path);
-    closeModal();
+  async function updateAuthState() {
+    const state = await getValidatedAuthState();
+    authState = {
+      isLoggedIn: state.isValid && state.isLoggedIn,
+      username: state.username
+    };
   }
+
+  function navigateToRoute(route: { path: string; title?: string; description?: string }) {
+    // Handle special routes like login
+    if (route.path === '/login') {
+      // Dispatch custom event to Navigation component
+      const event = new CustomEvent('open-login-modal');
+      document.dispatchEvent(event);
+      closeModal();
+    } else if (route.path === '/logout') {
+      handleLogout();
+      closeModal();
+    } else {
+      navigate(route.path);
+      closeModal();
+    }
+  }
+
+  async function handleLogout() {
+    await logout();
+    await updateAuthState(); // Refresh auth state
+  }
+
+  // Create dynamic routes based on auth state
+  let dynamicRoutes = $derived<Route[]>([
+    ...allRoutes.filter(route => route.path !== '/login'),
+    ...(authState.isLoggedIn
+      ? [
+          {
+            path: '/logout',
+            title: 'Logout - Fariz',
+            description: `Sign out ${authState.username || 'your account'}`,
+            component: null
+          }
+        ]
+      : [
+          {
+            path: '/login',
+            title: 'Login - Fariz',
+            description: 'Sign in to your account',
+            component: null
+          }
+        ])
+  ]);
 
   $effect(() => {
     if (searchQuery.trim() === '') {
-      filteredRoutes = allRoutes;
+      filteredRoutes = dynamicRoutes;
     } else {
       const query = searchQuery.toLowerCase();
-      filteredRoutes = allRoutes.filter(route => {
+      filteredRoutes = dynamicRoutes.filter(route => {
         const title = route.title?.toLowerCase() || '';
         const path = route.path.toLowerCase();
-        const description = route.description?.toLowerCase() || '';
 
-        // Extract tool name from path for better search
-        const toolName = path.split('/').pop()?.replace(/-/g, ' ') || '';
-
-        return (
-          title.includes(query) ||
-          path.includes(query) ||
-          description.includes(query) ||
-          toolName.includes(query)
-        );
+        return title.includes(query) || path.includes(query);
       });
     }
     selectedIndex = 0;
+  });
+
+  // Update auth state when component mounts and listen for auth changes
+  $effect(() => {
+    // Update auth state asynchronously
+    updateAuthState();
+
+    // Listen for auth state changes
+    const handleLoginSuccess = () => updateAuthState();
+    const handleLogoutSuccess = () => updateAuthState();
+
+    document.addEventListener('login-success', handleLoginSuccess);
+    document.addEventListener('logout-success', handleLogoutSuccess);
+
+    return () => {
+      document.removeEventListener('login-success', handleLoginSuccess);
+      document.removeEventListener('logout-success', handleLogoutSuccess);
+    };
   });
 
   function scrollToSelected() {
@@ -157,15 +217,25 @@
               >
                 <div class="flex items-center justify-between">
                   <div class="flex-1 min-w-0">
-                    <div class="font-medium text-secondary-900 dark:text-secondary-50 truncate">
-                      {route.title?.replace(' - Fariz', '') || route.path}
+                    <div
+                      class="font-medium text-secondary-900 dark:text-secondary-50 truncate flex items-center gap-2"
+                    >
+                      {#if route.path === '/login'}
+                        <User class="w-4 h-4" />
+                        Login
+                      {:else if route.path === '/logout'}
+                        <LogOut class="w-4 h-4" />
+                        Logout
+                      {:else}
+                        {route.title?.replace(' - Fariz', '') || route.path}
+                      {/if}
                     </div>
-                    {#if route.path !== '/' && route.path !== '/projects' && route.path !== '/tools'}
+                    {#if route.path !== '/' && route.path !== '/projects' && route.path !== '/tools' && route.path !== '/login' && route.path !== '/logout'}
                       <div class="text-sm text-secondary-500 dark:text-secondary-400 mt-1">
                         {route.path}
                       </div>
                     {/if}
-                    {#if route.description && route.path !== '/' && route.path !== '/tools'}
+                    {#if route.description && route.path !== '/' && route.path !== '/tools' && (route.path === '/login' || route.path === '/logout')}
                       <div
                         class="text-sm text-secondary-400 dark:text-secondary-500 mt-1 line-clamp-2"
                       >
@@ -177,6 +247,8 @@
                     {#if route.path === '/'}Home
                     {:else if route.path === '/projects'}Projects
                     {:else if route.path === '/tools'}Tools
+                    {:else if route.path === '/login'}Auth
+                    {:else if route.path === '/logout'}Auth
                     {:else}Tool
                     {/if}
                   </div>
