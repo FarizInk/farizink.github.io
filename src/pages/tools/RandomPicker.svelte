@@ -284,317 +284,290 @@
             <div class="text-xs text-gray-500 dark:text-gray-400">{preset.items.length} items</div>
           </button>
         {/each}
+      </div>
+    </div>
+  </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Main Picker -->
-          <div class="lg:col-span-2 space-y-6">
-            <!-- Items Input -->
-            <div
-              class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
-            >
-              <div class="flex items-center justify-between mb-4">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-                  <List class="w-5 h-5 mr-2" />
-                  Items to Pick From
-                </h2>
-                <div class="flex gap-2">
-                  <button class="btn btn-primary btn-sm" onclick={addItem}>
-                    <Plus class="w-4 h-4 mr-1" />
-                    Add Item
-                  </button>
-                  <button class="btn btn-primary btn-sm" onclick={clearAll}>Clear All</button>
-                </div>
-              </div>
-            </div>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Main Picker -->
+    <div class="lg:col-span-2 space-y-6">
+      <!-- Items Input -->
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+            <List class="w-5 h-5 mr-2" />
+            Items to Pick From
+          </h2>
+          <div class="flex gap-2">
+            <button class="btn btn-primary btn-sm" onclick={addItem}>
+              <Plus class="w-4 h-4 mr-1" />
+              Add Item
+            </button>
+            <button class="btn btn-primary btn-sm" onclick={clearAll}>Clear All</button>
+          </div>
+        </div>
+      </div>
 
-            <div class="space-y-3">
-              {#each items as item (item.id)}
-                <div class="flex gap-3">
-                  <input
-                    type="text"
-                    bind:value={item.text}
-                    placeholder="Enter item name"
-                    class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  />
+      <div class="space-y-3">
+        {#each items as item (item.id)}
+          <div class="flex gap-3">
+            <input
+              type="text"
+              bind:value={item.text}
+              placeholder="Enter item name"
+              class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            />
 
-                  {#if showWeights}
-                    <div class="flex items-center gap-1">
-                      <label for="weight-{item.id}" class="text-sm text-gray-600 dark:text-gray-400"
-                        >Weight:</label
-                      >
-                      <input
-                        id="weight-{item.id}"
-                        type="number"
-                        bind:value={item.weight}
-                        min="0.1"
-                        step="0.1"
-                        class="w-20 px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
-                      />
-                    </div>
-                  {/if}
-
-                  <button
-                    onclick={() => removeItem(item.id)}
-                    class="p-2 text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors"
-                    disabled={items.length === 1}
-                  >
-                    <X class="w-4 h-4" />
-                  </button>
-                </div>
-              {/each}
-            </div>
-
-            <div class="mt-4 flex items-center justify-between">
-              <label class="flex items-center">
+            {#if showWeights}
+              <div class="flex items-center gap-1">
+                <label for="weight-{item.id}" class="text-sm text-gray-600 dark:text-gray-400"
+                  >Weight:</label
+                >
                 <input
-                  type="checkbox"
-                  bind:checked={showWeights}
-                  class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500"
+                  id="weight-{item.id}"
+                  type="number"
+                  bind:value={item.weight}
+                  min="0.1"
+                  step="0.1"
+                  class="w-20 px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
                 />
-                <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Enable Weights</span>
-              </label>
+              </div>
+            {/if}
 
-              {#if showWeights}
-                <span class="text-sm text-gray-600 dark:text-gray-400">
-                  Total Weight: {totalWeight.toFixed(1)}
-                </span>
-              {/if}
+            <button
+              onclick={() => removeItem(item.id)}
+              class="p-2 text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors"
+              disabled={items.length === 1}
+            >
+              <X class="w-4 h-4" />
+            </button>
+          </div>
+        {/each}
+      </div>
 
-              <!-- Picker Controls -->
+      <div class="mt-4 flex items-center justify-between">
+        <label class="flex items-center">
+          <input
+            type="checkbox"
+            bind:checked={showWeights}
+            class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500"
+          />
+          <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Enable Weights</span>
+        </label>
+
+        {#if showWeights}
+          <span class="text-sm text-gray-600 dark:text-gray-400">
+            Total Weight: {totalWeight.toFixed(1)}
+          </span>
+        {/if}
+      </div>
+    </div>
+
+    <!-- Picker Controls -->
+    <div
+      class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+    >
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Picker Settings</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div>
+          <label
+            for="number-of-picks"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
+            Number of Picks
+          </label>
+          <input
+            id="number-of-picks"
+            type="number"
+            bind:value={numberOfPicks}
+            min="1"
+            max={items.filter(item => item.text.trim() !== '').length}
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          />
+        </div>
+
+        <div>
+          <label
+            for="animation-speed"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
+            Animation Speed (ms)
+          </label>
+          <input
+            id="animation-speed"
+            type="range"
+            bind:value={animationDuration}
+            min="500"
+            max="5000"
+            step="500"
+            class="w-full"
+          />
+          <div class="text-xs text-gray-500 dark:text-gray-400">
+            {animationDuration}ms
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center mb-6">
+        <input
+          id="allow-duplicates"
+          type="checkbox"
+          bind:checked={allowDuplicates}
+          class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500"
+        />
+        <label for="allow-duplicates" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+          Allow Duplicates (when picking multiple items)
+        </label>
+      </div>
+
+      <button
+        class="btn btn-primary w-full"
+        onclick={spinPicker}
+        disabled={isSpinning || items.filter(item => item.text.trim() !== '').length === 0}
+      >
+        {#if isSpinning}
+          <div class="flex items-center">
+            <div class="animate-spin">
+              <Shuffle class="w-5 h-5 mr-2" />
+            </div>
+            Picking...
+          </div>
+        {:else}
+          <Shuffle class="w-5 h-5 mr-2" />
+          Pick Random Item{numberOfPicks > 1 ? 's' : ''}
+        {/if}
+      </button>
+
+      <!-- Result Display -->
+      {#if selectedItem}
+        <div
+          class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mt-6"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+              <Gift class="w-5 h-5 mr-2" />
+              Result
+            </h2>
+            <div class="flex gap-2">
+              <button class="btn btn-primary btn-sm" onclick={copyResult}>
+                <Copy class="w-4 h-4 mr-1" />
+                Copy
+              </button>
+              <button class="btn btn-primary btn-sm" onclick={resetPicker}>
+                <RotateCcw class="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {#if selectedItem.type === 'error'}
+            <div
+              class="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+            >
+              <p class="text-red-700 dark:text-red-300 text-center">
+                {selectedItem.text}
+              </p>
+            </div>
+          {:else if selectedItem.type === 'animating'}
+            <div class="text-center py-8">
+              <div class="inline-block animate-bounce">
+                <Dices class="w-16 h-16 text-primary-600 dark:text-primary-400" />
+              </div>
+              <p class="mt-4 text-gray-600 dark:text-gray-400 animate-pulse">
+                {selectedItem.text}
+              </p>
+            </div>
+          {:else}
+            <div class="text-center py-8">
               <div
-                class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+                class="inline-block p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg border-2 border-green-200 dark:border-green-800"
               >
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                  Picker Settings
-                </h2>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <div>
-                    <label
-                      for="number-of-picks"
-                      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                    >
-                      Number of Picks
-                    </label>
-                    <input
-                      id="number-of-picks"
-                      type="number"
-                      bind:value={numberOfPicks}
-                      min="1"
-                      max={items.filter(item => item.text.trim() !== '').length}
-                      class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    />
-
-                    <div>
-                      <label
-                        for="animation-speed"
-                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                <Star class="w-12 h-12 text-primary-600 dark:text-primary-400 mx-auto mb-3" />
+                <h3 class="text-2xl font-bold text-green-700 dark:text-green-300 mb-2">
+                  {selectedItem.text}
+                </h3>
+                {#if selectedItem.items && selectedItem.items.length > 1}
+                  <div class="mt-4 space-y-2">
+                    {#each selectedItem.items as item (item.text)}
+                      <div
+                        class="px-3 py-1 bg-white dark:bg-gray-800 rounded-full border border-green-200 dark:border-green-700"
                       >
-                        Animation Speed (ms)
-                      </label>
-                      <input
-                        id="animation-speed"
-                        type="range"
-                        bind:value={animationDuration}
-                        min="500"
-                        max="5000"
-                        step="500"
-                        class="w-full"
-                      />
-                      <div class="text-xs text-gray-500 dark:text-gray-400">
-                        {animationDuration}ms
+                        {item.text}
                       </div>
-
-                      <div class="flex items-center mb-6">
-                        <input
-                          id="allow-duplicates"
-                          type="checkbox"
-                          bind:checked={allowDuplicates}
-                          class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500"
-                        />
-                        <label
-                          for="allow-duplicates"
-                          class="ml-2 text-sm text-gray-700 dark:text-gray-300"
-                        >
-                          Allow Duplicates (when picking multiple items)
-                        </label>
-
-                        <button
-                          class="btn btn-primary w-full"
-                          onclick={spinPicker}
-                          disabled={isSpinning ||
-                            items.filter(item => item.text.trim() !== '').length === 0}
-                        >
-                          {#if isSpinning}
-                            <div class="flex items-center">
-                              <div class="animate-spin">
-                                <Shuffle class="w-5 h-5 mr-2" />
-                              </div>
-                              Picking...
-                            </div>
-                          {:else}
-                            <Shuffle class="w-5 h-5 mr-2" />
-                            Pick Random Item{numberOfPicks > 1 ? 's' : ''}
-                          {/if}
-                        </button>
-
-                        <!-- Result Display -->
-                        {#if selectedItem}
-                          <div
-                            class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
-                          >
-                            <div class="flex items-center justify-between mb-4">
-                              <h2
-                                class="text-lg font-semibold text-gray-900 dark:text-white flex items-center"
-                              >
-                                <Gift class="w-5 h-5 mr-2" />
-                                Result
-                              </h2>
-                              <div class="flex gap-2">
-                                <button class="btn btn-primary btn-sm" onclick={copyResult}>
-                                  <Copy class="w-4 h-4 mr-1" />
-                                  Copy
-                                </button>
-                                <button class="btn btn-primary btn-sm" onclick={resetPicker}>
-                                  <RotateCcw class="w-4 h-4" />
-                                </button>
-                              </div>
-                            </div>
-
-                            {#if selectedItem.type === 'error'}
-                              <div
-                                class="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
-                              >
-                                <p class="text-red-700 dark:text-red-300 text-center">
-                                  {selectedItem.text}
-                                </p>
-                              </div>
-                            {:else if selectedItem.type === 'animating'}
-                              <div class="text-center py-8">
-                                <div class="inline-block animate-bounce">
-                                  <Dices class="w-16 h-16 text-primary-600 dark:text-primary-400" />
-                                </div>
-                                <p class="mt-4 text-gray-600 dark:text-gray-400 animate-pulse">
-                                  {selectedItem.text}
-                                </p>
-                              </div>
-                            {:else}
-                              <div class="text-center py-8">
-                                <div
-                                  class="inline-block p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg border-2 border-green-200 dark:border-green-800"
-                                >
-                                  <Star
-                                    class="w-12 h-12 text-primary-600 dark:text-primary-400 mx-auto mb-3"
-                                  />
-                                  <h3
-                                    class="text-2xl font-bold text-green-700 dark:text-green-300 mb-2"
-                                  >
-                                    {selectedItem.text}
-                                  </h3>
-                                  {#if selectedItem.items && selectedItem.items.length > 1}
-                                    <div class="mt-4 space-y-2">
-                                      {#each selectedItem.items as item (item.text)}
-                                        <div
-                                          class="px-3 py-1 bg-white dark:bg-gray-800 rounded-full border border-green-200 dark:border-green-700"
-                                        >
-                                          {item.text}
-                                        </div>
-                                      {/each}
-                                    </div>
-                                  {/if}
-                                </div>
-                              </div>
-                            {/if}
-                          </div>
-                        {/if}
-
-                        <!-- Sidebar -->
-                        <div class="space-y-6">
-                          <!-- History -->
-                          <div
-                            class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
-                          >
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                              History
-                            </h3>
-
-                            {#if history.length === 0}
-                              <p class="text-gray-500 dark:text-gray-400 text-sm">No picks yet</p>
-                            {:else}
-                              <div class="space-y-3 max-h-96 overflow-y-auto">
-                                {#each history as entry (entry.id)}
-                                  <button
-                                    onclick={() => loadFromHistory(entry)}
-                                    class="w-full text-left p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                                  >
-                                    <div class="text-sm font-medium text-gray-900 dark:text-white">
-                                      {entry.items.slice(0, 2).join(', ')}
-                                      {#if entry.items.length > 2}
-                                        +{entry.items.length - 2} more
-                                      {/if}
-
-                                      <div class="text-xs text-gray-500 dark:text-gray-400">
-                                        {entry.timestamp.toLocaleTimeString()} • {entry.totalItems} total
-                                        items
-                                      </div>
-                                    </div></button
-                                  >
-                                {/each}
-                              </div>
-                            {/if}
-
-                            <!-- Tips -->
-                            <div
-                              class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-primary-200 dark:border-primary-800 p-6"
-                            >
-                              <h3
-                                class="text-lg font-semibold text-primary-800 dark:text-primary-200 mb-4 flex items-center"
-                              >
-                                <Zap class="w-5 h-5 mr-2" />
-                                Pro Tips
-                              </h3>
-                              <div class="space-y-3 text-sm text-primary-700 dark:text-primary-300">
-                                <div class="flex items-start">
-                                  <div
-                                    class="w-2 h-2 bg-primary-500 rounded-full mt-1.5 mr-3"
-                                  ></div>
-                                  <p>
-                                    Use weights to give some items higher chances of being selected
-                                  </p>
-                                </div>
-                                <div class="flex items-start">
-                                  <div
-                                    class="w-2 h-2 bg-primary-500 rounded-full mt-1.5 mr-3"
-                                  ></div>
-                                  <p>
-                                    Enable multiple picks for selecting more than one item at once
-                                  </p>
-                                </div>
-                                <div class="flex items-start">
-                                  <div
-                                    class="w-2 h-2 bg-primary-500 rounded-full mt-1.5 mr-3"
-                                  ></div>
-                                  <p>History helps you track previous random selections</p>
-                                </div>
-                                <div class="flex items-start">
-                                  <div
-                                    class="w-2 h-2 bg-primary-500 rounded-full mt-1.5 mr-3"
-                                  ></div>
-                                  <p>Use presets for quick decision-making scenarios</p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    {/each}
                   </div>
-                </div>
+                {/if}
               </div>
             </div>
+          {/if}
+        </div>
+      {/if}
+    </div>
+
+    <!-- Sidebar -->
+    <div class="space-y-6">
+      <!-- History -->
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+      >
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">History</h3>
+
+        {#if history.length === 0}
+          <p class="text-gray-500 dark:text-gray-400 text-sm">No picks yet</p>
+        {:else}
+          <div class="space-y-3 max-h-96 overflow-y-auto">
+            {#each history as entry (entry.id)}
+              <button
+                onclick={() => loadFromHistory(entry)}
+                class="w-full text-left p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              >
+                <div class="text-sm font-medium text-gray-900 dark:text-white">
+                  {entry.items.slice(0, 2).join(', ')}
+                  {#if entry.items.length > 2}
+                    +{entry.items.length - 2} more
+                  {/if}
+                </div>
+
+                <div class="text-xs text-gray-500 dark:text-gray-400">
+                  {entry.timestamp.toLocaleTimeString()} • {entry.totalItems} total items
+                </div>
+              </button>
+            {/each}
+          </div>
+        {/if}
+      </div>
+
+      <!-- Tips -->
+      <div
+        class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-primary-200 dark:border-primary-800 p-6"
+      >
+        <h3
+          class="text-lg font-semibold text-primary-800 dark:text-primary-200 mb-4 flex items-center"
+        >
+          <Zap class="w-5 h-5 mr-2" />
+          Pro Tips
+        </h3>
+        <div class="space-y-3 text-sm text-primary-700 dark:text-primary-300">
+          <div class="flex items-start">
+            <div class="w-2 h-2 bg-primary-500 rounded-full mt-1.5 mr-3"></div>
+            <p>Use weights to give some items higher chances of being selected</p>
+          </div>
+          <div class="flex items-start">
+            <div class="w-2 h-2 bg-primary-500 rounded-full mt-1.5 mr-3"></div>
+            <p>Enable multiple picks for selecting more than one item at once</p>
+          </div>
+          <div class="flex items-start">
+            <div class="w-2 h-2 bg-primary-500 rounded-full mt-1.5 mr-3"></div>
+            <p>History helps you track previous random selections</p>
+          </div>
+          <div class="flex items-start">
+            <div class="w-2 h-2 bg-primary-500 rounded-full mt-1.5 mr-3"></div>
+            <p>Use presets for quick decision-making scenarios</p>
           </div>
         </div>
       </div>
     </div>
-  </div></ToolLayout
->
+  </div>
+</ToolLayout>
