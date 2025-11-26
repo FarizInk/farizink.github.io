@@ -20,7 +20,7 @@ const STATIC_ASSETS = [
 
 // API patterns that should NOT be cached
 const IGNORED_PATTERNS = [
-  /^https:\/\/analytics\.umami\.is/,
+  /^https:\/\/umami\.fariz\.dev/,
   /^https:\/\/fonts\.googleapis\.com/,
   /^https:\/\/fonts\.gstatic\.com/
 ];
