@@ -80,9 +80,11 @@ class TagsStore {
 export const tagsStore = new TagsStore();
 
 // Helper function to get current store value
-function get(store: any) {
-  let value: any;
-  const unsubscribe = store.subscribe((v: any) => value = v);
+function get<T>(store: { subscribe: (fn: (value: T) => void) => () => void }): T {
+  let value: T = undefined as T;
+  const unsubscribe = store.subscribe((v: T) => {
+    value = v;
+  });
   unsubscribe();
   return value;
 }

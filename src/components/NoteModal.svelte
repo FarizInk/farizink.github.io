@@ -1,9 +1,8 @@
 <script lang="ts">
   import type { Note, CreateNoteData } from '../lib/notes';
-  import { createNote, updateNote, formatTagIds, validateTagIds, convertApiTagsToTagIds } from '../lib/notes';
-  import type { Tag } from '../lib/tags';
-  import { tags, tagsStore } from '../lib/stores/tags';
-  import { X, Link2, Tag as TagIcon, Plus } from '@lucide/svelte';
+  import { createNote, updateNote, validateTagIds, convertApiTagsToTagIds } from '../lib/notes';
+  import { tags } from '../lib/stores/tags';
+  import { X, Link2 } from '@lucide/svelte';
   import { toast } from 'svelte-sonner';
   import MultipleSelect from './MultipleSelect.svelte';
 
@@ -225,9 +224,10 @@
 
         <!-- Tags -->
         <div>
-          <label class="label">Tags (Optional)</label>
+          <label for="tag-select" class="label">Tags (Optional)</label>
           <div class="mt-2">
             <MultipleSelect
+              id="tag-select"
               {options}
               bind:selectedValues={selectedTagIds}
               placeholder="Select tags..."
@@ -250,25 +250,29 @@
 
         <!-- Options -->
         <div class="flex items-center gap-6">
-          <label class="custom-checkbox" disabled={isLoading}>
-            <input
-              type="checkbox"
-              bind:checked={formData.isPublic}
-              disabled={isLoading}
-            />
-            <span class="checkmark"></span>
-            <span class="label-text">Public</span>
-          </label>
+          <div class="custom-checkbox-container" class:opacity-50={isLoading}>
+            <label class="custom-checkbox">
+              <input
+                type="checkbox"
+                bind:checked={formData.isPublic}
+                disabled={isLoading}
+              />
+              <span class="checkmark"></span>
+              <span class="label-text">Public</span>
+            </label>
+          </div>
 
-          <label class="custom-checkbox" disabled={isLoading}>
-            <input
-              type="checkbox"
-              bind:checked={formData.isFavorite}
-              disabled={isLoading}
-            />
-            <span class="checkmark"></span>
-            <span class="label-text">Favorite</span>
-          </label>
+          <div class="custom-checkbox-container" class:opacity-50={isLoading}>
+            <label class="custom-checkbox">
+              <input
+                type="checkbox"
+                bind:checked={formData.isFavorite}
+                disabled={isLoading}
+              />
+              <span class="checkmark"></span>
+              <span class="label-text">Favorite</span>
+            </label>
+          </div>
         </div>
 
         <!-- Actions -->

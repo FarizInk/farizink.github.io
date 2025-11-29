@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { Note } from '../lib/notes';
   import { getNotes, deleteNote, type NoteFilters } from '../lib/notes';
-  import type { Tag } from '../lib/tags';
   import { toast } from 'svelte-sonner';
   import { tagsStore, tagOptions, isLoadingTags, tags } from '../lib/stores/tags';
   import NoteCard from '../components/NoteCard.svelte';
@@ -16,7 +15,6 @@
     RotateCw,
     Settings,
     X,
-    ArrowUpDown,
     ArrowUp,
     ArrowDown,
     Calendar,

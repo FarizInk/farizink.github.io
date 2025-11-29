@@ -296,10 +296,12 @@
       } else {
         apiHealthStatus = 'error';
         apiHealthError = 'API status not ok';
+        console.warn('API health status not ok:', apiHealthError);
       }
     } catch (err) {
       apiHealthStatus = 'error';
       apiHealthError = err instanceof Error ? err.message : 'Failed to check API health';
+      console.error('API health check failed:', apiHealthError, err);
     }
   }
 

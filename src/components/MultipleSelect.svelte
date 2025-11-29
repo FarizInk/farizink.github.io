@@ -6,7 +6,7 @@
     value: string;
     label: string;
     description?: string;
-    color?: string;
+    color?: string | null;
   }
 
   interface Props {
@@ -17,6 +17,7 @@
     disabled?: boolean;
     maxHeight?: string;
     onchange?: (event: CustomEvent) => void;
+    id?: string;
   }
 
   let {
@@ -26,7 +27,8 @@
     searchable = true,
     disabled = false,
     maxHeight = 'max-h-48',
-    onchange
+    onchange,
+    id
   }: Props = $props();
 
   
@@ -220,14 +222,14 @@
     disabled={disabled}
     aria-expanded={isOpen}
     aria-haspopup="listbox"
-    aria-labelledby="multiselect-label"
+    aria-labelledby={id ? undefined : "multiselect-label"}
   >
     <!-- Selected Items Display -->
     <div class="flex-1 flex flex-wrap items-center gap-1">
       {#if selectedOptions.length === 0}
         <span class="text-secondary-400">{placeholder}</span>
       {:else}
-        {#each selectedOptions as option}
+        {#each selectedOptions as option (option.value)}
           <span
             class="text-xs flex items-center gap-1 px-2 py-1 rounded-full border {!option.color ? 'bg-primary-100 text-primary-700 border-primary-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700' : ''}"
             style="background-color: {option.color ? option.color + '20' : undefined}; color: {option.color || undefined}; border-color: {option.color ? option.color + '40' : undefined}"
@@ -306,7 +308,10 @@
               class="input !pl-9"
               placeholder="Search options..."
               bind:value={searchQuery}
-              onfocus={(e) => e.target.select()}
+              onfocus={(e) => {
+                const target = e.target as HTMLInputElement;
+                if (target) target.select();
+              }}
               aria-label="Search options"
             />
           </div>
@@ -321,12 +326,10 @@
                       </div>
         {:else}
           <div role="listbox" aria-label="Options">
-            {#each filteredOptions as option, index}
+            {#each filteredOptions as option (option.value)}
               <button
                 type="button"
-                class={`w-full px-3 py-2 text-left text-sm hover:bg-secondary-50 dark:hover:bg-secondary-700 transition-colors flex items-center gap-3 border-b border-secondary-100 dark:border-secondary-700 last:border-b-0 ${
-                  focusedIndex === index ? 'bg-primary-50 dark:bg-primary-900/20' : ''
-                }`}
+                class="w-full px-3 py-2 text-left text-sm hover:bg-secondary-50 dark:hover:bg-secondary-700 transition-colors flex items-center gap-3 border-b border-secondary-100 dark:border-secondary-700 last:border-b-0"
                 onclick={() => selectOption(option)}
                 role="option"
                 aria-selected={selectedValues.includes(option.value)}

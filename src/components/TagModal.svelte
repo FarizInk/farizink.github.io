@@ -1,6 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { onMount } from 'svelte';
   import { toast } from 'svelte-sonner';
   import {
     X,
@@ -19,8 +18,7 @@
     updateTag,
     deleteTag,
     type Tag,
-    type TagCreateRequest,
-    type TagUpdateRequest
+    type TagCreateRequest
   } from '../lib/tags';
   import { tags as globalTags, tagsStore } from '../lib/stores/tags';
 
@@ -77,7 +75,7 @@
       if (!hasLoadedInitialTags || lastSearchQuery !== '') {
         debouncedSearchQuery = ''; // Update debounced value
         // Load from global store first, then fallback to API
-        const currentTags = get(globalTags);
+        const currentTags = get(globalTags) as Tag[];
         if (currentTags.length === 0) {
           tagsStore.loadTags(); // Load from API if store is empty
         }
@@ -121,7 +119,7 @@
 
       let updatedTags: Tag[];
       if (append) {
-        const currentTags = get(globalTags);
+        const currentTags = get(globalTags) as Tag[];
         updatedTags = [...currentTags, ...response.data.tags];
       } else {
         updatedTags = response.data.tags;
@@ -179,8 +177,8 @@
     }
 
     // Check for duplicate tag (excluding current tag if editing)
-    const currentTags = get(globalTags);
-    const duplicateTag = currentTags.find(t =>
+    const currentTags = get(globalTags) as Tag[];
+    const duplicateTag = currentTags.find((t: Tag) =>
       t.tag.toLowerCase() === formData.tag.toLowerCase() &&
       t.tag !== editingTag?.tag
     );
@@ -201,9 +199,9 @@
         const response = await createTag(submitData);
         console.log('Create tag response:', response);
         // Ensure the new tag has createdAt field
-        const newTag = {
+        const newTag: Tag = {
           ...response.data,
-          createdAt: response.data.createdAt || new Date().toISOString()
+          createdAt: typeof response.data.createdAt === 'number' ? response.data.createdAt : Date.now()
         };
         console.log('New tag to add:', newTag);
         // Add new tag to global store
@@ -256,9 +254,9 @@
   }
 
   // Helper function to get current store value
-  function get(store: any) {
-    let value: any;
-    const unsubscribe = store.subscribe((v: any) => value = v);
+  function get(store: { subscribe: (fn: (value: unknown) => void) => () => void }): unknown {
+    let value: unknown;
+    const unsubscribe = store.subscribe((v: unknown) => value = v);
     unsubscribe();
     return value;
   }
@@ -418,11 +416,12 @@
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label for="tag-identifier" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     <Hash class="w-4 h-4 inline mr-1" />
                     Tag Identifier
                   </label>
                   <input
+                    id="tag-identifier"
                     type="text"
                     placeholder="e.g., programming"
                     class="input"
@@ -435,11 +434,12 @@
                 </div>
 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label for="tag-display-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     <Type class="w-4 h-4 inline mr-1" />
                     Display Name
                   </label>
                   <input
+                    id="tag-display-name"
                     type="text"
                     placeholder="e.g., Programming Resources"
                     class="input"
@@ -453,11 +453,12 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label for="tag-color-hex" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Color <span class="text-gray-400 font-normal">(Optional - Leave empty for primary color)</span>
                 </label>
                 <div class="flex items-center gap-3">
                   <input
+                    id="tag-color"
                     type="color"
                     class="w-12 h-12 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer"
                     bind:value={formData.color}
@@ -465,6 +466,7 @@
                   />
                   <div class="flex-1 relative">
                     <input
+                      id="tag-color-hex"
                       type="text"
                       placeholder="#61DAFB (optional)"
                       class="input w-full pr-20"

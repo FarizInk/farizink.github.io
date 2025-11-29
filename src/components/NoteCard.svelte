@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Note } from '../lib/notes';
   import { formatDate } from '../lib/notes';
-  import { Pencil, Trash2, Link2, Calendar, Tag } from '@lucide/svelte';
+  import { Pencil, Trash2, Link2, Calendar } from '@lucide/svelte';
 
   let { note, onEdit, onDelete, hasAuthToken, onShowDetail } = $props<{
     note: Note;
@@ -28,11 +28,7 @@
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
   }
 
-  function truncateTitle(text: string | null, maxLength: number = 50): string {
-    if (!text) return 'Untitled Note';
-    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
-  }
-</script>
+  </script>
 
 <div
   class="card card-hover !p-6 group relative overflow-hidden cursor-pointer {!note.isPublic ? 'bg-gradient-to-br from-primary-50 to-purple-50 dark:from-primary-900/30 dark:to-purple-900/20 border-2 border-primary-300 dark:border-primary-500 shadow-lg' : ''}"

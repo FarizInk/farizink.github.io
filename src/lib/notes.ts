@@ -1,5 +1,5 @@
 import { API_BASE_URL } from './constants';
-import { getTags, type Tag } from './tags';
+import type { Tag } from './tags';
 
 export interface Note {
   id: string;
