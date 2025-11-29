@@ -1,23 +1,26 @@
 <script lang="ts">
   import type { Note } from '../lib/notes';
   import { getNotes, deleteNote, type NoteFilters } from '../lib/notes';
+  import type { Tag } from '../lib/tags';
   import { toast } from 'svelte-sonner';
+  import { tagsStore, tagOptions, isLoadingTags, tags } from '../lib/stores/tags';
   import NoteCard from '../components/NoteCard.svelte';
   import NoteModal from '../components/NoteModal.svelte';
   import NoteDetailModal from '../components/NoteDetailModal.svelte';
+  import TagModal from '../components/TagModal.svelte';
+  import MultipleSelect from '../components/MultipleSelect.svelte';
   import {
     Plus,
     Search,
     RefreshCw,
     RotateCw,
-    Globe,
-    Star,
     Settings,
     X,
     ArrowUpDown,
     ArrowUp,
     ArrowDown,
-    Calendar
+    Calendar,
+    Tag as TagIcon
   } from '@lucide/svelte';
   import { onMount } from 'svelte';
 
@@ -43,25 +46,9 @@
     { value: 'updated_at', label: 'Last Updated', icon: Calendar }
   ] as const;
 
-  function handleSortChange(sortBy: 'created_at' | 'updated_at', sortOrder: 'asc' | 'desc') {
-    activeFilters = { ...activeFilters, sortBy, sortOrder };
-    currentPage = 1;
-    hasMore = true;
-    loadNotes(1, false);
-  }
-
-  function getSortLabel() {
-    if (!activeFilters.sortBy) return 'Sort';
-    const sortOption = sortOptions.find(opt => opt.value === activeFilters.sortBy);
-    const orderLabel = activeFilters.sortOrder === 'desc' ? '↓' : '↑';
-    return sortOption ? `${sortOption.label} ${orderLabel}` : 'Sort';
-  }
-
-  function getSortIcon() {
-    if (!activeFilters.sortBy) return ArrowUpDown;
-    return activeFilters.sortOrder === 'desc' ? ArrowDown : ArrowUp;
-  }
-
+  
+  
+  
   // Modal state
   let isModalOpen = $state(false);
   let modalMode = $state<'create' | 'edit'>('create');
@@ -72,50 +59,27 @@
   let isDetailModalOpen = $state(false);
   let selectedDetailNote = $state<Note | null>(null);
 
+  // Tag modal state
+  let isTagModalOpen = $state(false);
+
   // Auth state for conditional UI
   let hasAuthToken = $state(
     typeof localStorage !== 'undefined' ? !!localStorage.getItem('authToken') : false
   );
 
-  // Debounced search
-  let debouncedSearchQuery = $state('');
-  let searchTimeout: ReturnType<typeof setTimeout> | null = null;
-  let isInitialLoad = $state(true);
-
-  // Watch searchQuery for debounce
-  $effect(() => {
-    // Clear existing timeout
-    if (searchTimeout) {
-      clearTimeout(searchTimeout);
-    }
-
-    // Set new timeout for 500ms debounce
-    searchTimeout = setTimeout(() => {
-      // Manually update the state using assignment
-      const tempQuery = searchQuery;
-      // Force reactivity
-      debouncedSearchQuery = '';
-      debouncedSearchQuery = tempQuery;
-    }, 500);
-
-    // Cleanup function
-    return () => {
-      if (searchTimeout) {
-        clearTimeout(searchTimeout);
-      }
-    };
+  // Filter modal state
+  let showFilterModal = $state(false);
+  let tempFilters = $state<NoteFilters>({
+    sortBy: 'created_at',
+    sortOrder: 'desc'
   });
+  let tempSearchQuery = $state('');
 
-  // Watch debouncedSearchQuery for API call (only after initial load is complete)
-  $effect(() => {
-    // Only trigger search after initial load is complete
-    if (!isInitialLoad) {
-      // Load notes when debounced search changes
-      currentPage = 1;
-      hasMore = true;
-      loadNotes(1, false);
-    }
-  });
+  // Tag selection state (using global store for available tags)
+  let selectedIncludeTags = $state<string[]>([]);
+  let selectedExcludeTags = $state<string[]>([]);
+  let tempSelectedIncludeTags = $state<string[]>([]);
+  let tempSelectedExcludeTags = $state<string[]>([]);
 
   async function loadNotes(page: number = 1, append: boolean = false) {
     if (!append) {
@@ -125,14 +89,16 @@
     }
 
     try {
-      // Build API parameters including search
+      // Build API parameters including search and tags
       const apiParams: NoteFilters = {
-        ...activeFilters
+        ...activeFilters,
+        includeTags: selectedIncludeTags.length > 0 ? selectedIncludeTags : undefined,
+        excludeTags: selectedExcludeTags.length > 0 ? selectedExcludeTags : undefined
       };
 
       // Add search parameter if there's a search query
-      if (debouncedSearchQuery.trim()) {
-        apiParams.search = debouncedSearchQuery.trim();
+      if (searchQuery.trim()) {
+        apiParams.search = searchQuery.trim();
       }
 
       const response = await getNotes(page, 12, apiParams);
@@ -225,32 +191,64 @@
     selectedDetailNote = null;
   }
 
-  function handleFilterChange(key: keyof NoteFilters, value: boolean | undefined) {
-    activeFilters = { ...activeFilters, [key]: value };
+  function handleTagModalOpen() {
+    isTagModalOpen = true;
+  }
+
+  // Filter modal functions
+  function openFilterModal() {
+    tempFilters = { ...activeFilters };
+    tempSearchQuery = searchQuery;
+    tempSelectedIncludeTags = [...selectedIncludeTags];
+    tempSelectedExcludeTags = [...selectedExcludeTags];
+    showFilterModal = true;
+  }
+
+  function closeFilterModal() {
+    showFilterModal = false;
+  }
+
+  function applyFilters() {
+    activeFilters = { ...tempFilters };
+    searchQuery = tempSearchQuery;
+    selectedIncludeTags = [...tempSelectedIncludeTags];
+    selectedExcludeTags = [...tempSelectedExcludeTags];
     currentPage = 1;
     hasMore = true;
     loadNotes(1, false);
+    closeFilterModal();
   }
 
   function clearFilters() {
-    activeFilters = {
+    tempFilters = {
       sortBy: 'created_at',
       sortOrder: 'desc'
     };
-    currentPage = 1;
-    hasMore = true;
-    loadNotes(1, false);
+    tempSearchQuery = '';
+    tempSelectedIncludeTags = [];
+    tempSelectedExcludeTags = [];
   }
 
   function getActiveFilterCount() {
-    return Object.values(activeFilters).filter(value => value !== undefined).length;
+    const count = Object.entries(activeFilters).filter(([key, value]) => {
+      // Don't count default sort values
+      if (key === 'sortBy' && value === 'created_at') return false;
+      if (key === 'sortOrder' && value === 'desc') return false;
+      return value !== undefined && value !== null;
+    }).length;
+
+    // Count tag filters
+    const tagFilterCount = (selectedIncludeTags.length > 0 ? 1 : 0) + (selectedExcludeTags.length > 0 ? 1 : 0);
+
+    return searchQuery.trim() ? count + tagFilterCount + 1 : count + tagFilterCount;
   }
 
-  // Load notes on mount
+  
+  // Load notes and tags on mount
   onMount(() => {
-    loadNotes(1, false).finally(() => {
-      isInitialLoad = false;
-    });
+    loadNotes(1, false);
+    // Load tags from global store
+    tagsStore.loadTags();
   });
 
   // Close panels when clicking outside
@@ -272,43 +270,23 @@
     }
   });
 
-  // Infinite scroll detection
-  $effect(() => {
-    const handleScroll = () => {
-      if (!hasMore || isLoadingMore) return;
-
-      const scrollPosition = window.innerHeight + window.scrollY;
-      const threshold = document.body.offsetHeight - 1000; // Load 1000px before bottom
-
-      if (scrollPosition >= threshold) {
-        loadMoreNotes();
-      }
-    };
-
-    // Add scroll listener with throttling
-    let ticking = false;
-    const throttledHandleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener('scroll', throttledHandleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', throttledHandleScroll);
-    };
-  });
-
+  
   // Listen for auth state changes
   $effect(() => {
     const handleAuthChange = () => {
-      hasAuthToken =
-        typeof localStorage !== 'undefined' ? !!localStorage.getItem('authToken') : false;
+      const newHasAuthToken = typeof localStorage !== 'undefined' ? !!localStorage.getItem('authToken') : false;
+      const previousHasAuthToken = hasAuthToken;
+      hasAuthToken = newHasAuthToken;
+
+      // Load tags when user logs in
+      if (newHasAuthToken && !previousHasAuthToken) {
+        tagsStore.loadTags();
+      }
+      // Clear selections when user logs out
+      if (!newHasAuthToken && previousHasAuthToken) {
+        selectedIncludeTags = [];
+        selectedExcludeTags = [];
+      }
     };
 
     // Listen for logout event
@@ -337,50 +315,35 @@
       <div
         class="bg-white dark:bg-secondary-800 rounded-2xl shadow-lg border border-secondary-200 dark:border-secondary-700 px-6 py-4"
       >
-        <div class="flex items-center justify-between">
-          <!-- Left Section: Title & Stats -->
-          <div class="flex items-center gap-4">
-            <div>
-              <h1 class="text-3xl font-bold text-secondary-900 dark:text-white tracking-tight">
+        <!-- Compact Responsive Header -->
+        <div class="flex flex-col gap-2">
+          <!-- Mobile: Stacked, Desktop: Side by side -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <!-- Title & Stats -->
+            <div class="flex items-center gap-3">
+              <h1 class="text-lg sm:text-xl font-bold text-secondary-900 dark:text-white tracking-tight">
                 My Notes
               </h1>
               {#if totalCount > 0}
-                <div class="flex items-center gap-2 mt-1">
-                  <span class="badge badge-primary">
+                <div class="flex items-center gap-2">
+                  <span class="badge badge-primary text-xs">
                     {totalCount}
                     {totalCount === 1 ? 'Note' : 'Notes'}
                   </span>
-                  <span class="text-sm text-secondary-500 dark:text-secondary-400">
+                  <span class="text-xs text-secondary-500 dark:text-secondary-400 hidden sm:inline">
                     {notes.length} shown
                   </span>
                 </div>
               {/if}
             </div>
-          </div>
 
-          <!-- Right Section: Actions -->
-          <div class="flex items-center gap-3">
-            <!-- Search Bar -->
-            <div class="relative group">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search
-                  class="w-4 h-4 text-secondary-400 group-focus-within:text-primary-500 transition-colors"
-                />
-              </div>
-              <input
-                type="text"
-                placeholder="Quick search..."
-                class="input w-64 !pl-10"
-                bind:value={searchQuery}
-              />
-            </div>
-
-            <!-- Filter Button -->
-            <div class="relative">
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-1 sm:gap-2">
+              <!-- Filter Button -->
               <button
-                onclick={() => (showFilterPanel = !showFilterPanel)}
+                onclick={openFilterModal}
                 class="flex items-center gap-2 px-3 py-1.5 bg-secondary-100 dark:bg-secondary-800 hover:bg-secondary-200 dark:hover:bg-secondary-700 rounded-lg transition-colors"
-                title="Filter notes"
+                title="Filter and sort notes"
               >
                 <Settings class="w-4 h-4" />
                 <span class="text-sm font-medium">Filter</span>
@@ -393,214 +356,11 @@
                 {/if}
               </button>
 
-              <!-- Filter Panel -->
-              {#if showFilterPanel}
-                <div
-                  class="absolute top-full right-0 mt-2 w-64 bg-white dark:bg-secondary-800 rounded-lg shadow-lg border border-secondary-200 dark:border-secondary-700 z-50"
-                >
-                  <div class="p-4">
-                    <div class="flex items-center justify-between mb-4">
-                      <h3 class="font-semibold text-secondary-900 dark:text-white">Filters</h3>
-                      <button
-                        onclick={() => (showFilterPanel = false)}
-                        class="w-6 h-6 rounded-md hover:bg-secondary-100 dark:hover:bg-secondary-700 flex items-center justify-center"
-                      >
-                        <X class="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    <!-- isPublic Filter - Only show when authenticated -->
-                    {#if hasAuthToken}
-                      <div class="mb-4">
-                        <label
-                          class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2 block"
-                        >
-                          <Globe class="w-4 h-4 inline mr-1" />
-                          Public Status
-                        </label>
-                        <div class="flex gap-2">
-                          <button
-                            onclick={() => handleFilterChange('isPublic', true)}
-                            class="flex-1 px-3 py-2 text-xs rounded-md border transition-colors {activeFilters.isPublic ===
-                            true
-                              ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                              : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
-                          >
-                            Public Only
-                          </button>
-                          <button
-                            onclick={() => handleFilterChange('isPublic', false)}
-                            class="flex-1 px-3 py-2 text-xs rounded-md border transition-colors {activeFilters.isPublic ===
-                            false
-                              ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                              : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
-                          >
-                            Private Only
-                          </button>
-                          <button
-                            onclick={() => handleFilterChange('isPublic', undefined)}
-                            class="px-3 py-2 text-xs rounded-md border border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors {activeFilters.isPublic ===
-                            undefined
-                              ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                              : ''}"
-                          >
-                            All
-                          </button>
-                        </div>
-                      </div>
-                    {/if}
-
-                    <!-- isFavorite Filter -->
-                    <div class="mb-4">
-                      <label
-                        class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2 block"
-                      >
-                        <Star class="w-4 h-4 inline mr-1" />
-                        Favorite Status
-                      </label>
-                      <div class="flex gap-2">
-                        <button
-                          onclick={() => handleFilterChange('isFavorite', true)}
-                          class="flex-1 px-3 py-2 text-xs rounded-md border transition-colors {activeFilters.isFavorite ===
-                          true
-                            ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                            : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
-                        >
-                          Favorites Only
-                        </button>
-                        <button
-                          onclick={() => handleFilterChange('isFavorite', false)}
-                          class="flex-1 px-3 py-2 text-xs rounded-md border transition-colors {activeFilters.isFavorite ===
-                          false
-                            ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                            : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
-                        >
-                          Non-Favorites
-                        </button>
-                        <button
-                          onclick={() => handleFilterChange('isFavorite', undefined)}
-                          class="px-3 py-2 text-xs rounded-md border border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors {activeFilters.isFavorite ===
-                          undefined
-                            ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                            : ''}"
-                        >
-                          All
-                        </button>
-                      </div>
-                    </div>
-
-                    <!-- Clear Filters -->
-                    {#if getActiveFilterCount() > 0}
-                      <button
-                        onclick={clearFilters}
-                        class="w-full px-3 py-2 text-xs bg-secondary-100 dark:bg-secondary-700 hover:bg-secondary-200 dark:hover:bg-secondary-600 rounded-md transition-colors"
-                      >
-                        Clear All Filters
-                      </button>
-                    {/if}
-                  </div>
-                </div>
-              {/if}
-            </div>
-
-            <!-- Sort Button -->
-            <div class="relative">
-              <button
-                onclick={() => (showSortPanel = !showSortPanel)}
-                class="flex items-center gap-2 px-3 py-1.5 bg-secondary-100 dark:bg-secondary-800 hover:bg-secondary-200 dark:hover:bg-secondary-700 rounded-lg transition-colors"
-                title="Sort notes"
-              >
-                {#if getSortIcon() === ArrowUpDown}
-                  <ArrowUpDown class="w-4 h-4" />
-                {:else if getSortIcon() === ArrowDown}
-                  <ArrowDown class="w-4 h-4" />
-                {:else}
-                  <ArrowUp class="w-4 h-4" />
-                {/if}
-                <span class="text-sm font-medium">{getSortLabel()}</span>
-              </button>
-
-              <!-- Sort Panel -->
-              {#if showSortPanel}
-                <div
-                  class="absolute top-full right-0 mt-2 w-56 bg-white dark:bg-secondary-800 rounded-lg shadow-lg border border-secondary-200 dark:border-secondary-700 z-50"
-                >
-                  <div class="p-4">
-                    <div class="flex items-center justify-between mb-4">
-                      <h3 class="font-semibold text-secondary-900 dark:text-white">Sort By</h3>
-                      <button
-                        onclick={() => (showSortPanel = false)}
-                        class="w-6 h-6 rounded-md hover:bg-secondary-100 dark:hover:bg-secondary-700 flex items-center justify-center"
-                      >
-                        <X class="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    {#each sortOptions as option (option.value)}
-                      <div class="mb-3">
-                        <div
-                          class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2 flex items-center gap-1"
-                        >
-                          <Calendar class="w-4 h-4" />
-                          {option.label}
-                        </div>
-                        <div class="flex gap-2">
-                          <button
-                            onclick={() => handleSortChange(option.value, 'desc')}
-                            class="flex-1 px-3 py-2 text-xs rounded-md border transition-colors flex items-center justify-center gap-1 {activeFilters.sortBy ===
-                              option.value && activeFilters.sortOrder === 'desc'
-                              ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                              : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
-                          >
-                            <ArrowDown class="w-3 h-3" />
-                            Newest
-                          </button>
-                          <button
-                            onclick={() => handleSortChange(option.value, 'asc')}
-                            class="flex-1 px-3 py-2 text-xs rounded-md border transition-colors flex items-center justify-center gap-1 {activeFilters.sortBy ===
-                              option.value && activeFilters.sortOrder === 'asc'
-                              ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                              : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
-                          >
-                            <ArrowUp class="w-3 h-3" />
-                            Oldest
-                          </button>
-                        </div>
-                      </div>
-                    {/each}
-
-                    <!-- Clear Sort -->
-                    {#if activeFilters.sortBy}
-                      <button
-                        onclick={() => {
-                          activeFilters = {
-                            ...activeFilters,
-                            sortBy: undefined,
-                            sortOrder: undefined
-                          };
-                          currentPage = 1;
-                          loadNotes(1);
-                          showSortPanel = false;
-                        }}
-                        class="w-full px-3 py-2 text-xs bg-secondary-100 dark:bg-secondary-700 hover:bg-secondary-200 dark:hover:bg-secondary-600 rounded-md transition-colors"
-                      >
-                        Clear Sort
-                      </button>
-                    {/if}
-                  </div>
-                </div>
-              {/if}
-            </div>
-
-            <!-- Quick Actions -->
-            <div
-              class="flex items-center gap-2 p-1 bg-secondary-100 dark:bg-secondary-800 rounded-lg"
-            >
               <!-- Refresh -->
               <button
                 onclick={handleRefresh}
                 disabled={isRefreshing}
-                class="w-9 h-9 rounded-md hover:bg-secondary-200 dark:hover:bg-secondary-700 flex items-center justify-center transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group"
+                class="w-8 h-8 rounded-md hover:bg-secondary-200 dark:hover:bg-secondary-700 flex items-center justify-center transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group"
                 title="Refresh"
               >
                 <RefreshCw
@@ -608,21 +368,38 @@
                 />
               </button>
 
-              <!-- Divider -->
-              <div class="w-px h-6 bg-secondary-300 dark:bg-secondary-600"></div>
-
-              <!-- Create Note - Only show when authenticated -->
+              <!-- Manage Tags - Only show when authenticated -->
               {#if hasAuthToken}
                 <button
+                  onclick={handleTagModalOpen}
+                  class="flex items-center gap-1 px-2 py-1.5 text-xs sm:text-sm bg-secondary-200 dark:bg-secondary-700 hover:bg-secondary-300 dark:hover:bg-secondary-600 rounded-md transition-colors"
+                  title="Manage tags"
+                >
+                  <TagIcon class="w-4 h-4" />
+                  <span class="hidden sm:inline">Tags</span>
+                </button>
+
+                <!-- Create Note - Only show when authenticated -->
+                <button
                   onclick={handleCreate}
-                  class="btn btn-primary flex items-center gap-2 px-3 py-1.5 text-sm"
+                  class="btn btn-primary flex items-center gap-1 px-3 py-1.5 text-xs sm:text-sm"
+                  title="New note"
                 >
                   <Plus class="w-4 h-4" />
-                  New Note
+                  <span class="hidden sm:inline">New</span>
                 </button>
               {/if}
             </div>
           </div>
+
+          <!-- Mobile Stats Only -->
+          {#if totalCount > 0}
+            <div class="flex items-center gap-2 sm:hidden">
+              <span class="text-xs text-secondary-500 dark:text-secondary-400">
+                {notes.length} shown
+              </span>
+            </div>
+          {/if}
         </div>
       </div>
     </div>
@@ -662,16 +439,18 @@
         </div>
       </div>
     {:else}
-      <!-- Notes Grid -->
-      <div class="notes-grid">
+      <!-- Notes List -->
+      <div class="flex flex-col items-center gap-6">
         {#each notes as note (note.id)}
-          <NoteCard
-            {note}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            {hasAuthToken}
-            onShowDetail={handleShowDetail}
-          />
+          <div class="w-full max-w-2xl">
+            <NoteCard
+              {note}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              {hasAuthToken}
+              onShowDetail={handleShowDetail}
+            />
+          </div>
         {/each}
       </div>
 
@@ -731,23 +510,248 @@
   />
 {/if}
 
-<!-- Notes Grid Styles -->
-<style>
-  .notes-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
+<!-- Tag Management Modal -->
+<TagModal
+  bind:isOpen={isTagModalOpen}
+  on:close={() => {
+    isTagModalOpen = false;
+    // Refresh tags after tag management from global store
+    tagsStore.loadTags();
+  }}
+/>
 
-  @media (min-width: 640px) {
-    .notes-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
+<!-- Filter Modal -->
+{#if showFilterModal}
+  <div
+    class="fixed inset-0 bg-black/20 backdrop-blur-sm z-[50] flex items-center justify-center p-4"
+    onclick={e => {
+      if (e.target === e.currentTarget) {
+        closeFilterModal();
+      }
+    }}
+    onkeydown={e => e.key === 'Escape' && closeFilterModal()}
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="filter-modal-title"
+    tabindex="-1"
+  >
+    <!-- Modal -->
+    <div
+      class="bg-white dark:bg-secondary-800 rounded-lg shadow-2xl w-full max-w-md border border-secondary-200 dark:border-secondary-700 overflow-hidden"
+      role="document"
+    >
+      <!-- Header -->
+      <div
+        class="flex items-center justify-between p-6 border-b border-secondary-200 dark:border-secondary-700"
+      >
+        <h2
+          id="filter-modal-title"
+          class="text-xl font-semibold text-secondary-900 dark:text-secondary-50"
+        >
+          Filter & Sort Notes
+        </h2>
+        <button
+          onclick={closeFilterModal}
+          class="w-8 h-8 rounded-lg hover:bg-secondary-100 dark:hover:bg-secondary-700 flex items-center justify-center transition-colors"
+          aria-label="Close modal"
+        >
+          <X class="w-4 h-4 text-secondary-500 dark:text-secondary-400" />
+        </button>
+      </div>
 
-  @media (min-width: 1024px) {
-    .notes-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-</style>
+      <!-- Form -->
+      <div class="p-6 space-y-6">
+        <!-- Search -->
+        <div>
+          <label for="modal-search" class="label">Search</label>
+          <div class="relative group">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search
+                class="w-4 h-4 text-secondary-400 group-focus-within:text-primary-500 transition-colors"
+              />
+            </div>
+            <input
+              id="modal-search"
+              type="text"
+              placeholder="Search notes..."
+              class="input w-full !pl-10"
+              bind:value={tempSearchQuery}
+            />
+          </div>
+        </div>
+
+        <!-- Public Status Filter - Only show when authenticated -->
+        {#if hasAuthToken}
+          <div>
+            <label class="label" id="public-status-label">Public Status</label>
+            <div class="flex gap-2" role="group" aria-labelledby="public-status-label">
+              <button
+                onclick={() => tempFilters = { ...tempFilters, isPublic: true }}
+                class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors {tempFilters.isPublic ===
+                true
+                  ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                  : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
+              >
+                Public Only
+              </button>
+              <button
+                onclick={() => tempFilters = { ...tempFilters, isPublic: false }}
+                class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors {tempFilters.isPublic ===
+                false
+                  ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                  : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
+              >
+                Private Only
+              </button>
+              <button
+                onclick={() => tempFilters = { ...tempFilters, isPublic: undefined }}
+                class="flex-1 px-3 py-2 text-sm rounded-md border border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors {tempFilters.isPublic ===
+                undefined
+                  ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                  : ''}"
+              >
+                All
+              </button>
+            </div>
+          </div>
+        {/if}
+
+        <!-- Favorite Status Filter -->
+        <div>
+          <label class="label" id="favorite-status-label">Favorite Status</label>
+          <div class="flex gap-2" role="group" aria-labelledby="favorite-status-label">
+            <button
+              onclick={() => tempFilters = { ...tempFilters, isFavorite: true }}
+              class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors {tempFilters.isFavorite ===
+              true
+                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
+            >
+              Favorites Only
+            </button>
+            <button
+              onclick={() => tempFilters = { ...tempFilters, isFavorite: false }}
+              class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors {tempFilters.isFavorite ===
+              false
+                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
+            >
+              Non-Favorites
+            </button>
+            <button
+              onclick={() => tempFilters = { ...tempFilters, isFavorite: undefined }}
+              class="flex-1 px-3 py-2 text-sm rounded-md border border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors {tempFilters.isFavorite ===
+              undefined
+                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                : ''}"
+            >
+              All
+            </button>
+          </div>
+        </div>
+
+        <!-- Sort Options -->
+        <div>
+          <label class="label" id="sort-options-label">Sort By</label>
+          {#each sortOptions as option (option.value)}
+            <div class="mb-3">
+              <div class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2 flex items-center gap-1">
+                <Calendar class="w-4 h-4" />
+                {option.label}
+              </div>
+              <div class="flex gap-2">
+                <button
+                  onclick={() => tempFilters = { ...tempFilters, sortBy: option.value, sortOrder: 'desc' }}
+                  class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors flex items-center justify-center gap-1 {tempFilters.sortBy ===
+                    option.value && tempFilters.sortOrder === 'desc'
+                    ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                    : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
+                >
+                  <ArrowDown class="w-3 h-3" />
+                  Newest
+                </button>
+                <button
+                  onclick={() => tempFilters = { ...tempFilters, sortBy: option.value, sortOrder: 'asc' }}
+                  class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors flex items-center justify-center gap-1 {tempFilters.sortBy ===
+                    option.value && tempFilters.sortOrder === 'asc'
+                    ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                    : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
+                >
+                  <ArrowUp class="w-3 h-3" />
+                  Oldest
+                </button>
+              </div>
+            </div>
+          {/each}
+        </div>
+
+        <!-- Tag Filters - Only show when authenticated -->
+        {#if hasAuthToken && $tags.length > 0}
+          <!-- Include Tags -->
+          <div>
+            <label class="label">Include Tags</label>
+            <MultipleSelect
+              options={$tagOptions}
+              bind:selectedValues={tempSelectedIncludeTags}
+              placeholder="Select tags to include (OR logic)..."
+              maxHeight="max-h-40"
+            />
+          </div>
+
+          <!-- Exclude Tags -->
+          <div>
+            <label class="label">Exclude Tags</label>
+            <MultipleSelect
+              options={$tagOptions}
+              bind:selectedValues={tempSelectedExcludeTags}
+              placeholder="Select tags to exclude..."
+              maxHeight="max-h-40"
+            />
+          </div>
+        {:else if hasAuthToken && $isLoadingTags}
+          <div>
+            <label class="label">Tags</label>
+            <div class="flex items-center justify-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg">
+              <RotateCw class="w-4 h-4 text-secondary-400 animate-spin mr-2" />
+              <span class="text-sm text-secondary-500">Loading tags...</span>
+            </div>
+          </div>
+        {:else if hasAuthToken}
+          <div>
+            <label class="label">Tags</label>
+            <div class="text-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg">
+              <TagIcon class="w-8 h-8 text-secondary-300 mx-auto mb-2" />
+              <p class="text-sm text-secondary-500">No tags available</p>
+              <button
+                onclick={() => {
+                  closeFilterModal();
+                  handleTagModalOpen();
+                }}
+                class="text-xs text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 mt-1"
+              >
+                Create tags first
+              </button>
+            </div>
+          </div>
+        {/if}
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-3 p-6  border-t border-secondary-200 dark:border-secondary-700">
+        <button
+          onclick={clearFilters}
+          class="flex-1 px-4 py-2 border border-secondary-300 dark:border-secondary-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+        >
+          Clear Filters
+        </button>
+        <button
+          onclick={applyFilters}
+          class="flex-1 btn btn-primary"
+        >
+          Apply Filters
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}
+

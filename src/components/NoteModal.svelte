@@ -1,8 +1,11 @@
 <script lang="ts">
   import type { Note, CreateNoteData } from '../lib/notes';
-  import { createNote, updateNote } from '../lib/notes';
-  import { X, Link2, Tag } from '@lucide/svelte';
+  import { createNote, updateNote, formatTagIds, validateTagIds, convertApiTagsToTagIds } from '../lib/notes';
+  import type { Tag } from '../lib/tags';
+  import { tags, tagsStore } from '../lib/stores/tags';
+  import { X, Link2, Tag as TagIcon, Plus } from '@lucide/svelte';
   import { toast } from 'svelte-sonner';
+  import MultipleSelect from './MultipleSelect.svelte';
 
   let {
     isOpen = $bindable(false),
@@ -23,23 +26,32 @@
     description: '',
     isPublic: true,
     isFavorite: false,
-    tags: []
+    tagIds: []
   });
 
-  let tagInput = $state('');
-  let showTagsInput = $state(false);
+  let selectedTagIds = $state<string[]>([]);
+
+  // Convert tags to options for MultipleSelect
+  let options = $derived($tags.map(tag => ({
+    value: tag.tag,
+    label: tag.name,
+    description: tag.tag,
+    color: tag.color // Keep null as null, MultipleSelect will handle fallback
+  })));
 
   // Initialize form data when editing
   $effect(() => {
     if (mode === 'edit' && note && isOpen) {
+      const tagIds = convertApiTagsToTagIds(note);
       formData = {
         name: note.name || '',
         link: note.link || '',
         description: note.description || '',
         isPublic: note.isPublic,
         isFavorite: note.isFavorite,
-        tags: [...(note.tags || [])]
+        tagIds: tagIds
       };
+      selectedTagIds = tagIds; // Sync selected tags
     } else if (mode === 'create' && isOpen) {
       formData = {
         name: '',
@@ -47,13 +59,18 @@
         description: '',
         isPublic: true,
         isFavorite: false,
-        tags: []
+        tagIds: []
       };
-      tagInput = '';
-      showTagsInput = false;
+      selectedTagIds = []; // Clear selected tags
     }
   });
 
+  // Sync selectedTagIds to formData.tagIds when selectedTagIds changes
+  $effect(() => {
+    formData.tagIds = selectedTagIds;
+  });
+
+  
   function closeModal() {
     isOpen = false;
     formData = {
@@ -62,32 +79,15 @@
       description: '',
       isPublic: true,
       isFavorite: false,
-      tags: []
+      tagIds: []
     };
-    tagInput = '';
-    showTagsInput = false;
+    selectedTagIds = [];
   }
 
-  function addTag() {
-    const trimmedTag = tagInput.trim();
-    if (trimmedTag && !formData.tags?.includes(trimmedTag)) {
-      formData.tags = [...(formData.tags || []), trimmedTag];
-      tagInput = '';
-    }
-  }
-
-  function removeTag(tagToRemove: string) {
-    formData.tags = (formData.tags || []).filter(tag => tag !== tagToRemove);
-  }
-
-  function handleTagKeydown(event: KeyboardEvent) {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      addTag();
-    } else if (event.key === 'Escape') {
-      tagInput = '';
-    }
-  }
+  
+  
+  
+  
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
@@ -100,39 +100,39 @@
     isLoading = true;
 
     try {
+      // Validate tag IDs before submission
+      const currentTags = $tags;
+      const { valid: validTagIds, invalid: invalidTagIds } = validateTagIds(formData.tagIds || [], currentTags);
+
+      if (invalidTagIds.length > 0) {
+        toast.error(`Invalid tag IDs: ${invalidTagIds.join(', ')}`);
+        return;
+      }
+
+      // Prepare submission data with tag IDs
+      const submissionData: CreateNoteData = {
+        ...formData,
+        tagIds: validTagIds // Submit validated tag IDs
+      };
+
       if (mode === 'create') {
-        await createNote(formData);
+        await createNote(submissionData);
         toast.success('Note created successfully!');
         onSuccess?.();
       } else if (mode === 'edit' && note) {
-        await updateNote(note.id, formData);
+        await updateNote(note.id, submissionData);
         toast.success('Note updated successfully!');
         onSuccess?.();
       }
     } catch (error) {
-      if (error instanceof Error) {
-        toast.error(mode === 'create' ? 'Failed to create note' : 'Failed to update note');
-      } else {
-        toast.error('An unexpected error occurred');
-      }
+      toast.error(mode === 'create' ? 'Failed to create note' : 'Failed to update note');
       console.error('Note save error:', error);
     } finally {
       isLoading = false;
     }
   }
 
-  function toggleTagsInput() {
-    showTagsInput = !showTagsInput;
-    if (showTagsInput) {
-      setTimeout(() => {
-        const input = document.getElementById('tag-input');
-        if (input) {
-          input.focus();
-        }
-      }, 100);
-    }
-  }
-
+  
   const title = $derived(mode === 'create' ? 'Create Note' : 'Edit Note');
 </script>
 
@@ -201,10 +201,11 @@
             <input
               id="link"
               type="url"
-              placeholder="https://example.com"
+              placeholder=""
               class="input !pl-10"
               bind:value={formData.link}
               disabled={isLoading}
+              autocomplete="off"
             />
           </div>
         </div>
@@ -224,95 +225,49 @@
 
         <!-- Tags -->
         <div>
-          <h3 class="label mb-2">Tags (Optional)</h3>
-          <div class="space-y-2">
-            <!-- Tags Display -->
-            {#if formData.tags && formData.tags.length > 0}
-              <div class="flex flex-wrap gap-2">
-                {#each formData.tags as tag (tag)}
-                  <span
-                    class="inline-flex items-center gap-1 px-2 py-1 bg-primary-50 dark:bg-primary-900/20 rounded-full text-sm"
-                  >
-                    <Tag class="w-3 h-3 text-primary-600 dark:text-primary-400" />
-                    <span class="text-primary-700 dark:text-primary-300">{tag}</span>
-                    <button
-                      type="button"
-                      onclick={() => removeTag(tag)}
-                      class="text-primary-500 hover:text-primary-700 dark:hover:text-primary-300"
-                      aria-label={`Remove ${tag} tag`}
-                    >
-                      ×
-                    </button>
-                  </span>
-                {/each}
-              </div>
-            {/if}
+          <label class="label">Tags (Optional)</label>
+          <div class="mt-2">
+            <MultipleSelect
+              {options}
+              bind:selectedValues={selectedTagIds}
+              placeholder="Select tags..."
+              disabled={isLoading}
+            />
+          </div>
 
-            <!-- Add Tag Input -->
-            {#if showTagsInput}
-              <div class="flex gap-2">
-                <div class="relative flex-1">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Tag class="w-4 h-4 text-secondary-400" />
-                  </div>
-                  <input
-                    id="tag-input"
-                    type="text"
-                    placeholder="Add tag..."
-                    class="input pl-10"
-                    bind:value={tagInput}
-                    onkeydown={handleTagKeydown}
-                    disabled={isLoading}
-                  />
-                </div>
-                <button
-                  type="button"
-                  onclick={addTag}
-                  disabled={!tagInput.trim()}
-                  class="px-3 py-2 bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white rounded-lg text-sm transition-colors disabled:cursor-not-allowed"
-                >
-                  Add
-                </button>
-                <button
-                  type="button"
-                  onclick={toggleTagsInput}
-                  class="px-3 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            {:else}
-              <button
-                type="button"
-                onclick={toggleTagsInput}
-                class="w-full px-3 py-2 border border-dashed border-secondary-300 dark:border-secondary-600 rounded-lg text-secondary-600 dark:text-secondary-400 hover:border-secondary-400 dark:hover:border-secondary-500 hover:text-secondary-700 dark:hover:text-secondary-300 transition-colors text-sm"
-              >
-                + Add Tag
-              </button>
-            {/if}
+          <!-- Create New Tag Link -->
+          <div class="text-sm mt-3">
+            <span class="text-secondary-600 dark:text-secondary-400">Need a new tag? </span>
+            <button
+              type="button"
+              onclick={() => alert('Use the "Manage Tags" button in the Notes page to create new tags.')}
+              class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 underline"
+            >
+              Manage tags
+            </button>
           </div>
         </div>
 
         <!-- Options -->
         <div class="flex items-center gap-6">
-          <label class="flex items-center gap-2 cursor-pointer">
+          <label class="custom-checkbox" disabled={isLoading}>
             <input
               type="checkbox"
               bind:checked={formData.isPublic}
-              class="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
               disabled={isLoading}
             />
-            <span class="text-sm text-gray-700 dark:text-gray-300">Public</span>
+            <span class="checkmark"></span>
+            <span class="label-text">Public</span>
           </label>
 
-          <label class="flex items-center gap-2 cursor-pointer">
+          <label class="custom-checkbox" disabled={isLoading}>
             <input
               type="checkbox"
               bind:checked={formData.isFavorite}
-              class="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
               disabled={isLoading}
             />
-            <span class="text-sm text-gray-700 dark:text-gray-300">Favorite</span>
+            <span class="checkmark"></span>
+            <span class="label-text">Favorite</span>
           </label>
         </div>
 

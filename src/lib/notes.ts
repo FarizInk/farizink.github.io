@@ -1,4 +1,5 @@
 import { API_BASE_URL } from './constants';
+import { getTags, type Tag } from './tags';
 
 export interface Note {
   id: string;
@@ -10,7 +11,7 @@ export interface Note {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
-  tags: string[];
+  tags: Tag[];
 }
 
 export interface NotesResponse {
@@ -58,7 +59,7 @@ export interface CreateNoteData {
   description?: string;
   isPublic?: boolean;
   isFavorite?: boolean;
-  tags?: string[];
+  tagIds?: string[];
 }
 
 export interface NoteFilters {
@@ -67,6 +68,8 @@ export interface NoteFilters {
   sortBy?: 'created_at' | 'updated_at';
   sortOrder?: 'asc' | 'desc';
   search?: string;
+  includeTags?: string[];
+  excludeTags?: string[];
 }
 
 /**
@@ -101,6 +104,12 @@ export async function getNotes(
   }
   if (filters?.search) {
     params.append('search', filters.search.trim());
+  }
+  if (filters?.includeTags && filters.includeTags.length > 0) {
+    params.append('includeTags', filters.includeTags.join(','));
+  }
+  if (filters?.excludeTags && filters.excludeTags.length > 0) {
+    params.append('excludeTags', filters.excludeTags.join(','));
   }
 
   const headers: HeadersInit = {
@@ -256,4 +265,60 @@ export function isRecentlyUpdated(updatedAt: string): boolean {
   const now = new Date();
   const hoursDiff = (now.getTime() - updateTime.getTime()) / (1000 * 60 * 60);
   return hoursDiff < 24;
+}
+
+// Tag-related helper functions
+export async function getAvailableTags(): Promise<Tag[]> {
+  try {
+    // Dynamic import to avoid circular dependency
+    const { getTags: fetchTags } = await import('./tags');
+    const response = await fetchTags(1, 100); // Get up to 100 tags
+    return response.data.tags;
+  } catch (error) {
+    console.error('Failed to fetch tags:', error);
+    return [];
+  }
+}
+
+export function formatTagIds(tagIds: (string | Tag)[]): string[] {
+  // Ensure we only return valid string tag values
+  return tagIds.map(id => {
+    if (typeof id === 'string') {
+      return id.trim();
+    } else if (id && typeof id === 'object' && id.tag) {
+      return String(id.tag).trim(); // Extract tag value from object if needed
+    } else {
+      return String(id).trim(); // Convert to string as fallback
+    }
+  }).filter(id => id.length > 0);
+}
+
+// Convert tags array from API response to tagIds for frontend
+export function convertApiTagsToTagIds(note: Note): string[] {
+  // API returns tags as array of Tag objects with tag, name, and color properties
+  if (!note.tags || !Array.isArray(note.tags)) {
+    return [];
+  }
+
+  return note.tags.map(tag => tag.tag).filter(tag => tag && tag.trim().length > 0);
+}
+
+export function validateTagIds(tagIds: (string | Tag)[], availableTags: Tag[]): { valid: string[], invalid: string[] } {
+  const validTagIds = new Set(availableTags.map(tag => tag.tag));
+
+  // Ensure we're working with strings only
+  const stringIds = tagIds.map(id => {
+    if (typeof id === 'string') {
+      return id;
+    } else if (id && typeof id === 'object' && id.tag) {
+      return id.tag; // Extract tag value from object if needed
+    } else {
+      return String(id); // Convert to string as fallback
+    }
+  }).filter(id => id && id.trim().length > 0);
+
+  const valid = stringIds.filter(id => validTagIds.has(id));
+  const invalid = stringIds.filter(id => !validTagIds.has(id));
+
+  return { valid, invalid };
 }

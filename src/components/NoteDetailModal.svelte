@@ -223,14 +223,16 @@
               Tags
             </h2>
             <div class="flex flex-wrap gap-2">
-              {#each note.tags as tag (tag)}
+              {#each note.tags as tag (tag.tag)}
                 <div
-                  class="flex items-center gap-1.5 px-3 py-2 bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded-full border border-primary-200 dark:border-primary-700 transition-colors"
+                  class="flex items-center gap-1.5 px-3 py-2 hover:bg-opacity-80 rounded-full border transition-colors {!tag.color ? 'bg-primary-50 text-primary-700 border-primary-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700' : ''}"
+                  style="background-color: {tag.color ? tag.color + '20' : undefined}; color: {tag.color || undefined}; border-color: {tag.color ? tag.color + '40' : undefined}"
                 >
-                  <Tag class="w-3 h-3 text-primary-600 dark:text-primary-400" />
-                  <span class="text-sm font-medium text-primary-700 dark:text-primary-300"
-                    >{tag}</span
-                  >
+                  <div
+                    class="w-3 h-3 rounded-full border border-current/30 {!tag.color ? 'bg-primary-600 border-primary-500' : ''}"
+                    style="background-color: {tag.color || undefined}"
+                  ></div>
+                  <span class="text-sm font-medium">{tag.name || tag.tag}</span>
                 </div>
               {/each}
             </div>

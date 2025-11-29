@@ -47,6 +47,7 @@ html.dark body {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -57,6 +58,7 @@ html.dark body {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -68,6 +70,7 @@ html.dark body {
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -78,9 +81,11 @@ html.dark body {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -445,4 +450,186 @@ html.dark body {
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
   --shadow-glow: 0 0 15px rgba(139, 92, 246, 0.5);
+}
+
+/* Custom Checkbox Styles */
+.custom-checkbox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.custom-checkbox input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.custom-checkbox .checkmark {
+  position: relative;
+  display: inline-block;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--color-secondary-300);
+  border-radius: var(--radius-sm);
+  background-color: white;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.custom-checkbox:hover .checkmark {
+  border-color: var(--color-primary-500);
+  background-color: var(--color-primary-50);
+}
+
+.custom-checkbox input[type="checkbox"]:checked~.checkmark {
+  background-color: var(--color-primary-600);
+  border-color: var(--color-primary-600);
+}
+
+.custom-checkbox input[type="checkbox"]:checked~.checkmark:after {
+  content: "";
+  position: absolute;
+  left: 0.35rem;
+  top: 0.15rem;
+  width: 0.3125rem;
+  height: 0.5625rem;
+  border: solid white;
+  border-width: 0 0.125rem 0.125rem 0;
+  transform: rotate(45deg);
+}
+
+.dark .custom-checkbox .checkmark {
+  border-color: var(--color-secondary-600);
+  background-color: var(--color-secondary-800);
+}
+
+.dark .custom-checkbox:hover .checkmark {
+  border-color: var(--color-primary-500);
+  background-color: rgba(139, 92, 246, 0.1);
+}
+
+.dark .custom-checkbox input[type="checkbox"]:checked~.checkmark {
+  background-color: var(--color-primary-600);
+  border-color: var(--color-primary-600);
+}
+
+/* Custom Radio Button Styles */
+.custom-radio {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.custom-radio input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.custom-radio .radio-dot {
+  position: relative;
+  display: inline-block;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--color-secondary-300);
+  border-radius: var(--radius-full);
+  background-color: white;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.custom-radio:hover .radio-dot {
+  border-color: var(--color-primary-500);
+  background-color: var(--color-primary-50);
+}
+
+.custom-radio input[type="radio"]:checked~.radio-dot {
+  border-color: var(--color-primary-600);
+  background-color: white;
+}
+
+.custom-radio input[type="radio"]:checked~.radio-dot:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-600);
+  transform: translate(-50%, -50%);
+}
+
+.dark .custom-radio .radio-dot {
+  border-color: var(--color-secondary-600);
+  background-color: var(--color-secondary-800);
+}
+
+.dark .custom-radio:hover .radio-dot {
+  border-color: var(--color-primary-500);
+  background-color: rgba(139, 92, 246, 0.1);
+}
+
+.dark .custom-radio input[type="radio"]:checked~.radio-dot {
+  border-color: var(--color-primary-600);
+  background-color: var(--color-secondary-800);
+}
+
+.dark .custom-radio input[type="radio"]:checked~.radio-dot:after {
+  background-color: var(--color-primary-600);
+}
+
+/* Label styling for custom controls */
+.custom-checkbox .label-text,
+.custom-radio .label-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-secondary-700);
+  transition: color 0.2s ease;
+}
+
+.custom-checkbox:hover .label-text,
+.custom-radio:hover .label-text {
+  color: var(--color-secondary-900);
+}
+
+.dark .custom-checkbox .label-text,
+.dark .custom-radio .label-text {
+  color: var(--color-secondary-300);
+}
+
+.dark .custom-checkbox:hover .label-text,
+.dark .custom-radio:hover .label-text {
+  color: var(--color-secondary-100);
+}
+
+/* Focus styles for accessibility */
+.custom-checkbox input[type="checkbox"]:focus~.checkmark,
+.custom-radio input[type="radio"]:focus~.radio-dot {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* Disabled state */
+.custom-checkbox input[type="checkbox"]:disabled~.checkmark,
+.custom-radio input[type="radio"]:disabled~.radio-dot {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.custom-checkbox input[type="checkbox"]:disabled~.label-text,
+.custom-radio input[type="radio"]:disabled~.label-text {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

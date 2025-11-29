@@ -37,6 +37,10 @@
   let isPWAInstalled = $state(false);
   let serviceWorkerCanToggle = $state(true);
 
+  // API Health Status
+  let apiHealthStatus = $state<'ok' | 'error' | 'checking'>('checking');
+  let apiHealthError = $state<string | null>(null);
+
   function handleNavigation(event: MouseEvent, href: string) {
     event.preventDefault();
     console.log('Navigating to:', href);
@@ -269,6 +273,36 @@
     }
   }
 
+  async function checkAPIHealth() {
+    apiHealthStatus = 'checking';
+    apiHealthError = null;
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://api.fariz.dev'}/health`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        signal: AbortSignal.timeout(5000) // 5 second timeout
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      if (data.success && data.data.status === 'ok') {
+        apiHealthStatus = 'ok';
+      } else {
+        apiHealthStatus = 'error';
+        apiHealthError = 'API status not ok';
+      }
+    } catch (err) {
+      apiHealthStatus = 'error';
+      apiHealthError = err instanceof Error ? err.message : 'Failed to check API health';
+    }
+  }
+
   onMount(() => {
     // Check for saved theme preference or default to light mode
     const savedTheme = localStorage.getItem('theme');
@@ -285,6 +319,9 @@
     // Initialize Service Worker settings
     initializeServiceWorkerSettings();
     checkPWAInstallation();
+
+    // Check API health status
+    checkAPIHealth();
 
     // PWA Install Logic
     isIOS =
@@ -487,10 +524,22 @@
 
               <!-- API Health -->
               <div
-                class="flex items-center gap-1 px-2 py-1 rounded-md bg-green-50 dark:bg-green-900/30"
+                class="flex items-center gap-1 px-2 py-1 rounded-md {apiHealthStatus === 'ok'
+                  ? 'bg-green-50 dark:bg-green-900/30'
+                  : apiHealthStatus === 'checking'
+                  ? 'bg-blue-50 dark:bg-blue-900/30'
+                  : 'bg-red-50 dark:bg-red-900/30'}"
               >
-                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span class="text-green-700 dark:text-green-300">API OK</span>
+                {#if apiHealthStatus === 'checking'}
+                  <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                  <span class="text-blue-700 dark:text-blue-300">API...</span>
+                {:else if apiHealthStatus === 'ok'}
+                  <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span class="text-green-700 dark:text-green-300">API OK</span>
+                {:else}
+                  <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                  <span class="text-red-700 dark:text-red-300">API Error</span>
+                {/if}
               </div>
 
               <!-- PWA Status (Inline) -->
