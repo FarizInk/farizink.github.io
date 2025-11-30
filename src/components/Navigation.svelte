@@ -20,6 +20,7 @@
   import CommandPalette from './CommandPalette.svelte';
   import LoginModal from './LoginModal.svelte';
   import HealthChecker from './HealthChecker.svelte';
+  import { API_BASE_URL } from '../lib/constants';
 
   let isDark = $state(false);
   let isCommandPaletteOpen = $state(false);
@@ -278,7 +279,7 @@
     apiHealthError = null;
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://api.fariz.dev'}/health`, {
+      const response = await fetch(`${API_BASE_URL}/health`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'

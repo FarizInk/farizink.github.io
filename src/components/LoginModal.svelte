@@ -2,6 +2,7 @@
   import { User, Lock, Eye, EyeOff, X } from '@lucide/svelte';
   import { saveAuth } from '../lib/auth';
   import { toast } from 'svelte-sonner';
+  import { API_BASE_URL } from '../lib/constants';
 
   let { isOpen = $bindable(false) } = $props();
 
@@ -65,7 +66,7 @@
       };
 
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL || 'https://core.fariz.dev'}/api/login`,
+        `${API_BASE_URL}/api/login`,
         {
           method: 'POST',
           headers: {
