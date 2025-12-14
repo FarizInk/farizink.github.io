@@ -10,13 +10,15 @@
     Save,
     RotateCw,
     Hash,
-    Type
+    Type,
+    Eye
   } from '@lucide/svelte';
   import {
     getTags,
     createTag,
     updateTag,
     deleteTag,
+    getTagNotes,
     type Tag,
     type TagCreateRequest
   } from '../lib/tags';
@@ -27,15 +29,11 @@
 
   // Local state
   let isLoading = $state(false);
-  let isLoadingMore = $state(false);
-  let currentPage = $state(1);
-  let hasMore = $state(true);
   let searchQuery = $state('');
   let debouncedSearchQuery = $state('');
   let lastSearchQuery = $state(''); // Track last executed search
   let searchTimeout: ReturnType<typeof setTimeout> | null = null;
   let isSearchTyping = $state(false);
-  let hasLoadedInitialTags = $state(false); // Track if initial tags have been loaded
 
   // Form state
   let isCreating = $state(false);
@@ -69,18 +67,14 @@
       clearTimeout(searchTimeout);
     }
 
-    // When modal opens, check if we need to load initial tags
+    // When modal opens, load initial tags
     if (isOpen && !searchQuery.trim()) {
-      // Load tags only if we haven't loaded them before OR if we have a search history
-      if (!hasLoadedInitialTags || lastSearchQuery !== '') {
-        debouncedSearchQuery = ''; // Update debounced value
-        // Load from global store first, then fallback to API
-        const currentTags = get(globalTags) as Tag[];
-        if (currentTags.length === 0) {
-          tagsStore.loadTags(); // Load from API if store is empty
-        }
-        lastSearchQuery = '';
+      // Load from global store first, then fallback to API
+      const currentTags = get(globalTags) as Tag[];
+      if (currentTags.length === 0) {
+        tagsStore.loadTags(); // Load from API if store is empty
       }
+      lastSearchQuery = '';
       return;
     }
 
@@ -92,9 +86,7 @@
           debouncedSearchQuery = searchQuery.trim();
           lastSearchQuery = searchQuery.trim();
           isSearchTyping = false;
-          currentPage = 1;
-          hasMore = true;
-          loadTags(1, false);
+          loadTags();
         }
       }, 300);
     }
@@ -107,45 +99,21 @@
     };
   });
 
-  async function loadTags(page: number = 1, append: boolean = false) {
-    if (!append) {
-      isLoading = true;
-    } else {
-      isLoadingMore = true;
-    }
+  async function loadTags() {
+    isLoading = true;
 
     try {
-      const response = await getTags(page, 20, debouncedSearchQuery);
-
-      let updatedTags: Tag[];
-      if (append) {
-        const currentTags = get(globalTags) as Tag[];
-        updatedTags = [...currentTags, ...response.data.tags];
-      } else {
-        updatedTags = response.data.tags;
-        // Mark that initial tags have been loaded (for non-search queries)
-        if (!debouncedSearchQuery) {
-          hasLoadedInitialTags = true;
-        }
-      }
+      const response = await getTags(debouncedSearchQuery);
+      const updatedTags = response.data.tags;
 
       // Update global store
       globalTags.set(updatedTags);
-
-      currentPage = response.data.pagination.page;
-      hasMore = currentPage < response.data.pagination.totalPages;
     } catch (error) {
       toast.error('Failed to load tags');
       console.error('Load tags error:', error);
     } finally {
       isLoading = false;
-      isLoadingMore = false;
     }
-  }
-
-  async function loadMoreTags() {
-    if (isLoadingMore || !hasMore) return;
-    await loadTags(currentPage + 1, true);
   }
 
   function handleCreateNew() {
@@ -215,7 +183,6 @@
       }
 
       handleCancel();
-      hasLoadedInitialTags = false; // Reset cache - data changed
     } catch (error) {
       toast.error(isCreating ? 'Failed to create tag' : 'Failed to update tag');
       console.error('Save tag error:', error);
@@ -232,18 +199,40 @@
       // Remove tag from global store (using tag as identifier)
       tagsStore.removeTag(tag.tag);
       toast.success('Tag deleted successfully');
-      hasLoadedInitialTags = false; // Reset cache - data changed
     } catch (error) {
       toast.error('Failed to delete tag');
       console.error('Delete tag error:', error);
     }
   }
 
+  async function handleViewTagNotes(tag: Tag) {
+    try {
+      const response = await getTagNotes(tag.tag);
+      const notesCount = response.data?.pagination?.total || 0;
+
+      if (notesCount > 0) {
+        // Navigate to notes page with tag filter
+        const baseUrl = window.location.origin;
+        const notesUrl = `${baseUrl}/notes?tag=${encodeURIComponent(tag.tag)}`;
+
+        // Close modal first
+        handleClose();
+
+        // Navigate to notes page
+        window.location.href = notesUrl;
+
+        toast.success(`Viewing ${notesCount} note${notesCount !== 1 ? 's' : ''} with tag "${tag.name}"`);
+      } else {
+        toast.info(`No notes found with tag "${tag.name}"`);
+      }
+    } catch (error) {
+      toast.error('Failed to get tag notes');
+      console.error('Get tag notes error:', error);
+    }
+  }
+
   function handleRefresh() {
-    currentPage = 1;
-    hasMore = true;
-    hasLoadedInitialTags = false; // Reset cache - user wants fresh data
-    tagsStore.loadTags(); // Use the global store to reload
+    tagsStore.loadTags(searchQuery || undefined); // Use the global store to reload
   }
 
   function handleClose() {
@@ -565,11 +554,6 @@
                                 {tag.tag}
                               </span>
                             </div>
-                            {#if tag.entityCount !== undefined && tag.entityCount > 0}
-                              <span class="inline-block px-2 py-1 bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-300 text-xs rounded">
-                                {tag.entityCount} item{tag.entityCount !== 1 ? 's' : ''}
-                              </span>
-                            {/if}
                           </div>
                           <h3 class="font-medium text-gray-900 dark:text-white truncate">
                             {tag.name}
@@ -580,6 +564,13 @@
                         </div>
 
                         <div class="flex items-center gap-1 ml-2">
+                          <button
+                            onclick={() => handleViewTagNotes(tag)}
+                            class="w-8 h-8 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/30 flex items-center justify-center transition-colors"
+                            title="View notes with this tag"
+                          >
+                            <Eye class="w-4 h-4 text-blue-500 dark:text-blue-400" />
+                          </button>
                           <button
                             onclick={() => handleEdit(tag)}
                             class="w-8 h-8 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition-colors"
@@ -599,25 +590,6 @@
                     </div>
                   {/each}
                 </div>
-
-                <!-- Load More -->
-                {#if hasMore}
-                  <div class="mt-6 text-center">
-                    <button
-                      onclick={loadMoreTags}
-                      disabled={isLoadingMore}
-                      class="btn btn-secondary"
-                    >
-                      {#if isLoadingMore}
-                        <RotateCw class="w-4 h-4 animate-spin mr-2" />
-                        Loading more...
-                      {:else}
-                        <Plus class="w-4 h-4 mr-2" />
-                        Load More Tags
-                      {/if}
-                    </button>
-                  </div>
-                {/if}
               </div>
             {/if}
           </div>

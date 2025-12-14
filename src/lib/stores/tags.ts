@@ -22,7 +22,7 @@ export const tagOptions = derived(
 // Global Tags Store class with methods
 class TagsStore {
   // Actions
-  async loadTags(): Promise<void> {
+  async loadTags(search?: string): Promise<void> {
     const loading = get(isLoadingTags);
     if (loading) return;
 
@@ -30,7 +30,7 @@ class TagsStore {
     tagsError.set(null);
 
     try {
-      const response = await getTags(1, 100); // Get up to 100 tags
+      const response = await getTags(search);
       const fetchedTags = response.data.tags;
 
       // Use only real data from API

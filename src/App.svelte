@@ -101,7 +101,7 @@
         class="hover:cursor-pointer hover:scale-110 transition-transform duration-200"
       >
         <LoveIcon class="w-5 h-5 mx-1 text-rose-600" />
-      </button> in Surabaya.
+      </button> at Sidoarjo.
     </footer>
   {/if}
 </div>

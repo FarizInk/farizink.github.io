@@ -1,10 +1,13 @@
 <script lang="ts">
-  import type { Note, CreateNoteData } from '../lib/notes';
+  import type { Note, CreateNoteData, UpdateNoteData } from '../lib/notes';
   import { createNote, updateNote, validateTagIds, convertApiTagsToTagIds } from '../lib/notes';
   import { tags } from '../lib/stores/tags';
-  import { X, Link2 } from '@lucide/svelte';
+  import { X, Link2, Paperclip, Loader } from '@lucide/svelte';
   import { toast } from 'svelte-sonner';
   import MultipleSelect from './MultipleSelect.svelte';
+  import FileUpload from './FileUpload.svelte';
+  import ExistingFiles from './ExistingFiles.svelte';
+  import TiptapEditor from './TiptapEditor.svelte';
 
   let {
     isOpen = $bindable(false),
@@ -25,10 +28,15 @@
     description: '',
     isPublic: true,
     isFavorite: false,
-    tagIds: []
+    tags: [],
+    files: []
   });
 
   let selectedTagIds = $state<string[]>([]);
+  let showFileSection = $state(false);
+
+  // For edit mode - track files to delete
+  let filesToDelete = $state<string[]>([]);
 
   // Convert tags to options for MultipleSelect
   let options = $derived($tags.map(tag => ({
@@ -48,9 +56,12 @@
         description: note.description || '',
         isPublic: note.isPublic,
         isFavorite: note.isFavorite,
-        tagIds: tagIds
+        tags: tagIds,
+        files: [] // Note: In edit mode, we don't load existing files yet
       };
       selectedTagIds = tagIds; // Sync selected tags
+      showFileSection = true; // Show file section in edit mode to manage existing files
+      filesToDelete = []; // Clear files to delete
     } else if (mode === 'create' && isOpen) {
       formData = {
         name: '',
@@ -58,15 +69,18 @@
         description: '',
         isPublic: true,
         isFavorite: false,
-        tagIds: []
+        tags: [],
+        files: []
       };
       selectedTagIds = []; // Clear selected tags
+      showFileSection = false; // Hide file section by default
+      filesToDelete = []; // Clear files to delete
     }
   });
 
-  // Sync selectedTagIds to formData.tagIds when selectedTagIds changes
+  // Sync selectedTagIds to formData.tags when selectedTagIds changes
   $effect(() => {
-    formData.tagIds = selectedTagIds;
+    formData.tags = selectedTagIds;
   });
 
   
@@ -78,9 +92,12 @@
       description: '',
       isPublic: true,
       isFavorite: false,
-      tagIds: []
+      tags: [],
+      files: []
     };
     selectedTagIds = [];
+    showFileSection = false;
+    filesToDelete = [];
   }
 
   
@@ -101,17 +118,17 @@
     try {
       // Validate tag IDs before submission
       const currentTags = $tags;
-      const { valid: validTagIds, invalid: invalidTagIds } = validateTagIds(formData.tagIds || [], currentTags);
+      const { valid: validTagIds, invalid: invalidTagIds } = validateTagIds(formData.tags || [], currentTags);
 
       if (invalidTagIds.length > 0) {
         toast.error(`Invalid tag IDs: ${invalidTagIds.join(', ')}`);
         return;
       }
 
-      // Prepare submission data with tag IDs
+      // Prepare submission data - files will be uploaded with the form
       const submissionData: CreateNoteData = {
         ...formData,
-        tagIds: validTagIds // Submit validated tag IDs
+        tags: validTagIds
       };
 
       if (mode === 'create') {
@@ -119,7 +136,19 @@
         toast.success('Note created successfully!');
         onSuccess?.();
       } else if (mode === 'edit' && note) {
-        await updateNote(note.id, submissionData);
+        // Prepare update data
+        const updateData: UpdateNoteData = {
+          name: formData.name,
+          link: formData.link,
+          description: formData.description,
+          isPublic: formData.isPublic,
+          isFavorite: formData.isFavorite,
+          tags: validTagIds,
+          files: formData.files,
+          deleteFileIds: filesToDelete.length > 0 ? filesToDelete : undefined
+        };
+
+        await updateNote(note.id, updateData);
         toast.success('Note updated successfully!');
         onSuccess?.();
       }
@@ -212,14 +241,14 @@
         <!-- Description -->
         <div>
           <label for="description" class="label">Description (Optional)</label>
-          <textarea
-            id="description"
-            placeholder="Enter note description"
-            class="textarea"
-            rows={4}
-            bind:value={formData.description}
-            disabled={isLoading}
-          ></textarea>
+          <div class="mt-2">
+            <TiptapEditor
+              bind:content={formData.description}
+              placeholder="Enter note description..."
+              disabled={isLoading}
+              maxHeight="200px"
+            />
+          </div>
         </div>
 
         <!-- Tags -->
@@ -247,6 +276,47 @@
             </button>
           </div>
         </div>
+
+        <!-- Files Section -->
+        <div>
+          <button
+            type="button"
+            onclick={() => showFileSection = !showFileSection}
+            class="flex items-center gap-2 text-sm font-medium text-secondary-700 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+          >
+            <Paperclip class="w-4 h-4" />
+            <span>{mode === 'edit' ? 'Manage Files' : 'Attach Files'}</span>
+            {#if (formData.files && formData.files.length > 0) || (mode === 'edit' && note?.files && note.files.length > 0)}
+              <span class="badge badge-primary text-xs">
+                ({(formData.files?.length || 0) + (mode === 'edit' && note?.files ? note.files.length : 0)})
+              </span>
+            {/if}
+          </button>
+        </div>
+
+        {#if showFileSection}
+          <div class="mt-3 space-y-4">
+            <!-- Existing Files - Only in edit mode -->
+            {#if mode === 'edit' && note?.files && note.files.length > 0}
+              <ExistingFiles
+                bind:files={note.files}
+                bind:filesToDelete={filesToDelete}
+              />
+            {/if}
+
+            <!-- New Files Upload -->
+            <div>
+              <div class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2">
+                {mode === 'edit' ? 'Add New Files' : 'Upload Files'}
+              </div>
+              <FileUpload
+                bind:files={formData.files}
+                disabled={isLoading}
+                maxFiles={mode === 'edit' ? 10 - (note?.files?.length || 0) : 10}
+              />
+            </div>
+          </div>
+        {/if}
 
         <!-- Options -->
         <div class="flex items-center gap-6">
@@ -291,9 +361,7 @@
             disabled={isLoading || !formData.name?.trim()}
           >
             {#if isLoading}
-              <div
-                class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"
-              ></div>
+              <Loader class="w-4 h-4 animate-spin mr-2" />
               {mode === 'create' ? 'Creating...' : 'Updating...'}
             {:else}
               {mode === 'create' ? 'Create Note' : 'Update Note'}

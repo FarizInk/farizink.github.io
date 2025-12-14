@@ -546,7 +546,7 @@
               </div>
 
               <!-- PWA Status (Inline) -->
-              {#if isPWAInstalled}
+              <!-- {#if isPWAInstalled}
                 <div
                   class="flex items-center gap-1 px-2 py-1 rounded-md bg-green-100 dark:bg-green-900/50"
                 >
@@ -560,7 +560,7 @@
                   <Download class="w-3 h-3 text-blue-600 dark:text-blue-400" />
                   <span class="text-blue-800 dark:text-blue-200">Install</span>
                 </div>
-              {/if}
+              {/if} -->
             </div>
           </div>
 

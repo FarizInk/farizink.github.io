@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Note } from '../lib/notes';
-  import { formatDate } from '../lib/notes';
-  import { X, ExternalLink, Calendar, Tag, Star, Clock, Edit, Trash2, Link2 } from '@lucide/svelte';
+  import { formatDate, getFileUrl, addRefreshParam, isPresignedUrl } from '../lib/notes';
+  import { X, ExternalLink, Calendar, Tag, Star, Clock, Edit, Trash2, Link2, File, Image as ImageIcon, Download, Eye, AlertTriangle } from '@lucide/svelte';
 
   let {
     note,
@@ -9,7 +9,9 @@
     onClose,
     onEdit,
     onDelete,
-    hasAuthToken
+    hasAuthToken,
+    isDeleted = false,
+    onPermanentDelete
   } = $props<{
     note: Note;
     isOpen: boolean;
@@ -17,6 +19,8 @@
     onEdit?: (note: Note) => void;
     onDelete?: (note: Note) => void;
     hasAuthToken?: boolean;
+    isDeleted?: boolean;
+    onPermanentDelete?: (note: Note) => void;
   }>();
 
   function handleEdit() {
@@ -31,10 +35,67 @@
     }
   }
 
+  function handlePermanentDelete() {
+    const confirmMessage = `Are you sure you want to permanently delete this note?${note.files && note.files.length > 0 ? `\n\nThis will also delete ${note.files.length} file(s) from storage.` : ''}\n\nThis action cannot be undone.`;
+
+    if (confirm(confirmMessage)) {
+      onPermanentDelete?.(note);
+      onClose();
+    }
+  }
+
   function handleLinkClick() {
     if (note.link) {
       window.open(note.link, '_blank', 'noopener,noreferrer');
     }
+  }
+
+  function downloadFile(file: Note['files'][0]) {
+    const link = document.createElement('a');
+    const fileUrl = getFileUrl(file);
+    link.href = fileUrl;
+    link.download = file.originalName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  function viewFile(file: Note['files'][0]) {
+    const fileUrl = getFileUrl(file);
+    window.open(fileUrl, '_blank');
+  }
+
+  function handleImageError(event: Event) {
+    const img = event.target as HTMLImageElement;
+    const originalSrc = img.src;
+
+    // Try to refresh the URL once if it's a presigned URL
+    if (isPresignedUrl(originalSrc) && !img.dataset.refreshed) {
+      img.dataset.refreshed = 'true';
+      img.src = addRefreshParam(originalSrc);
+    } else {
+      // Fallback to hide image and show placeholder
+      img.style.display = 'none';
+      const placeholder = img.nextElementSibling as HTMLElement;
+      if (placeholder) {
+        placeholder.style.display = 'flex';
+      }
+    }
+  }
+
+  function formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  function getFileIcon(mimeType: string) {
+    if (mimeType.startsWith('image/')) {
+      return ImageIcon;
+    }
+    return File;
   }
 
   function handleBackdropClick(event: MouseEvent) {
@@ -91,7 +152,13 @@
         <div class="flex items-start justify-between">
           <div class="flex-1 min-w-0 pr-4">
             <div class="flex items-center gap-3 mb-2">
-              {#if note.isFavorite}
+              {#if isDeleted}
+                <div
+                  class="w-8 h-8 rounded-full bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/30 dark:to-red-800/30 flex items-center justify-center"
+                >
+                  <AlertTriangle class="w-4 h-4 text-red-600 dark:text-red-400" />
+                </div>
+              {:else if note.isFavorite}
                 <div
                   class="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-900/30 dark:to-yellow-800/30 flex items-center justify-center"
                 >
@@ -110,14 +177,21 @@
             </div>
 
             <div class="flex items-center gap-4 text-sm text-secondary-500 dark:text-secondary-400">
-              <div class="flex items-center gap-1">
-                <Calendar class="w-4 h-4" />
-                <span>Created: {formatDate(note.createdAt)}</span>
-              </div>
-              <div class="flex items-center gap-1">
-                <Clock class="w-4 h-4" />
-                <span>Updated: {formatDate(note.updatedAt)}</span>
-              </div>
+              {#if isDeleted && note.deletedAt}
+                <div class="flex items-center gap-1 text-red-600 dark:text-red-400">
+                  <AlertTriangle class="w-4 h-4" />
+                  <span>Deleted: {formatDate(note.deletedAt)}</span>
+                </div>
+              {:else}
+                <div class="flex items-center gap-1">
+                  <Calendar class="w-4 h-4" />
+                  <span>Created: {formatDate(note.createdAt)}</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <Clock class="w-4 h-4" />
+                  <span>Updated: {formatDate(note.updatedAt)}</span>
+                </div>
+              {/if}
             </div>
           </div>
 
@@ -133,22 +207,36 @@
               </button>
             {/if}
 
-            {#if hasAuthToken}
-              <button
-                onclick={handleEdit}
-                class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-900/30 border border-primary-200 dark:border-primary-800 flex items-center justify-center transition-colors"
-                title="Edit note"
-              >
-                <Edit class="w-5 h-5 text-primary-600 dark:text-primary-400" />
-              </button>
+            {#if isDeleted}
+              <!-- Permanent Delete button for deleted notes -->
+              {#if hasAuthToken && onPermanentDelete}
+                <button
+                  onclick={handlePermanentDelete}
+                  class="w-10 h-10 rounded-lg bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 flex items-center justify-center transition-colors"
+                  title="Permanently delete note"
+                >
+                  <Trash2 class="w-5 h-5 text-red-600 dark:text-red-400" />
+                </button>
+              {/if}
+            {:else}
+              <!-- Edit and Delete buttons for regular notes -->
+              {#if hasAuthToken}
+                <button
+                  onclick={handleEdit}
+                  class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-900/30 border border-primary-200 dark:border-primary-800 flex items-center justify-center transition-colors"
+                  title="Edit note"
+                >
+                  <Edit class="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                </button>
 
-              <button
-                onclick={handleDelete}
-                class="w-10 h-10 rounded-lg bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 flex items-center justify-center transition-colors"
-                title="Delete note"
-              >
-                <Trash2 class="w-5 h-5 text-red-600 dark:text-red-400" />
-              </button>
+                <button
+                  onclick={handleDelete}
+                  class="w-10 h-10 rounded-lg bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 flex items-center justify-center transition-colors"
+                  title="Delete note"
+                >
+                  <Trash2 class="w-5 h-5 text-red-600 dark:text-red-400" />
+                </button>
+              {/if}
             {/if}
 
             <button
@@ -194,6 +282,75 @@
           </div>
         {/if}
 
+        <!-- Images Section -->
+        {#if note.files && note.files.filter(f => f.mimeType.startsWith('image/')).length > 0}
+          <div class="mb-6">
+            <h2
+              class="text-lg font-semibold text-secondary-900 dark:text-white mb-3 flex items-center gap-2"
+            >
+              <ImageIcon class="w-5 h-5 text-primary-600 dark:text-primary-400" />
+              Images ({note.files.filter(f => f.mimeType.startsWith('image/')).length})
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {#each note.files.filter(f => f.mimeType.startsWith('image/')) as file, index (file.id)}
+                <div
+                  class="group relative bg-secondary-50 dark:bg-secondary-800 rounded-lg border border-secondary-200 dark:border-secondary-600 overflow-hidden hover:shadow-lg transition-all"
+                >
+                  <!-- Image Container -->
+                  <div class="aspect-square bg-secondary-100 dark:bg-secondary-700">
+                    <img
+                      src={getFileUrl(file)}
+                      alt={file.metadata?.alt || file.originalName}
+                      class="w-full h-full object-cover"
+                      onerror={handleImageError}
+                    />
+                    <!-- Fallback for broken images -->
+                    <div class="hidden w-full h-full bg-secondary-300 dark:bg-secondary-600 flex items-center justify-center">
+                      <ImageIcon class="w-12 h-12 text-secondary-500" />
+                    </div>
+                  </div>
+
+                  <!-- Image Info Overlay -->
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div class="absolute bottom-0 left-0 right-0 p-3 text-white">
+                      <h3 class="font-medium truncate text-sm" title={file.originalName}>
+                        {file.metadata?.title || file.originalName}
+                      </h3>
+                      <div class="flex items-center gap-2 text-xs opacity-90">
+                        <span>{formatFileSize(file.size)}</span>
+                        {#if file.metadata?.width && file.metadata?.height}
+                          <span>•</span>
+                          <span>{file.metadata.width} × {file.metadata.height}</span>
+                        {/if}
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Image Actions -->
+                  <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div class="flex gap-1">
+                      <button
+                        onclick={() => viewFile(file)}
+                        class="w-8 h-8 bg-white/90 hover:bg-white dark:bg-black/80 hover:dark:bg-black/90 rounded-lg flex items-center justify-center transition-colors"
+                        title="View image"
+                      >
+                        <Eye class="w-4 h-4 text-gray-800 dark:text-gray-200" />
+                      </button>
+                      <button
+                        onclick={() => downloadFile(file)}
+                        class="w-8 h-8 bg-white/90 hover:bg-white dark:bg-black/80 hover:dark:bg-black/90 rounded-lg flex items-center justify-center transition-colors"
+                        title="Download image"
+                      >
+                        <Download class="w-4 h-4 text-gray-800 dark:text-gray-200" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              {/each}
+            </div>
+          </div>
+        {/if}
+
         <!-- Description Section -->
         {#if note.description}
           <div class="mb-6">
@@ -209,6 +366,83 @@
               >
                 {note.description}
               </p>
+            </div>
+          </div>
+        {/if}
+
+        <!-- Other Files Section -->
+        {#if note.files && note.files.filter(f => !f.mimeType.startsWith('image/')).length > 0}
+          <div class="mb-6">
+            <h2
+              class="text-lg font-semibold text-secondary-900 dark:text-white mb-3 flex items-center gap-2"
+            >
+              <File class="w-5 h-5 text-primary-600 dark:text-primary-400" />
+              Files ({note.files.filter(f => !f.mimeType.startsWith('image/')).length})
+            </h2>
+            <div class="space-y-3">
+              {#each note.files.filter(f => !f.mimeType.startsWith('image/')) as file, index (file.id)}
+                <div
+                  class="flex items-center gap-4 p-4 bg-secondary-50 dark:bg-secondary-800 rounded-lg border border-secondary-200 dark:border-secondary-600 hover:shadow-md transition-all"
+                >
+                  <!-- File Icon -->
+                  <div class="flex-shrink-0">
+                    <div class="w-16 h-16 bg-secondary-200 dark:bg-secondary-700 rounded-lg flex items-center justify-center">
+                      {#if file.mimeType === 'application/pdf'}
+                        <File class="w-8 h-8 text-red-600 dark:text-red-400" />
+                      {:else if file.mimeType.includes('document')}
+                        <File class="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                      {:else if file.mimeType.includes('text')}
+                        <File class="w-8 h-8 text-green-600 dark:text-green-400" />
+                      {:else}
+                        <File class="w-8 h-8 text-secondary-500 dark:text-secondary-400" />
+                      {/if}
+                    </div>
+                  </div>
+
+                  <!-- File Info -->
+                  <div class="flex-1 min-w-0">
+                    <h3 class="font-medium text-secondary-900 dark:text-white mb-1 truncate" title={file.originalName}>
+                      {file.metadata?.title || file.originalName}
+                    </h3>
+                    <p class="text-sm text-secondary-600 dark:text-secondary-400 mb-2">
+                      {file.originalName}
+                    </p>
+                    <div class="flex items-center gap-4 text-xs text-secondary-500 dark:text-secondary-500">
+                      <span class="capitalize">
+                        {file.mimeType.split('/')[1] || file.mimeType}
+                      </span>
+                      <span>{formatFileSize(file.size)}</span>
+                      {#if file.metadata?.pages}
+                        <span>{file.metadata.pages} pages</span>
+                      {/if}
+                    </div>
+
+                    {#if file.metadata?.description}
+                      <p class="text-sm text-secondary-600 dark:text-secondary-400 mt-2 line-clamp-2">
+                        {file.metadata.description}
+                      </p>
+                    {/if}
+                  </div>
+
+                  <!-- Actions -->
+                  <div class="flex items-center gap-2">
+                    <button
+                      onclick={() => viewFile(file)}
+                      class="flex items-center gap-1 px-3 py-1.5 text-sm bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded transition-colors"
+                    >
+                      <Eye class="w-3 h-3" />
+                      View
+                    </button>
+                    <button
+                      onclick={() => downloadFile(file)}
+                      class="flex items-center gap-1 px-3 py-1.5 text-sm bg-secondary-100 dark:bg-secondary-700 hover:bg-secondary-200 dark:hover:bg-secondary-600 text-secondary-700 dark:text-secondary-300 rounded transition-colors"
+                    >
+                      <Download class="w-3 h-3" />
+                      Download
+                    </button>
+                  </div>
+                </div>
+              {/each}
             </div>
           </div>
         {/if}
@@ -240,7 +474,7 @@
         {/if}
 
         <!-- Empty State if no content -->
-        {#if !note.description && (!note.tags || note.tags.length === 0) && !note.link}
+        {#if !note.description && (!note.tags || note.tags.length === 0) && !note.link && (!note.files || note.files.length === 0)}
           <div class="text-center py-12">
             <div
               class="w-16 h-16 bg-secondary-100 dark:bg-secondary-700 rounded-full flex items-center justify-center mx-auto mb-4"

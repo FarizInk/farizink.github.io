@@ -5,9 +5,8 @@ export interface Tag {
   tag: string;
   name: string;
   color?: string | null;
-  createdAt: number;
+  createdAt: string | number;
   deletedAt?: number | null;
-  entityCount?: number;
 }
 
 export interface TagCreateRequest {
@@ -25,12 +24,6 @@ export interface TagsResponse {
   success: boolean;
   data: {
     tags: Tag[];
-    pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
-    };
   };
   meta: {
     timestamp: string;
@@ -81,12 +74,10 @@ function getAuthToken(): string {
 }
 
 // API Functions
-export async function getTags(page: number = 1, limit: number = 50, search?: string): Promise<TagsResponse> {
+export async function getTags(search?: string): Promise<TagsResponse> {
   const token = getAuthToken();
 
   const url = new URL(`${API_BASE_URL}/api/tags`);
-  url.searchParams.set('page', page.toString());
-  url.searchParams.set('limit', limit.toString());
   if (search && search.trim()) {
     url.searchParams.set('search', search.trim());
   }
@@ -164,6 +155,23 @@ export async function deleteTag(tagId: string): Promise<DeleteResponse> {
   // Note: The endpoint uses the tag value (not UUID) as the identifier
   const response = await fetch(`${API_BASE_URL}/api/tags/${tagId}`, {
     method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAuthToken()}`
+    }
+  });
+
+  if (!response.ok) {
+    const error: ErrorResponse = await response.json();
+    throw new Error(error.error.message || `HTTP ${response.status}: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+export async function getTagNotes(tagId: string, page: number = 1, limit: number = 20): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}/api/tags/${tagId}/notes?page=${page}&limit=${limit}`, {
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${getAuthToken()}`
