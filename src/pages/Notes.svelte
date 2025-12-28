@@ -8,6 +8,7 @@
   import NoteDetailModal from '../components/NoteDetailModal.svelte';
   import TagModal from '../components/TagModal.svelte';
   import MultipleSelect from '../components/MultipleSelect.svelte';
+  import Modal from '../components/Modal.svelte';
   import {
     Plus,
     Search,
@@ -515,16 +516,14 @@
 />
 
 <!-- Note Detail Modal -->
-{#if selectedDetailNote}
-  <NoteDetailModal
-    note={selectedDetailNote}
-    bind:isOpen={isDetailModalOpen}
-    onClose={handleDetailModalClose}
-    onEdit={handleEdit}
-    onDelete={handleDelete}
-    {hasAuthToken}
-  />
-{/if}
+<NoteDetailModal
+  note={selectedDetailNote}
+  bind:isOpen={isDetailModalOpen}
+  onClose={handleDetailModalClose}
+  onEdit={handleEdit}
+  onDelete={handleDelete}
+  {hasAuthToken}
+/>
 
 <!-- Tag Management Modal -->
 <TagModal
@@ -537,140 +536,34 @@
 />
 
 <!-- Filter Modal -->
-{#if showFilterModal}
-  <div
-    class="fixed inset-0 bg-black/20 backdrop-blur-sm z-[50] flex items-center justify-center p-4"
-    onclick={e => {
-      if (e.target === e.currentTarget) {
-        closeFilterModal();
-      }
-    }}
-    onkeydown={e => e.key === 'Escape' && closeFilterModal()}
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="filter-modal-title"
-    tabindex="-1"
-  >
-    <!-- Modal -->
-    <div
-      class="bg-white dark:bg-secondary-800 rounded-lg shadow-2xl w-full max-w-md border border-secondary-200 dark:border-secondary-700 overflow-hidden"
-      role="document"
-    >
-      <!-- Header -->
-      <div
-        class="flex items-center justify-between p-6 border-b border-secondary-200 dark:border-secondary-700"
-      >
-        <h2
-          id="filter-modal-title"
-          class="text-xl font-semibold text-secondary-900 dark:text-secondary-50"
-        >
-          Filter & Sort Notes
-        </h2>
-        <button
-          onclick={closeFilterModal}
-          class="w-8 h-8 rounded-lg hover:bg-secondary-100 dark:hover:bg-secondary-700 flex items-center justify-center transition-colors"
-          aria-label="Close modal"
-        >
-          <X class="w-4 h-4 text-secondary-500 dark:text-secondary-400" />
-        </button>
-      </div>
-
-      <!-- Form -->
-      <div class="p-6 space-y-6">
-        <!-- Search -->
-        <div>
-          <label for="modal-search" class="label">Search</label>
-          <div class="relative group">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search
-                class="w-4 h-4 text-secondary-400 group-focus-within:text-primary-500 transition-colors"
-              />
-            </div>
-            <input
-              id="modal-search"
-              type="text"
-              placeholder="Search notes..."
-              class="input w-full !pl-10"
-              bind:value={tempSearchQuery}
+<Modal isOpen={showFilterModal} onClose={closeFilterModal} maxW="max-w-3xl" title="Filter & Sort Notes">
+  {#snippet body()}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Search - Full Width -->
+      <div class="md:col-span-2">
+        <label for="modal-search" class="label">Search</label>
+        <div class="relative group">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <Search
+              class="w-4 h-4 text-secondary-400 group-focus-within:text-primary-500 transition-colors"
             />
           </div>
+          <input
+            id="modal-search"
+            type="text"
+            placeholder="Search notes..."
+            class="input w-full !pl-10"
+            bind:value={tempSearchQuery}
+          />
         </div>
+      </div>
 
-        <!-- Public Status Filter - Only show when authenticated -->
-        {#if hasAuthToken}
-          <div>
-            <span class="label block mb-2" id="public-status-label">Public Status</span>
-            <div class="flex gap-2" role="group" aria-labelledby="public-status-label">
-              <button
-                onclick={() => tempFilters = { ...tempFilters, isPublic: true }}
-                class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors {tempFilters.isPublic ===
-                true
-                  ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                  : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
-              >
-                Public Only
-              </button>
-              <button
-                onclick={() => tempFilters = { ...tempFilters, isPublic: false }}
-                class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors {tempFilters.isPublic ===
-                false
-                  ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                  : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
-              >
-                Private Only
-              </button>
-              <button
-                onclick={() => tempFilters = { ...tempFilters, isPublic: undefined }}
-                class="flex-1 px-3 py-2 text-sm rounded-md border border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors {tempFilters.isPublic ===
-                undefined
-                  ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                  : ''}"
-              >
-                All
-              </button>
-            </div>
-          </div>
-        {/if}
-
-        <!-- Favorite Status Filter -->
-        <div>
-          <span class="label block mb-2" id="favorite-status-label">Favorite Status</span>
-          <div class="flex gap-2" role="group" aria-labelledby="favorite-status-label">
-            <button
-              onclick={() => tempFilters = { ...tempFilters, isFavorite: true }}
-              class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors {tempFilters.isFavorite ===
-              true
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
-            >
-              Favorites Only
-            </button>
-            <button
-              onclick={() => tempFilters = { ...tempFilters, isFavorite: false }}
-              class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors {tempFilters.isFavorite ===
-              false
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
-            >
-              Non-Favorites
-            </button>
-            <button
-              onclick={() => tempFilters = { ...tempFilters, isFavorite: undefined }}
-              class="flex-1 px-3 py-2 text-sm rounded-md border border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors {tempFilters.isFavorite ===
-              undefined
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                : ''}"
-            >
-              All
-            </button>
-          </div>
-        </div>
-
-        <!-- Sort Options -->
-        <div>
-          <span class="label block mb-2" id="sort-options-label">Sort By</span>
+      <!-- Sort Options - Full Width -->
+      <div class="md:col-span-2">
+        <span class="label block mb-2" id="sort-options-label">Sort By</span>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {#each sortOptions as option (option.value)}
-            <div class="mb-3">
+            <div class="p-3 bg-secondary-50 dark:bg-secondary-800 rounded-lg">
               <div class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2 flex items-center gap-1">
                 <Calendar class="w-4 h-4" />
                 {option.label}
@@ -700,76 +593,145 @@
             </div>
           {/each}
         </div>
-
-        <!-- Tag Filters - Only show when authenticated -->
-        {#if hasAuthToken && $tags.length > 0}
-          <!-- Include Tags -->
-          <div>
-            <label for="include-tags" class="label">Include Tags</label>
-            <MultipleSelect
-              id="include-tags"
-              options={$tagOptions}
-              bind:selectedValues={tempSelectedIncludeTags}
-              placeholder="Select tags to include (OR logic)..."
-              maxHeight="max-h-40"
-            />
-          </div>
-
-          <!-- Exclude Tags -->
-          <div>
-            <label for="exclude-tags" class="label">Exclude Tags</label>
-            <MultipleSelect
-              id="exclude-tags"
-              options={$tagOptions}
-              bind:selectedValues={tempSelectedExcludeTags}
-              placeholder="Select tags to exclude..."
-              maxHeight="max-h-40"
-            />
-          </div>
-        {:else if hasAuthToken && $isLoadingTags}
-          <div>
-            <span class="label block mb-2">Tags</span>
-            <div class="flex items-center justify-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg">
-              <RotateCw class="w-4 h-4 text-secondary-400 animate-spin mr-2" />
-              <span class="text-sm text-secondary-500">Loading tags...</span>
-            </div>
-          </div>
-        {:else if hasAuthToken}
-          <div>
-            <span class="label block mb-2">Tags</span>
-            <div class="text-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg">
-              <TagIcon class="w-8 h-8 text-secondary-300 mx-auto mb-2" />
-              <p class="text-sm text-secondary-500">No tags available</p>
-              <button
-                onclick={() => {
-                  closeFilterModal();
-                  handleTagModalOpen();
-                }}
-                class="text-xs text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 mt-1"
-              >
-                Create tags first
-              </button>
-            </div>
-          </div>
-        {/if}
       </div>
 
-      <!-- Actions -->
-      <div class="flex gap-3 p-6  border-t border-secondary-200 dark:border-secondary-700">
-        <button
-          onclick={clearFilters}
-          class="flex-1 px-4 py-2 border border-secondary-300 dark:border-secondary-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-        >
-          Clear Filters
-        </button>
-        <button
-          onclick={applyFilters}
-          class="flex-1 btn btn-primary"
-        >
-          Apply Filters
-        </button>
+      <!-- Public Status Filter - Only show when authenticated -->
+      {#if hasAuthToken}
+        <div>
+          <span class="label block mb-2" id="public-status-label">Public Status</span>
+          <div class="flex flex-col gap-2" role="group" aria-labelledby="public-status-label">
+            <button
+              onclick={() => tempFilters = { ...tempFilters, isPublic: true }}
+              class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic ===
+              true
+                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
+            >
+              Public Only
+            </button>
+            <button
+              onclick={() => tempFilters = { ...tempFilters, isPublic: false }}
+              class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic ===
+              false
+                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
+            >
+              Private Only
+            </button>
+            <button
+              onclick={() => tempFilters = { ...tempFilters, isPublic: undefined }}
+              class="px-3 py-2 text-sm rounded-md border border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors text-left {tempFilters.isPublic ===
+              undefined
+                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                : ''}"
+            >
+              All Notes
+            </button>
+          </div>
+        </div>
+      {/if}
+
+      <!-- Favorite Status Filter -->
+      <div>
+        <span class="label block mb-2" id="favorite-status-label">Favorite Status</span>
+        <div class="flex flex-col gap-2" role="group" aria-labelledby="favorite-status-label">
+          <button
+            onclick={() => tempFilters = { ...tempFilters, isFavorite: true }}
+            class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite ===
+            true
+              ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+              : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
+          >
+            Favorites Only
+          </button>
+          <button
+            onclick={() => tempFilters = { ...tempFilters, isFavorite: false }}
+            class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite ===
+            false
+              ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+              : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
+          >
+            Non-Favorites
+          </button>
+          <button
+            onclick={() => tempFilters = { ...tempFilters, isFavorite: undefined }}
+            class="px-3 py-2 text-sm rounded-md border border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors text-left {tempFilters.isFavorite ===
+            undefined
+              ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+              : ''}"
+          >
+            All Notes
+          </button>
+        </div>
       </div>
+
+      <!-- Tag Filters - Only show when authenticated -->
+      {#if hasAuthToken && $tags.length > 0}
+        <!-- Include Tags -->
+        <div>
+          <label for="include-tags" class="label">Include Tags</label>
+          <MultipleSelect
+            id="include-tags"
+            options={$tagOptions}
+            bind:selectedValues={tempSelectedIncludeTags}
+            placeholder="Select tags to include (OR logic)..."
+            maxHeight="max-h-40"
+          />
+        </div>
+
+        <!-- Exclude Tags -->
+        <div>
+          <label for="exclude-tags" class="label">Exclude Tags</label>
+          <MultipleSelect
+            id="exclude-tags"
+            options={$tagOptions}
+            bind:selectedValues={tempSelectedExcludeTags}
+            placeholder="Select tags to exclude..."
+            maxHeight="max-h-40"
+          />
+        </div>
+      {:else if hasAuthToken && $isLoadingTags}
+        <div class="md:col-span-2">
+          <span class="label block mb-2">Tags</span>
+          <div class="flex items-center justify-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg">
+            <RotateCw class="w-4 h-4 text-secondary-400 animate-spin mr-2" />
+            <span class="text-sm text-secondary-500">Loading tags...</span>
+          </div>
+        </div>
+      {:else if hasAuthToken}
+        <div class="md:col-span-2">
+          <span class="label block mb-2">Tags</span>
+          <div class="text-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg">
+            <TagIcon class="w-8 h-8 text-secondary-300 mx-auto mb-2" />
+            <p class="text-sm text-secondary-500">No tags available</p>
+            <button
+              onclick={() => {
+                closeFilterModal();
+                handleTagModalOpen();
+              }}
+              class="text-xs text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 mt-1"
+            >
+              Create tags first
+            </button>
+          </div>
+        </div>
+      {/if}
     </div>
-  </div>
-{/if}
+  {/snippet}
+
+  {#snippet footer()}
+    <button
+      onclick={clearFilters}
+      class="px-4 py-2 border border-secondary-300 dark:border-secondary-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+    >
+      Clear Filters
+    </button>
+    <button
+      onclick={applyFilters}
+      class="px-4 py-2 btn btn-primary"
+    >
+      Apply Filters
+    </button>
+  {/snippet}
+</Modal>
 

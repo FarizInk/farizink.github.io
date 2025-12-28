@@ -425,16 +425,14 @@
 </div>
 
 <!-- Note Detail Modal -->
-{#if selectedDetailNote}
-  <NoteDetailModal
-    note={selectedDetailNote}
-    bind:isOpen={isDetailModalOpen}
-    onClose={handleDetailModalClose}
-    {hasAuthToken}
-    isDeleted={true}
-    onPermanentDelete={handlePermanentDelete}
-  />
-{/if}
+<NoteDetailModal
+  note={selectedDetailNote}
+  bind:isOpen={isDetailModalOpen}
+  onClose={handleDetailModalClose}
+  {hasAuthToken}
+  isDeleted={true}
+  onPermanentDelete={handlePermanentDelete}
+/>
 
 <!-- Filter Modal -->
 {#if showFilterModal}

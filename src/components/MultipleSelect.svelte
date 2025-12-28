@@ -31,7 +31,7 @@
     id
   }: Props = $props();
 
-  
+
   // Component state
   let isOpen = $state(false);
   let searchQuery = $state('');
@@ -40,9 +40,10 @@
   // Portal state
   let dropdownElement = $state<HTMLDivElement | null>(null);
   let triggerElement = $state<HTMLButtonElement | null>(null);
+  let searchInputElement = $state<HTMLInputElement | null>(null);
   let dropdownPosition = $state({ top: 0, left: 0, width: 0 });
 
-  
+
   // Computed: Filter options based on search query
   let filteredOptions = $derived.by(() => {
     if (!searchQuery.trim()) {
@@ -61,6 +62,14 @@
   // Computed: Get selected options
   let selectedOptions = $derived.by(() => options.filter(option => selectedValues.includes(option.value)));
 
+  // Auto-focus search input when dropdown opens
+  $effect(() => {
+    if (isOpen && searchInputElement && searchable) {
+      searchInputElement.focus();
+      searchInputElement.select();
+    }
+  });
+
   // Close dropdown when clicking outside and handle scroll/resize
   $effect(() => {
     if (isOpen) {
@@ -74,6 +83,7 @@
         if (!clickedInsideTrigger && !clickedInsideDropdown) {
           isOpen = false;
           searchQuery = '';
+          focusedIndex = -1;
         }
       };
 
@@ -82,6 +92,9 @@
         if (event.key === 'Escape') {
           isOpen = false;
           searchQuery = '';
+          focusedIndex = -1;
+          // Return focus to trigger button
+          triggerElement?.focus();
         }
       };
 
@@ -138,6 +151,7 @@
 
     isOpen = !isOpen;
     searchQuery = '';
+    focusedIndex = -1;
 
     // Always update position when opening
     if (isOpen) {
@@ -145,6 +159,43 @@
       setTimeout(() => {
         updateDropdownPosition();
       }, 0);
+    }
+  }
+
+  function handleKeydown(event: KeyboardEvent) {
+    // Global keyboard shortcuts for dropdown
+    if (isOpen) {
+      switch (event.key) {
+        case 'ArrowDown':
+          event.preventDefault();
+          if (filteredOptions.length > 0) {
+            focusedIndex = Math.min(focusedIndex + 1, filteredOptions.length - 1);
+          }
+          break;
+        case 'ArrowUp':
+          event.preventDefault();
+          if (filteredOptions.length > 0) {
+            focusedIndex = Math.max(focusedIndex - 1, 0);
+          }
+          break;
+        case 'Enter':
+          event.preventDefault();
+          if (focusedIndex >= 0 && filteredOptions[focusedIndex]) {
+            selectOption(filteredOptions[focusedIndex]);
+          }
+          break;
+        case 'Escape':
+          event.preventDefault();
+          isOpen = false;
+          searchQuery = '';
+          focusedIndex = -1;
+          triggerElement?.focus();
+          break;
+      }
+    } else if (event.key === 'Enter' || event.key === ' ' || event.key === 'ArrowDown') {
+      // Open dropdown on Enter, Space, or ArrowDown when closed
+      event.preventDefault();
+      toggleDropdown();
     }
   }
 
@@ -182,35 +233,9 @@
       }));
     }
   }
-
-  function handleKeydown(event: KeyboardEvent) {
-    if (!isOpen) return;
-
-    switch (event.key) {
-      case 'ArrowDown':
-        event.preventDefault();
-        focusedIndex = Math.min(focusedIndex + 1, filteredOptions.length - 1);
-        break;
-      case 'ArrowUp':
-        event.preventDefault();
-        focusedIndex = Math.max(focusedIndex - 1, 0);
-        break;
-      case 'Enter':
-        event.preventDefault();
-        if (focusedIndex >= 0 && filteredOptions[focusedIndex]) {
-          selectOption(filteredOptions[focusedIndex]);
-        }
-        break;
-      case 'Escape':
-        event.preventDefault();
-        isOpen = false;
-        searchQuery = '';
-        break;
-    }
-  }
 </script>
 
-<div class="multiple-select-dropdown">
+<div class="multiple-select-dropdown relative">
   <!-- Trigger Button -->
   <button
     bind:this={triggerElement}
@@ -296,7 +321,6 @@
       tabindex="-1"
       class="fixed z-[9999] bg-white dark:bg-secondary-800 border border-secondary-200 dark:border-secondary-600 rounded-lg shadow-lg overflow-hidden"
       style="top: {dropdownPosition.top}px; left: {dropdownPosition.left}px; width: {dropdownPosition.width}px; min-width: 200px;"
-      onkeydown={handleKeydown}
     >
       <!-- Search Input -->
       {#if searchable}
@@ -304,14 +328,12 @@
           <div class="relative">
             <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-secondary-400" />
             <input
+              bind:this={searchInputElement}
               type="text"
               class="input !pl-9"
               placeholder="Search options..."
               bind:value={searchQuery}
-              onfocus={(e) => {
-                const target = e.target as HTMLInputElement;
-                if (target) target.select();
-              }}
+              onkeydown={handleKeydown}
               aria-label="Search options"
             />
           </div>
@@ -326,11 +348,12 @@
                       </div>
         {:else}
           <div role="listbox" aria-label="Options">
-            {#each filteredOptions as option (option.value)}
+            {#each filteredOptions as option, index (option.value)}
               <button
                 type="button"
-                class="w-full px-3 py-2 text-left text-sm hover:bg-secondary-50 dark:hover:bg-secondary-700 transition-colors flex items-center gap-3 border-b border-secondary-100 dark:border-secondary-700 last:border-b-0"
+                class="w-full px-3 py-2 text-left text-sm transition-colors flex items-center gap-3 border-b border-secondary-100 dark:border-secondary-700 last:border-b-0 {focusedIndex === index ? 'bg-primary-50 dark:bg-primary-900/20' : 'hover:bg-secondary-50 dark:hover:bg-secondary-700'}"
                 onclick={() => selectOption(option)}
+                onmouseenter={() => focusedIndex = index}
                 role="option"
                 aria-selected={selectedValues.includes(option.value)}
               >
