@@ -1,7 +1,22 @@
 <script lang="ts">
-  import { fade, scale } from 'svelte/transition';
+  import { fade } from 'svelte/transition';
   import { X } from '@lucide/svelte';
   import type { Snippet } from 'svelte';
+
+  // Simple scale transition - smooth & clean
+  function simpleScale(node: HTMLElement, { duration = 120 }: { duration?: number } = {}) {
+    return {
+      duration,
+      css: (t: number) => {
+        const scale = 0.95 + (t * 0.05);
+
+        return `
+          opacity: ${t};
+          transform: scale(${scale});
+        `;
+      }
+    };
+  }
 
   let {
     isOpen = false,
@@ -91,7 +106,7 @@
     >
       <div
         class="relative bg-white dark:bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all my-8 w-full {maxW}"
-        transition:scale={{ duration: 300 }}
+        transition:simpleScale
       >
         <!-- Header Slot with Title and Close Button -->
         {#if header}

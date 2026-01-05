@@ -456,8 +456,148 @@
   }
 
   /* Better typography */
-  .prose p {
+  :global(.prose p) {
     line-height: 1.7;
-    margin: 0;
+    margin: 0 0 1em 0;
+  }
+
+  /* List styling - fix for missing bullets */
+  :global(.prose ul),
+  :global(.prose ol) {
+    margin: 0.75em 0;
+    padding-left: 1.5em;
+  }
+
+  :global(.prose ul) {
+    list-style-type: disc;
+  }
+
+  :global(.prose ul ul) {
+    list-style-type: circle;
+  }
+
+  :global(.prose ul ul ul) {
+    list-style-type: square;
+  }
+
+  :global(.prose ol) {
+    list-style-type: decimal;
+  }
+
+  :global(.prose ol ol) {
+    list-style-type: lower-alpha;
+  }
+
+  :global(.prose ol ol ol) {
+    list-style-type: lower-roman;
+  }
+
+  :global(.prose li p) {
+    margin-bottom: 0;
+  }
+
+  /* Headings styling */
+  :global(.prose h1),
+  :global(.prose h2),
+  :global(.prose h3),
+  :global(.prose h4),
+  :global(.prose h5),
+  :global(.prose h6) {
+    margin: 1.25em 0 0.5em 0;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  :global(.prose h1) {
+    font-size: 1.875rem;
+  }
+
+  :global(.prose h2) {
+    font-size: 1.5rem;
+  }
+
+  :global(.prose h3) {
+    font-size: 1.25rem;
+  }
+
+  :global(.prose h4) {
+    font-size: 1.125rem;
+  }
+
+  /* Links styling */
+  :global(.prose a) {
+    color: rgb(139 92 246);
+    text-decoration: underline;
+  }
+
+  :global(.dark .prose a) {
+    color: rgb(167 139 250);
+  }
+
+  :global(.prose a:hover) {
+    text-decoration: none;
+  }
+
+  /* Code styling */
+  :global(.prose code) {
+    background-color: rgb(243 244 246);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+  }
+
+  :global(.dark .prose code) {
+    background-color: rgb(31 41 55);
+  }
+
+  :global(.prose pre) {
+    background-color: rgb(243 244 246);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1em 0;
+  }
+
+  :global(.dark .prose pre) {
+    background-color: rgb(31 41 55);
+  }
+
+  :global(.prose pre code) {
+    background-color: transparent;
+    padding: 0;
+  }
+
+  /* Blockquote styling */
+  :global(.prose blockquote) {
+    border-left: 4px solid rgb(139 92 246);
+    padding-left: 1rem;
+    margin: 1em 0;
+    color: rgb(107 114 128);
+    font-style: italic;
+  }
+
+  :global(.dark .prose blockquote) {
+    color: rgb(156 163 175);
+    border-left-color: rgb(139 92 246);
+  }
+
+  /* Strong/em styling */
+  :global(.prose strong) {
+    font-weight: 600;
+  }
+
+  :global(.prose em) {
+    font-style: italic;
+  }
+
+  /* Horizontal rule */
+  :global(.prose hr) {
+    border: none;
+    border-top: 1px solid rgb(229 231 235);
+    margin: 2em 0;
+  }
+
+  :global(.dark .prose hr) {
+    border-top-color: rgb(55 65 81);
   }
 </style>
