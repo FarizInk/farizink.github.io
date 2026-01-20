@@ -42,6 +42,11 @@
   let apiHealthStatus = $state<'ok' | 'error' | 'checking'>('checking');
   let apiHealthError = $state<string | null>(null);
 
+  // Double click state for menu button
+  let lastClickTime = 0;
+  let clickTimeout: ReturnType<typeof setTimeout> | null = null;
+  const DOUBLE_CLICK_DELAY = 200; // milliseconds between clicks
+
   function handleNavigation(event: MouseEvent, href: string) {
     event.preventDefault();
     console.log('Navigating to:', href);
@@ -64,6 +69,36 @@
       html.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
+  }
+
+  // Double click handler for menu button
+  function handleMenuClick(e: MouseEvent) {
+    const now = Date.now();
+    const timeSinceLastClick = now - lastClickTime;
+
+    // Clear any existing timeout
+    if (clickTimeout) {
+      clearTimeout(clickTimeout);
+      clickTimeout = null;
+    }
+
+    if (timeSinceLastClick < DOUBLE_CLICK_DELAY) {
+      // Double click detected - open command palette
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+      isCommandPaletteOpen = true;
+      e.preventDefault();
+      e.stopPropagation();
+    } else {
+      // Wait for potential second click before opening drawer
+      clickTimeout = setTimeout(() => {
+        drawerOpen = true;
+        clickTimeout = null;
+      }, DOUBLE_CLICK_DELAY);
+    }
+
+    lastClickTime = now;
   }
 
   function handleKeydown(event: KeyboardEvent) {
@@ -390,9 +425,9 @@
 
 <!-- Floating Menu Icon (Top Right) -->
 <button
-  onclick={() => (drawerOpen = true)}
+  onclick={handleMenuClick}
   class="fixed top-6 right-6 z-50 w-12 h-12 bg-white dark:bg-gray-800 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center hover:scale-105 active:scale-95"
-  title="Menu"
+  title="Menu - Single click: Drawer, Double click: Command Palette"
 >
   <Menu class="w-6 h-6 text-gray-700 dark:text-gray-300" />
 </button>
