@@ -2,6 +2,7 @@
   import type { Note, CreateNoteData, UpdateNoteData } from '../lib/notes';
   import { createNote, updateNote, validateTagIds, convertApiTagsToTagIds } from '../lib/notes';
   import { tags } from '../lib/stores/tags';
+  import { notesStore } from '../lib/stores/notes';
   import { Link2, Paperclip, Loader } from '@lucide/svelte';
   import { toast } from 'svelte-sonner';
   import MultipleSelect from './MultipleSelect.svelte';
@@ -131,8 +132,10 @@
       };
 
       if (mode === 'create') {
-        await createNote(submissionData);
+        const response = await createNote(submissionData);
         toast.success('Note created successfully!');
+        // Prepend to store instead of full refresh
+        notesStore.prependNote(response.data);
         onSuccess?.();
       } else if (mode === 'edit' && note) {
         // Prepare update data
@@ -147,8 +150,10 @@
           deleteFileIds: filesToDelete.length > 0 ? filesToDelete : undefined
         };
 
-        await updateNote(note.id, updateData);
+        const response = await updateNote(note.id, updateData);
         toast.success('Note updated successfully!');
+        // Update in store instead of full refresh
+        notesStore.updateNote(note.id, response.data);
         onSuccess?.();
       }
     } catch (error) {

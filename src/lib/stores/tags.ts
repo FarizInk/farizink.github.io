@@ -23,6 +23,14 @@ export const tagOptions = derived(
 class TagsStore {
   // Actions
   async loadTags(search?: string): Promise<void> {
+    // Check if user is authenticated before loading tags
+    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
+    if (!token) {
+      // No auth token, skip loading tags silently
+      tags.set([]);
+      return;
+    }
+
     const loading = get(isLoadingTags);
     if (loading) return;
 

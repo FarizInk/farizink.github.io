@@ -1,36 +1,25 @@
 <script lang="ts">
   import type { Note } from '../lib/notes';
-  import { getNotes, deleteNote, type NoteFilters } from '../lib/notes';
+  import { deleteNote, type NoteFilters } from '../lib/notes';
   import { toast } from 'svelte-sonner';
-  import { tagsStore, tagOptions, isLoadingTags, tags } from '../lib/stores/tags';
+  import { tagsStore } from '../lib/stores/tags';
+  import { notesStore, notes, isLoadingNotes, hasMore, totalCount } from '../lib/stores/notes';
   import NoteCard from '../components/NoteCard.svelte';
   import NoteModal from '../components/NoteModal.svelte';
   import NoteDetailModal from '../components/NoteDetailModal.svelte';
   import TagModal from '../components/TagModal.svelte';
-  import MultipleSelect from '../components/MultipleSelect.svelte';
-  import Modal from '../components/Modal.svelte';
+  import NotesFilterModal from '../components/NotesFilterModal.svelte';
   import {
     Plus,
-    Search,
     RefreshCw,
     RotateCw,
     Settings,
-    X,
-    ArrowUp,
-    ArrowDown,
-    Calendar,
     Tag as TagIcon,
     Trash2
   } from '@lucide/svelte';
   import { onMount } from 'svelte';
 
-  let notes = $state<Note[]>([]);
-  let isLoading = $state(false);
-  let isLoadingMore = $state(false);
   let searchQuery = $state('');
-  let currentPage = $state(1);
-  let hasMore = $state(true);
-  let totalCount = $state(0);
 
   // Filter state
   let activeFilters = $state<NoteFilters>({
@@ -39,21 +28,40 @@
   });
   let showFilterPanel = $state(false);
 
+  // localStorage key for notes filter
+  const NOTES_FILTER_STORAGE_KEY = 'notesFilters';
+
+  // Save filters to localStorage
+  function saveFiltersToStorage() {
+    if (typeof localStorage === 'undefined') return;
+    const filterData = {
+      activeFilters,
+      searchQuery,
+      selectedIncludeTags,
+      selectedExcludeTags
+    };
+    localStorage.setItem(NOTES_FILTER_STORAGE_KEY, JSON.stringify(filterData));
+  }
+
+  // Load filters from localStorage
+  function loadFiltersFromStorage() {
+    if (typeof localStorage === 'undefined') return null;
+    const stored = localStorage.getItem(NOTES_FILTER_STORAGE_KEY);
+    if (!stored) return null;
+    try {
+      return JSON.parse(stored);
+    } catch {
+      return null;
+    }
+  }
+
   // Sorting state
   let showSortPanel = $state(false);
-  const sortOptions = [
-    { value: 'created_at', label: 'Date Created', icon: Calendar },
-    { value: 'updated_at', label: 'Last Updated', icon: Calendar }
-  ] as const;
 
-  
-  
-  
   // Modal state
   let isModalOpen = $state(false);
   let modalMode = $state<'create' | 'edit'>('create');
   let selectedNote = $state<Note | null>(null);
-  let isRefreshing = $state(false);
 
   // Detail modal state
   let isDetailModalOpen = $state(false);
@@ -69,74 +77,39 @@
 
   // Filter modal state
   let showFilterModal = $state(false);
-  let tempFilters = $state<NoteFilters>({
-    sortBy: 'created_at',
-    sortOrder: 'desc'
-  });
-  let tempSearchQuery = $state('');
 
   // Tag selection state (using global store for available tags)
   let selectedIncludeTags = $state<string[]>([]);
   let selectedExcludeTags = $state<string[]>([]);
-  let tempSelectedIncludeTags = $state<string[]>([]);
-  let tempSelectedExcludeTags = $state<string[]>([]);
 
-  async function loadNotes(page: number = 1, append: boolean = false) {
-    if (!append) {
-      isLoading = true;
-    } else {
-      isLoadingMore = true;
+  async function loadNotes(append: boolean = false) {
+    // Build API parameters including search and tags
+    const apiParams: NoteFilters = {
+      ...activeFilters,
+      includeTags: selectedIncludeTags.length > 0 ? selectedIncludeTags : undefined,
+      excludeTags: selectedExcludeTags.length > 0 ? selectedExcludeTags : undefined
+    };
+
+    // Add search parameter if there's a search query
+    if (searchQuery.trim()) {
+      apiParams.search = searchQuery.trim();
     }
 
-    try {
-      // Build API parameters including search and tags
-      const apiParams: NoteFilters = {
-        ...activeFilters,
-        includeTags: selectedIncludeTags.length > 0 ? selectedIncludeTags : undefined,
-        excludeTags: selectedExcludeTags.length > 0 ? selectedExcludeTags : undefined
-      };
-
-      // Add search parameter if there's a search query
-      if (searchQuery.trim()) {
-        apiParams.search = searchQuery.trim();
-      }
-
-      const response = await getNotes(page, 12, apiParams);
-
-      if (append) {
-        // Append new notes to existing ones
-        notes = [...notes, ...response.data.notes];
-      } else {
-        // Replace all notes (for new search/filter/sort)
-        notes = response.data.notes;
-      }
-
-      currentPage = response.data.pagination.page;
-      hasMore = currentPage < response.data.pagination.totalPages;
-      totalCount = response.data.pagination.total;
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error('Failed to load notes');
-      } else {
-        toast.error('An unexpected error occurred');
-      }
-      console.error('Load notes error:', error);
-    } finally {
-      isLoading = false;
-      isLoadingMore = false;
+    if (append) {
+      // Load more - appends to existing notes
+      await notesStore.loadMore(apiParams);
+    } else {
+      // Fresh load - clears and loads from page 1
+      await notesStore.loadNotes(apiParams);
     }
   }
 
   async function loadMoreNotes() {
-    if (isLoadingMore || !hasMore) return;
-
-    await loadNotes(currentPage + 1, true);
+    await loadNotes(true);
   }
 
   async function handleRefresh() {
-    currentPage = 1;
-    hasMore = true;
-    await loadNotes(1, false);
+    await loadNotes(false);
   }
 
   async function handleDelete(note: Note) {
@@ -147,7 +120,8 @@
     try {
       await deleteNote(note.id);
       toast.success('Note deleted successfully');
-      await loadNotes(currentPage);
+      // Remove from store instead of refreshing
+      notesStore.removeNote(note.id);
     } catch (error) {
       if (error instanceof Error) {
         toast.error('Failed to delete note');
@@ -159,12 +133,14 @@
   }
 
   function handleEdit(note: Note) {
+    tagsStore.loadTags(); // Load tags when opening edit modal
     modalMode = 'edit';
     selectedNote = note;
     isModalOpen = true;
   }
 
   function handleCreate() {
+    tagsStore.loadTags(); // Load tags when opening create modal
     modalMode = 'create';
     selectedNote = null;
     isModalOpen = true;
@@ -176,8 +152,8 @@
   }
 
   function handleModalSuccess() {
-    // Refresh notes after successful create/update/delete
-    loadNotes(currentPage);
+    // NoteModal handles store updates (prepend for create, update for edit)
+    // No need to refresh - just close modal
     handleModalClose();
   }
 
@@ -192,15 +168,13 @@
   }
 
   function handleTagModalOpen() {
+    tagsStore.loadTags(); // Load tags when modal is opened
     isTagModalOpen = true;
   }
 
   // Filter modal functions
   function openFilterModal() {
-    tempFilters = { ...activeFilters };
-    tempSearchQuery = searchQuery;
-    tempSelectedIncludeTags = [...selectedIncludeTags];
-    tempSelectedExcludeTags = [...selectedExcludeTags];
+    tagsStore.loadTags(); // Load tags when opening filter modal
     showFilterModal = true;
   }
 
@@ -208,25 +182,28 @@
     showFilterModal = false;
   }
 
-  function applyFilters() {
-    activeFilters = { ...tempFilters };
-    searchQuery = tempSearchQuery;
-    selectedIncludeTags = [...tempSelectedIncludeTags];
-    selectedExcludeTags = [...tempSelectedExcludeTags];
-    currentPage = 1;
-    hasMore = true;
-    loadNotes(1, false);
-    closeFilterModal();
+  function applyFilters(filters: NoteFilters, newSearchQuery: string, includeTags: string[], excludeTags: string[]) {
+    activeFilters = { ...filters };
+    searchQuery = newSearchQuery;
+    selectedIncludeTags = [...includeTags];
+    selectedExcludeTags = [...excludeTags];
+    saveFiltersToStorage(); // Save to localStorage
+    loadNotes(false);
   }
 
   function clearFilters() {
-    tempFilters = {
+    activeFilters = {
       sortBy: 'created_at',
       sortOrder: 'desc'
     };
-    tempSearchQuery = '';
-    tempSelectedIncludeTags = [];
-    tempSelectedExcludeTags = [];
+    searchQuery = '';
+    selectedIncludeTags = [];
+    selectedExcludeTags = [];
+    // Clear localStorage
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem(NOTES_FILTER_STORAGE_KEY);
+    }
+    loadNotes(false);
   }
 
   function getActiveFilterCount() {
@@ -243,10 +220,20 @@
     return searchQuery.trim() ? count + tagFilterCount + 1 : count + tagFilterCount;
   }
 
-  
+
   // Load notes and tags on mount
   onMount(() => {
-    // Check for tag filter in URL
+    // Load filters from localStorage
+    const storedFilters = loadFiltersFromStorage();
+    if (storedFilters) {
+      // Restore filter state from localStorage
+      activeFilters = storedFilters.activeFilters;
+      searchQuery = storedFilters.searchQuery || '';
+      selectedIncludeTags = storedFilters.selectedIncludeTags || [];
+      selectedExcludeTags = storedFilters.selectedExcludeTags || [];
+    }
+
+    // Check for tag filter in URL (URL param takes precedence over localStorage)
     const urlParams = new URLSearchParams(window.location.search);
     const tagFilter = urlParams.get('tag');
 
@@ -254,9 +241,7 @@
       selectedIncludeTags = [tagFilter];
     }
 
-    loadNotes(1, false);
-    // Load tags from global store
-    tagsStore.loadTags();
+    loadNotes(false);
   });
 
   // Close panels when clicking outside
@@ -314,6 +299,23 @@
       window.removeEventListener('storage', handleStorageChange);
     };
   });
+
+  // Keyboard shortcut for Ctrl+F / Command+F to open filter modal
+  $effect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Check for Ctrl+F or Command+F
+      if ((event.ctrlKey || event.metaKey) && event.key === 'f') {
+        event.preventDefault(); // Prevent browser's default find
+        openFilterModal();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  });
 </script>
 
 <div class="min-h-screen bg-secondary-50 dark:bg-secondary-900">
@@ -332,14 +334,14 @@
               <h1 class="text-lg sm:text-xl font-bold text-secondary-900 dark:text-white tracking-tight">
                 My Notes
               </h1>
-              {#if totalCount > 0}
+              {#if $totalCount > 0}
                 <div class="flex items-center gap-2">
                   <span class="badge badge-primary text-xs">
-                    {totalCount}
-                    {totalCount === 1 ? 'Note' : 'Notes'}
+                    {$totalCount}
+                    {$totalCount === 1 ? 'Note' : 'Notes'}
                   </span>
                   <span class="text-xs text-secondary-500 dark:text-secondary-400 hidden sm:inline">
-                    {notes.length} shown
+                    {$notes.length} shown
                   </span>
                 </div>
               {/if}
@@ -367,12 +369,12 @@
               <!-- Refresh -->
               <button
                 onclick={handleRefresh}
-                disabled={isRefreshing}
+                disabled={$isLoadingNotes}
                 class="w-8 h-8 rounded-md hover:bg-secondary-200 dark:hover:bg-secondary-700 flex items-center justify-center transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group"
                 title="Refresh"
               >
                 <RefreshCw
-                  class={`w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors ${isRefreshing ? 'animate-spin' : ''}`}
+                  class={`w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors ${$isLoadingNotes ? 'animate-spin' : ''}`}
                 />
               </button>
 
@@ -410,10 +412,10 @@
           </div>
 
           <!-- Mobile Stats Only -->
-          {#if totalCount > 0}
+          {#if $totalCount > 0}
             <div class="flex items-center gap-2 sm:hidden">
               <span class="text-xs text-secondary-500 dark:text-secondary-400">
-                {notes.length} shown
+                {$notes.length} shown
               </span>
             </div>
           {/if}
@@ -425,12 +427,12 @@
   <!-- Main Content -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Loading State -->
-    {#if isLoading}
+    {#if $isLoadingNotes}
       <div class="flex flex-col items-center justify-center py-20">
         <RotateCw class="w-8 h-8 text-primary-600 dark:text-primary-400 animate-spin mb-4" />
         <p class="text-secondary-500 dark:text-secondary-400">Loading notes...</p>
       </div>
-    {:else if notes.length === 0}
+    {:else if $notes.length === 0}
       <!-- Empty State -->
       <div class="text-center py-20">
         <div class="max-w-md mx-auto">
@@ -458,7 +460,7 @@
     {:else}
       <!-- Notes List -->
       <div class="flex flex-col items-center gap-6">
-        {#each notes as note (note.id)}
+        {#each $notes as note (note.id)}
           <div class="w-full max-w-2xl">
             <NoteCard
               {note}
@@ -472,14 +474,14 @@
       </div>
 
       <!-- Load More Button -->
-      {#if hasMore}
+      {#if $hasMore}
         <div class="mt-8 flex justify-center">
           <button
             onclick={loadMoreNotes}
-            disabled={isLoadingMore}
+            disabled={$isLoadingNotes}
             class="btn btn-secondary flex items-center gap-2 px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {#if isLoadingMore}
+            {#if $isLoadingNotes}
               <RotateCw class="w-4 h-4 animate-spin" />
               Loading more notes...
             {:else}
@@ -491,14 +493,14 @@
       {/if}
 
       <!-- End of Notes Indicator -->
-      {#if !hasMore && notes.length > 0}
+      {#if !$hasMore && $notes.length > 0}
         <div class="mt-8 text-center">
           <div
             class="inline-flex items-center gap-2 px-4 py-2 bg-secondary-100 dark:bg-secondary-700 rounded-full"
           >
             <div class="w-2 h-2 bg-secondary-400 dark:bg-secondary-500 rounded-full"></div>
             <span class="text-sm text-secondary-600 dark:text-secondary-400">
-              Showing all {notes.length} notes
+              Showing all {$notes.length} notes
             </span>
           </div>
         </div>
@@ -536,202 +538,19 @@
 />
 
 <!-- Filter Modal -->
-<Modal isOpen={showFilterModal} onClose={closeFilterModal} maxW="max-w-3xl" title="Filter & Sort Notes">
-  {#snippet body()}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- Search - Full Width -->
-      <div class="md:col-span-2">
-        <label for="modal-search" class="label">Search</label>
-        <div class="relative group">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search
-              class="w-4 h-4 text-secondary-400 group-focus-within:text-primary-500 transition-colors"
-            />
-          </div>
-          <input
-            id="modal-search"
-            type="text"
-            placeholder="Search notes..."
-            class="input w-full !pl-10"
-            bind:value={tempSearchQuery}
-          />
-        </div>
-      </div>
-
-      <!-- Sort Options - Full Width -->
-      <div class="md:col-span-2">
-        <span class="label block mb-2" id="sort-options-label">Sort By</span>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {#each sortOptions as option (option.value)}
-            <div class="p-3 bg-secondary-50 dark:bg-secondary-800 rounded-lg">
-              <div class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2 flex items-center gap-1">
-                <Calendar class="w-4 h-4" />
-                {option.label}
-              </div>
-              <div class="flex gap-2">
-                <button
-                  onclick={() => tempFilters = { ...tempFilters, sortBy: option.value, sortOrder: 'desc' }}
-                  class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors flex items-center justify-center gap-1 {tempFilters.sortBy ===
-                    option.value && tempFilters.sortOrder === 'desc'
-                    ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                    : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
-                >
-                  <ArrowDown class="w-3 h-3" />
-                  Newest
-                </button>
-                <button
-                  onclick={() => tempFilters = { ...tempFilters, sortBy: option.value, sortOrder: 'asc' }}
-                  class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors flex items-center justify-center gap-1 {tempFilters.sortBy ===
-                    option.value && tempFilters.sortOrder === 'asc'
-                    ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                    : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
-                >
-                  <ArrowUp class="w-3 h-3" />
-                  Oldest
-                </button>
-              </div>
-            </div>
-          {/each}
-        </div>
-      </div>
-
-      <!-- Public Status Filter - Only show when authenticated -->
-      {#if hasAuthToken}
-        <div>
-          <span class="label block mb-2" id="public-status-label">Public Status</span>
-          <div class="flex flex-col gap-2" role="group" aria-labelledby="public-status-label">
-            <button
-              onclick={() => tempFilters = { ...tempFilters, isPublic: true }}
-              class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic ===
-              true
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
-            >
-              Public Only
-            </button>
-            <button
-              onclick={() => tempFilters = { ...tempFilters, isPublic: false }}
-              class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic ===
-              false
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
-            >
-              Private Only
-            </button>
-            <button
-              onclick={() => tempFilters = { ...tempFilters, isPublic: undefined }}
-              class="px-3 py-2 text-sm rounded-md border border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors text-left {tempFilters.isPublic ===
-              undefined
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-                : ''}"
-            >
-              All Notes
-            </button>
-          </div>
-        </div>
-      {/if}
-
-      <!-- Favorite Status Filter -->
-      <div>
-        <span class="label block mb-2" id="favorite-status-label">Favorite Status</span>
-        <div class="flex flex-col gap-2" role="group" aria-labelledby="favorite-status-label">
-          <button
-            onclick={() => tempFilters = { ...tempFilters, isFavorite: true }}
-            class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite ===
-            true
-              ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-              : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
-          >
-            Favorites Only
-          </button>
-          <button
-            onclick={() => tempFilters = { ...tempFilters, isFavorite: false }}
-            class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite ===
-            false
-              ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-              : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
-          >
-            Non-Favorites
-          </button>
-          <button
-            onclick={() => tempFilters = { ...tempFilters, isFavorite: undefined }}
-            class="px-3 py-2 text-sm rounded-md border border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors text-left {tempFilters.isFavorite ===
-            undefined
-              ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
-              : ''}"
-          >
-            All Notes
-          </button>
-        </div>
-      </div>
-
-      <!-- Tag Filters - Only show when authenticated -->
-      {#if hasAuthToken && $tags.length > 0}
-        <!-- Include Tags -->
-        <div>
-          <label for="include-tags" class="label">Include Tags</label>
-          <MultipleSelect
-            id="include-tags"
-            options={$tagOptions}
-            bind:selectedValues={tempSelectedIncludeTags}
-            placeholder="Select tags to include (OR logic)..."
-            maxHeight="max-h-40"
-          />
-        </div>
-
-        <!-- Exclude Tags -->
-        <div>
-          <label for="exclude-tags" class="label">Exclude Tags</label>
-          <MultipleSelect
-            id="exclude-tags"
-            options={$tagOptions}
-            bind:selectedValues={tempSelectedExcludeTags}
-            placeholder="Select tags to exclude..."
-            maxHeight="max-h-40"
-          />
-        </div>
-      {:else if hasAuthToken && $isLoadingTags}
-        <div class="md:col-span-2">
-          <span class="label block mb-2">Tags</span>
-          <div class="flex items-center justify-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg">
-            <RotateCw class="w-4 h-4 text-secondary-400 animate-spin mr-2" />
-            <span class="text-sm text-secondary-500">Loading tags...</span>
-          </div>
-        </div>
-      {:else if hasAuthToken}
-        <div class="md:col-span-2">
-          <span class="label block mb-2">Tags</span>
-          <div class="text-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg">
-            <TagIcon class="w-8 h-8 text-secondary-300 mx-auto mb-2" />
-            <p class="text-sm text-secondary-500">No tags available</p>
-            <button
-              onclick={() => {
-                closeFilterModal();
-                handleTagModalOpen();
-              }}
-              class="text-xs text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 mt-1"
-            >
-              Create tags first
-            </button>
-          </div>
-        </div>
-      {/if}
-    </div>
-  {/snippet}
-
-  {#snippet footer()}
-    <button
-      onclick={clearFilters}
-      class="px-4 py-2 border border-secondary-300 dark:border-secondary-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-    >
-      Clear Filters
-    </button>
-    <button
-      onclick={applyFilters}
-      class="px-4 py-2 btn btn-primary"
-    >
-      Apply Filters
-    </button>
-  {/snippet}
-</Modal>
+<NotesFilterModal
+  isOpen={showFilterModal}
+  onClose={closeFilterModal}
+  onApply={applyFilters}
+  onClear={clearFilters}
+  title="Filter & Sort Notes"
+  searchPlaceholder="Search notes..."
+  showPublicFilter={hasAuthToken}
+  defaultSortBy="created_at"
+  defaultSortOrder="desc"
+  initialFilters={activeFilters}
+  initialSearchQuery={searchQuery}
+  initialIncludeTags={selectedIncludeTags}
+  initialExcludeTags={selectedExcludeTags}
+/>
 

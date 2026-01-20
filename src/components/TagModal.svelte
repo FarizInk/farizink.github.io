@@ -22,7 +22,7 @@
     type Tag,
     type TagCreateRequest
   } from '../lib/tags';
-  import { tags as globalTags, tagsStore } from '../lib/stores/tags';
+  import { tags as globalTags, tagsStore, isLoadingTags } from '../lib/stores/tags';
   import Modal from './Modal.svelte';
 
   // Props
@@ -48,6 +48,9 @@
 
   // Tags from global store
   let tags = $derived(globalTags);
+
+  // Combined loading state (local + global)
+  let isAnyLoading = $derived($isLoadingTags || isLoading);
 
   // Event dispatcher
   const dispatch = createEventDispatcher();
@@ -316,7 +319,7 @@
                 <div class="w-1 h-1 bg-primary-600 rounded-full animate-pulse" style="animation-delay: 0.1s"></div>
                 <div class="w-1 h-1 bg-primary-600 rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
               </div>
-            {:else if isLoading && searchQuery}
+            {:else if isAnyLoading && searchQuery}
               <RotateCw class="w-4 h-4 text-primary-600 animate-spin" />
             {:else}
               <TagIcon class="w-4 h-4 text-gray-400" />
@@ -328,7 +331,7 @@
                 <span class="text-xs text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-400 px-2 py-1 rounded">
                   Typing...
                 </span>
-              {:else if isLoading}
+              {:else if isAnyLoading}
                 <span class="text-xs text-primary-600 bg-primary-100 dark:bg-primary-900 dark:text-primary-300 px-2 py-1 rounded">
                   Searching...
                 </span>
@@ -345,10 +348,10 @@
         <div class="flex gap-2">
           <button
             onclick={handleRefresh}
-            disabled={isLoading}
+            disabled={isAnyLoading}
             class="btn btn-secondary flex items-center gap-2"
           >
-            <RotateCw class={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+            <RotateCw class={`w-4 h-4 ${isAnyLoading ? 'animate-spin' : ''}`} />
             Refresh
           </button>
 
@@ -394,7 +397,7 @@
                 placeholder="e.g., programming"
                 class="input"
                 bind:value={formData.tag}
-                disabled={isLoading}
+                disabled={isAnyLoading}
               />
               <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 Used internally (lowercase, no spaces)
@@ -412,7 +415,7 @@
                 placeholder="e.g., Programming Resources"
                 class="input"
                 bind:value={formData.name}
-                disabled={isLoading}
+                disabled={isAnyLoading}
               />
               <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 User-friendly name shown in interface
@@ -430,7 +433,7 @@
                 type="color"
                 class="w-12 h-12 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer"
                 bind:value={formData.color}
-                disabled={isLoading}
+                disabled={isAnyLoading}
               />
               <div class="flex-1 relative">
                 <input
@@ -439,7 +442,7 @@
                   placeholder="#61DAFB (optional)"
                   class="input w-full pr-20"
                   bind:value={formData.color}
-                  disabled={isLoading}
+                  disabled={isAnyLoading}
                   pattern="^#[0-9A-Fa-f]{6}$"
                 />
                 {#if formData.color}
@@ -448,7 +451,7 @@
                     onclick={() => formData.color = ''}
                     class="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                     title="Clear color"
-                    disabled={isLoading}
+                    disabled={isAnyLoading}
                   >
                     <X class="w-4 h-4" />
                   </button>
@@ -464,7 +467,7 @@
             <button
               onclick={handleCancel}
               class="btn btn-secondary"
-              disabled={isLoading}
+              disabled={isAnyLoading}
             >
               Cancel
             </button>
@@ -473,7 +476,7 @@
               class="btn btn-primary flex items-center gap-2"
               disabled={isLoading || !formData.tag.trim() || !formData.name.trim()}
             >
-              {#if isLoading}
+              {#if isAnyLoading}
                 <RotateCw class="w-4 h-4 animate-spin" />
                 Saving...
               {:else}
@@ -487,7 +490,7 @@
 
       <!-- Tags List -->
       <div class="flex-1 overflow-y-auto">
-        {#if isLoading}
+        {#if isAnyLoading}
           <div class="flex items-center justify-center py-12">
             <RotateCw class="w-6 h-6 text-primary-600 animate-spin" />
             <span class="ml-2 text-gray-600 dark:text-gray-400">Loading tags...</span>
