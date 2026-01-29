@@ -177,10 +177,10 @@
           {#if hasAuthToken}
             <button
               onclick={handleEdit}
-              class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-900/30 border border-primary-200 dark:border-primary-800 flex items-center justify-center transition-colors"
+              class="w-10 h-10 rounded-lg bg-yellow-50 dark:bg-primary-900/20 hover:bg-yellow-100 dark:hover:bg-primary-900/30 border border-yellow-200 dark:border-primary-800 flex items-center justify-center transition-colors"
               title="Edit note"
             >
-              <Edit class="w-5 h-5 text-primary-600 dark:text-primary-400" />
+              <Edit class="w-5 h-5 text-yellow-600 dark:text-primary-400" />
             </button>
 
             <button
@@ -242,7 +242,7 @@
           <h3
             class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2"
           >
-            <ImageIcon class="w-5 h-5 text-primary-600 dark:text-primary-400" />
+            <ImageIcon class="w-5 h-5 text-yellow-600 dark:text-primary-400" />
             Images ({note.files.filter(f => f.mimeType.startsWith('image/')).length})
           </h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -311,7 +311,7 @@
           <h3
             class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2"
           >
-            <div class="w-1 h-6 bg-primary-600 rounded-full"></div>
+            <div class="w-1 h-6 bg-yellow-600 dark:bg-primary-600 rounded-full"></div>
             Description
           </h3>
           <div class="prose prose-sm max-w-none dark:prose-invert text-gray-700 dark:text-gray-300">
@@ -326,7 +326,7 @@
           <h3
             class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2"
           >
-            <File class="w-5 h-5 text-primary-600 dark:text-primary-400" />
+            <File class="w-5 h-5 text-yellow-600 dark:text-primary-400" />
             Files ({note.files.filter(f => !f.mimeType.startsWith('image/')).length})
           </h3>
           <div class="space-y-3">
@@ -403,17 +403,17 @@
           <h3
             class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2"
           >
-            <Tag class="w-5 h-5 text-primary-600 dark:text-primary-400" />
+            <Tag class="w-5 h-5 text-yellow-600 dark:text-primary-400" />
             Tags
           </h3>
           <div class="flex flex-wrap gap-2">
             {#each note.tags as tag (tag.tag)}
               <div
-                class="flex items-center gap-1.5 px-3 py-2 hover:bg-opacity-80 rounded-full border transition-colors {!tag.color ? 'bg-primary-50 text-primary-700 border-primary-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700' : ''}"
+                class="flex items-center gap-1.5 px-3 py-2 hover:bg-opacity-80 rounded-full border transition-colors {!tag.color ? 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700' : ''}"
                 style="background-color: {tag.color ? tag.color + '20' : undefined}; color: {tag.color || undefined}; border-color: {tag.color ? tag.color + '40' : undefined}"
               >
                 <div
-                  class="w-3 h-3 rounded-full border border-current/30 {!tag.color ? 'bg-primary-600 border-primary-500' : ''}"
+                  class="w-3 h-3 rounded-full {!tag.color ? 'bg-yellow-600 dark:bg-primary-600' : ''}"
                   style="background-color: {tag.color || undefined}"
                 ></div>
                 <span class="text-sm font-medium">{tag.name || tag.tag}</span>

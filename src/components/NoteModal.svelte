@@ -218,7 +218,6 @@
             bind:content={formData.description}
             placeholder="Enter note description..."
             disabled={isLoading}
-            maxHeight="200px"
           />
         </div>
       </div>
@@ -242,7 +241,7 @@
           <button
             type="button"
             onclick={() => alert('Use the "Manage Tags" button in the Notes page to create new tags.')}
-            class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 underline"
+            class="text-yellow-600 hover:text-yellow-700 dark:text-primary-400 dark:hover:text-primary-300 underline"
           >
             Manage tags
           </button>
@@ -254,12 +253,12 @@
         <button
           type="button"
           onclick={() => showFileSection = !showFileSection}
-          class="flex items-center gap-2 text-sm font-medium text-secondary-700 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+          class="flex items-center gap-2 text-sm font-medium text-secondary-700 dark:text-secondary-300 hover:text-yellow-600 dark:hover:text-primary-400 transition-colors"
         >
           <Paperclip class="w-4 h-4" />
           <span>{mode === 'edit' ? 'Manage Files' : 'Attach Files'}</span>
           {#if (formData.files && formData.files.length > 0) || (mode === 'edit' && note?.files && note.files.length > 0)}
-            <span class="badge badge-primary text-xs">
+            <span class="badge bg-yellow-100 text-yellow-700 dark:bg-primary-900 dark:text-primary-300 text-xs">
               ({(formData.files?.length || 0) + (mode === 'edit' && note?.files ? note.files.length : 0)})
             </span>
           {/if}
@@ -331,7 +330,7 @@
     <button
       type="submit"
       form="note-form"
-      class="px-4 py-2 btn btn-primary disabled:opacity-50"
+      class="px-4 py-2 btn bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700 disabled:opacity-50"
       disabled={isLoading || !formData.name?.trim()}
       onclick={(e) => {
         const form = document.getElementById('note-form') as HTMLFormElement;

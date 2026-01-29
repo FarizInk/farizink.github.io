@@ -32,7 +32,7 @@
           <button
             type="button"
             onclick={() => togglePhoto()}
-            class="cursor-text text-left w-full bg-gradient-to-r from-gray-900 via-blue-800 to-purple-900 bg-clip-text text-transparent dark:from-white dark:via-blue-200 dark:to-purple-200 dark:text-transparent animate-gradient"
+            class="cursor-text text-left w-full bg-gradient-to-r from-black via-yellow-600 to-black bg-clip-text text-transparent dark:from-white dark:via-yellow-200 dark:to-white dark:text-transparent animate-gradient"
           >
             Nizar Alfarizi Akbar
           </button>
@@ -41,17 +41,17 @@
 
       <!-- Nickname -->
       <div class="mb-6">
-        <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400">
-          known as <span class="font-bold text-blue-600 dark:text-blue-400 italic">Fariz</span>
+        <p class="text-lg md:text-xl text-black dark:text-gray-400">
+          known as <span class="font-bold text-yellow-600 dark:text-purple-400 italic">Fariz</span>
         </p>
       </div>
 
       <!-- Description -->
       <div class="mb-8">
-        <p class="text-gray-700 dark:text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl">
+        <p class="text-black dark:text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl">
           Software engineer based in Surabaya, Indonesia. Specializing in backend development and
           high-quality web applications. Currently building <span
-            class="italic text-blue-600 dark:text-blue-400">"gabut"</span
+            class="italic text-yellow-600 dark:text-purple-400">"gabut"</span
           > projects and crushing work tasks 🙂
         </p>
       </div>

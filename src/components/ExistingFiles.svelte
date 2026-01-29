@@ -51,7 +51,7 @@
   <div class="space-y-6">
     <!-- Warning for files marked for deletion -->
     {#if filesToDelete.length > 0}
-      <div class="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+      <div class="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-primary-800 rounded-lg p-4">
         <div class="flex items-start justify-between">
           <div class="flex-1">
             <div class="flex items-center gap-2 mb-1">

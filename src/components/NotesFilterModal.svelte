@@ -124,7 +124,7 @@
       <button
         onclick={() => expertFilterMode = !expertFilterMode}
         class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors {expertFilterMode
-          ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+          ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
           : 'border-secondary-300 dark:border-secondary-600 text-secondary-600 dark:text-secondary-400 hover:border-secondary-400 dark:hover:border-secondary-500'}"
       >
         <Settings class="w-3.5 h-3.5" />
@@ -140,7 +140,7 @@
           <label class="label">Search</label>
           <div class="relative group">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search class="w-4 h-4 text-secondary-400 group-focus-within:text-primary-500 transition-colors" />
+              <Search class="w-4 h-4 text-secondary-400 group-focus-within:text-yellow-500 dark:group-focus-within:text-primary-500 transition-colors" />
             </div>
             <input
               type="text"
@@ -170,7 +170,7 @@
                     onclick={() => tempFilters = { ...tempFilters, sortBy: sortOption.value, sortOrder: 'desc' }}
                     class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors flex items-center justify-center gap-1 {tempFilters.sortBy ===
                       sortOption.value && tempFilters.sortOrder === 'desc'
-                      ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                      ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                       : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
                   >
                     <ArrowDown class="w-3 h-3" />
@@ -180,7 +180,7 @@
                     onclick={() => tempFilters = { ...tempFilters, sortBy: sortOption.value, sortOrder: 'asc' }}
                     class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors flex items-center justify-center gap-1 {tempFilters.sortBy ===
                       sortOption.value && tempFilters.sortOrder === 'asc'
-                      ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                      ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                       : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
                   >
                     <ArrowUp class="w-3 h-3" />
@@ -200,7 +200,7 @@
               <button
                 onclick={() => tempFilters = { ...tempFilters, isPublic: true }}
                 class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic === true
-                  ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                  ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                   : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
               >
                 Public Only
@@ -208,7 +208,7 @@
               <button
                 onclick={() => tempFilters = { ...tempFilters, isPublic: false }}
                 class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic === false
-                  ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                  ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                   : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
               >
                 Private Only
@@ -217,7 +217,7 @@
                 onclick={() => tempFilters = { ...tempFilters, isPublic: undefined }}
                 class="px-3 py-2 text-sm rounded-md border border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors text-left {tempFilters.isPublic ===
                   undefined
-                    ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                    ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                     : ''}"
               >
                 All
@@ -233,7 +233,7 @@
             <button
               onclick={() => tempFilters = { ...tempFilters, isFavorite: true }}
               class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite === true
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
               Favorites Only
@@ -241,7 +241,7 @@
             <button
               onclick={() => tempFilters = { ...tempFilters, isFavorite: false }}
               class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite === false
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
               Non-Favorites
@@ -250,7 +250,7 @@
               onclick={() => tempFilters = { ...tempFilters, isFavorite: undefined }}
               class="px-3 py-2 text-sm rounded-md border border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors text-left {tempFilters.isFavorite ===
               undefined
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : ''}"
             >
               All
@@ -328,7 +328,7 @@
             <button
               onclick={() => tempFilters = { ...tempFilters, sortBy: tempFilters.sortBy || defaultSortBy, sortOrder: 'desc' }}
               class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1.5 {tempFilters.sortOrder === 'desc'
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
               <ArrowDown class="w-3.5 h-3.5" />
@@ -337,7 +337,7 @@
             <button
               onclick={() => tempFilters = { ...tempFilters, sortBy: tempFilters.sortBy || defaultSortBy, sortOrder: 'asc' }}
               class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1.5 {tempFilters.sortOrder === 'asc'
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
               <ArrowUp class="w-3.5 h-3.5" />
@@ -357,7 +357,7 @@
               <button
                 onclick={() => tempFilters = { ...tempFilters, isPublic: undefined }}
                 class="px-3 py-2 text-sm rounded-lg border transition-colors {tempFilters.isPublic === undefined
-                  ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                  ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                   : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
               >
                 All
@@ -365,7 +365,7 @@
               <button
                 onclick={() => tempFilters = { ...tempFilters, isPublic: true }}
                 class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isPublic === true
-                  ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                  ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                   : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
               >
                 <Globe class="w-3.5 h-3.5" />
@@ -374,7 +374,7 @@
               <button
                 onclick={() => tempFilters = { ...tempFilters, isPublic: false }}
                 class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isPublic === false
-                  ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                  ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                   : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
               >
                 <Lock class="w-3.5 h-3.5" />
@@ -394,7 +394,7 @@
             <button
               onclick={() => tempFilters = { ...tempFilters, isFavorite: undefined }}
               class="px-3 py-2 text-sm rounded-lg border transition-colors {tempFilters.isFavorite === undefined
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
               All
@@ -402,7 +402,7 @@
             <button
               onclick={() => tempFilters = { ...tempFilters, isFavorite: true }}
               class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isFavorite === true
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
               <Star class="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
@@ -411,7 +411,7 @@
             <button
               onclick={() => tempFilters = { ...tempFilters, isFavorite: false }}
               class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isFavorite === false
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
               <Star class="w-3.5 h-3.5 text-secondary-400" />
@@ -458,7 +458,7 @@
     </button>
     <button
       onclick={handleApply}
-      class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors text-sm font-medium"
+      class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700 text-white rounded-lg transition-colors text-sm font-medium"
     >
       Apply
     </button>

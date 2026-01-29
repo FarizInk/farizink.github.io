@@ -188,7 +188,7 @@
   });
 </script>
 
-<div class="min-h-screen bg-secondary-50 dark:bg-secondary-900">
+<div class="min-h-screen">
   <!-- Header with Trash Theme -->
   <div class="sticky top-0 z-40 pt-4">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -232,7 +232,7 @@
                 <span class="text-sm font-medium">Filter</span>
                 {#if getActiveFilterCount() > 0}
                   <span
-                    class="w-5 h-5 bg-primary-600 text-white text-xs rounded-full flex items-center justify-center"
+                    class="w-5 h-5 bg-yellow-600 dark:bg-primary-600 text-white text-xs rounded-full flex items-center justify-center"
                   >
                     {getActiveFilterCount()}
                   </span>
@@ -247,7 +247,7 @@
                 title="Refresh"
               >
                 <RefreshCw
-                  class={`w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors ${$isLoadingDeletedNotes ? 'animate-spin' : ''}`}
+                  class={`w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-yellow-600 dark:group-hover:text-primary-400 transition-colors ${$isLoadingDeletedNotes ? 'animate-spin' : ''}`}
                 />
               </button>
             </div>
@@ -285,7 +285,7 @@
     <!-- Loading State -->
     {#if $isLoadingDeletedNotes}
       <div class="flex flex-col items-center justify-center py-20">
-        <RotateCw class="w-8 h-8 text-primary-600 dark:text-primary-400 animate-spin mb-4" />
+        <RotateCw class="w-8 h-8 text-yellow-600 dark:text-primary-400 animate-spin mb-4" />
         <p class="text-secondary-500 dark:text-secondary-400">Loading deleted notes...</p>
       </div>
     {:else if $deletedNotes.length === 0}

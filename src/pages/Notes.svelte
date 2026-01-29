@@ -318,7 +318,7 @@
   });
 </script>
 
-<div class="min-h-screen bg-secondary-50 dark:bg-secondary-900">
+<div class="min-h-screen">
   <!-- Header with Island Notch Design -->
   <div class="sticky top-0 z-40 pt-4">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -336,7 +336,7 @@
               </h1>
               {#if $totalCount > 0}
                 <div class="flex items-center gap-2">
-                  <span class="badge badge-primary text-xs">
+                  <span class="badge bg-yellow-100 text-yellow-700 dark:bg-primary-900 dark:text-primary-300 text-xs">
                     {$totalCount}
                     {$totalCount === 1 ? 'Note' : 'Notes'}
                   </span>
@@ -359,7 +359,7 @@
                 <span class="text-sm font-medium">Filter</span>
                 {#if getActiveFilterCount() > 0}
                   <span
-                    class="w-5 h-5 bg-primary-600 text-white text-xs rounded-full flex items-center justify-center"
+                    class="w-5 h-5 bg-yellow-600 dark:bg-primary-600 text-white text-xs rounded-full flex items-center justify-center"
                   >
                     {getActiveFilterCount()}
                   </span>
@@ -374,7 +374,7 @@
                 title="Refresh"
               >
                 <RefreshCw
-                  class={`w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors ${$isLoadingNotes ? 'animate-spin' : ''}`}
+                  class={`w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-yellow-600 dark:group-hover:text-primary-400 transition-colors ${$isLoadingNotes ? 'animate-spin' : ''}`}
                 />
               </button>
 
@@ -401,7 +401,7 @@
                 <!-- Create Note - Only show when authenticated -->
                 <button
                   onclick={handleCreate}
-                  class="btn btn-primary flex items-center gap-1 px-3 py-1.5 text-xs sm:text-sm"
+                  class="btn flex items-center gap-1 px-3 py-1.5 text-xs sm:text-sm bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700"
                   title="New note"
                 >
                   <Plus class="w-4 h-4" />
@@ -429,7 +429,7 @@
     <!-- Loading State -->
     {#if $isLoadingNotes}
       <div class="flex flex-col items-center justify-center py-20">
-        <RotateCw class="w-8 h-8 text-primary-600 dark:text-primary-400 animate-spin mb-4" />
+        <RotateCw class="w-8 h-8 text-yellow-600 dark:text-primary-400 animate-spin mb-4" />
         <p class="text-secondary-500 dark:text-secondary-400">Loading notes...</p>
       </div>
     {:else if $notes.length === 0}
@@ -450,7 +450,7 @@
               : 'Create your first note to get started'}
           </p>
           {#if !searchQuery && hasAuthToken}
-            <button onclick={handleCreate} class="btn btn-primary">
+            <button onclick={handleCreate} class="btn bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700">
               <Plus class="w-4 h-4 mr-2" />
               Create Your First Note
             </button>

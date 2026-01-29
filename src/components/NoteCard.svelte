@@ -69,7 +69,7 @@
   </script>
 
 <div
-  class="card card-hover !p-6 group relative overflow-hidden cursor-pointer {isDeleted ? 'bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/30 dark:to-orange-900/20 border-2 border-red-300 dark:border-red-500 opacity-90' : (!note.isPublic ? 'bg-gradient-to-br from-primary-50 to-purple-50 dark:from-primary-900/30 dark:to-purple-900/20 border-2 border-primary-300 dark:border-primary-500 shadow-lg' : '')}"
+  class="card card-hover !p-6 group relative overflow-hidden cursor-pointer {isDeleted ? 'bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/30 dark:to-orange-900/20 border-2 border-red-300 dark:border-red-500 opacity-90' : (!note.isPublic ? 'bg-gradient-to-br from-yellow-50 to-yellow-50 dark:from-primary-900/30 dark:to-primary-900/20 border-2 border-yellow-300 dark:border-primary-500 shadow-lg' : '')}"
   role="button"
   tabindex="0"
   onclick={handleShowDetail}
@@ -105,7 +105,7 @@
       <div class="flex-1 min-w-0 pr-4">
         {#if note.name}
           <h3
-            class="text-xl font-bold text-secondary-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-all duration-200 mb-2"
+            class="text-xl font-bold text-secondary-900 dark:text-white group-hover:text-yellow-600 dark:group-hover:text-primary-400 transition-all duration-200 mb-2"
             title={note.name}
           >
             {note.name}
@@ -219,11 +219,11 @@
       <div class="flex flex-wrap gap-2 mb-4">
         {#each note.tags.slice(0, 5) as tag (tag.tag)}
           <div
-            class="tag-group flex items-center gap-2 px-3 py-1.5 hover:bg-opacity-80 rounded-full border transition-all duration-200 {!tag.color ? 'bg-primary-50 text-primary-700 border-primary-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700' : ''}"
+            class="tag-group flex items-center gap-2 px-3 py-1.5 hover:bg-opacity-80 rounded-full border transition-all duration-200 {!tag.color ? 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700' : ''}"
             style="background-color: {tag.color ? tag.color + '20' : undefined}; color: {tag.color || undefined}; border-color: {tag.color ? tag.color + '40' : undefined}"
           >
             <div
-              class="w-3 h-3 rounded-full border border-current/30 tag-hover-scale transition-transform duration-200 {!tag.color ? 'bg-primary-600 border-primary-500' : ''}"
+              class="w-3 h-3 rounded-full tag-hover-scale transition-transform duration-200 {!tag.color ? 'bg-yellow-600 dark:bg-primary-600' : ''}"
               style="background-color: {tag.color || undefined}"
             ></div>
             <span class="text-sm font-medium">{tag.name || tag.tag}</span>
@@ -289,11 +289,11 @@
                 e.stopPropagation();
                 handleEdit();
               }}
-              class="w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-primary-50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-primary-300 dark:hover:border-primary-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
+              class="w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-yellow-50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-yellow-300 dark:hover:border-primary-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
               title="Edit note"
             >
               <Pencil
-                class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-primary-600 dark:group-hover:text-primary-400"
+                class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-yellow-600 dark:group-hover:text-primary-400"
               />
             </button>
 

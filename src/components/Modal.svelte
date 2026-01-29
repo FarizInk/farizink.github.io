@@ -102,7 +102,7 @@
 
     <!-- Modal Container -->
     <div
-      class="flex items-center justify-center min-h-full w-full p-4 text-center"
+      class="flex items-center justify-center min-h-full w-full text-center"
     >
       <div
         class="relative bg-white dark:bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all my-8 w-full {maxW}"
@@ -112,7 +112,7 @@
         {#if header}
           {@render header()}
         {:else if title}
-          <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <div class="flex items-center justify-between px-3 py-3 sm:px-6 sm:py-4 border-b border-gray-200 dark:border-gray-700">
             <h2 id="modal-title" class="text-xl font-semibold text-gray-900 dark:text-white">
               {title}
             </h2>
@@ -130,18 +130,18 @@
 
         <!-- Body Slot -->
         {#if body}
-          <div class="px-6 py-4">
+          <div class="px-3 py-3 sm:px-6 sm:py-4">
             {@render body()}
           </div>
         {:else if children}
-          <div class="px-6 py-4">
+          <div class="px-3 py-3 sm:px-6 sm:py-4">
             {@render children()}
           </div>
         {/if}
 
         <!-- Footer Slot -->
         {#if footer}
-          <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+          <div class="flex items-center justify-end gap-3 px-3 py-3 sm:px-6 sm:py-4 border-t border-gray-200 dark:border-gray-700">
             {@render footer()}
           </div>
         {/if}

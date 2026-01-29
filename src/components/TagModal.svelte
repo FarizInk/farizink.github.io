@@ -282,8 +282,8 @@
   {#snippet header()}
     <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center">
-          <TagIcon class="w-5 h-5 text-primary-600 dark:text-primary-400" />
+        <div class="w-10 h-10 bg-yellow-100 dark:bg-primary-900 rounded-lg flex items-center justify-center">
+          <TagIcon class="w-5 h-5 text-yellow-600 dark:text-primary-400" />
         </div>
         <div>
           <h2 id="modal-title" class="text-xl font-bold text-gray-900 dark:text-white">Manage Tags</h2>
@@ -315,12 +315,12 @@
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             {#if isSearchTyping}
               <div class="flex items-center gap-1">
-                <div class="w-1 h-1 bg-primary-600 rounded-full animate-pulse"></div>
+                <div class="w-1 h-1 bg-yellow-600 dark:bg-primary-600 rounded-full animate-pulse"></div>
                 <div class="w-1 h-1 bg-primary-600 rounded-full animate-pulse" style="animation-delay: 0.1s"></div>
                 <div class="w-1 h-1 bg-primary-600 rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
               </div>
             {:else if isAnyLoading && searchQuery}
-              <RotateCw class="w-4 h-4 text-primary-600 animate-spin" />
+              <RotateCw class="w-4 h-4 text-yellow-600 dark:text-primary-600 animate-spin" />
             {:else}
               <TagIcon class="w-4 h-4 text-gray-400" />
             {/if}
@@ -332,7 +332,7 @@
                   Typing...
                 </span>
               {:else if isAnyLoading}
-                <span class="text-xs text-primary-600 bg-primary-100 dark:bg-primary-900 dark:text-primary-300 px-2 py-1 rounded">
+                <span class="text-xs text-yellow-600 bg-yellow-100 dark:bg-primary-900 dark:text-primary-300 px-2 py-1 rounded">
                   Searching...
                 </span>
               {:else}
@@ -357,7 +357,7 @@
 
           <button
             onclick={handleCreateNew}
-            class="btn btn-primary flex items-center gap-2"
+            class="btn bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700 flex items-center gap-2"
             disabled={isCreating || isEditing}
           >
             <Plus class="w-4 h-4" />
@@ -473,7 +473,7 @@
             </button>
             <button
               onclick={handleSave}
-              class="btn btn-primary flex items-center gap-2"
+              class="btn bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700 flex items-center gap-2"
               disabled={isLoading || !formData.tag.trim() || !formData.name.trim()}
             >
               {#if isAnyLoading}
@@ -492,7 +492,7 @@
       <div class="flex-1 overflow-y-auto">
         {#if isAnyLoading}
           <div class="flex items-center justify-center py-12">
-            <RotateCw class="w-6 h-6 text-primary-600 animate-spin" />
+            <RotateCw class="w-6 h-6 text-yellow-600 dark:text-primary-600 animate-spin" />
             <span class="ml-2 text-gray-600 dark:text-gray-400">Loading tags...</span>
           </div>
         {:else if $tags.length === 0}
@@ -508,7 +508,7 @@
               }
             </p>
             {#if !searchQuery}
-              <button onclick={handleCreateNew} class="btn btn-primary">
+              <button onclick={handleCreateNew} class="btn bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700">
                 <Plus class="w-4 h-4 mr-2" />
                 Create First Tag
               </button>
@@ -519,18 +519,18 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               {#each $tags as tag (tag.tag)}
                 <div
-                  class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-600 transition-colors"
+                  class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600 hover:border-yellow-300 dark:hover:border-primary-600 transition-colors"
                 >
                   <div class="flex items-start justify-between">
                     <div class="flex-1 min-w-0">
                       <div class="flex items-center gap-2 mb-1">
                         <div class="flex items-center gap-2">
                           <div
-                            class="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600 {!tag.color ? 'bg-primary-600' : ''}"
+                            class="w-4 h-4 rounded-full {!tag.color ? 'bg-yellow-600 dark:bg-primary-600' : ''}"
                             style="background-color: {tag.color || undefined}"
                           ></div>
                           <span
-                            class="inline-block px-2 py-1 text-xs font-medium rounded {!tag.color ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300' : ''}"
+                            class="inline-block px-2 py-1 text-xs font-medium rounded {!tag.color ? 'bg-yellow-50 text-yellow-700 dark:bg-primary-900/20 dark:text-primary-300' : ''}"
                             style="background-color: {tag.color ? tag.color + '20' : undefined}; color: {tag.color || undefined}"
                           >
                             {tag.tag}

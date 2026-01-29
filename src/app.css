@@ -175,9 +175,9 @@ html.dark body {
 }
 
 .btn-outline:hover:not(:disabled) {
-  border-color: var(--color-primary-500);
-  color: var(--color-primary-600);
-  background-color: var(--color-primary-50);
+  border-color: var(--color-warning-500);
+  color: var(--color-warning-600);
+  background-color: var(--color-warning-50);
 }
 
 .dark .btn-outline:hover:not(:disabled) {
@@ -233,6 +233,13 @@ html.dark body {
 .input:focus,
 .textarea:focus,
 .select:focus {
+  border-color: var(--color-warning-500);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+.dark .input:focus,
+.dark .textarea:focus,
+.dark .select:focus {
   border-color: var(--color-primary-500);
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
 }
@@ -282,7 +289,7 @@ html.dark body {
 .card-hover:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
-  border-color: var(--color-primary-500);
+  border-color: var(--color-warning-500);
 }
 
 .dark .card-hover:hover {
@@ -483,13 +490,13 @@ html.dark body {
 }
 
 .custom-checkbox:hover .checkmark {
-  border-color: var(--color-primary-500);
-  background-color: var(--color-primary-50);
+  border-color: var(--color-warning-500);
+  background-color: var(--color-warning-50);
 }
 
 .custom-checkbox input[type="checkbox"]:checked~.checkmark {
-  background-color: var(--color-primary-600);
-  border-color: var(--color-primary-600);
+  background-color: var(--color-warning-600);
+  border-color: var(--color-warning-600);
 }
 
 .custom-checkbox input[type="checkbox"]:checked~.checkmark:after {
@@ -510,7 +517,7 @@ html.dark body {
 }
 
 .dark .custom-checkbox:hover .checkmark {
-  border-color: var(--color-primary-500);
+  border-color: var(--color-primary-400);
   background-color: rgba(139, 92, 246, 0.1);
 }
 
@@ -550,12 +557,12 @@ html.dark body {
 }
 
 .custom-radio:hover .radio-dot {
-  border-color: var(--color-primary-500);
-  background-color: var(--color-primary-50);
+  border-color: var(--color-warning-500);
+  background-color: var(--color-warning-50);
 }
 
 .custom-radio input[type="radio"]:checked~.radio-dot {
-  border-color: var(--color-primary-600);
+  border-color: var(--color-warning-600);
   background-color: white;
 }
 
@@ -567,7 +574,7 @@ html.dark body {
   width: 0.625rem;
   height: 0.625rem;
   border-radius: var(--radius-full);
-  background-color: var(--color-primary-600);
+  background-color: var(--color-warning-600);
   transform: translate(-50%, -50%);
 }
 
@@ -577,8 +584,8 @@ html.dark body {
 }
 
 .dark .custom-radio:hover .radio-dot {
-  border-color: var(--color-primary-500);
-  background-color: rgba(139, 92, 246, 0.1);
+  border-color: var(--color-warning-400);
+  background-color: rgba(251, 191, 36, 0.1);
 }
 
 .dark .custom-radio input[type="radio"]:checked~.radio-dot {
@@ -617,6 +624,12 @@ html.dark body {
 /* Focus styles for accessibility */
 .custom-checkbox input[type="checkbox"]:focus~.checkmark,
 .custom-radio input[type="radio"]:focus~.radio-dot {
+  outline: 2px solid var(--color-warning-500);
+  outline-offset: 2px;
+}
+
+.dark .custom-checkbox input[type="checkbox"]:focus~.checkmark,
+.dark .custom-radio input[type="radio"]:focus~.radio-dot {
   outline: 2px solid var(--color-primary-500);
   outline-offset: 2px;
 }

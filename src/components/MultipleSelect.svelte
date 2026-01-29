@@ -241,7 +241,7 @@
     bind:this={triggerElement}
     type="button"
     class="input flex items-center gap-2 min-h-10 text-left cursor-pointer disabled:cursor-not-allowed"
-    class:border-primary-500={isOpen}
+    class:border-yellow-500={isOpen}
     onclick={toggleDropdown}
     onkeydown={handleKeydown}
     disabled={disabled}
@@ -256,11 +256,11 @@
       {:else}
         {#each selectedOptions as option (option.value)}
           <span
-            class="text-xs flex items-center gap-1 px-2 py-1 rounded-full border {!option.color ? 'bg-primary-100 text-primary-700 border-primary-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700' : ''}"
+            class="text-xs flex items-center gap-1 px-2 py-1 rounded-full border {!option.color ? 'bg-yellow-100 text-yellow-700 border-yellow-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700' : ''}"
             style="background-color: {option.color ? option.color + '20' : undefined}; color: {option.color || undefined}; border-color: {option.color ? option.color + '40' : undefined}"
           >
             <div
-              class="w-2 h-2 rounded-full {!option.color ? 'bg-primary-600' : ''}"
+              class="w-2 h-2 rounded-full {!option.color ? 'bg-yellow-600 dark:bg-primary-600' : ''}"
               style="background-color: {option.color || undefined}"
             ></div>
             {option.label}
@@ -351,7 +351,7 @@
             {#each filteredOptions as option, index (option.value)}
               <button
                 type="button"
-                class="w-full px-3 py-2 text-left text-sm transition-colors flex items-center gap-3 border-b border-secondary-100 dark:border-secondary-700 last:border-b-0 {focusedIndex === index ? 'bg-primary-50 dark:bg-primary-900/20' : 'hover:bg-secondary-50 dark:hover:bg-secondary-700'}"
+                class="w-full px-3 py-2 text-left text-sm transition-colors flex items-center gap-3 border-b border-secondary-100 dark:border-secondary-700 last:border-b-0 {focusedIndex === index ? 'bg-yellow-50 dark:bg-primary-900/20' : 'hover:bg-secondary-50 dark:hover:bg-secondary-700'}"
                 onclick={() => selectOption(option)}
                 onmouseenter={() => focusedIndex = index}
                 role="option"
@@ -360,7 +360,7 @@
                 <!-- Checkbox/Icon -->
                 <div class="flex-shrink-0">
                   {#if selectedValues.includes(option.value)}
-                    <div class="w-4 h-4 bg-primary-600 rounded flex items-center justify-center">
+                    <div class="w-4 h-4 bg-yellow-600 dark:bg-primary-600 rounded flex items-center justify-center">
                       <Check class="w-3 h-3 text-white" />
                     </div>
                   {:else}
@@ -371,7 +371,7 @@
                 <!-- Option Content -->
                 <div class="flex-1 min-w-0 flex items-center gap-2">
                   <div
-                    class="w-3 h-3 rounded-full border border-secondary-300 dark:border-secondary-600 flex-shrink-0 {!option.color ? 'bg-primary-600 border-primary-500' : ''}"
+                    class="w-3 h-3 rounded-full flex-shrink-0 {!option.color ? 'bg-yellow-600 dark:bg-primary-600' : ''}"
                     style="background-color: {option.color || undefined}"
                   ></div>
                   <div class="flex-1 min-w-0">

@@ -62,8 +62,8 @@
 <div class="container mx-auto px-4 py-6 max-w-4xl">
   <!-- Header -->
   <div class="text-center mb-8">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Developer Tools</h1>
-    <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+    <h1 class="text-3xl font-bold text-black dark:text-white mb-2">Developer Tools</h1>
+    <p class="text-black dark:text-gray-400 max-w-2xl mx-auto">
       Essential tools for developers, designers, and power users.
     </p>
   </div>
@@ -86,10 +86,10 @@
     {#each categories as category (category)}
       <button
         onclick={() => (selectedCategory = category)}
-        class="btn btn-sm {selectedCategory === category ? 'btn-primary' : 'btn-secondary'}"
+        class="btn btn-sm {selectedCategory === category ? 'bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700' : 'btn-secondary'}"
       >
         {category}
-        <span class="badge badge-primary ml-1">{getCategoryCount(category)}</span>
+        <span class="badge bg-yellow-100 text-yellow-700 dark:bg-primary-900 dark:text-primary-300 ml-1">{getCategoryCount(category)}</span>
       </button>
     {/each}
   </div>
@@ -102,14 +102,14 @@
       <button
         onclick={() => navigateToTool(tool.id)}
         onkeydown={e => handleKeydown(e, tool.id)}
-        class="w-full text-left p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-inset group"
+        class="w-full text-left p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:focus:ring-primary-500 focus:ring-inset group"
         tabindex="0"
         aria-label="Open {tool.name}"
       >
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
             <div
-              class="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 dark:from-primary-500 dark:to-primary-700 rounded-lg flex items-center justify-center flex-shrink-0"
+              class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 dark:from-primary-500 dark:to-primary-700 rounded-lg flex items-center justify-center flex-shrink-0"
             >
               <tool.icon class="w-5 h-5 text-white" />
             </div>
@@ -117,26 +117,26 @@
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2">
                 <h3
-                  class="font-semibold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+                  class="font-semibold text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-primary-400 transition-colors"
                 >
                   {tool.name}
                 </h3>
                 <!-- Tool Number Badge -->
-                <div class="badge badge-primary text-xs font-bold">
+                <div class="badge bg-yellow-100 text-yellow-700 dark:bg-primary-900 dark:text-primary-300 text-xs font-bold">
                   {index + 1}
                 </div>
                 {#if tool.comingSoon}
                   <span class="badge badge-warning"> Coming Soon </span>
                 {/if}
               </div>
-              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-1">
+              <p class="text-sm text-black dark:text-gray-400 mt-1 line-clamp-1">
                 {tool.description}
               </p>
             </div>
           </div>
 
           <ChevronRight
-            class="w-5 h-5 text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors flex-shrink-0 ml-3"
+            class="w-5 h-5 text-gray-400 group-hover:text-yellow-600 dark:group-hover:text-primary-400 transition-colors flex-shrink-0 ml-3"
           />
         </div>
 
@@ -165,8 +165,8 @@
       <div class="text-gray-400 mb-4">
         <Search class="w-12 h-12 mx-auto" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">No tools found</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <h3 class="text-lg font-semibold text-black dark:text-white mb-2">No tools found</h3>
+      <p class="text-black dark:text-gray-400">
         Try adjusting your search terms or browse all categories.
       </p>
     </div>

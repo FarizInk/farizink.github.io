@@ -81,6 +81,7 @@
 
 <div
   class="min-h-screen flex flex-col justify-between relative bg-secondary-50 dark:bg-secondary-900 transition-colors duration-300"
+  style="isolation: isolate;"
 >
   <PixelBackground />
   <Navigation />

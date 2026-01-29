@@ -11,17 +11,19 @@
   let {
     content = $bindable(''),
     placeholder = 'Type something...',
-    disabled = false,
-    maxHeight = '300px'
+    disabled = false
   } = $props<{
     content?: string;
     placeholder?: string;
     disabled?: boolean;
-    maxHeight?: string;
   }>();
 
   let editor = $state<Editor | null>(null);
   let editorElement: HTMLElement;
+  let editorContainer: HTMLElement;
+  let isResizing = $state(false);
+  let startY = $state(0);
+  let startHeight = $state(0);
 
   // Initialize editor on mount
   onMount(() => {
@@ -47,8 +49,7 @@
       editable: !disabled,
       editorProps: {
         attributes: {
-          class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[100px] max-h-full overflow-y-auto p-3',
-          style: `max-height: ${maxHeight}`,
+          class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[130px] overflow-y-auto p-3',
         },
       },
       onUpdate: ({ editor }) => {
@@ -154,6 +155,48 @@
     }
   }
 
+  // Resize handler
+  function startResize(e: MouseEvent | TouchEvent) {
+    e.preventDefault();
+    isResizing = true;
+
+    if (e instanceof MouseEvent) {
+      startY = e.clientY;
+    } else {
+      startY = e.touches[0].clientY;
+    }
+
+    startHeight = editorContainer.offsetHeight;
+
+    document.addEventListener('mousemove', handleResize);
+    document.addEventListener('mouseup', stopResize);
+    document.addEventListener('touchmove', handleResize, { passive: false });
+    document.addEventListener('touchend', stopResize);
+  }
+
+  function handleResize(e: MouseEvent | TouchEvent) {
+    if (!isResizing) return;
+
+    let clientY: number;
+    if (e instanceof MouseEvent) {
+      clientY = e.clientY;
+    } else {
+      e.preventDefault(); // Prevent scrolling while resizing
+      clientY = e.touches[0].clientY;
+    }
+
+    const deltaY = clientY - startY;
+    const newHeight = Math.max(130, startHeight + deltaY); // Min 130px
+    editorContainer.style.height = `${newHeight}px`;
+  }
+
+  function stopResize() {
+    isResizing = false;
+    document.removeEventListener('mousemove', handleResize);
+    document.removeEventListener('mouseup', stopResize);
+    document.removeEventListener('touchmove', handleResize);
+    document.removeEventListener('touchend', stopResize);
+  }
   </script>
 
 <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-white dark:bg-gray-800">
@@ -300,17 +343,26 @@
   </div>
 
   <!-- Editor Content -->
-  <div class="prose-wrapper">
+  <div class="prose-wrapper" bind:this={editorContainer}>
     <div bind:this={editorElement}></div>
+    <!-- Resize handle indicator -->
+    <div class="resize-handle" onmousedown={startResize} role="separator" aria-orientation="horizontal" aria-label="Drag to resize editor">
+      <div class="resize-handle-bar"></div>
+    </div>
   </div>
 </div>
 
 <style>
+  .prose-wrapper {
+    position: relative;
+  }
+
   :global(.prose-wrapper .ProseMirror) {
-    min-height: 100px;
-    max-height: v-bind(maxHeight);
+    min-height: 130px;
     overflow-y: auto;
+    resize: none;
     padding: 1rem;
+    padding-bottom: 1.5rem;
   }
 
   :global(.prose-wrapper .ProseMirror:focus) {
@@ -405,5 +457,38 @@
 
   :global(.dark .prose-wrapper .ProseMirror pre code) {
     background-color: transparent;
+  }
+
+  /* Resize handle styles */
+  .resize-handle {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: s-resize;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    pointer-events: auto;
+    z-index: 10;
+  }
+
+  .resize-handle:hover {
+    opacity: 1;
+  }
+
+  .resize-handle-bar {
+    width: 64px;
+    height: 4px;
+    background-color: rgb(209 213 219);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  .dark .resize-handle-bar {
+    background-color: rgb(75 85 99);
   }
 </style>
