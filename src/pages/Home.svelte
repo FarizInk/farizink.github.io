@@ -32,7 +32,7 @@
           <button
             type="button"
             onclick={() => togglePhoto()}
-            class="cursor-text text-left w-full bg-gradient-to-r from-black via-yellow-600 to-black bg-clip-text text-transparent dark:from-white dark:via-yellow-200 dark:to-white dark:text-transparent animate-gradient"
+            class="cursor-text text-left w-full bg-gradient-to-r from-black via-yellow-700 to-black bg-clip-text text-transparent dark:from-white dark:via-primary-500 dark:to-white dark:text-transparent bg-[length:200%_auto] animate-gradient"
           >
             Nizar Alfarizi Akbar
           </button>
@@ -156,6 +156,41 @@
     100% {
       background-position: 0% 50%;
     }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% center;
+    }
+    100% {
+      background-position: 200% center;
+    }
+  }
+
+  @keyframes mesh-text {
+    0% {
+      background-position: 0% 0%;
+    }
+    25% {
+      background-position: 100% 0%;
+    }
+    50% {
+      background-position: 100% 100%;
+    }
+    75% {
+      background-position: 0% 100%;
+    }
+    100% {
+      background-position: 0% 0%;
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  .animate-mesh-text {
+    animation: mesh-text 5s ease-in-out infinite;
   }
 
   .animate-gradient {

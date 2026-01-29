@@ -72,17 +72,30 @@
   }
 
   function formatUptime(seconds: number): string {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
+    const minute = 60;
+    const hour = 60 * minute;
+    const day = 24 * hour;
+    const week = 7 * day;
+    const month = 30 * day;
+    const year = 365 * day;
 
-    if (hours > 0) {
-      return `${hours}h ${minutes}m`;
-    } else if (minutes > 0) {
-      return `${minutes}m ${secs}s`;
-    } else {
-      return `${secs}s`;
-    }
+    const years = Math.floor(seconds / year);
+    const months = Math.floor((seconds % year) / month);
+    const weeks = Math.floor((seconds % month) / week);
+    const days = Math.floor((seconds % week) / day);
+    const hours = Math.floor((seconds % day) / hour);
+    const minutes = Math.floor((seconds % hour) / minute);
+
+    const parts: string[] = [];
+
+    if (years > 0) parts.push(`${years}y`);
+    if (months > 0) parts.push(`${months}mo`);
+    if (weeks > 0) parts.push(`${weeks}w`);
+    if (days > 0) parts.push(`${days}d`);
+    if (hours > 0) parts.push(`${hours}h`);
+    if (minutes > 0) parts.push(`${minutes}m`);
+
+    return parts.length > 0 ? parts.join(' ') : '0m';
   }
 
   // Helper functions for potential future use
