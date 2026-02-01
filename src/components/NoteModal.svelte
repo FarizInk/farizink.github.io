@@ -5,7 +5,7 @@
   import { notesStore } from '../lib/stores/notes';
   import { Link2, Paperclip, Loader } from '@lucide/svelte';
   import { toast } from 'svelte-sonner';
-  import MultipleSelect from './MultipleSelect.svelte';
+  import TagsSelector from './TagsSelector.svelte';
   import FileUpload from './FileUpload.svelte';
   import ExistingFiles from './ExistingFiles.svelte';
   import TiptapEditor from './TiptapEditor.svelte';
@@ -40,7 +40,7 @@
   // For edit mode - track files to delete
   let filesToDelete = $state<string[]>([]);
 
-  // Convert tags to options for MultipleSelect
+  // Convert tags to options for TagsSelector
   let options = $derived($tags.map(tag => ({
     value: tag.tag,
     label: tag.name,
@@ -176,7 +176,8 @@
   showCloseButton={false}
 >
   {#snippet body()}
-    <form id="note-form" onsubmit={handleSubmit} class="space-y-4">
+    <div class="max-h-[calc(100vh-240px)] overflow-y-auto pr-2 -mr-2">
+      <form id="note-form" onsubmit={handleSubmit} class="space-y-4">
       <!-- Name -->
       <div>
         <label for="name" class="label">Name *</label>
@@ -226,7 +227,7 @@
       <div>
         <label for="tag-select" class="label">Tags (Optional)</label>
         <div class="mt-2">
-          <MultipleSelect
+          <TagsSelector
             id="tag-select"
             {options}
             bind:selectedValues={selectedTagIds}
@@ -316,6 +317,7 @@
         </div>
       </div>
     </form>
+    </div>
   {/snippet}
 
   {#snippet footer()}

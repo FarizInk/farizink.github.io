@@ -49,7 +49,7 @@
       <!-- Description -->
       <div class="mb-8">
         <p class="text-black dark:text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl">
-          Software engineer based in Surabaya, Indonesia. Specializing in backend development and
+          Software engineer based in Sidoarjo, Indonesia. Specializing in backend development and
           high-quality web applications. Currently building <span
             class="italic text-yellow-600 dark:text-purple-400">"gabut"</span
           > projects and crushing work tasks 🙂

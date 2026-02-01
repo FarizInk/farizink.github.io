@@ -10,15 +10,13 @@
     Save,
     RotateCw,
     Hash,
-    Type,
-    Eye
+    Type
   } from '@lucide/svelte';
   import {
     getTags,
     createTag,
     updateTag,
     deleteTag,
-    getTagNotes,
     type Tag,
     type TagCreateRequest
   } from '../lib/tags';
@@ -206,32 +204,6 @@
     } catch (error) {
       toast.error('Failed to delete tag');
       console.error('Delete tag error:', error);
-    }
-  }
-
-  async function handleViewTagNotes(tag: Tag) {
-    try {
-      const response = await getTagNotes(tag.tag);
-      const notesCount = response.data?.pagination?.total || 0;
-
-      if (notesCount > 0) {
-        // Navigate to notes page with tag filter
-        const baseUrl = window.location.origin;
-        const notesUrl = `${baseUrl}/notes?tag=${encodeURIComponent(tag.tag)}`;
-
-        // Close modal first
-        handleClose();
-
-        // Navigate to notes page
-        window.location.href = notesUrl;
-
-        toast.success(`Viewing ${notesCount} note${notesCount !== 1 ? 's' : ''} with tag "${tag.name}"`);
-      } else {
-        toast.info(`No notes found with tag "${tag.name}"`);
-      }
-    } catch (error) {
-      toast.error('Failed to get tag notes');
-      console.error('Get tag notes error:', error);
     }
   }
 
@@ -546,13 +518,6 @@
                     </div>
 
                     <div class="flex items-center gap-1 ml-2">
-                      <button
-                        onclick={() => handleViewTagNotes(tag)}
-                        class="w-8 h-8 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/30 flex items-center justify-center transition-colors"
-                        title="View notes with this tag"
-                      >
-                        <Eye class="w-4 h-4 text-blue-500 dark:text-blue-400" />
-                      </button>
                       <button
                         onclick={() => handleEdit(tag)}
                         class="w-8 h-8 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition-colors"

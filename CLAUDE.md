@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Software Engineer based in Surabaya, Indonesia. Built with modern web technologies, the site primarily showcases Fariz's professional profile, skills, and experience while featuring a comprehensive collection of 34 developer tools as a demonstration of technical capabilities and as a value-add service for the developer community. This is a portfolio website that provides real utility beyond just displaying profile information.
+This is a personal portfolio website for Nizar Alfarizi Akbar (Fariz), a Software Engineer based in Sidoarjo, Indonesia. Built with modern web technologies, the site primarily showcases Fariz's professional profile, skills, and experience while featuring a comprehensive collection of 34 developer tools as a demonstration of technical capabilities and as a value-add service for the developer community. This is a portfolio website that provides real utility beyond just displaying profile information.
 
 ## Technology Stack
 

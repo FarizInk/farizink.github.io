@@ -2,6 +2,7 @@
   import { fade } from 'svelte/transition';
   import { X } from '@lucide/svelte';
   import type { Snippet } from 'svelte';
+  import { preventBodyScroll, restoreBodyScroll, isTopmostModal } from '../lib/modalScroll';
 
   // Simple scale transition - smooth & clean
   function simpleScale(node: HTMLElement, { duration = 120 }: { duration?: number } = {}) {
@@ -42,6 +43,9 @@
     footer?: Snippet;
   }>();
 
+  // Store this modal's unique ID
+  let currentModalId = $state<string>('');
+
   function close() {
     onClose();
   }
@@ -59,9 +63,11 @@
   }
 
   function handleKeydown(e: KeyboardEvent) {
-    // ESC key always closes modal
+    // ESC key only closes modal if this is the topmost modal
     if (e.key === 'Escape') {
-      close();
+      if (isTopmostModal(currentModalId)) {
+        close();
+      }
       return;
     }
 
@@ -76,9 +82,13 @@
   // Add window-level event listener for ESC key
   $effect(() => {
     if (isOpen) {
+      // Register this modal and get unique ID
+      currentModalId = preventBodyScroll();
       window.addEventListener('keydown', handleKeydown);
       return () => {
         window.removeEventListener('keydown', handleKeydown);
+        restoreBodyScroll(currentModalId);
+        currentModalId = '';
       };
     }
   });

@@ -2,7 +2,7 @@
   import type { NoteFilters } from '../lib/notes';
   import { tagOptions, isLoadingTags, tags } from '../lib/stores/tags';
   import Modal from './Modal.svelte';
-  import MultipleSelect from './MultipleSelect.svelte';
+  import TagsSelector from './TagsSelector.svelte';
   import {
     Search,
     Settings,
@@ -262,7 +262,7 @@
         {#if $tags.length > 0}
           <div>
             <label for="include-tags" class="label">Include Tags</label>
-            <MultipleSelect
+            <TagsSelector
               id="include-tags"
               options={$tagOptions}
               bind:selectedValues={tempSelectedIncludeTags}
@@ -273,7 +273,7 @@
 
           <div>
             <label for="exclude-tags" class="label">Exclude Tags</label>
-            <MultipleSelect
+            <TagsSelector
               id="exclude-tags"
               options={$tagOptions}
               bind:selectedValues={tempSelectedExcludeTags}
@@ -427,7 +427,7 @@
               <TagIcon class="w-4 h-4" />
               Tags
             </label>
-            <MultipleSelect
+            <TagsSelector
               options={$tagOptions}
               bind:selectedValues={tempSelectedIncludeTags}
               placeholder="Select tags to filter..."
