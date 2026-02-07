@@ -34,6 +34,8 @@
           heading: {
             levels: [1, 2, 3],
           },
+          // Exclude default link extension to avoid duplicate
+          link: false,
         }),
         Link.configure({
           openOnClick: false,

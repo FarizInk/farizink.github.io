@@ -4,7 +4,7 @@
   import { File as FileIcon, Trash2, Download, Undo, AlertTriangle } from '@lucide/svelte';
 
   let {
-    files = $bindable<NoteFile[]>([]),
+    files,
     filesToDelete = $bindable<string[]>([])
   } = $props<{
     files: NoteFile[];

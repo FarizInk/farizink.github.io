@@ -272,7 +272,7 @@
           <!-- Existing Files - Only in edit mode -->
           {#if mode === 'edit' && note?.files && note.files.length > 0}
             <ExistingFiles
-              bind:files={note.files}
+              files={note.files}
               bind:filesToDelete={filesToDelete}
             />
           {/if}
