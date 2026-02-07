@@ -33,6 +33,17 @@
     animation: mesh-move 25s ease-in-out infinite;
     filter: blur(80px);
     opacity: 0.5;
+    will-change: transform;
+  }
+
+  /* Firefox optimization - reduced blur for better CPU performance */
+  @supports (-moz-appearance: none) {
+    .mesh-gradient {
+      filter: blur(50px);
+      inset: -30%;
+      width: 160%;
+      height: 160%;
+    }
   }
 
   @keyframes mesh-move {

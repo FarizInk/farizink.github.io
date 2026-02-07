@@ -1,5 +1,5 @@
 import { writable, derived, get } from 'svelte/store';
-import { getNotes, getDeletedNotes, permanentDeleteNote, type Note, type NoteFilters } from '../notes';
+import { getNotes, getDeletedNotes, permanentDeleteNote, restoreNote, type Note, type NoteFilters } from '../notes';
 import { toast } from 'svelte-sonner';
 
 // Basic stores for active notes
@@ -256,6 +256,28 @@ class DeletedNotesStore {
       console.error('Permanent delete error:', error);
       throw error;
     }
+  }
+
+  // Restore a deleted note
+  async restoreDeletedNote(noteId: string): Promise<Note> {
+    try {
+      const response = await restoreNote(noteId);
+      toast.success('Note restored successfully');
+      // Remove from deleted notes store
+      deletedNotes.update(currentNotes => currentNotes.filter(n => n.id !== noteId));
+      deletedCount.update(count => Math.max(0, count - 1));
+      return response.data;
+    } catch (error) {
+      toast.error('Failed to restore note');
+      console.error('Restore error:', error);
+      throw error;
+    }
+  }
+
+  // Remove a deleted note from the store (when API call is done separately)
+  removeDeletedNote(noteId: string): void {
+    deletedNotes.update(currentNotes => currentNotes.filter(n => n.id !== noteId));
+    deletedCount.update(count => Math.max(0, count - 1));
   }
 
   // Get current deleted notes value

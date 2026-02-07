@@ -535,6 +535,31 @@ export async function permanentDeleteNote(id: string): Promise<PermanentDeleteRe
   return await response.json();
 }
 
+/**
+ * Restore deleted note
+ */
+export async function restoreNote(id: string): Promise<NoteResponse> {
+  const token = localStorage.getItem('authToken');
+  if (!token) {
+    throw new Error('Authentication required');
+  }
+
+  const response = await fetch(`${API_BASE_URL}/api/note/${id}/restore`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    signal: AbortSignal.timeout(5000)
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to restore note: ${response.status}`);
+  }
+
+  return await response.json();
+}
+
 
 /**
  * Get file URL for preview - supports presigned URL, regular URL, and base64 formats
@@ -648,23 +673,16 @@ export async function compressImage(file: File, maxWidth = 1920, maxHeight = 108
 
 /**
  * Validate file type and size
+ * Accepts all file types, only validates size (max 100MB)
  */
 export function validateFile(file: File): { valid: boolean; error?: string } {
-  const maxSize = 10 * 1024 * 1024; // 10MB
-  const allowedTypes = [
-    'image/jpeg', 'image/png', 'image/gif', 'image/webp',
-    'application/pdf', 'text/plain',
-    'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-  ];
+  const maxSize = 100 * 1024 * 1024; // 100MB
 
   if (file.size > maxSize) {
-    return { valid: false, error: 'File too large (max 10MB)' };
+    return { valid: false, error: 'File too large (max 100MB)' };
   }
 
-  if (!allowedTypes.includes(file.type)) {
-    return { valid: false, error: 'File type not supported' };
-  }
-
+  // Accept all file types
   return { valid: true };
 }
 

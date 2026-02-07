@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { Note } from '../lib/notes';
   import { formatDate, getFileUrl, addRefreshParam, isPresignedUrl } from '../lib/notes';
-  import { Pencil, Trash2, Link2, Calendar, Image as ImageIcon, File, Paperclip, RefreshCw, AlertTriangle, RotateCcw } from '@lucide/svelte';
+  import { Pencil, Trash2, Link2, Calendar, Image as ImageIcon, File, Paperclip, RotateCcw, Share2 } from '@lucide/svelte';
 
-  let { note, onEdit, onDelete, hasAuthToken, onShowDetail, isDeleted = false, onPermanentDelete } = $props<{
+  let { note, onEdit, onDelete, hasAuthToken, onShowDetail, isDeleted = false, onPermanentDelete, onRestore, onShare } = $props<{
     note: Note;
     onEdit?: (note: Note) => void;
     onDelete?: (note: Note) => void;
@@ -11,6 +11,8 @@
     onShowDetail?: (note: Note) => void;
     isDeleted?: boolean;
     onPermanentDelete?: (note: Note) => void;
+    onRestore?: (note: Note) => void;
+    onShare?: (note: Note) => void;
   }>();
 
   function handleEdit() {
@@ -23,6 +25,14 @@
 
   function handlePermanentDelete() {
     onPermanentDelete?.(note);
+  }
+
+  function handleRestore() {
+    onRestore?.(note);
+  }
+
+  function handleShare() {
+    onShare?.(note);
   }
 
   function handleShowDetail() {
@@ -69,7 +79,7 @@
   </script>
 
 <div
-  class="card card-hover !p-6 group relative overflow-hidden cursor-pointer {isDeleted ? 'bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/30 dark:to-orange-900/20 border-2 border-red-300 dark:border-red-500 opacity-90' : (!note.isPublic ? 'bg-gradient-to-br from-yellow-50 to-yellow-50 dark:from-primary-900/30 dark:to-primary-900/20 border-2 border-yellow-300 dark:border-primary-500 shadow-lg' : '')}"
+  class="card card-hover !p-6 group relative overflow-hidden cursor-pointer {!note.isPublic ? 'bg-gradient-to-br from-yellow-50 to-yellow-50 dark:from-primary-900/30 dark:to-primary-900/20 border-2 border-yellow-300 dark:border-primary-500 shadow-lg' : ''}"
   role="button"
   tabindex="0"
   onclick={handleShowDetail}
@@ -82,20 +92,10 @@
   aria-label={`View details for ${note.name || 'note'}`}
 >
   <!-- Card Accent Border -->
-  {#if isDeleted}
-    <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-red-400 to-red-600"></div>
-  {:else if note.isFavorite}
+  {#if note.isFavorite}
     <div
       class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-yellow-400 to-yellow-600"
     ></div>
-  {/if}
-
-  <!-- Deleted Badge -->
-  {#if isDeleted}
-    <div class="absolute top-2 right-2 flex items-center gap-1 bg-red-100 dark:bg-red-900/50 px-2 py-1 rounded-full">
-      <AlertTriangle class="w-3 h-3 text-red-600 dark:text-red-400" />
-      <span class="text-xs font-medium text-red-700 dark:text-red-300">Deleted</span>
-    </div>
   {/if}
 
   <!-- Card Content -->
@@ -246,7 +246,7 @@
       <div class="flex items-center gap-4">
         {#if isDeleted && note.deletedAt}
           <div class="flex items-center gap-2 text-red-600 dark:text-red-400">
-            <AlertTriangle class="w-4 h-4" />
+            <Calendar class="w-4 h-4" />
             <span>Deleted {formatDate(note.deletedAt)}</span>
           </div>
         {:else if note.createdAt}
@@ -266,7 +266,19 @@
       <!-- Action Buttons in Footer -->
       <div class="flex items-center gap-2">
         {#if isDeleted}
-          <!-- Permanent Delete button for deleted notes -->
+          <!-- Restore and Permanent Delete buttons for deleted notes -->
+          {#if hasAuthToken && onRestore}
+            <button
+              onclick={e => {
+                e.stopPropagation();
+                handleRestore();
+              }}
+              class="w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/30 hover:bg-green-100 dark:hover:bg-green-900/50 border border-green-200 dark:border-green-700 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
+              title="Restore note"
+            >
+              <RotateCcw class="w-4 h-4 text-green-600 dark:text-green-400" />
+            </button>
+          {/if}
           {#if hasAuthToken && onPermanentDelete}
             <button
               onclick={e => {
@@ -276,12 +288,21 @@
               class="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 border border-red-200 dark:border-red-700 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
               title="Permanently delete note"
             >
-              <Trash2
-                class="w-4 h-4 text-red-600 dark:text-red-400"
-              />
+              <Trash2 class="w-4 h-4 text-red-600 dark:text-red-400" />
             </button>
           {/if}
         {:else}
+          <!-- Share button - Always available -->
+          <button
+            onclick={e => {
+              e.stopPropagation();
+              handleShare();
+            }}
+            class="w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-blue-300 dark:hover:border-blue-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
+            title="Share note"
+          >
+            <Share2 class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+          </button>
           <!-- Edit and Delete buttons - Only show when authenticated -->
           {#if hasAuthToken}
             <button

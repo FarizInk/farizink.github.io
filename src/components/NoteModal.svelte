@@ -188,6 +188,7 @@
           class="input"
           bind:value={formData.name}
           disabled={isLoading}
+          autocomplete="off"
           required
         />
       </div>

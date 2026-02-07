@@ -6,7 +6,7 @@
   let {
     files = $bindable<NoteFileData[]>([]),
     maxFiles = 10,
-    maxFileSize = 10 * 1024 * 1024, // 10MB
+    maxFileSize = 100 * 1024 * 1024, // 100MB
     disabled = false
   } = $props<{
     files: NoteFileData[];
@@ -25,22 +25,6 @@
       previewUrls.forEach(url => revokePreviewUrl(url));
     };
   });
-
-  const acceptedTypes = [
-    'image/jpeg',
-    'image/jpg',
-    'image/png',
-    'image/gif',
-    'image/webp',
-    'application/pdf',
-    'text/plain',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-  ];
-
-  function isAcceptedType(type: string): boolean {
-    return acceptedTypes.includes(type);
-  }
 
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
@@ -189,7 +173,7 @@
       const input = document.createElement('input');
       input.type = 'file';
       input.multiple = true;
-      input.accept = acceptedTypes.join(',');
+      // Accept all file types
       input.onchange = (e) => {
         handleFileInput(e);
         input.remove();
@@ -215,7 +199,7 @@
         bind:this={fileInputRef}
         type="file"
         multiple
-        accept={acceptedTypes.join(',')}
+        accept="*/*"
         onchange={handleFileInput}
         disabled={disabled}
         class="hidden"
@@ -240,7 +224,7 @@
           Click to upload or drag and drop
         </p>
         <p class="text-xs text-secondary-500 dark:text-secondary-400">
-          Images (JPEG, PNG, GIF, WebP), PDF, DOC, DOCX, TXT
+          All file types
         </p>
         <p class="text-xs text-secondary-500 dark:text-secondary-400 mt-1">
           Max {formatFileSize(maxFileSize)} per file, up to {maxFiles} files

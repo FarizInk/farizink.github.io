@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Note } from '../lib/notes';
   import { formatDate, getFileUrl, addRefreshParam, isPresignedUrl } from '../lib/notes';
-  import { X, ExternalLink, Calendar, Tag, Star, Clock, Edit, Trash2, Link2, File, Image as ImageIcon, Download, Eye, AlertTriangle } from '@lucide/svelte';
+  import { X, ExternalLink, Calendar, Tag, Star, Clock, Edit, Trash2, Link2, File, Image as ImageIcon, Download, Eye, AlertTriangle, Share2 } from '@lucide/svelte';
   import Modal from './Modal.svelte';
 
   let {
@@ -12,7 +12,8 @@
     onDelete,
     hasAuthToken,
     isDeleted = false,
-    onPermanentDelete
+    onPermanentDelete,
+    onShare
   } = $props<{
     note: Note | null;
     isOpen: boolean;
@@ -22,10 +23,15 @@
     hasAuthToken?: boolean;
     isDeleted?: boolean;
     onPermanentDelete?: (note: Note) => void;
+    onShare?: (note: Note) => void;
   }>();
 
   // Modal is only open when both isOpen is true AND note exists
   let shouldShowModal = $derived(isOpen && note !== null);
+
+  function handleShare() {
+    if (note) onShare?.(note);
+  }
 
   function handleEdit() {
     if (note) onEdit?.(note);
@@ -160,6 +166,14 @@
             <ExternalLink class="w-5 h-5 text-blue-600 dark:text-blue-400" />
           </button>
         {/if}
+
+        <button
+          onclick={handleShare}
+          class="w-10 h-10 rounded-lg bg-secondary-100 dark:bg-secondary-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-blue-300 dark:hover:border-blue-800 flex items-center justify-center transition-colors"
+          title="Share note"
+        >
+          <Share2 class="w-5 h-5 text-secondary-600 dark:text-secondary-300" />
+        </button>
 
         {#if isDeleted}
           <!-- Permanent Delete button for deleted notes -->
