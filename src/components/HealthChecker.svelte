@@ -3,26 +3,12 @@
   import { Activity, CheckCircle, CircleX, AlertCircle } from '@lucide/svelte';
   import { API_BASE_URL } from '../lib/constants';
 
-  // Health status interface
+  // Health status interface (Laravel API format)
   interface HealthData {
-    success: boolean;
-    data: {
-      status: string;
-      uptime: number;
-      environment: string;
-      version: string;
-      memory: {
-        rss: number;
-        heapTotal: number;
-        heapUsed: number;
-        external: number;
-        arrayBuffers: number;
-      };
-    };
-    meta: {
-      timestamp: string;
-      path: string;
-    };
+    status: string;
+    service: string;
+    timestamp: string;
+    version: string;
   }
 
   let healthData = $state<HealthData | null>(null);
@@ -40,7 +26,7 @@
     error = null;
 
     try {
-      const response = await fetch(`${API_BASE_URL}/health`, {
+      const response = await fetch(`${API_BASE_URL}/api/health`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -116,7 +102,7 @@
   function getStatusText() {
     if (isChecking) return 'Checking...';
     if (error) return 'Error';
-    if (healthData?.data.status === 'ok') return 'Online';
+    if (healthData?.status === 'ok') return 'Online';
     return 'Unknown';
   }
 
@@ -143,7 +129,7 @@
           <Activity class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 animate-pulse" />
         {:else if error}
           <CircleX class="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
-        {:else if healthData?.data.status === 'ok'}
+        {:else if healthData?.status === 'ok'}
           <CheckCircle class="w-3.5 h-3.5 text-green-600 dark:text-green-400" />
           <div
             class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full animate-pulse"
@@ -190,30 +176,30 @@
         <div class="flex items-center gap-1">
           <div class="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
           <span class="text-gray-600 dark:text-gray-400">v</span>
-          <span class="text-gray-900 dark:text-white font-medium">{healthData.data.version}</span>
+          <span class="text-gray-900 dark:text-white font-medium">{healthData.version}</span>
         </div>
 
-        <!-- Environment -->
+        <!-- Service -->
         <div class="flex items-center gap-1">
           <div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
           <span class="text-gray-900 dark:text-white font-medium"
-            >{healthData.data.environment}</span
+            >{healthData.service}</span
           >
         </div>
 
-        <!-- Uptime -->
+        <!-- Status -->
         <div class="flex items-center gap-1">
           <div class="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
           <span class="text-gray-900 dark:text-white font-medium"
-            >{formatUptime(healthData.data.uptime)}</span
+            >{healthData.status}</span
           >
         </div>
 
-        <!-- Memory -->
+        <!-- Timestamp -->
         <div class="flex items-center gap-1">
           <div class="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
           <span class="text-gray-900 dark:text-white font-medium"
-            >{formatBytes(healthData.data.memory.heapUsed)}</span
+            >{new Date(healthData.timestamp).toLocaleTimeString()}</span
           >
         </div>
       </div>

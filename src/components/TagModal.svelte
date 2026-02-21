@@ -20,7 +20,7 @@
     type Tag,
     type TagCreateRequest
   } from '../lib/tags';
-  import { tags as globalTags, tagsStore, isLoadingTags } from '../lib/stores/tags';
+  import { tags, tagsStore, isLoadingTags } from '../lib/stores/tags';
   import Modal from './Modal.svelte';
 
   // Props
@@ -29,8 +29,7 @@
   // Local state
   let isLoading = $state(false);
   let searchQuery = $state('');
-  let debouncedSearchQuery = $state('');
-  let lastSearchQuery = $state(''); // Track last executed search
+  let lastSearchQuery = $state('');
   let searchTimeout: ReturnType<typeof setTimeout> | null = null;
   let isSearchTyping = $state(false);
 
@@ -41,11 +40,11 @@
   let formData = $state<TagCreateRequest>({
     tag: '',
     name: '',
-    color: '#61DAFB' // Default color
+    color: '#61DAFB'
   });
 
-  // Tags from global store
-  let tags = $derived(globalTags);
+  // Track initial load to prevent infinite loop
+  let hasLoadedInitially = $state(false);
 
   // Combined loading state (local + global)
   let isAnyLoading = $derived($isLoadingTags || isLoading);
@@ -55,45 +54,43 @@
 
   // Watch search query for typing indicator
   $effect(() => {
-    if (searchQuery.trim()) {
-      isSearchTyping = true;
-    } else {
-      isSearchTyping = false;
+    isSearchTyping = searchQuery.trim().length > 0;
+  });
+
+  // Load initial tags when modal opens
+  $effect(() => {
+    if (isOpen && !hasLoadedInitially) {
+      tagsStore.loadTags();
+      hasLoadedInitially = true;
+      lastSearchQuery = '';
+    }
+
+    // Reset flag when modal closes
+    if (!isOpen) {
+      hasLoadedInitially = false;
     }
   });
 
-  // Combined load and search effect with caching
+  // Debounced search effect - separate from initial load
   $effect(() => {
     // Clear existing timeout
     if (searchTimeout) {
       clearTimeout(searchTimeout);
     }
 
-    // When modal opens, load initial tags
-    if (isOpen && !searchQuery.trim()) {
-      // Load from global store first, then fallback to API
-      const currentTags = get(globalTags) as Tag[];
-      if (currentTags.length === 0) {
-        tagsStore.loadTags(); // Load from API if store is empty
-      }
-      lastSearchQuery = '';
-      return;
-    }
-
-    // Debounced search effect (always execute search API calls)
-    if (searchQuery.trim() && isOpen) {
+    // Only run search if modal is open and there's a query
+    if (isOpen && searchQuery.trim() && hasLoadedInitially) {
       searchTimeout = setTimeout(() => {
-        // Only execute API call if search has actually changed
-        if (lastSearchQuery !== searchQuery.trim()) {
-          debouncedSearchQuery = searchQuery.trim();
-          lastSearchQuery = searchQuery.trim();
+        const trimmedQuery = searchQuery.trim();
+        if (lastSearchQuery !== trimmedQuery) {
+          lastSearchQuery = trimmedQuery;
           isSearchTyping = false;
           loadTags();
         }
       }, 300);
     }
 
-    // Cleanup function
+    // Cleanup
     return () => {
       if (searchTimeout) {
         clearTimeout(searchTimeout);
@@ -105,11 +102,8 @@
     isLoading = true;
 
     try {
-      const response = await getTags(debouncedSearchQuery);
-      const updatedTags = response.data.tags;
-
-      // Update global store
-      globalTags.set(updatedTags);
+      // Use tagsStore to load tags (handles pagination internally)
+      await tagsStore.loadTags();
     } catch (error) {
       toast.error('Failed to load tags');
       console.error('Load tags error:', error);
@@ -147,9 +141,10 @@
     }
 
     // Check for duplicate tag (excluding current tag if editing)
-    const currentTags = get(globalTags) as Tag[];
+    // Use safe array access to prevent errors
+    const currentTags = $tags || [];
     const duplicateTag = currentTags.find((t: Tag) =>
-      t.tag.toLowerCase() === formData.tag.toLowerCase() &&
+      t && t.tag && t.tag.toLowerCase() === formData.tag.toLowerCase() &&
       t.tag !== editingTag?.tag
     );
 
@@ -162,25 +157,20 @@
       // Prepare data with nullable color
       const submitData = {
         ...formData,
-        color: formData.color?.trim() || undefined // Send undefined if empty
+        color: formData.color?.trim() || undefined
       };
 
       if (isCreating) {
-        const response = await createTag(submitData);
-        console.log('Create tag response:', response);
-        // Ensure the new tag has createdAt field
-        const newTag: Tag = {
-          ...response.data,
-          createdAt: typeof response.data.createdAt === 'number' ? response.data.createdAt : Date.now()
-        };
-        console.log('New tag to add:', newTag);
-        // Add new tag to global store
+        // createTag now returns Tag directly
+        const newTag = await createTag(submitData);
+        // Add to store from response
         tagsStore.addTag(newTag);
         toast.success('Tag created successfully');
       } else if (isEditing && editingTag) {
-        const response = await updateTag(editingTag.tag, submitData);
-        // Update tag in global store (using tag as identifier)
-        tagsStore.updateTag(editingTag.tag, response.data);
+        // updateTag now returns Tag directly
+        const updatedTag = await updateTag(editingTag.tag, submitData);
+        // Update store from response
+        tagsStore.updateTag(editingTag.tag, updatedTag);
         toast.success('Tag updated successfully');
       }
 
@@ -198,7 +188,7 @@
 
     try {
       await deleteTag(tag.tag);
-      // Remove tag from global store (using tag as identifier)
+      // Remove from store
       tagsStore.removeTag(tag.tag);
       toast.success('Tag deleted successfully');
     } catch (error) {
@@ -208,22 +198,14 @@
   }
 
   function handleRefresh() {
-    tagsStore.loadTags(searchQuery || undefined); // Use the global store to reload
+    tagsStore.loadTags(true); // Force refresh from API
   }
 
   function handleClose() {
     isOpen = false;
     dispatch('close');
-    handleCancel(); // Reset form state
-    lastSearchQuery = ''; // Reset last search to allow reload on next open
-  }
-
-  // Helper function to get current store value
-  function get(store: { subscribe: (fn: (value: unknown) => void) => () => void }): unknown {
-    let value: unknown;
-    const unsubscribe = store.subscribe((v: unknown) => value = v);
-    unsubscribe();
-    return value;
+    handleCancel();
+    lastSearchQuery = '';
   }
 
   function formatDate(dateInput: string | number): string {
@@ -260,7 +242,7 @@
         <div>
           <h2 id="modal-title" class="text-xl font-bold text-gray-900 dark:text-white">Manage Tags</h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            {$tags.length} tag{$tags.length !== 1 ? 's' : ''} total
+            {($tags || []).length} tag{($tags || []).length !== 1 ? 's' : ''} total
           </p>
         </div>
       </div>
@@ -467,7 +449,7 @@
             <RotateCw class="w-6 h-6 text-yellow-600 dark:text-primary-600 animate-spin" />
             <span class="ml-2 text-gray-600 dark:text-gray-400">Loading tags...</span>
           </div>
-        {:else if $tags.length === 0}
+        {:else if ($tags || []).length === 0}
           <div class="text-center py-12">
             <TagIcon class="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
             <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
@@ -489,7 +471,7 @@
         {:else}
           <div class="p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {#each $tags as tag (tag.tag)}
+              {#each $tags.filter(t => t) as tag (tag.id)}
                 <div
                   class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600 hover:border-yellow-300 dark:hover:border-primary-600 transition-colors"
                 >
@@ -513,7 +495,7 @@
                         {tag.name}
                       </h3>
                       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        Created {formatDate(tag.createdAt)}
+                        Created {formatDate(tag.created_at)}
                       </p>
                     </div>
 

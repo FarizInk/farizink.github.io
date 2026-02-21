@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { NoteFileData, NoteFile } from '../lib/notes';
   import { validateFile, compressImage, createPreviewUrl, revokePreviewUrl } from '../lib/notes';
+  import { formatFileSize, formatFileName, getFileIconType } from '../lib/uiUtils';
   import { X, Upload, Image as ImageIcon, File, Trash2, Eye, Star } from '@lucide/svelte';
 
   let {
@@ -26,25 +27,9 @@
     };
   });
 
-  function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }
-
-  function formatFileName(name: string): string {
-    const maxLength = 30;
-    if (name.length <= maxLength) return name;
-    return name.substring(0, maxLength / 2) + '...' + name.substring(name.length - maxLength / 2);
-  }
-
+  // Get icon component for file type
   function getFileIcon(mimeType: string) {
-    if (mimeType.startsWith('image/')) {
-      return ImageIcon;
-    }
-    return File;
+    return getFileIconType(mimeType);
   }
 
   async function processFile(file: File): Promise<NoteFileData | null> {

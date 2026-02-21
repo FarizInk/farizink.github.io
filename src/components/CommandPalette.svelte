@@ -2,7 +2,8 @@
   import { navigate, type Route } from '../lib/router';
   import { allRoutes } from '../routes/index';
   import { Search, Command, LogOut, User } from '@lucide/svelte';
-  import { getValidatedAuthState, logout } from '../lib/auth';
+  import { getValidatedAuthState, logout, getAuthState, type AuthState } from '../lib/auth';
+  import { onMount } from 'svelte';
 
   let { isOpen = $bindable(false) } = $props();
 
@@ -13,6 +14,8 @@
     isLoggedIn: false,
     username: null
   });
+  // Track if we're currently validating to prevent race conditions
+  let isValidating = $state(false);
 
   function closeModal() {
     isOpen = false;
@@ -20,12 +23,33 @@
     selectedIndex = 0;
   }
 
-  async function updateAuthState() {
-    const state = await getValidatedAuthState();
+  // Sync auth state from localStorage immediately (for responsive UI)
+  function syncAuthStateFromStorage() {
+    if (typeof localStorage === 'undefined') return;
+
+    const token = localStorage.getItem('authToken');
+    const username = localStorage.getItem('username');
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
     authState = {
-      isLoggedIn: state.isValid && state.isLoggedIn,
-      username: state.username
+      isLoggedIn: !!(token && isLoggedIn),
+      username
     };
+  }
+
+  async function updateAuthState() {
+    if (isValidating) return; // Prevent concurrent validations
+    isValidating = true;
+
+    try {
+      const state = await getValidatedAuthState();
+      authState = {
+        isLoggedIn: state.isValid && state.isLoggedIn,
+        username: state.username
+      };
+    } finally {
+      isValidating = false;
+    }
   }
 
   function navigateToRoute(route: { path: string; title?: string; description?: string }) {
@@ -87,13 +111,21 @@
   });
 
   // Update auth state when component mounts and listen for auth changes
-  $effect(() => {
-    // Update auth state asynchronously
+  onMount(() => {
+    // Sync from localStorage immediately for responsive UI
+    syncAuthStateFromStorage();
+
+    // Then validate asynchronously (don't await, let it happen in background)
     updateAuthState();
 
     // Listen for auth state changes
-    const handleLoginSuccess = () => updateAuthState();
-    const handleLogoutSuccess = () => updateAuthState();
+    const handleLoginSuccess = () => {
+      syncAuthStateFromStorage(); // Immediate update from localStorage
+      updateAuthState(); // Then validate with API
+    };
+    const handleLogoutSuccess = () => {
+      syncAuthStateFromStorage(); // Immediate update from localStorage
+    };
 
     document.addEventListener('login-success', handleLoginSuccess);
     document.addEventListener('logout-success', handleLogoutSuccess);

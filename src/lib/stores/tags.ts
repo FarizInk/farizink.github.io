@@ -12,9 +12,9 @@ export const tagsError = writable<string | null>(null);
 export const tagOptions = derived(
   tags,
   $tags => $tags.map(tag => ({
-    value: tag.tag,
+    value: tag.id,  // Use UUID as value
     label: tag.name || tag.tag,
-    description: tag.tag,
+    description: tag.tag,  // Show slug as description
     color: tag.color // Keep null as null, components will handle fallback
   }))
 );
@@ -22,12 +22,18 @@ export const tagOptions = derived(
 // Global Tags Store class with methods
 class TagsStore {
   // Actions
-  async loadTags(search?: string): Promise<void> {
-    // Check if user is authenticated before loading tags
+  async loadTags(force: boolean = false): Promise<void> {
     const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
     if (!token) {
-      // No auth token, skip loading tags silently
       tags.set([]);
+      return;
+    }
+
+    // Get current tags to check if we need to fetch
+    const currentTags = get(tags);
+
+    // If not forced and we already have tags, skip the API call
+    if (!force && currentTags && currentTags.length > 0) {
       return;
     }
 
@@ -38,14 +44,13 @@ class TagsStore {
     tagsError.set(null);
 
     try {
-      const response = await getTags(search);
-      const fetchedTags = response.data.tags;
-
-      // Use only real data from API
-      tags.set(fetchedTags);
+      // getTags now returns TagsResponse with pagination
+      const response = await getTags(1, 100);
+      // Extract data array from response
+      tags.set(response.data);
     } catch (error) {
       tagsError.set(error instanceof Error ? error.message : String(error));
-      tags.set([]); // Empty array on error - no fake data
+      tags.set([]);
       toast.error('Failed to load tags');
     } finally {
       isLoadingTags.set(false);
@@ -54,16 +59,32 @@ class TagsStore {
 
   // Add a new tag to the store
   addTag(tag: Tag): void {
-    tags.update(currentTags => [...currentTags, tag]);
+    // Get current value
+    let currentTags: Tag[] = [];
+    const unsub = tags.subscribe(v => { currentTags = v; });
+    unsub();
+
+    // Create new array with tag added
+    const newTags = [...currentTags, tag];
+
+    // Use set() for explicit reactivity
+    tags.set(newTags);
   }
 
   // Update a tag in the store
-  updateTag(tagId: string, updates: Partial<Tag>): void {
-    tags.update(currentTags =>
-      currentTags.map(tag =>
-        tag.tag === tagId ? { ...tag, ...updates } : tag
-      )
+  updateTag(tagId: string, newTag: Tag): void {
+    // Get current value
+    let currentTags: Tag[] = [];
+    const unsub = tags.subscribe(v => { currentTags = v; });
+    unsub();
+
+    // Create new array with updated tag
+    const newTags = currentTags.map(tag =>
+      tag.tag === tagId ? newTag : tag
     );
+
+    // Use set() for explicit reactivity
+    tags.set(newTags);
   }
 
   // Remove a tag from the store

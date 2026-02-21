@@ -1,14 +1,17 @@
+import { apiClient, getAuthHeaders, isAxiosError } from './axios';
 import { API_BASE_URL } from './constants';
+import axios from 'axios';
 import type { Tag } from './tags';
 
 export interface NoteFile {
   id: string;
-  noteId: string;
+  note_id: string;
   data: string; // base64 encoded data (legacy support)
   url?: string; // file URL for multipart uploads
-  presignedUrl?: string; // presigned URL for secure file access
-  originalName: string;
-  mimeType: string;
+  presigned_url?: string; // presigned URL for secure file access
+  filename: string;
+  original_name: string;
+  mime_type: string;
   size: number;
   metadata: {
     title?: string;
@@ -19,9 +22,12 @@ export interface NoteFile {
     pages?: number;
     [key: string]: any;
   };
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  related_id: string;
+  related_type: string;
+  upload_source: string;
 }
 
 export interface Note {
@@ -29,67 +35,37 @@ export interface Note {
   name: string | null;
   link: string | null;
   description: string | null;
-  isPublic: boolean;
-  isFavorite: boolean;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
+  is_public: boolean;
+  is_favorite: boolean;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
   tags: Tag[];
   files?: NoteFile[];
 }
 
 export interface NotesResponse {
-  success: boolean;
-  data: {
-    notes: Note[];
-    pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
-    };
-  };
-  meta: {
-    timestamp: string;
-    path: string;
+  notes: Note[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
   };
 }
 
 export interface NoteResponse {
-  success: boolean;
   data: Note;
-  meta: {
-    timestamp: string;
-    path: string;
-  };
 }
 
 export interface DeleteResponse {
-  success: boolean;
-  data: {
-    id: string;
-    deleted: boolean;
-    message: string;
-  };
-  meta: {
-    timestamp: string;
-    path: string;
-  };
+  message: string;
 }
 
 export interface PermanentDeleteResponse {
-  success: boolean;
-  data: {
-    id: string;
-    permanentlyDeleted: boolean;
-    message: string;
-    deletedFilesCount: number;
-    s3Errors: string[];
-  };
-  meta: {
-    timestamp: string;
-    path: string;
-  };
+  message: string;
+  deletedFilesCount: number;
+  s3Errors: string[];
 }
 
 export interface NoteFileData {
@@ -141,57 +117,52 @@ export async function getNotes(
   limit: number = 10,
   filters?: NoteFilters
 ): Promise<NotesResponse> {
-  const token = localStorage.getItem('authToken');
-
-  // Build query string
-  const params = new URLSearchParams({
+  // Build query params - use snake_case for API parameters
+  const params: Record<string, string | number> = {
     page: page.toString(),
     limit: limit.toString()
-  });
-
-  // Add filters if they exist
-  if (filters?.isPublic !== undefined) {
-    params.append('isPublic', filters.isPublic.toString());
-  }
-  if (filters?.isFavorite !== undefined) {
-    params.append('isFavorite', filters.isFavorite.toString());
-  }
-  if (filters?.sortBy) {
-    params.append('sortBy', filters.sortBy);
-  }
-  if (filters?.sortOrder) {
-    params.append('sortOrder', filters.sortOrder);
-  }
-  if (filters?.search) {
-    params.append('search', filters.search.trim());
-  }
-  if (filters?.includeTags && filters.includeTags.length > 0) {
-    params.append('includeTags', filters.includeTags.join(','));
-  }
-  if (filters?.excludeTags && filters.excludeTags.length > 0) {
-    params.append('excludeTags', filters.excludeTags.join(','));
-  }
-
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json'
   };
 
-  // Add Authorization header only if token exists
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+  // Add filters if they exist - convert to snake_case for API
+  if (filters?.isPublic !== undefined) {
+    params.is_public = filters.isPublic.toString();
+  }
+  if (filters?.isFavorite !== undefined) {
+    params.is_favorite = filters.isFavorite.toString();
+  }
+  if (filters?.sortBy) {
+    params.sort_by = filters.sortBy;
+  }
+  if (filters?.sortOrder) {
+    params.sort_order = filters.sortOrder;
+  }
+  if (filters?.search) {
+    params.search = filters.search.trim();
+  }
+  if (filters?.includeTags && filters.includeTags.length > 0) {
+    params.include_tags = filters.includeTags.join(',');
+  }
+  if (filters?.excludeTags && filters.excludeTags.length > 0) {
+    params.exclude_tags = filters.excludeTags.join(',');
   }
 
-  const response = await fetch(`${API_BASE_URL}/api/note?${params.toString()}`, {
-    method: 'GET',
-    headers,
-    signal: AbortSignal.timeout(5000)
-  });
+  try {
+    const response = await apiClient.get('/api/notes', {
+      params,
+      timeout: 10000
+    });
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch notes: ${response.status}`);
+    // API returns { success: true, data: { notes: [...], pagination: {...} } }
+    return response.data.data || response.data;
+  } catch (error) {
+    console.error('getNotes error:', error);
+    if (isAxiosError(error)) {
+      console.error('Error response:', error.response);
+      console.error('Error status:', error.response?.status);
+      console.error('Error data:', error.response?.data);
+    }
+    throw error;
   }
-
-  return await response.json();
 }
 
 /**
@@ -199,35 +170,41 @@ export async function getNotes(
  * Can be accessed with or without authentication token
  */
 export async function getNote(id: string): Promise<NoteResponse> {
-  const token = localStorage.getItem('authToken');
-
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json'
-  };
-
-  // Add Authorization header only if token exists
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-
-  const response = await fetch(`${API_BASE_URL}/api/note/${id}`, {
-    method: 'GET',
-    headers,
-    signal: AbortSignal.timeout(5000)
+  const response = await apiClient.get(`/api/notes/${id}`, {
+    timeout: 5000
   });
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch note: ${response.status}`);
+  return response.data;
+}
+
+/**
+ * Create new note with FormData (for file uploads)
+ * Call this directly from components to avoid File object proxy issues with Svelte 5
+ */
+export async function createNoteWithFormData(formData: FormData): Promise<NoteResponse> {
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
+  if (!token) {
+    throw new Error('Authentication required');
   }
 
-  return await response.json();
+  // Use raw axios to avoid apiClient's default headers
+  const response = await axios.post(`${API_BASE_URL}/api/notes`, formData, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/json'
+      // Don't set Content-Type - browser will set it with boundary for FormData
+    },
+    timeout: 30000
+  });
+
+  return response.data.data ? { data: response.data.data } : { data: response.data };
 }
 
 /**
  * Create new note with multipart/form-data support
  */
 export async function createNote(noteData: CreateNoteData): Promise<NoteResponse> {
-  const token = localStorage.getItem('authToken');
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
   if (!token) {
     throw new Error('Authentication required');
   }
@@ -239,21 +216,26 @@ export async function createNote(noteData: CreateNoteData): Promise<NoteResponse
     // Use multipart/form-data if we have actual files
     const formData = new FormData();
 
-    // Add note data
+    // Add note data - use snake_case for API
+    // Laravel expects "1" or "0" for boolean fields in FormData
     if (noteData.name) formData.append('name', noteData.name);
     if (noteData.link) formData.append('link', noteData.link);
     if (noteData.description) formData.append('description', noteData.description);
-    if (noteData.isPublic !== undefined) formData.append('isPublic', noteData.isPublic.toString());
-    if (noteData.isFavorite !== undefined) formData.append('isFavorite', noteData.isFavorite.toString());
+    formData.append('is_public', noteData.isPublic ? '1' : '0');
+    formData.append('is_favorite', noteData.isFavorite ? '1' : '0');
+
+    // Send tag_ids as individual entries for Laravel to auto-convert to array
     if (noteData.tags && noteData.tags.length > 0) {
-      formData.append('tags', JSON.stringify(noteData.tags));
+      noteData.tags.forEach(tagId => {
+        formData.append('tag_ids[]', tagId);
+      });
     }
 
     // Add files
     if (noteData.files) {
       noteData.files.forEach((file) => {
         if (file.file) {
-          formData.append(`files`, file.file);
+          formData.append('files', file.file);
         } else if (file.data) {
           // Handle legacy base64 files - convert back to blob
           const byteCharacters = atob(file.data);
@@ -263,61 +245,55 @@ export async function createNote(noteData: CreateNoteData): Promise<NoteResponse
           }
           const byteArray = new Uint8Array(byteNumbers);
           const blob = new Blob([byteArray], { type: file.mimeType });
-          formData.append(`files`, blob, file.originalName);
+          formData.append('files', blob, file.originalName);
         }
       });
     }
 
-    const response = await fetch(`${API_BASE_URL}/api/note`, {
-      method: 'POST',
+    const response = await apiClient.post('/api/notes', formData, {
       headers: {
+        // Don't set Content-Type for FormData - axios will set it with boundary
         Authorization: `Bearer ${token}`
-        // Don't set Content-Type header for FormData - browser will set it with boundary
       },
-      body: formData,
-      signal: AbortSignal.timeout(30000) // Longer timeout for file uploads
+      timeout: 30000 // Longer timeout for file uploads
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to create note: ${response.status}`);
-    }
-
-    return await response.json();
+    // Handle API response format { success: true, data: Note }
+    return response.data.data ? { data: response.data.data } : { data: response.data };
   } else {
     // Use regular JSON if no files or only base64 data
-    const submissionData: any = {
-      name: noteData.name,
-      link: noteData.link,
-      description: noteData.description,
-      isPublic: noteData.isPublic,
-      isFavorite: noteData.isFavorite,
-      tags: noteData.tags || []
-    };
+    // Use snake_case for API fields
+    const submissionData: any = {};
+
+    // Only include fields that are provided
+    if (noteData.name !== undefined) submissionData.name = noteData.name;
+    if (noteData.link !== undefined) submissionData.link = noteData.link;
+    if (noteData.description !== undefined) submissionData.description = noteData.description;
+    if (noteData.isPublic !== undefined) submissionData.is_public = noteData.isPublic;
+    if (noteData.isFavorite !== undefined) submissionData.is_favorite = noteData.isFavorite;
+    if (noteData.tags && noteData.tags.length > 0) submissionData.tag_ids = noteData.tags;
 
     // Process files - only base64 data
     if (noteData.files && noteData.files.length > 0) {
-      submissionData.files = noteData.files.map(file => ({
-        data: file.data, // Only if present
-        originalName: file.originalName,
-        mimeType: file.mimeType
-      })).filter(file => file.data);
+      const filesData = noteData.files
+        .map(file => ({
+          data: file.data, // Only if present
+          originalName: file.originalName,
+          mimeType: file.mimeType
+        }))
+        .filter(file => file.data);
+
+      if (filesData.length > 0) {
+        submissionData.files = filesData;
+      }
     }
 
-    const response = await fetch(`${API_BASE_URL}/api/note`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(submissionData),
-      signal: AbortSignal.timeout(10000)
+    const response = await apiClient.post('/api/notes', submissionData, {
+      timeout: 10000
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to create note: ${response.status}`);
-    }
-
-    return await response.json();
+    // Handle API response format { success: true, data: Note }
+    return response.data.data ? { data: response.data.data } : { data: response.data };
   }
 }
 
@@ -328,7 +304,7 @@ export async function updateNote(
   id: string,
   noteData: UpdateNoteData
 ): Promise<NoteResponse> {
-  const token = localStorage.getItem('authToken');
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
   if (!token) {
     throw new Error('Authentication required');
   }
@@ -340,22 +316,30 @@ export async function updateNote(
     // Use multipart/form-data if we have actual files
     const formData = new FormData();
 
-    // Add note data
+    // Add note data - use snake_case for API
+    // Laravel expects "1" or "0" for boolean fields in FormData
     if (noteData.name !== undefined) formData.append('name', noteData.name);
     if (noteData.link !== undefined) formData.append('link', noteData.link);
     if (noteData.description !== undefined) formData.append('description', noteData.description);
-    if (noteData.isPublic !== undefined) formData.append('isPublic', noteData.isPublic.toString());
-    if (noteData.isFavorite !== undefined) formData.append('isFavorite', noteData.isFavorite.toString());
-    if (noteData.tags !== undefined) formData.append('tags', JSON.stringify(noteData.tags));
+    if (noteData.isPublic !== undefined) formData.append('is_public', noteData.isPublic ? '1' : '0');
+    if (noteData.isFavorite !== undefined) formData.append('is_favorite', noteData.isFavorite ? '1' : '0');
+
+    // Send tag_ids as individual entries for Laravel to auto-convert to array
+    if (noteData.tags !== undefined) {
+      noteData.tags.forEach(tagId => {
+        formData.append('tag_ids[]', tagId);
+      });
+    }
+
     if (noteData.deleteFileIds && noteData.deleteFileIds.length > 0) {
-      formData.append('deleteFileIds', JSON.stringify(noteData.deleteFileIds));
+      formData.append('delete_file_ids', JSON.stringify(noteData.deleteFileIds));
     }
 
     // Add files
     if (noteData.files) {
       noteData.files.forEach((file) => {
         if (file.file) {
-          formData.append(`files`, file.file);
+          formData.append('files', file.file);
         } else if (file.data) {
           // Handle legacy base64 files - convert back to blob
           const byteCharacters = atob(file.data);
@@ -365,65 +349,57 @@ export async function updateNote(
           }
           const byteArray = new Uint8Array(byteNumbers);
           const blob = new Blob([byteArray], { type: file.mimeType });
-          formData.append(`files`, blob, file.originalName);
+          formData.append('files', blob, file.originalName);
         }
       });
     }
 
-    const response = await fetch(`${API_BASE_URL}/api/note/${id}`, {
-      method: 'PUT',
+    const response = await apiClient.put(`/api/notes/${id}`, formData, {
       headers: {
+        // Don't set Content-Type for FormData - axios will set it with boundary
         Authorization: `Bearer ${token}`
-        // Don't set Content-Type header for FormData - browser will set it with boundary
       },
-      body: formData,
-      signal: AbortSignal.timeout(30000) // Longer timeout for file uploads
+      timeout: 30000 // Longer timeout for file uploads
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to update note: ${response.status}`);
-    }
-
-    return await response.json();
+    // Handle API response format { success: true, data: Note }
+    return response.data.data ? { data: response.data.data } : { data: response.data };
   } else {
     // Use regular JSON if no files or only base64 data
     const submissionData: any = {};
 
-    // Only include fields that are explicitly provided
+    // Only include fields that are explicitly provided - use snake_case for API
     if (noteData.name !== undefined) submissionData.name = noteData.name;
     if (noteData.link !== undefined) submissionData.link = noteData.link;
     if (noteData.description !== undefined) submissionData.description = noteData.description;
-    if (noteData.isPublic !== undefined) submissionData.isPublic = noteData.isPublic;
-    if (noteData.isFavorite !== undefined) submissionData.isFavorite = noteData.isFavorite;
-    if (noteData.tags !== undefined) submissionData.tags = noteData.tags;
+    if (noteData.isPublic !== undefined) submissionData.is_public = noteData.isPublic;
+    if (noteData.isFavorite !== undefined) submissionData.is_favorite = noteData.isFavorite;
+    if (noteData.tags !== undefined) submissionData.tag_ids = noteData.tags;
     if (noteData.deleteFileIds && noteData.deleteFileIds.length > 0) {
-      submissionData.deleteFileIds = noteData.deleteFileIds;
+      submissionData.delete_file_ids = noteData.deleteFileIds;
     }
 
     // Process files - only base64 data
     if (noteData.files && noteData.files.length > 0) {
-      submissionData.files = noteData.files.map(file => ({
-        data: file.data, // Only if present
-        originalName: file.originalName,
-        mimeType: file.mimeType
-      })).filter(file => file.data);
+      const filesData = noteData.files
+        .map(file => ({
+          data: file.data, // Only if present
+          originalName: file.originalName,
+          mimeType: file.mimeType
+        }))
+        .filter(file => file.data);
+
+      if (filesData.length > 0) {
+        submissionData.files = filesData;
+      }
     }
 
-    const response = await fetch(`${API_BASE_URL}/api/note/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(submissionData),
-      signal: AbortSignal.timeout(10000)
+    const response = await apiClient.put(`/api/notes/${id}`, submissionData, {
+      timeout: 10000
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to update note: ${response.status}`);
-    }
-
-    return await response.json();
+    // Handle API response format { success: true, data: Note }
+    return response.data.data ? { data: response.data.data } : { data: response.data };
   }
 }
 
@@ -431,25 +407,16 @@ export async function updateNote(
  * Delete note (soft delete)
  */
 export async function deleteNote(id: string): Promise<DeleteResponse> {
-  const token = localStorage.getItem('authToken');
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
   if (!token) {
     throw new Error('Authentication required');
   }
 
-  const response = await fetch(`${API_BASE_URL}/api/note/${id}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    },
-    signal: AbortSignal.timeout(5000)
+  const response = await apiClient.delete(`/api/notes/${id}`, {
+    timeout: 5000
   });
 
-  if (!response.ok) {
-    throw new Error(`Failed to delete note: ${response.status}`);
-  }
-
-  return await response.json();
+  return response.data;
 }
 
 /**
@@ -460,104 +427,79 @@ export async function getDeletedNotes(
   limit: number = 10,
   filters?: NoteFilters
 ): Promise<NotesResponse> {
-  const token = localStorage.getItem('authToken');
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
   if (!token) {
     throw new Error('Authentication required');
   }
 
-  // Build query string
-  const params = new URLSearchParams({
+  // Build query params - use snake_case for API parameters
+  const params: Record<string, string | number> = {
     page: page.toString(),
     limit: limit.toString()
-  });
+  };
 
-  // Add filters if they exist
+  // Add filters if they exist - convert to snake_case for API
   if (filters?.isPublic !== undefined) {
-    params.append('isPublic', filters.isPublic.toString());
+    params.is_public = filters.isPublic.toString();
   }
   if (filters?.isFavorite !== undefined) {
-    params.append('isFavorite', filters.isFavorite.toString());
+    params.is_favorite = filters.isFavorite.toString();
   }
   if (filters?.sortBy) {
-    params.append('sortBy', filters.sortBy);
+    params.sort_by = filters.sortBy;
   }
   if (filters?.sortOrder) {
-    params.append('sortOrder', filters.sortOrder);
+    params.sort_order = filters.sortOrder;
   }
   if (filters?.search) {
-    params.append('search', filters.search.trim());
+    params.search = filters.search.trim();
   }
   if (filters?.includeTags && filters.includeTags.length > 0) {
-    params.append('includeTags', filters.includeTags.join(','));
+    params.include_tags = filters.includeTags.join(',');
   }
   if (filters?.excludeTags && filters.excludeTags.length > 0) {
-    params.append('excludeTags', filters.excludeTags.join(','));
+    params.exclude_tags = filters.excludeTags.join(',');
   }
 
-  const response = await fetch(`${API_BASE_URL}/api/note/deleted?${params.toString()}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    },
-    signal: AbortSignal.timeout(5000)
+  const response = await apiClient.get('/api/notes/deleted', {
+    params,
+    timeout: 5000
   });
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch deleted notes: ${response.status}`);
-  }
-
-  return await response.json();
+  // API returns { success: true, data: { notes: [...], pagination: {...} } }
+  return response.data.data || response.data;
 }
 
 /**
  * Permanently delete note (hard delete)
  */
 export async function permanentDeleteNote(id: string): Promise<PermanentDeleteResponse> {
-  const token = localStorage.getItem('authToken');
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
   if (!token) {
     throw new Error('Authentication required');
   }
 
-  const response = await fetch(`${API_BASE_URL}/api/note/${id}/permanent`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    },
-    signal: AbortSignal.timeout(10000) // Longer timeout for S3 operations
+  const response = await apiClient.delete(`/api/notes/${id}/permanent`, {
+    timeout: 10000
   });
 
-  if (!response.ok) {
-    throw new Error(`Failed to permanently delete note: ${response.status}`);
-  }
-
-  return await response.json();
+  return response.data;
 }
 
 /**
  * Restore deleted note
  */
 export async function restoreNote(id: string): Promise<NoteResponse> {
-  const token = localStorage.getItem('authToken');
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
   if (!token) {
     throw new Error('Authentication required');
   }
 
-  const response = await fetch(`${API_BASE_URL}/api/note/${id}/restore`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    },
-    signal: AbortSignal.timeout(5000)
+  const response = await apiClient.post(`/api/notes/${id}/restore`, {}, {
+    timeout: 5000
   });
 
-  if (!response.ok) {
-    throw new Error(`Failed to restore note: ${response.status}`);
-  }
-
-  return await response.json();
+  return response.data;
 }
 
 
@@ -566,8 +508,8 @@ export async function restoreNote(id: string): Promise<NoteResponse> {
  */
 export function getFileUrl(file: NoteFile): string {
   // Priority 1: Use presigned URL if available (most secure)
-  if (file.presignedUrl) {
-    return file.presignedUrl;
+  if (file.presigned_url) {
+    return file.presigned_url;
   }
 
   // Priority 2: Use regular URL if available
@@ -577,7 +519,7 @@ export function getFileUrl(file: NoteFile): string {
 
   // Priority 3: If file has base64 data, create data URI (legacy support)
   if (file.data) {
-    return `data:${file.mimeType};base64,${file.data}`;
+    return `data:${file.mime_type};base64,${file.data}`;
   }
 
   // Fallback
@@ -715,8 +657,8 @@ export async function getAvailableTags(): Promise<Tag[]> {
   try {
     // Dynamic import to avoid circular dependency
     const { getTags: fetchTags } = await import('./tags');
-    const response = await fetchTags(); // Get all tags
-    return response.data.tags;
+    const response = await fetchTags(1, 100);
+    return response.data; // Extract data array from paginated response
   } catch (error) {
     console.error('Failed to fetch tags:', error);
     return [];
@@ -736,25 +678,42 @@ export function formatTagIds(tagIds: (string | Tag)[]): string[] {
   }).filter(id => id.length > 0);
 }
 
-// Convert tags array from API response to tagIds for frontend
+// Convert tags array from API response to tag UUIDs for frontend
 export function convertApiTagsToTagIds(note: Note): string[] {
-  // API returns tags as array of Tag objects with tag, name, and color properties
+  // API returns tags as array of Tag objects with id, tag, name, and color properties
   if (!note.tags || !Array.isArray(note.tags)) {
     return [];
   }
 
-  return note.tags.map(tag => tag.tag).filter(tag => tag && tag.trim().length > 0);
+  return note.tags.map(tag => tag.id).filter(id => id && id.trim().length > 0);
 }
 
-export function validateTagIds(tagIds: (string | Tag)[], availableTags: Tag[]): { valid: string[], invalid: string[] } {
-  const validTagIds = new Set(availableTags.map(tag => tag.tag));
+export function validateTagIds(tagIds: (string | Tag)[], availableTags?: Tag[] | null): { valid: string[], invalid: string[] } {
+  // Handle undefined or null availableTags
+  if (!availableTags || !Array.isArray(availableTags)) {
+    // If no available tags provided, assume all tag IDs are invalid
+    const stringIds = (tagIds || []).map(id => {
+      if (typeof id === 'string') {
+        return id;
+      } else if (id && typeof id === 'object' && id.id) {
+        return id.id; // Use UUID
+      } else {
+        return String(id);
+      }
+    }).filter(id => id && id.trim().length > 0);
+
+    return { valid: [], invalid: stringIds };
+  }
+
+  // Use tag.id (UUID) for validation
+  const validTagIds = new Set(availableTags.map(tag => tag.id));
 
   // Ensure we're working with strings only
-  const stringIds = tagIds.map(id => {
+  const stringIds = (tagIds || []).map(id => {
     if (typeof id === 'string') {
       return id;
-    } else if (id && typeof id === 'object' && id.tag) {
-      return id.tag; // Extract tag value from object if needed
+    } else if (id && typeof id === 'object' && id.id) {
+      return id.id; // Use UUID
     } else {
       return String(id); // Convert to string as fallback
     }

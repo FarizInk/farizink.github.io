@@ -173,9 +173,9 @@
   }
 
   function handleModalSuccess() {
-    // NoteModal handles store updates (prepend for create, update for edit)
-    // No need to refresh - just close modal
-    handleModalClose();
+    // NoteModal handles store updates
+    // Just clear local state - filters stay as they are
+    selectedNote = null;
   }
 
   function handleShowDetail(note: Note) {
@@ -308,6 +308,12 @@
     }
 
     loadNotes(false);
+
+    // Load tags on mount - only if authenticated
+    const hasToken = typeof localStorage !== 'undefined' ? !!localStorage.getItem('authToken') : false;
+    if (hasToken) {
+      tagsStore.loadTags();
+    }
   });
 
   // Close panels when clicking outside
@@ -337,9 +343,9 @@
       const previousHasAuthToken = hasAuthToken;
       hasAuthToken = newHasAuthToken;
 
-      // Load tags when user logs in
+      // Load tags when user logs in - force refresh
       if (newHasAuthToken && !previousHasAuthToken) {
-        tagsStore.loadTags();
+        tagsStore.loadTags(true);
       }
       // Clear selections when user logs out
       if (!newHasAuthToken && previousHasAuthToken) {
@@ -348,12 +354,14 @@
       }
     };
 
+    // Listen for login event
+    document.addEventListener('login-success', handleAuthChange);
     // Listen for logout event
     document.addEventListener('logout-success', handleAuthChange);
 
     // Listen for storage changes (in case login/logout happens in another tab)
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'authToken') {
+      if (e.key === 'authToken' || e.key === 'isLoggedIn') {
         handleAuthChange();
       }
     };
@@ -361,6 +369,7 @@
     window.addEventListener('storage', handleStorageChange);
 
     return () => {
+      document.removeEventListener('login-success', handleAuthChange);
       document.removeEventListener('logout-success', handleAuthChange);
       window.removeEventListener('storage', handleStorageChange);
     };
@@ -646,7 +655,7 @@
     {:else}
       <!-- Notes List -->
       <div class="flex flex-col items-center gap-6">
-        {#each $notes as note (note.id)}
+        {#each $notes.filter(n => n) as note (note.id)}
           <div class="w-full max-w-2xl">
             <NoteCard
               {note}
@@ -708,7 +717,7 @@
             <div class="flex items-start justify-between gap-4">
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-3 mb-2">
-                  {#if singleNote.isFavorite}
+                  {#if singleNote.is_favorite}
                     <div class="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-900/30 dark:to-yellow-800/30 flex items-center justify-center">
                       <svg class="w-4 h-4 text-yellow-600 dark:text-yellow-400 fill-yellow-600 dark:fill-yellow-400" viewBox="0 0 24 24">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
@@ -722,14 +731,14 @@
                 <div class="flex items-center gap-4 text-sm text-secondary-500 dark:text-secondary-400">
                   <div class="flex items-center gap-1">
                     <Calendar class="w-4 h-4" />
-                    <span>Created: {new Date(singleNote.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                    <span>Created: {new Date(singleNote.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
                   </div>
                   <div class="flex items-center gap-1">
                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <circle cx="12" cy="12" r="10"/>
                       <polyline points="12 6 12 12 16 14"/>
                     </svg>
-                    <span>Updated: {new Date(singleNote.updatedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                    <span>Updated: {new Date(singleNote.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
                   </div>
                 </div>
               </div>
@@ -818,7 +827,7 @@
             {/if}
 
             <!-- Images -->
-            {#if singleNote.files && singleNote.files.filter(f => f.mimeType.startsWith('image/')).length > 0}
+            {#if singleNote.files && singleNote.files.filter(f => f.mime_type.startsWith('image/')).length > 0}
               <div>
                 <h3 class="text-lg font-semibold text-secondary-900 dark:text-white mb-3 flex items-center gap-2">
                   <svg class="w-5 h-5 text-yellow-600 dark:text-primary-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -826,21 +835,21 @@
                     <circle cx="8.5" cy="8.5" r="1.5"/>
                     <polyline points="21 15 16 10 5 21"/>
                   </svg>
-                  Images ({singleNote.files.filter(f => f.mimeType.startsWith('image/')).length})
+                  Images ({singleNote.files.filter(f => f.mime_type.startsWith('image/')).length})
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {#each singleNote.files.filter(f => f.mimeType.startsWith('image/')) as file (file.id)}
+                  {#each singleNote.files.filter(f => f.mime_type.startsWith('image/')) as file, index (file.id + '-' + index)}
                     <div class="group relative bg-secondary-50 dark:bg-secondary-700 rounded-lg overflow-hidden hover:shadow-lg transition-all">
                       <div class="aspect-square bg-secondary-100 dark:bg-secondary-600">
                         <img
-                          src={file.presignedUrl || file.url || `data:${file.mimeType};base64,${file.data}`}
-                          alt={file.originalName}
+                          src={file.presigned_url || file.url || `data:${file.mime_type};base64,${file.data}`}
+                          alt={file.original_name}
                           class="w-full h-full object-cover"
                         />
                       </div>
                       <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                         <div class="absolute bottom-0 left-0 right-0 p-3">
-                          <p class="text-white text-sm font-medium truncate">{file.originalName}</p>
+                          <p class="text-white text-sm font-medium truncate">{file.original_name}</p>
                           <p class="text-white/80 text-xs">{(file.size / 1024).toFixed(0)} KB</p>
                         </div>
                       </div>
@@ -851,17 +860,17 @@
             {/if}
 
             <!-- Other Files -->
-            {#if singleNote.files && singleNote.files.filter(f => !f.mimeType.startsWith('image/')).length > 0}
+            {#if singleNote.files && singleNote.files.filter(f => !f.mime_type.startsWith('image/')).length > 0}
               <div>
                 <h3 class="text-lg font-semibold text-secondary-900 dark:text-white mb-3 flex items-center gap-2">
                   <svg class="w-5 h-5 text-yellow-600 dark:text-primary-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                     <polyline points="14 2 14 8 20 8"/>
                   </svg>
-                  Files ({singleNote.files.filter(f => !f.mimeType.startsWith('image/')).length})
+                  Files ({singleNote.files.filter(f => !f.mime_type.startsWith('image/')).length})
                 </h3>
                 <div class="space-y-3">
-                  {#each singleNote.files.filter(f => !f.mimeType.startsWith('image/')) as file (file.id)}
+                  {#each singleNote.files.filter(f => !f.mime_type.startsWith('image/')) as file, index (file.id + '-' + index)}
                     <div class="flex items-center gap-4 p-4 bg-secondary-50 dark:bg-secondary-700 rounded-lg border border-secondary-200 dark:border-secondary-600">
                       <div class="w-12 h-12 bg-secondary-200 dark:bg-secondary-600 rounded-lg flex items-center justify-center">
                         <svg class="w-6 h-6 text-secondary-500 dark:text-secondary-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -869,11 +878,11 @@
                         </svg>
                       </div>
                       <div class="flex-1 min-w-0">
-                        <p class="font-medium text-secondary-900 dark:text-white truncate">{file.originalName}</p>
+                        <p class="font-medium text-secondary-900 dark:text-white truncate">{file.original_name}</p>
                         <p class="text-sm text-secondary-500 dark:text-secondary-400">{(file.size / 1024).toFixed(0)} KB</p>
                       </div>
                       <a
-                        href={file.presignedUrl || file.url}
+                        href={file.presigned_url || file.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         class="px-3 py-1.5 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg transition-colors text-sm font-medium"
@@ -897,7 +906,7 @@
                   Tags
                 </h3>
                 <div class="flex flex-wrap gap-2">
-                  {#each singleNote.tags as tag (tag.tag)}
+                  {#each singleNote.tags as tag (tag.id)}
                     <div
                       class="flex items-center gap-1.5 px-3 py-1.5 rounded-full border {!tag.color ? 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700' : ''}"
                       style="background-color: {tag.color ? tag.color + '20' : undefined}; color: {tag.color || undefined}; border-color: {tag.color ? tag.color + '40' : undefined}"
@@ -968,8 +977,8 @@
   bind:isOpen={isTagModalOpen}
   on:close={() => {
     isTagModalOpen = false;
-    // Refresh tags after tag management from global store
-    tagsStore.loadTags();
+    // Refresh tags after tag management from global store - force refresh
+    tagsStore.loadTags(true);
   }}
 />
 

@@ -314,7 +314,7 @@
     apiHealthError = null;
 
     try {
-      const response = await fetch(`${API_BASE_URL}/health`, {
+      const response = await fetch(`${API_BASE_URL}/api/health`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -327,7 +327,7 @@
       }
 
       const data = await response.json();
-      if (data.success && data.data.status === 'ok') {
+      if (data.status === 'ok') {
         apiHealthStatus = 'ok';
       } else {
         apiHealthStatus = 'error';

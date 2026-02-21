@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { Note, CreateNoteData, UpdateNoteData } from '../lib/notes';
-  import { createNote, updateNote, validateTagIds, convertApiTagsToTagIds } from '../lib/notes';
-  import { tags } from '../lib/stores/tags';
+  import { createNote, createNoteWithFormData, updateNote, validateTagIds, convertApiTagsToTagIds } from '../lib/notes';
   import { notesStore } from '../lib/stores/notes';
+  import { tags } from '../lib/stores/tags';
   import { Link2, Paperclip, Loader } from '@lucide/svelte';
   import { toast } from 'svelte-sonner';
   import TagsSelector from './TagsSelector.svelte';
@@ -40,28 +40,34 @@
   // For edit mode - track files to delete
   let filesToDelete = $state<string[]>([]);
 
-  // Convert tags to options for TagsSelector
-  let options = $derived($tags.map(tag => ({
-    value: tag.tag,
+  // Convert tags to options for TagsSelector - use UUID as value
+  let options = $derived.by(() => ($tags || []).map(tag => ({
+    value: tag.id,      // Use UUID as value
     label: tag.name,
     description: tag.tag,
-    color: tag.color // Keep null as null, MultipleSelect will handle fallback
+    color: tag.color
   })));
+
+  // Helper to extract tag UUIDs from note
+  function getTagUuidsFromNote(note: Note): string[] {
+    if (!note.tags || !Array.isArray(note.tags)) return [];
+    return note.tags.map(tag => tag.id).filter(id => id);
+  }
 
   // Initialize form data when editing
   $effect(() => {
     if (mode === 'edit' && note && isOpen) {
-      const tagIds = convertApiTagsToTagIds(note);
+      const tagUuids = getTagUuidsFromNote(note);
       formData = {
         name: note.name || '',
         link: note.link || '',
         description: note.description || '',
-        isPublic: note.isPublic,
-        isFavorite: note.isFavorite,
-        tags: tagIds,
-        files: [] // Note: In edit mode, we don't load existing files yet
+        isPublic: note.is_public,
+        isFavorite: note.is_favorite,
+        tags: tagUuids,
+        files: []
       };
-      selectedTagIds = tagIds; // Sync selected tags
+      selectedTagIds = tagUuids; // Sync selected tags (UUIDs)
       showFileSection = true; // Show file section in edit mode to manage existing files
       filesToDelete = []; // Clear files to delete
     } else if (mode === 'create' && isOpen) {
@@ -125,37 +131,134 @@
         return;
       }
 
-      // Prepare submission data - files will be uploaded with the form
+      // Prepare submission data
       const submissionData: CreateNoteData = {
-        ...formData,
-        tags: validTagIds
+        name: formData.name,
+        link: formData.link,
+        description: formData.description,
+        isPublic: formData.isPublic,
+        isFavorite: formData.isFavorite,
+        tags: validTagIds,
+        files: formData.files
       };
 
+      let response;
       if (mode === 'create') {
-        const response = await createNote(submissionData);
-        toast.success('Note created successfully!');
-        // Prepend to store instead of full refresh
-        notesStore.prependNote(response.data);
-        onSuccess?.();
-      } else if (mode === 'edit' && note) {
-        // Prepare update data
-        const updateData: UpdateNoteData = {
-          name: formData.name,
-          link: formData.link,
-          description: formData.description,
-          isPublic: formData.isPublic,
-          isFavorite: formData.isFavorite,
-          tags: validTagIds,
-          files: formData.files,
-          deleteFileIds: filesToDelete.length > 0 ? filesToDelete : undefined
-        };
+        // Check if we have files to upload
+        const hasFiles = submissionData.files && submissionData.files.length > 0 && submissionData.files.some(f => f.file);
 
-        const response = await updateNote(note.id, updateData);
+        if (hasFiles) {
+          // Create FormData directly here to avoid Svelte 5 proxy issues
+          const formData = new FormData();
+
+          // Add note data
+          if (submissionData.name) formData.append('name', submissionData.name);
+          if (submissionData.link) formData.append('link', submissionData.link);
+          if (submissionData.description) formData.append('description', submissionData.description);
+          formData.append('is_public', submissionData.isPublic ? '1' : '0');
+          formData.append('is_favorite', submissionData.isFavorite ? '1' : '0');
+
+          // Add tags
+          if (submissionData.tags && submissionData.tags.length > 0) {
+            submissionData.tags.forEach(tagId => {
+              formData.append('tag_ids[]', tagId);
+            });
+          }
+
+          // Add files
+          if (submissionData.files) {
+            submissionData.files.forEach((fileData) => {
+              if (fileData.file) {
+                formData.append('files[]', fileData.file);
+              }
+            });
+          }
+
+          response = await createNoteWithFormData(formData);
+        } else {
+          response = await createNote(submissionData);
+        }
+        toast.success('Note created successfully!');
+        // Add to store from response
+        notesStore.prependNote(response.data);
+      } else if (mode === 'edit' && note) {
+        // Check if we have files to upload
+        const hasFiles = submissionData.files && submissionData.files.length > 0 && submissionData.files.some(f => f.file);
+
+        if (hasFiles) {
+          // Create FormData directly here to avoid Svelte 5 proxy issues
+          const formData = new FormData();
+
+          // Add note data
+          if (submissionData.name) formData.append('name', submissionData.name);
+          if (submissionData.link) formData.append('link', submissionData.link);
+          if (submissionData.description) formData.append('description', submissionData.description);
+          formData.append('is_public', submissionData.isPublic ? '1' : '0');
+          formData.append('is_favorite', submissionData.isFavorite ? '1' : '0');
+
+          // Add tags
+          if (submissionData.tags && submissionData.tags.length > 0) {
+            submissionData.tags.forEach(tagId => {
+              formData.append('tag_ids[]', tagId);
+            });
+          }
+
+          // Add files to delete
+          if (filesToDelete.length > 0) {
+            formData.append('delete_file_ids', JSON.stringify(filesToDelete));
+          }
+
+          // Add new files
+          if (submissionData.files) {
+            submissionData.files.forEach((fileData) => {
+              if (fileData.file) {
+                formData.append('files[]', fileData.file);
+              }
+            });
+          }
+
+          // Use raw axios for FormData upload
+          const axios = (await import('axios')).default;
+          const { API_BASE_URL } = await import('../lib/constants');
+          const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
+
+          if (!token) {
+            throw new Error('Authentication required');
+          }
+
+          const axiosResponse = await axios.put(`${API_BASE_URL}/api/notes/${note.id}`, formData, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Accept': 'application/json'
+              // Don't set Content-Type for FormData - browser will set it with boundary
+            },
+            timeout: 30000
+          });
+
+          response = axiosResponse.data.data ? { data: axiosResponse.data.data } : { data: axiosResponse.data };
+        } else {
+          // No new files - use regular JSON update
+          const updateData: UpdateNoteData = {
+            name: formData.name,
+            link: formData.link,
+            description: formData.description,
+            isPublic: formData.isPublic,
+            isFavorite: formData.isFavorite,
+            tags: validTagIds,
+            deleteFileIds: filesToDelete.length > 0 ? filesToDelete : undefined
+          };
+
+          response = await updateNote(note.id, updateData);
+        }
+
         toast.success('Note updated successfully!');
-        // Update in store instead of full refresh
+        // Update store from response
         notesStore.updateNote(note.id, response.data);
-        onSuccess?.();
       }
+
+      // Close modal after successful save
+      onSuccess?.();
+      closeModal();
     } catch (error) {
       toast.error(mode === 'create' ? 'Failed to create note' : 'Failed to update note');
       console.error('Note save error:', error);
@@ -283,7 +386,7 @@
               {mode === 'edit' ? 'Add New Files' : 'Upload Files'}
             </div>
             <FileUpload
-              bind:files={formData.files}
+              bind:files={formData.files!}
               disabled={isLoading}
               maxFiles={mode === 'edit' ? 10 - (note?.files?.length || 0) : 10}
             />
@@ -331,13 +434,15 @@
       Cancel
     </button>
     <button
-      type="submit"
-      form="note-form"
-      class="px-4 py-2 btn bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700 disabled:opacity-50"
+      type="button"
+      class="px-4 py-2 btn bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700 disabled:opacity-50 flex items-center"
       disabled={isLoading || !formData.name?.trim()}
       onclick={(e) => {
+        e.preventDefault();
         const form = document.getElementById('note-form') as HTMLFormElement;
-        if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        if (form) {
+          form.requestSubmit();
+        }
       }}
     >
       {#if isLoading}

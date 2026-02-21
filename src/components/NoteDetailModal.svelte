@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Note } from '../lib/notes';
-  import { formatDate, getFileUrl, addRefreshParam, isPresignedUrl } from '../lib/notes';
+  import { formatDate, getFileUrl } from '../lib/notes';
+  import { handleImageError, formatFileSize, getFileIconType } from '../lib/uiUtils';
   import { X, ExternalLink, Calendar, Tag, Star, Clock, Edit, Trash2, Link2, File, Image as ImageIcon, Download, Eye, AlertTriangle, Share2 } from '@lucide/svelte';
   import Modal from './Modal.svelte';
 
@@ -61,52 +62,24 @@
     }
   }
 
-  function downloadFile(file: Note['files'][0]) {
+  function downloadFile(file: Note['files'][number]) {
     const link = document.createElement('a');
     const fileUrl = getFileUrl(file);
     link.href = fileUrl;
-    link.download = file.originalName;
+    link.download = file.original_name;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   }
 
-  function viewFile(file: Note['files'][0]) {
+  function viewFile(file: Note['files'][number]) {
     const fileUrl = getFileUrl(file);
     window.open(fileUrl, '_blank');
   }
 
-  function handleImageError(event: Event) {
-    const img = event.target as HTMLImageElement;
-    const originalSrc = img.src;
-
-    // Try to refresh the URL once if it's a presigned URL
-    if (isPresignedUrl(originalSrc) && !img.dataset.refreshed) {
-      img.dataset.refreshed = 'true';
-      img.src = addRefreshParam(originalSrc);
-    } else {
-      // Fallback to hide image and show placeholder
-      img.style.display = 'none';
-      const placeholder = img.nextElementSibling as HTMLElement;
-      if (placeholder) {
-        placeholder.style.display = 'flex';
-      }
-    }
-  }
-
-  function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }
-
-  function getFileIcon(mimeType: string) {
-    if (mimeType.startsWith('image/')) {
-      return ImageIcon;
-    }
-    return File;
+  // Helper to get icon component for file type
+  function getFileIcon(mimeType?: string) {
+    return getFileIconType(mimeType);
   }
 </script>
 
@@ -121,7 +94,7 @@
             >
               <AlertTriangle class="w-4 h-4 text-red-600 dark:text-red-400" />
             </div>
-          {:else if note.isFavorite}
+          {:else if note.is_favorite}
             <div
               class="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-900/30 dark:to-yellow-800/30 flex items-center justify-center"
             >
@@ -137,19 +110,19 @@
         </div>
 
         <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-          {#if isDeleted && note.deletedAt}
+          {#if isDeleted && note.deleted_at}
             <div class="flex items-center gap-1 text-red-600 dark:text-red-400">
               <AlertTriangle class="w-4 h-4" />
-              <span>Deleted: {formatDate(note.deletedAt)}</span>
+              <span>Deleted: {formatDate(note.deleted_at)}</span>
             </div>
           {:else}
             <div class="flex items-center gap-1">
               <Calendar class="w-4 h-4" />
-              <span>Created: {formatDate(note.createdAt)}</span>
+              <span>Created: {formatDate(note.created_at)}</span>
             </div>
             <div class="flex items-center gap-1">
               <Clock class="w-4 h-4" />
-              <span>Updated: {formatDate(note.updatedAt)}</span>
+              <span>Updated: {formatDate(note.updated_at)}</span>
             </div>
           {/if}
         </div>
@@ -251,16 +224,16 @@
       {/if}
 
       <!-- Images Section -->
-      {#if note.files && note.files.filter(f => f.mimeType.startsWith('image/')).length > 0}
+      {#if note.files && note.files.filter(f => f?.mime_type?.startsWith('image/')).length > 0}
         <div class="mb-6">
           <h3
             class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2"
           >
             <ImageIcon class="w-5 h-5 text-yellow-600 dark:text-primary-400" />
-            Images ({note.files.filter(f => f.mimeType.startsWith('image/')).length})
+            Images ({note.files.filter(f => f?.mime_type?.startsWith('image/')).length})
           </h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {#each note.files.filter(f => f.mimeType.startsWith('image/')) as file (file.id)}
+            {#each note.files.filter(f => f?.mime_type?.startsWith('image/')) as file, index (file.id + '-' + index)}
               <div
                 class="group relative bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 overflow-hidden hover:shadow-lg transition-all"
               >
@@ -268,7 +241,7 @@
                 <div class="aspect-square bg-gray-100 dark:bg-gray-700">
                   <img
                     src={getFileUrl(file)}
-                    alt={file.metadata?.alt || file.originalName}
+                    alt={file.metadata?.alt || file.original_name}
                     class="w-full h-full object-cover"
                     onerror={handleImageError}
                   />
@@ -281,8 +254,8 @@
                 <!-- Image Info Overlay -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <div class="absolute bottom-0 left-0 right-0 p-3 text-white">
-                    <h3 class="font-medium truncate text-sm" title={file.originalName}>
-                      {file.metadata?.title || file.originalName}
+                    <h3 class="font-medium truncate text-sm" title={file.original_name}>
+                      {file.metadata?.title || file.original_name}
                     </h3>
                     <div class="flex items-center gap-2 text-xs opacity-90">
                       <span>{formatFileSize(file.size)}</span>
@@ -335,27 +308,27 @@
       {/if}
 
       <!-- Other Files Section -->
-      {#if note.files && note.files.filter(f => !f.mimeType.startsWith('image/')).length > 0}
+      {#if note.files && note.files.filter(f => !f?.mime_type?.startsWith('image/')).length > 0}
         <div class="mb-6">
           <h3
             class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2"
           >
             <File class="w-5 h-5 text-yellow-600 dark:text-primary-400" />
-            Files ({note.files.filter(f => !f.mimeType.startsWith('image/')).length})
+            Files ({note.files.filter(f => !f?.mime_type?.startsWith('image/')).length})
           </h3>
           <div class="space-y-3">
-            {#each note.files.filter(f => !f.mimeType.startsWith('image/')) as file (file.id)}
+            {#each note.files.filter(f => !f?.mime_type?.startsWith('image/')) as file, index (file.id + '-' + index)}
               <div
                 class="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 hover:shadow-md transition-all"
               >
                 <!-- File Icon -->
                 <div class="flex-shrink-0">
                   <div class="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                    {#if file.mimeType === 'application/pdf'}
+                    {#if file?.mime_type === 'application/pdf'}
                       <File class="w-8 h-8 text-red-600 dark:text-red-400" />
-                    {:else if file.mimeType.includes('document')}
+                    {:else if file?.mime_type?.includes('document')}
                       <File class="w-8 h-8 text-blue-600 dark:text-blue-400" />
-                    {:else if file.mimeType.includes('text')}
+                    {:else if file?.mime_type?.includes('text')}
                       <File class="w-8 h-8 text-green-600 dark:text-green-400" />
                     {:else}
                       <File class="w-8 h-8 text-gray-500 dark:text-gray-400" />
@@ -365,15 +338,15 @@
 
                 <!-- File Info -->
                 <div class="flex-1 min-w-0">
-                  <h3 class="font-medium text-gray-900 dark:text-white mb-1 truncate" title={file.originalName}>
-                    {file.metadata?.title || file.originalName}
+                  <h3 class="font-medium text-gray-900 dark:text-white mb-1 truncate" title={file.original_name}>
+                    {file.metadata?.title || file.original_name}
                   </h3>
                   <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                    {file.originalName}
+                    {file.original_name}
                   </p>
                   <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-500">
                     <span class="capitalize">
-                      {file.mimeType.split('/')[1] || file.mimeType}
+                      {file?.mime_type?.split('/')[1] || file?.mime_type}
                     </span>
                     <span>{formatFileSize(file.size)}</span>
                     {#if file.metadata?.pages}
@@ -421,7 +394,7 @@
             Tags
           </h3>
           <div class="flex flex-wrap gap-2">
-            {#each note.tags as tag (tag.tag)}
+            {#each note.tags as tag, index (index)}
               <div
                 class="flex items-center gap-1.5 px-3 py-2 hover:bg-opacity-80 rounded-full border transition-colors {!tag.color ? 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700' : ''}"
                 style="background-color: {tag.color ? tag.color + '20' : undefined}; color: {tag.color || undefined}; border-color: {tag.color ? tag.color + '40' : undefined}"

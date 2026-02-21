@@ -1,23 +1,23 @@
 <script lang="ts">
-  import { User, Lock, Eye, EyeOff, X } from '@lucide/svelte';
-  import { saveAuth } from '../lib/auth';
+  import { Mail, Lock, Eye, EyeOff, X } from '@lucide/svelte';
+  import { saveAuth, login } from '../lib/auth';
   import { toast } from 'svelte-sonner';
   import { API_BASE_URL } from '../lib/constants';
 
   let { isOpen = $bindable(false) } = $props();
 
-  let username = $state('');
+  let email = $state('');
   let password = $state('');
   let showPassword = $state(false);
   let isLoading = $state(false);
   let errorMessage = $state(''); // eslint-disable-line @typescript-eslint/no-unused-vars
 
-  let usernameInput = $state<HTMLInputElement>();
+  let emailInput = $state<HTMLInputElement>();
   let modalElement = $state<HTMLDivElement>();
 
   function closeModal() {
     isOpen = false;
-    username = '';
+    email = '';
     password = '';
     showPassword = false;
     errorMessage = '';
@@ -33,9 +33,9 @@
   // Set up autofocus and keyboard listeners when modal opens
   $effect(() => {
     if (isOpen) {
-      // Focus username input when modal opens
+      // Focus email input when modal opens
       setTimeout(() => {
-        usernameInput?.focus();
+        emailInput?.focus();
       }, 100);
 
       // Add global keyboard listener for ESC
@@ -50,8 +50,8 @@
   async function handleLogin(event: Event) {
     event.preventDefault();
 
-    if (!username.trim() || !password.trim()) {
-      toast.error('Username and password are required');
+    if (!email.trim() || !password.trim()) {
+      toast.error('Email and password are required');
       return;
     }
 
@@ -59,62 +59,38 @@
     errorMessage = '';
 
     try {
-      // Real login API call using auth utilities
-      const loginData = {
-        username: username.trim(),
-        password: password.trim()
-      };
+      // Use login function from auth.ts
+      const result = await login(email.trim(), password.trim());
 
-      const response = await fetch(
-        `${API_BASE_URL}/api/login`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(loginData),
-          signal: AbortSignal.timeout(10000) // 10 second timeout
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        // Handle HTTP errors with toast notifications
-        if (response.status === 401) {
-          toast.error('Invalid username or password');
-        } else if (response.status === 429) {
-          toast.warning('Too many login attempts. Please try again later.');
-        } else {
-          toast.error(data?.meta?.message || `Login failed (${response.status})`);
-        }
+      if (!result.success || !result.data) {
+        // Handle error
+        toast.error(result.error || 'Login failed');
         return;
       }
 
-      // Check if API response is successful
-      if (data.success && data.data?.token) {
-        console.log('Login successful:', { username: loginData.username, token: data.data.token });
+      // Laravel API returns: { token, token_type, expires_in, user: { name, email, ... } }
+      const { token, user } = result.data;
 
-        // Store authentication data using auth utilities
-        saveAuth(data.data.token, loginData.username, data.data.expiresIn);
+      console.log('Login successful:', { email: user.email, token });
 
-        // Show success toast
-        toast.success(`Welcome back, ${loginData.username}!`);
+      // Store authentication data using auth utilities
+      saveAuth(token, user.name);
 
-        closeModal();
+      // Show success toast
+      toast.success(`Welcome back, ${user.name}!`);
 
-        // Emit login success event for other components
-        document.dispatchEvent(
-          new CustomEvent('login-success', {
-            detail: {
-              username: loginData.username,
-              token: data.data.token
-            }
-          })
-        );
-      } else {
-        toast.error(data?.meta?.message || 'Invalid login response');
-      }
+      closeModal();
+
+      // Emit login success event for other components
+      document.dispatchEvent(
+        new CustomEvent('login-success', {
+          detail: {
+            username: user.name,
+            email: user.email,
+            token: token
+          }
+        })
+      );
     } catch (error) {
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
@@ -130,9 +106,9 @@
       console.error('Login error:', error);
     } finally {
       isLoading = false;
-      // Refocus username input after submit attempt
+      // Refocus email input after submit attempt
       setTimeout(() => {
-        usernameInput?.focus();
+        emailInput?.focus();
       }, 100);
     }
   }
@@ -181,22 +157,22 @@
       <!-- Form -->
       <div class="p-6">
         <form onsubmit={handleLogin}>
-          <!-- Username Field -->
+          <!-- Email Field -->
           <div class="mb-4">
-            <label for="username" class="label"> Username </label>
+            <label for="email" class="label"> Email </label>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <User class="w-4 h-4 text-secondary-400" />
+                <Mail class="w-4 h-4 text-secondary-400" />
               </div>
               <input
-                id="username"
-                type="text"
-                placeholder="Enter your username"
+                id="email"
+                type="email"
+                placeholder="Enter your email"
                 class="input !pl-10"
-                bind:value={username}
-                bind:this={usernameInput}
+                bind:value={email}
+                bind:this={emailInput}
                 disabled={isLoading}
-                autocomplete="username"
+                autocomplete="email"
                 required
               />
             </div>
@@ -242,7 +218,7 @@
           <button
             type="submit"
             class="btn btn-primary w-full flex items-center justify-center"
-            disabled={isLoading || !username.trim() || !password.trim()}
+            disabled={isLoading || !email.trim() || !password.trim()}
           >
             {#if isLoading}
               <div
