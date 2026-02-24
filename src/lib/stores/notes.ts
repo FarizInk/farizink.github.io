@@ -65,8 +65,8 @@ class NotesStore extends PaginatedStore<Note> {
     // Sync with exported stores for backward compatibility
     notes.set(this.getData());
     currentPage.set(this.getCurrentPage());
-    hasMore.set(this.getHasMore());
-    totalCount.set(this.getTotalCount());
+    hasMore.set(this.getHasMore());  // Now uses base class method correctly
+    totalCount.set(this.getTotalCount());  // Now uses base class method correctly
   }
 
   /**
@@ -187,13 +187,14 @@ class NotesStore extends PaginatedStore<Note> {
     return get(notes);
   }
 
-  getHasMore(): boolean {
-    return get(hasMore);
-  }
-
-  getTotalCount(): number {
-    return get(totalCount);
-  }
+  // Removed override methods - use base class implementations instead
+  // The base class methods correctly access this.hasMore and this.totalCount
+  // getHasMore(): boolean {
+  //   return get(hasMore);
+  // }
+  // getTotalCount(): number {
+  //   return get(totalCount);
+  // }
 }
 
 // Create singleton instance for active notes

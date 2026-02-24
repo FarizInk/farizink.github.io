@@ -162,9 +162,9 @@
             {/each}
           </div>
 
-          <!-- Load More Button -->
-          {#if $hasMoreDeleted}
-            <div class="mt-6 flex justify-center">
+          <!-- Load More Button / End Indicator -->
+          <div class="mt-6 flex justify-center">
+            {#if $hasMoreDeleted}
               <button
                 onclick={handleLoadMore}
                 disabled={$isLoadingDeletedNotes}
@@ -178,20 +178,21 @@
                   Load More
                 {/if}
               </button>
-            </div>
-          {/if}
-
-          <!-- End Indicator -->
-          {#if !$hasMoreDeleted && $deletedNotes.length > 0}
-            <div class="mt-6 text-center">
+            {:else if $deletedNotes.length > 0}
+              <!-- End of list - show total count -->
               <div class="inline-flex items-center gap-2 px-4 py-2 bg-secondary-100 dark:bg-secondary-700 rounded-full">
                 <div class="w-2 h-2 bg-secondary-400 dark:bg-secondary-500 rounded-full"></div>
                 <span class="text-sm text-secondary-600 dark:text-secondary-400">
-                  Showing all {$deletedNotes.length} deleted notes
+                  Showing all {$deletedNotes.length} of {$deletedCount} deleted notes
                 </span>
               </div>
-            </div>
-          {/if}
+            {:else}
+              <!-- No deleted notes -->
+              <div class="text-center">
+                <p class="text-secondary-500 dark:text-secondary-400">No deleted notes</p>
+              </div>
+            {/if}
+          </div>
         {/if}
       </div>
     </div>

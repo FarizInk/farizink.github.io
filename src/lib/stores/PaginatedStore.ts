@@ -98,8 +98,13 @@ export abstract class PaginatedStore<T> {
   async loadMore(filters?: any): Promise<void> {
     const loading = get(this.isLoading);
     const more = get(this.hasMore);
+    const currentData = get(this.data);
 
-    if (loading || !more) return;
+    // Prevent loading if:
+    // - Already loading
+    // - No more data per pagination
+    // - Last response was empty (no data)
+    if (loading || !more || currentData.length === 0) return;
 
     this.isLoading.set(true);
 
@@ -146,8 +151,28 @@ export abstract class PaginatedStore<T> {
       this.data.set(items);
     }
 
-    this.currentPage.set(pagination.page);
-    this.hasMore.set(pagination.page < pagination.totalPages);
+    // Validate pagination data from backend
+    // If backend returns inconsistent data (page > totalPages), fix it
+    const validPage = Math.min(pagination.page, pagination.totalPages || 1);
+    this.currentPage.set(validPage);
+
+    // Determine if there's more data
+    // - If no items returned, we've reached the end (regardless of what backend says)
+    // - If page < totalPages based on total count, there's more data
+    // - Calculate expected totalPages from total count for validation
+    const calculatedTotalPages = pagination.limit > 0
+      ? Math.ceil(pagination.total / pagination.limit)
+      : pagination.totalPages || 1;
+
+    // Use the smaller of backend's totalPages and our calculated value for safety
+    const effectiveTotalPages = Math.min(pagination.totalPages || 1, calculatedTotalPages);
+
+    const hasMoreItems =
+      items.length > 0 &&              // Must have data in this response
+      validPage < effectiveTotalPages && // Must not be at last page
+      pagination.total > 0;            // Must have total count
+
+    this.hasMore.set(hasMoreItems);
     this.totalCount.set(pagination.total);
   }
 

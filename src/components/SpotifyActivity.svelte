@@ -2,40 +2,58 @@
   import { MonitorSmartphone, Play, Pause, X } from '@lucide/svelte';
   import SpotifyLogoIcon from './icons/SpotifyLogoIcon.svelte';
   import { onMount, onDestroy } from 'svelte';
-  import { SPOTIFY_API } from '../lib/constants';
+  import { API_BASE_URL } from '../lib/constants';
 
   interface SpotifyDevice {
-    name: string | null;
-    type: string | null;
-    is_active?: boolean;
-  }
-
-  interface SpotifyDevicesResponse {
-    devices: SpotifyDevice[];
-  }
-
-  interface SpotifyArtist {
+    id: string;
     name: string;
-    external_urls: {
-      spotify: string;
-    };
+    type: string;
+    is_active: boolean;
+    volume_percent: number;
   }
 
-  interface SpotifyTrack {
+  interface SpotifyTrackData {
+    name: string;
+    artists: string[];
+    album: string;
+    album_img: string;
+    album_url: string;
+    url: string;
+    duration_ms: number;
+    progress_ms: number;
+    is_playing: boolean;
+    device: SpotifyDevice;
+  }
+
+  interface SSEData {
+    status: 'playing' | 'idle';
+    track?: SpotifyTrackData;
+  }
+
+  let eventSource: EventSource | null = null;
+  let animationFrameId: number | null = null;
+  let isComponentMounted = false;
+
+  // Smooth progress tracking
+  let baseProgressMs = $state(0);      // Progress from last SSE update
+  let lastUpdateTimestamp = $state(0); // When SSE last updated
+  let durationMs = $state(0);          // Track duration
+  let wasPlaying = false;              // Track play state changes
+
+  // State
+  let spotify = $state(false);
+  let isPlaying = $state(false);
+  let device = $state<SpotifyDevice | null>(null);
+  let track = $state<{
     album_img: string | null;
     album_url: string | null;
-    artists: SpotifyArtist[];
+    artists: string[];
     url: string | null;
     name: string | null;
     percent: number;
     duration_ms: number;
     progress_ms: number;
-  }
-
-  let spotifyToken = $state<string | null>(null);
-  let spotify = $state(false);
-  let isPlaying = $state(false);
-  let track = $state<SpotifyTrack>({
+  }>({
     album_img: null,
     album_url: null,
     artists: [],
@@ -45,37 +63,49 @@
     duration_ms: 0,
     progress_ms: 0
   });
-  const defaultDevice: SpotifyDevice = {
-    name: null,
-    type: null
+
+  // ===== Smooth Progress Animation (UX Illusion) =====
+
+  // Calculate smooth progress based on elapsed time since last SSE update
+  const getSmoothProgress = (): number => {
+    if (!isPlaying || baseProgressMs === 0 || durationMs === 0) {
+      return baseProgressMs;
+    }
+
+    const elapsed = Date.now() - lastUpdateTimestamp;
+    const smoothProgress = baseProgressMs + elapsed;
+
+    // Clamp to duration (don't exceed track length)
+    return Math.min(smoothProgress, durationMs);
   };
-  let device = $state<SpotifyDevice>({ ...defaultDevice });
 
-  // Track timeout IDs for cleanup
-  let timeoutIds = $state(new Set<number>());
-  let isComponentMounted = false;
+  // Animation loop for smooth progress bar
+  const startProgressAnimation = () => {
+    if (animationFrameId !== null) return;
 
-  // Helper function to manage timeouts
-  const setManagedTimeout = (callback: () => void, delay: number): number => {
-    if (!isComponentMounted) return -1;
+    const animate = () => {
+      if (!isComponentMounted) return;
 
-    const timeoutId = window.setTimeout(() => {
-      timeoutIds.delete(timeoutId);
-      if (isComponentMounted) {
-        callback();
+      if (isPlaying) {
+        const smoothMs = getSmoothProgress();
+        track.progress_ms = smoothMs;
+        track.percent = (smoothMs * 100) / durationMs;
       }
-    }, delay);
 
-    timeoutIds.add(timeoutId);
-    return timeoutId;
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
   };
 
-  // Cleanup function
-  const cleanup = () => {
-    isComponentMounted = false;
-    timeoutIds.forEach(id => clearTimeout(id));
-    timeoutIds.clear();
+  const stopProgressAnimation = () => {
+    if (animationFrameId !== null) {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
+    }
   };
+
+  // ===== Helper Functions =====
 
   // Helper function to calculate remaining time
   const getRemainingTime = (): string => {
@@ -89,128 +119,91 @@
     return `${remainingMinutes} min left`;
   };
 
-  const getDevice = () => {
-    fetch(`${SPOTIFY_API.BASE_URL}/me/player/devices`, {
-      method: 'GET',
-      headers: new Headers({
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + spotifyToken
-      })
-    })
-      .then(response => {
-        if (response.status === 200) {
-          return response.json();
-        } else {
-          return false;
-        }
-      })
-      .then((data: SpotifyDevicesResponse) => {
-        if (data.devices.length >= 1) {
-          const activeDevice = data.devices.find((device: SpotifyDevice) => device.is_active);
-          if (activeDevice !== undefined) {
-            device.name = activeDevice.name;
-            device.type = activeDevice.type;
-          } else {
-            device = { ...defaultDevice };
-          }
-        } else {
-          device = { ...defaultDevice };
-        }
-      })
-      .catch(error => {
-        console.log(error);
-        return [];
-      });
-  };
-
-  const refreshToken = () => {
-    fetch(SPOTIFY_API.REFRESH_ENDPOINT)
-      .then(response => response.json())
-      .then(data => {
-        if (data.data !== null) {
-          spotifyToken = data.data.access_token;
-          getCurrentPlayingTrack();
-        }
-      })
-      .catch(error => {
-        console.log(error);
-        return [];
-      });
-  };
-
-  const getCurrentPlayingTrack = () => {
+  // Initialize SSE connection
+  const initSSE = () => {
     if (!isComponentMounted) return;
 
-    fetch(`${SPOTIFY_API.BASE_URL}/me/player/currently-playing?market=${SPOTIFY_API.MARKET}`, {
-      method: 'GET',
-      headers: new Headers({
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + spotifyToken
-      })
-    })
-      .then(response => {
-        if (!isComponentMounted) return null;
+    // Close existing connection
+    eventSource?.close();
 
-        if (response.status === 200) {
-          return response.json();
-        } else if (response.status === 401) {
-          refreshToken();
-          return null;
-        } else {
-          setManagedTimeout(() => getCurrentPlayingTrack(), 3000);
-          return null;
+    eventSource = new EventSource(`${API_BASE_URL}/api/spotify/stream`);
+
+    eventSource.onmessage = (event) => {
+      if (!isComponentMounted) return;
+
+      try {
+        const data: SSEData = JSON.parse(event.data);
+
+        if (data.status === 'playing' && data.track) {
+          spotify = true;
+
+          // Check if play state changed
+          const playStateChanged = wasPlaying !== data.track.is_playing;
+          wasPlaying = data.track.is_playing;
+          isPlaying = data.track.is_playing;
+
+          // Update track info
+          track.name = data.track.name;
+          track.artists = data.track.artists;
+          track.album_img = data.track.album_img;
+          track.album_url = data.track.album_url;
+          track.url = data.track.url;
+          durationMs = data.track.duration_ms;
+          track.duration_ms = data.track.duration_ms;
+
+          // Update device info
+          device = data.track.device;
+
+          // Store base progress for smooth animation
+          baseProgressMs = data.track.progress_ms;
+          lastUpdateTimestamp = Date.now();
+
+          // Start/stop animation based on play state
+          if (isPlaying) {
+            startProgressAnimation();
+          } else if (playStateChanged) {
+            // Just paused, stop animation but show current position
+            stopProgressAnimation();
+            track.progress_ms = baseProgressMs;
+            track.percent = (baseProgressMs * 100) / durationMs;
+          }
+        } else if (data.status === 'idle') {
+          spotify = false;
+          isPlaying = false;
+          wasPlaying = false;
+          device = null;
+          stopProgressAnimation();
         }
-      })
-      .then(data => {
-        if (!isComponentMounted || !data) return;
+      } catch (error) {
+        console.error('Failed to parse SSE data:', error);
+      }
+    };
 
-        isPlaying = data.is_playing;
-        const item = data.item;
-        track.artists = item.artists;
-        track.url = item.external_urls.spotify;
-        track.name = item.name;
-        track.album_img = item?.album?.images[0]?.url;
-        track.album_url = item.album.external_urls.spotify;
-        track.duration_ms = item.duration_ms;
-        track.progress_ms = data.progress_ms;
-        track.percent = (data.progress_ms * 100) / item.duration_ms;
-        spotify = true;
-        getDevice();
-        setManagedTimeout(() => getCurrentPlayingTrack(), 1000);
-      })
-      .catch(error => {
-        if (!isComponentMounted) return;
+    // Handle connection close
+    eventSource.addEventListener('close', () => {
+      if (!isComponentMounted) return;
 
-        spotify = false;
-        console.log(error);
-        setManagedTimeout(() => getCurrentPlayingTrack(), 7000);
-      });
+      eventSource?.close();
+      // Auto reconnect after 5 seconds
+      setTimeout(() => initSSE(), 5000);
+    });
+
+    // Handle errors
+    eventSource.onerror = (error) => {
+      console.error('SSE connection error:', error);
+      // EventSource will auto-reconnect
+    };
   };
 
   onMount(() => {
     isComponentMounted = true;
-
-    fetch(SPOTIFY_API.TOKEN_ENDPOINT)
-      .then(response => response.json())
-      .then(data => {
-        if (!isComponentMounted) return;
-
-        if (data.data !== null) {
-          spotifyToken = data.data.access_token;
-          getCurrentPlayingTrack();
-        }
-      })
-      .catch(error => {
-        if (!isComponentMounted) return;
-
-        console.log(error);
-      });
+    initSSE();
   });
 
   onDestroy(() => {
-    cleanup();
+    isComponentMounted = false;
+    stopProgressAnimation();
+    eventSource?.close();
   });
 </script>
 
@@ -252,16 +245,9 @@
             </a>
           </div>
           <div class="text-sm text-gray-300 truncate">
-            {#each track.artists as { external_urls, name }, i (i)}
-              <span>
-                <a
-                  target="_blank"
-                  rel="noreferrer"
-                  class="hover:text-white hover:underline transition-colors duration-200"
-                  href={external_urls.spotify}
-                >
-                  {name}
-                </a>
+            {#each track.artists as artist, i (i)}
+              <span class="hover:text-white transition-colors duration-200">
+                {artist}
                 {#if i + 1 !== track.artists.length}
                   <span class="text-gray-500 mx-1">•</span>
                 {/if}
@@ -288,7 +274,7 @@
             class="h-2 rounded-full overflow-hidden {isPlaying ? 'bg-gray-800' : 'bg-gray-800/50'}"
           >
             <div
-              class="h-full rounded-full transition-all duration-300 ease-out {isPlaying
+              class="h-full rounded-full {isPlaying
                 ? 'bg-gradient-to-r from-green-500 to-green-400'
                 : 'bg-gradient-to-r from-gray-400 to-gray-500'}"
               style="width: {track.percent}%;"
@@ -300,7 +286,7 @@
           </div>
           {#if isPlaying}
             <div
-              class="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-lg transition-all duration-300"
+              class="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-lg"
               style="left: calc({track.percent}% - 6px);"
             ></div>
           {/if}
@@ -309,7 +295,7 @@
         <!-- Bottom info -->
         <div class="flex items-center justify-between text-xs">
           <div class="flex items-center gap-2">
-            {#if device.name !== null}
+            {#if device}
               <div class="flex items-center gap-1 text-gray-400">
                 <MonitorSmartphone class="w-3 h-3 opacity-70" />
                 <span class="font-medium text-gray-300">{device.name}</span>
@@ -325,8 +311,8 @@
             {/if}
             <div class="flex items-center gap-1">
               {#if isPlaying}
-                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span class="text-green-500 font-medium">LIVE</span>
+                <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                <span class="text-red-500 font-medium">LIVE</span>
               {:else}
                 <Pause class="w-3 h-3 text-gray-400" />
                 <span class="text-gray-400">PAUSED</span>
@@ -359,7 +345,7 @@
         <!-- Offline info -->
         <div class="flex-1">
           <div class="font-bold text-gray-400 text-base mb-1">Not Playing</div>
-          <div class="text-sm text-gray-500">Connect to Spotify to see current track</div>
+          <div class="text-sm text-gray-500">No music playing right now</div>
         </div>
 
         <!-- Spotify logo -->
@@ -381,7 +367,7 @@
         <div class="flex items-center justify-between text-xs">
           <div class="flex items-center gap-1 text-gray-500">
             <Pause class="w-3 h-3" />
-            <span>Offline</span>
+            <span>Idle</span>
           </div>
           <span class="text-gray-500">--:--</span>
         </div>

@@ -669,9 +669,9 @@
         {/each}
       </div>
 
-      <!-- Load More Button -->
-      {#if $hasMore}
-        <div class="mt-8 flex justify-center">
+      <!-- Load More Button / End Indicator -->
+      <div class="mt-8 flex justify-center">
+        {#if $hasMore}
           <button
             onclick={loadMoreNotes}
             disabled={isLoadingMore}
@@ -685,22 +685,25 @@
               Load More Notes
             {/if}
           </button>
-        </div>
-      {/if}
-
-      <!-- End of Notes Indicator -->
-      {#if !$hasMore && $notes.length > 0}
-        <div class="mt-8 text-center">
-          <div
-            class="inline-flex items-center gap-2 px-4 py-2 bg-secondary-100 dark:bg-secondary-700 rounded-full"
-          >
-            <div class="w-2 h-2 bg-secondary-400 dark:bg-secondary-500 rounded-full"></div>
-            <span class="text-sm text-secondary-600 dark:text-secondary-400">
-              Showing all {$notes.length} notes
-            </span>
+        {:else if $notes.length > 0}
+          <!-- End of list - show total count -->
+          <div class="flex items-center gap-3">
+            <div
+              class="inline-flex items-center gap-2 px-4 py-2 bg-secondary-100 dark:bg-secondary-700 rounded-full"
+            >
+              <div class="w-2 h-2 bg-secondary-400 dark:bg-secondary-500 rounded-full"></div>
+              <span class="text-sm text-secondary-600 dark:text-secondary-400">
+                Showing all {$notes.length} of {$totalCount} notes
+              </span>
+            </div>
           </div>
-        </div>
-      {/if}
+        {:else}
+          <!-- No notes state -->
+          <div class="text-center">
+            <p class="text-secondary-500 dark:text-secondary-400">No notes found</p>
+          </div>
+        {/if}
+      </div>
     {/if}
     {:else if viewMode === 'detail'}
       <!-- Single Note Detail View -->
