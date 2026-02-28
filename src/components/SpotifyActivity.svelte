@@ -2,7 +2,7 @@
   import { MonitorSmartphone, Play, Pause, X } from '@lucide/svelte';
   import SpotifyLogoIcon from './icons/SpotifyLogoIcon.svelte';
   import { onMount, onDestroy } from 'svelte';
-  import { API_BASE_URL } from '../lib/constants';
+  import { createWebSocket, type WebSocketState, SPOTIFY_WEBSOCKET_CONFIG } from '../lib/websocket.svelte';
 
   interface SpotifyDevice {
     id: string;
@@ -25,12 +25,12 @@
     device: SpotifyDevice;
   }
 
-  interface SSEData {
+  interface WebSocketTrackData {
     status: 'playing' | 'idle';
     track?: SpotifyTrackData;
   }
 
-  let eventSource: EventSource | null = null;
+  let ws: ReturnType<typeof createWebSocket> | null = null;
   let animationFrameId: number | null = null;
   let isComponentMounted = false;
 
@@ -119,91 +119,85 @@
     return `${remainingMinutes} min left`;
   };
 
-  // Initialize SSE connection
-  const initSSE = () => {
+  // Handle incoming WebSocket track data
+  const handleTrackUpdate = (data: WebSocketTrackData) => {
+    if (!isComponentMounted) return;
+
+    if (data.status === 'playing' && data.track) {
+      spotify = true;
+
+      // Check if play state changed
+      const playStateChanged = wasPlaying !== data.track.is_playing;
+      wasPlaying = data.track.is_playing;
+      isPlaying = data.track.is_playing;
+
+      // Update track info
+      track.name = data.track.name;
+      track.artists = data.track.artists;
+      track.album_img = data.track.album_img;
+      track.album_url = data.track.album_url;
+      track.url = data.track.url;
+      durationMs = data.track.duration_ms;
+      track.duration_ms = data.track.duration_ms;
+
+      // Update device info
+      device = data.track.device;
+
+      // Store base progress for smooth animation
+      baseProgressMs = data.track.progress_ms;
+      lastUpdateTimestamp = Date.now();
+
+      // Start/stop animation based on play state
+      if (isPlaying) {
+        startProgressAnimation();
+      } else if (playStateChanged) {
+        // Just paused, stop animation but show current position
+        stopProgressAnimation();
+        track.progress_ms = baseProgressMs;
+        track.percent = (baseProgressMs * 100) / durationMs;
+      }
+    } else if (data.status === 'idle') {
+      spotify = false;
+      isPlaying = false;
+      wasPlaying = false;
+      device = null;
+      stopProgressAnimation();
+    }
+  };
+
+  // Handle WebSocket connection state changes
+  const handleStateChange = (state: WebSocketState) => {
+    console.log('WebSocket state:', state);
+  };
+
+  // Initialize WebSocket connection
+  const initWebSocket = () => {
     if (!isComponentMounted) return;
 
     // Close existing connection
-    eventSource?.close();
+    ws?.disconnect();
 
-    eventSource = new EventSource(`${API_BASE_URL}/api/spotify/stream`);
-
-    eventSource.onmessage = (event) => {
-      if (!isComponentMounted) return;
-
-      try {
-        const data: SSEData = JSON.parse(event.data);
-
-        if (data.status === 'playing' && data.track) {
-          spotify = true;
-
-          // Check if play state changed
-          const playStateChanged = wasPlaying !== data.track.is_playing;
-          wasPlaying = data.track.is_playing;
-          isPlaying = data.track.is_playing;
-
-          // Update track info
-          track.name = data.track.name;
-          track.artists = data.track.artists;
-          track.album_img = data.track.album_img;
-          track.album_url = data.track.album_url;
-          track.url = data.track.url;
-          durationMs = data.track.duration_ms;
-          track.duration_ms = data.track.duration_ms;
-
-          // Update device info
-          device = data.track.device;
-
-          // Store base progress for smooth animation
-          baseProgressMs = data.track.progress_ms;
-          lastUpdateTimestamp = Date.now();
-
-          // Start/stop animation based on play state
-          if (isPlaying) {
-            startProgressAnimation();
-          } else if (playStateChanged) {
-            // Just paused, stop animation but show current position
-            stopProgressAnimation();
-            track.progress_ms = baseProgressMs;
-            track.percent = (baseProgressMs * 100) / durationMs;
-          }
-        } else if (data.status === 'idle') {
-          spotify = false;
-          isPlaying = false;
-          wasPlaying = false;
-          device = null;
-          stopProgressAnimation();
-        }
-      } catch (error) {
-        console.error('Failed to parse SSE data:', error);
-      }
-    };
-
-    // Handle connection close
-    eventSource.addEventListener('close', () => {
-      if (!isComponentMounted) return;
-
-      eventSource?.close();
-      // Auto reconnect after 5 seconds
-      setTimeout(() => initSSE(), 5000);
+    ws = createWebSocket({
+      ...SPOTIFY_WEBSOCKET_CONFIG,
+      events: {
+        SpotifyTrackUpdated: (data) => handleTrackUpdate(data as WebSocketTrackData)
+      },
+      onStateChange: handleStateChange,
+      reconnectInterval: 5000
     });
 
-    // Handle errors
-    eventSource.onerror = (error) => {
-      console.error('SSE connection error:', error);
-      // EventSource will auto-reconnect
-    };
+    ws.connect();
   };
 
   onMount(() => {
     isComponentMounted = true;
-    initSSE();
+    initWebSocket();
   });
 
   onDestroy(() => {
     isComponentMounted = false;
     stopProgressAnimation();
-    eventSource?.close();
+    ws?.disconnect();
   });
 </script>
 

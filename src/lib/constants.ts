@@ -11,12 +11,19 @@
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://core.fariz.dev';
 
 /**
+ * WebSocket Configuration
+ */
+export const WS_BASE_URL = import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8080';
+
+/**
  * Spotify API Configuration
  */
 export const SPOTIFY_API = {
   BASE_URL: 'https://api.spotify.com/v1',
   TOKEN_ENDPOINT: `${API_BASE_URL}/api/spotify/token`,
   REFRESH_ENDPOINT: `${API_BASE_URL}/api/spotify/refresh`,
+  WS_REGISTER_ENDPOINT: `${API_BASE_URL}/api/spotify/websocket/register`,
+  WS_CHANNEL: 'spotify.track',
   MARKET: 'ID'
 } as const;
 
