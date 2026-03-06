@@ -128,6 +128,7 @@
             </h2>
             {#if showCloseButton}
               <button
+                type="button"
                 onclick={close}
                 class="w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
                 aria-label="Close modal"
