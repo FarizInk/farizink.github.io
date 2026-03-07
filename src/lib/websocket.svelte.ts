@@ -133,11 +133,11 @@ export class WebSocketManager {
       this.subscribe(this.config.channel);
     };
 
-    this.ws.onmessage = (event) => {
+    this.ws.onmessage = event => {
       this.handleMessage(event.data);
     };
 
-    this.ws.onclose = (event) => {
+    this.ws.onclose = event => {
       this.setState('disconnected');
       // Auto reconnect unless it was intentional
       if (!event.wasClean) {
@@ -145,7 +145,7 @@ export class WebSocketManager {
       }
     };
 
-    this.ws.onerror = (error) => {
+    this.ws.onerror = error => {
       console.error('WebSocket error:', error);
       this.setState('error');
     };
@@ -216,7 +216,7 @@ export class WebSocketManager {
         try {
           const parsedData = JSON.parse(message.data);
           console.log('🎯 [WebSocket] Parsed event data:', parsedData);
-        } catch (e) {
+        } catch {
           console.log('🎯 [WebSocket] Could not parse event data as JSON');
         }
       }
@@ -229,7 +229,12 @@ export class WebSocketManager {
       if (!handler && this.dynamicEventName && message.event === this.dynamicEventName) {
         const handlerKeys = Object.keys(this.config.events);
         if (handlerKeys.length > 0) {
-          console.log('[WebSocket] Using dynamic event mapping:', message.event, '->', handlerKeys[0]);
+          console.log(
+            '[WebSocket] Using dynamic event mapping:',
+            message.event,
+            '->',
+            handlerKeys[0]
+          );
           handler = this.config.events[handlerKeys[0]];
         }
       }
@@ -322,7 +327,7 @@ export function createWebSocket(config: WebSocketConfig): UseWebSocketReturn {
   let managerState = $state<WebSocketState>('disconnected');
   const manager = new WebSocketManager({
     ...config,
-    onStateChange: (state) => {
+    onStateChange: state => {
       managerState = state;
       config.onStateChange?.(state);
     }

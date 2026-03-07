@@ -2,8 +2,8 @@ import { apiClient } from './axios';
 
 // Tag Types
 export interface Tag {
-  id: string;  // UUID (primary key)
-  tag: string;  // Unique slug/identifier
+  id: string; // UUID (primary key)
+  tag: string; // Unique slug/identifier
   name: string;
   color?: string | null;
   created_at: string;

@@ -2,7 +2,6 @@
   import { Mail, Lock, Eye, EyeOff, X } from '@lucide/svelte';
   import { saveAuth, login } from '../lib/auth';
   import { toast } from 'svelte-sonner';
-  import { API_BASE_URL } from '../lib/constants';
 
   let { isOpen = $bindable(false) } = $props();
 

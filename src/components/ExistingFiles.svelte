@@ -1,13 +1,10 @@
 <script lang="ts">
   import type { NoteFile } from '../lib/notes';
   import { getFileUrl } from '../lib/notes';
-  import { formatFileSize, getFileIconType } from '../lib/uiUtils';
+  import { formatFileSize } from '../lib/uiUtils';
   import { File as FileIcon, Trash2, Download, Undo, AlertTriangle } from '@lucide/svelte';
 
-  let {
-    files,
-    filesToDelete = $bindable<string[]>([])
-  } = $props<{
+  let { files, filesToDelete = $bindable<string[]>([]) } = $props<{
     files: NoteFile[];
     filesToDelete: string[];
   }>();
@@ -33,18 +30,15 @@
     link.click();
     document.body.removeChild(link);
   }
-
-  // Get icon component for file type
-  function getFileIcon(mime_type: string) {
-    return getFileIconType(mime_type);
-  }
 </script>
 
 {#if files.length > 0}
   <div class="space-y-6">
     <!-- Warning for files marked for deletion -->
     {#if filesToDelete.length > 0}
-      <div class="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-primary-800 rounded-lg p-4">
+      <div
+        class="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-primary-800 rounded-lg p-4"
+      >
         <div class="flex items-start justify-between">
           <div class="flex-1">
             <div class="flex items-center gap-2 mb-1">
@@ -71,12 +65,14 @@
     <!-- Images Section -->
     {#if files.filter(f => f.mime_type.startsWith('image/')).length > 0}
       <div>
-        <div class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-3 flex items-center justify-between">
+        <div
+          class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-3 flex items-center justify-between"
+        >
           <span>Images ({files.filter(f => f.mime_type.startsWith('image/')).length})</span>
           {#if filesToDelete.filter(id => {
-              const file = files.find(f => f.id === id);
-              return file && file.mime_type.startsWith('image/');
-            }).length > 0}
+            const file = files.find(f => f.id === id);
+            return file && file.mime_type.startsWith('image/');
+          }).length > 0}
             <button
               type="button"
               onclick={() => {
@@ -96,16 +92,23 @@
           {/if}
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {#each files.filter(f => f.mime_type.startsWith('image/')) as file, index (file.id + '-' + index)}
+          {#each files.filter( f => f.mime_type.startsWith('image/') ) as file, index (file.id + '-' + index)}
             <div
-              class="relative group aspect-square bg-white dark:bg-secondary-800 rounded-lg border {filesToDelete.includes(file.id) ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/10' : 'border-secondary-200 dark:border-secondary-600'} overflow-hidden transition-all"
+              class="relative group aspect-square bg-white dark:bg-secondary-800 rounded-lg border {filesToDelete.includes(
+                file.id
+              )
+                ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/10'
+                : 'border-secondary-200 dark:border-secondary-600'} overflow-hidden transition-all"
             >
               <!-- Image -->
               <img
                 src={getFileUrl(file)}
                 alt={file.original_name}
                 class="w-full h-full object-cover"
-                onerror={`this.src='data:${file.mime_type};base64,${file.data}'`}
+                onerror={e => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = `data:${file.mime_type};base64,${file.data}`;
+                }}
               />
 
               <!-- Delete Overlay -->
@@ -141,7 +144,9 @@
               {/if}
 
               <!-- Hover Overlay -->
-              <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2 z-20">
+              <div
+                class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2 z-20"
+              >
                 <button
                   type="button"
                   onclick={() => downloadFile(file)}
@@ -164,7 +169,9 @@
               </div>
 
               <!-- File Info -->
-              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
+              <div
+                class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2"
+              >
                 <p class="text-white text-xs truncate" title={file.original_name}>
                   {file.original_name}
                 </p>
@@ -181,12 +188,14 @@
     <!-- Other Files Section -->
     {#if files.filter(f => !f.mime_type.startsWith('image/')).length > 0}
       <div>
-        <div class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-3 flex items-center justify-between">
+        <div
+          class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-3 flex items-center justify-between"
+        >
           <span>Files ({files.filter(f => !f.mime_type.startsWith('image/')).length})</span>
           {#if filesToDelete.filter(id => {
-              const file = files.find(f => f.id === id);
-              return file && !file.mime_type.startsWith('image/');
-            }).length > 0}
+            const file = files.find(f => f.id === id);
+            return file && !file.mime_type.startsWith('image/');
+          }).length > 0}
             <button
               type="button"
               onclick={() => {
@@ -208,10 +217,16 @@
         <div class="space-y-2">
           {#each files.filter(f => !f.mime_type.startsWith('image/')) as file, index (file.id + '-' + index)}
             <div
-              class="flex items-center gap-3 p-3 bg-white dark:bg-secondary-800 rounded-lg border {filesToDelete.includes(file.id) ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/10' : 'border-secondary-200 dark:border-secondary-600'} transition-colors"
+              class="flex items-center gap-3 p-3 bg-white dark:bg-secondary-800 rounded-lg border {filesToDelete.includes(
+                file.id
+              )
+                ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/10'
+                : 'border-secondary-200 dark:border-secondary-600'} transition-colors"
             >
               <!-- File Icon -->
-              <div class="w-12 h-12 bg-secondary-100 dark:bg-secondary-700 rounded-lg flex items-center justify-center">
+              <div
+                class="w-12 h-12 bg-secondary-100 dark:bg-secondary-700 rounded-lg flex items-center justify-center"
+              >
                 {#if file.mime_type === 'application/pdf'}
                   <FileIcon class="w-6 h-6 text-red-600 dark:text-red-400" />
                 {:else if file.mime_type.includes('document')}
@@ -274,6 +289,5 @@
         </div>
       </div>
     {/if}
-
-    </div>
+  </div>
 {/if}

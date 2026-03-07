@@ -1,4 +1,4 @@
-import { apiClient, getAuthHeaders, isAxiosError } from './axios';
+import { apiClient, isAxiosError } from './axios';
 import { API_BASE_URL } from './constants';
 import axios from 'axios';
 import type { Tag } from './tags';
@@ -20,7 +20,7 @@ export interface NoteFile {
     width?: number;
     height?: number;
     pages?: number;
-    [key: string]: any;
+    [key: string]: string | number | undefined;
   };
   created_at: string;
   updated_at: string;
@@ -190,8 +190,8 @@ export async function createNoteWithFormData(formData: FormData): Promise<NoteRe
   // Use raw axios to avoid apiClient's default headers
   const response = await axios.post(`${API_BASE_URL}/api/notes`, formData, {
     headers: {
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/json'
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json'
       // Don't set Content-Type - browser will set it with boundary for FormData
     },
     timeout: 30000
@@ -233,7 +233,7 @@ export async function createNote(noteData: CreateNoteData): Promise<NoteResponse
 
     // Add files
     if (noteData.files) {
-      noteData.files.forEach((file) => {
+      noteData.files.forEach(file => {
         if (file.file) {
           formData.append('files', file.file);
         } else if (file.data) {
@@ -263,7 +263,7 @@ export async function createNote(noteData: CreateNoteData): Promise<NoteResponse
   } else {
     // Use regular JSON if no files or only base64 data
     // Use snake_case for API fields
-    const submissionData: any = {};
+    const submissionData: Record<string, unknown> = {};
 
     // Only include fields that are provided
     if (noteData.name !== undefined) submissionData.name = noteData.name;
@@ -300,10 +300,7 @@ export async function createNote(noteData: CreateNoteData): Promise<NoteResponse
 /**
  * Update existing note with multipart/form-data support
  */
-export async function updateNote(
-  id: string,
-  noteData: UpdateNoteData
-): Promise<NoteResponse> {
+export async function updateNote(id: string, noteData: UpdateNoteData): Promise<NoteResponse> {
   const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
   if (!token) {
     throw new Error('Authentication required');
@@ -321,8 +318,10 @@ export async function updateNote(
     if (noteData.name !== undefined) formData.append('name', noteData.name);
     if (noteData.link !== undefined) formData.append('link', noteData.link);
     if (noteData.description !== undefined) formData.append('description', noteData.description);
-    if (noteData.isPublic !== undefined) formData.append('is_public', noteData.isPublic ? '1' : '0');
-    if (noteData.isFavorite !== undefined) formData.append('is_favorite', noteData.isFavorite ? '1' : '0');
+    if (noteData.isPublic !== undefined)
+      formData.append('is_public', noteData.isPublic ? '1' : '0');
+    if (noteData.isFavorite !== undefined)
+      formData.append('is_favorite', noteData.isFavorite ? '1' : '0');
 
     // Send tag_ids as individual entries for Laravel to auto-convert to array
     if (noteData.tags !== undefined) {
@@ -337,7 +336,7 @@ export async function updateNote(
 
     // Add files
     if (noteData.files) {
-      noteData.files.forEach((file) => {
+      noteData.files.forEach(file => {
         if (file.file) {
           formData.append('files', file.file);
         } else if (file.data) {
@@ -366,7 +365,7 @@ export async function updateNote(
     return response.data.data ? { data: response.data.data } : { data: response.data };
   } else {
     // Use regular JSON if no files or only base64 data
-    const submissionData: any = {};
+    const submissionData: Record<string, unknown> = {};
 
     // Only include fields that are explicitly provided - use snake_case for API
     if (noteData.name !== undefined) submissionData.name = noteData.name;
@@ -495,13 +494,16 @@ export async function restoreNote(id: string): Promise<NoteResponse> {
     throw new Error('Authentication required');
   }
 
-  const response = await apiClient.post(`/api/notes/${id}/restore`, {}, {
-    timeout: 5000
-  });
+  const response = await apiClient.post(
+    `/api/notes/${id}/restore`,
+    {},
+    {
+      timeout: 5000
+    }
+  );
 
   return response.data;
 }
-
 
 /**
  * Get file URL for preview - supports presigned URL, regular URL, and base64 formats
@@ -530,10 +532,12 @@ export function getFileUrl(file: NoteFile): string {
  * Check if URL is a presigned URL that might expire
  */
 export function isPresignedUrl(url: string): boolean {
-  return url.includes('X-Amz-Credential') ||
-         url.includes('X-Amz-Signature') ||
-         url.includes('presigned') ||
-         url.includes('signed-url');
+  return (
+    url.includes('X-Amz-Credential') ||
+    url.includes('X-Amz-Signature') ||
+    url.includes('presigned') ||
+    url.includes('signed-url')
+  );
 }
 
 /**
@@ -565,12 +569,17 @@ export function revokePreviewUrl(url: string): void {
 /**
  * Compress image if needed
  */
-export async function compressImage(file: File, maxWidth = 1920, maxHeight = 1080, quality = 0.8): Promise<File> {
+export async function compressImage(
+  file: File,
+  maxWidth = 1920,
+  maxHeight = 1080,
+  quality = 0.8
+): Promise<File> {
   if (!file.type.startsWith('image/')) {
     return file;
   }
 
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const img = new Image();
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -596,17 +605,21 @@ export async function compressImage(file: File, maxWidth = 1920, maxHeight = 108
 
       ctx?.drawImage(img, 0, 0, width, height);
 
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const compressedFile = new File([blob], file.name, {
-            type: file.type,
-            lastModified: Date.now()
-          });
-          resolve(compressedFile);
-        } else {
-          resolve(file);
-        }
-      }, file.type, quality);
+      canvas.toBlob(
+        blob => {
+          if (blob) {
+            const compressedFile = new File([blob], file.name, {
+              type: file.type,
+              lastModified: Date.now()
+            });
+            resolve(compressedFile);
+          } else {
+            resolve(file);
+          }
+        },
+        file.type,
+        quality
+      );
     };
 
     img.src = URL.createObjectURL(file);
@@ -667,15 +680,17 @@ export async function getAvailableTags(): Promise<Tag[]> {
 
 export function formatTagIds(tagIds: (string | Tag)[]): string[] {
   // Ensure we only return valid string tag values
-  return tagIds.map(id => {
-    if (typeof id === 'string') {
-      return id.trim();
-    } else if (id && typeof id === 'object' && id.tag) {
-      return String(id.tag).trim(); // Extract tag value from object if needed
-    } else {
-      return String(id).trim(); // Convert to string as fallback
-    }
-  }).filter(id => id.length > 0);
+  return tagIds
+    .map(id => {
+      if (typeof id === 'string') {
+        return id.trim();
+      } else if (id && typeof id === 'object' && id.tag) {
+        return String(id.tag).trim(); // Extract tag value from object if needed
+      } else {
+        return String(id).trim(); // Convert to string as fallback
+      }
+    })
+    .filter(id => id.length > 0);
 }
 
 // Convert tags array from API response to tag UUIDs for frontend
@@ -688,19 +703,24 @@ export function convertApiTagsToTagIds(note: Note): string[] {
   return note.tags.map(tag => tag.id).filter(id => id && id.trim().length > 0);
 }
 
-export function validateTagIds(tagIds: (string | Tag)[], availableTags?: Tag[] | null): { valid: string[], invalid: string[] } {
+export function validateTagIds(
+  tagIds: (string | Tag)[],
+  availableTags?: Tag[] | null
+): { valid: string[]; invalid: string[] } {
   // Handle undefined or null availableTags
   if (!availableTags || !Array.isArray(availableTags)) {
     // If no available tags provided, assume all tag IDs are invalid
-    const stringIds = (tagIds || []).map(id => {
-      if (typeof id === 'string') {
-        return id;
-      } else if (id && typeof id === 'object' && id.id) {
-        return id.id; // Use UUID
-      } else {
-        return String(id);
-      }
-    }).filter(id => id && id.trim().length > 0);
+    const stringIds = (tagIds || [])
+      .map(id => {
+        if (typeof id === 'string') {
+          return id;
+        } else if (id && typeof id === 'object' && id.id) {
+          return id.id; // Use UUID
+        } else {
+          return String(id);
+        }
+      })
+      .filter(id => id && id.trim().length > 0);
 
     return { valid: [], invalid: stringIds };
   }
@@ -709,15 +729,17 @@ export function validateTagIds(tagIds: (string | Tag)[], availableTags?: Tag[] |
   const validTagIds = new Set(availableTags.map(tag => tag.id));
 
   // Ensure we're working with strings only
-  const stringIds = (tagIds || []).map(id => {
-    if (typeof id === 'string') {
-      return id;
-    } else if (id && typeof id === 'object' && id.id) {
-      return id.id; // Use UUID
-    } else {
-      return String(id); // Convert to string as fallback
-    }
-  }).filter(id => id && id.trim().length > 0);
+  const stringIds = (tagIds || [])
+    .map(id => {
+      if (typeof id === 'string') {
+        return id;
+      } else if (id && typeof id === 'object' && id.id) {
+        return id.id; // Use UUID
+      } else {
+        return String(id); // Convert to string as fallback
+      }
+    })
+    .filter(id => id && id.trim().length > 0);
 
   const valid = stringIds.filter(id => validTagIds.has(id));
   const invalid = stringIds.filter(id => !validTagIds.has(id));

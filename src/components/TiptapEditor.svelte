@@ -5,7 +5,21 @@
   import Link from '@tiptap/extension-link';
   import Placeholder from '@tiptap/extension-placeholder';
   import type { Level } from '@tiptap/extension-heading';
- import { Bold, Italic, Strikethrough, Code, Heading1, Heading2, Heading3, List, ListOrdered, Quote, Link as LinkIcon, Undo, Redo } from '@lucide/svelte';
+  import {
+    Bold,
+    Italic,
+    Strikethrough,
+    Code,
+    Heading1,
+    Heading2,
+    Heading3,
+    List,
+    ListOrdered,
+    Quote,
+    Link as LinkIcon,
+    Undo,
+    Redo
+  } from '@lucide/svelte';
 
   // Props
   let {
@@ -32,31 +46,32 @@
       extensions: [
         StarterKit.configure({
           heading: {
-            levels: [1, 2, 3],
+            levels: [1, 2, 3]
           },
           // Exclude default link extension to avoid duplicate
-          link: false,
+          link: false
         }),
         Link.configure({
           openOnClick: false,
           HTMLAttributes: {
-            class: 'text-blue-600 underline hover:text-blue-800 cursor-pointer',
-          },
+            class: 'text-blue-600 underline hover:text-blue-800 cursor-pointer'
+          }
         }),
         Placeholder.configure({
-          placeholder: placeholder,
-        }),
+          placeholder: placeholder
+        })
       ],
       content: content || '',
       editable: !disabled,
       editorProps: {
         attributes: {
-          class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[130px] overflow-y-auto p-3',
-        },
+          class:
+            'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[130px] overflow-y-auto p-3'
+        }
       },
       onUpdate: ({ editor }) => {
         content = editor.getHTML();
-      },
+      }
     });
   });
 
@@ -199,11 +214,15 @@
     document.removeEventListener('touchmove', handleResize);
     document.removeEventListener('touchend', stopResize);
   }
-  </script>
+</script>
 
-<div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-white dark:bg-gray-800">
+<div
+  class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-white dark:bg-gray-800"
+>
   <!-- Toolbar -->
-  <div class="border-b border-gray-300 dark:border-gray-600 p-2 flex flex-wrap gap-1 bg-gray-50 dark:bg-gray-700">
+  <div
+    class="border-b border-gray-300 dark:border-gray-600 p-2 flex flex-wrap gap-1 bg-gray-50 dark:bg-gray-700"
+  >
     <!-- Undo/Redo -->
     <button
       type="button"
@@ -231,8 +250,12 @@
     <button
       type="button"
       onclick={toggleBold}
-      disabled={disabled}
-      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive('bold') ? 'bg-blue-200 dark:bg-blue-800' : ''}"
+      {disabled}
+      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive(
+        'bold'
+      )
+        ? 'bg-blue-200 dark:bg-blue-800'
+        : ''}"
       title="Bold"
     >
       <Bold class="w-4 h-4" />
@@ -240,8 +263,12 @@
     <button
       type="button"
       onclick={toggleItalic}
-      disabled={disabled}
-      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive('italic') ? 'bg-blue-200 dark:bg-blue-800' : ''}"
+      {disabled}
+      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive(
+        'italic'
+      )
+        ? 'bg-blue-200 dark:bg-blue-800'
+        : ''}"
       title="Italic"
     >
       <Italic class="w-4 h-4" />
@@ -249,8 +276,12 @@
     <button
       type="button"
       onclick={toggleStrike}
-      disabled={disabled}
-      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive('strike') ? 'bg-blue-200 dark:bg-blue-800' : ''}"
+      {disabled}
+      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive(
+        'strike'
+      )
+        ? 'bg-blue-200 dark:bg-blue-800'
+        : ''}"
       title="Strikethrough"
     >
       <Strikethrough class="w-4 h-4" />
@@ -258,8 +289,12 @@
     <button
       type="button"
       onclick={toggleCode}
-      disabled={disabled}
-      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive('code') ? 'bg-blue-200 dark:bg-blue-800' : ''}"
+      {disabled}
+      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive(
+        'code'
+      )
+        ? 'bg-blue-200 dark:bg-blue-800'
+        : ''}"
       title="Code"
     >
       <Code class="w-4 h-4" />
@@ -272,8 +307,13 @@
     <button
       type="button"
       onclick={() => setHeading(1)}
-      disabled={disabled}
-      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive('heading', { level: 1 }) ? 'bg-blue-200 dark:bg-blue-800' : ''}"
+      {disabled}
+      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive(
+        'heading',
+        { level: 1 }
+      )
+        ? 'bg-blue-200 dark:bg-blue-800'
+        : ''}"
       title="Heading 1"
     >
       <Heading1 class="w-4 h-4" />
@@ -281,8 +321,13 @@
     <button
       type="button"
       onclick={() => setHeading(2)}
-      disabled={disabled}
-      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive('heading', { level: 2 }) ? 'bg-blue-200 dark:bg-blue-800' : ''}"
+      {disabled}
+      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive(
+        'heading',
+        { level: 2 }
+      )
+        ? 'bg-blue-200 dark:bg-blue-800'
+        : ''}"
       title="Heading 2"
     >
       <Heading2 class="w-4 h-4" />
@@ -290,8 +335,13 @@
     <button
       type="button"
       onclick={() => setHeading(3)}
-      disabled={disabled}
-      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive('heading', { level: 3 }) ? 'bg-blue-200 dark:bg-blue-800' : ''}"
+      {disabled}
+      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive(
+        'heading',
+        { level: 3 }
+      )
+        ? 'bg-blue-200 dark:bg-blue-800'
+        : ''}"
       title="Heading 3"
     >
       <Heading3 class="w-4 h-4" />
@@ -304,8 +354,12 @@
     <button
       type="button"
       onclick={toggleBulletList}
-      disabled={disabled}
-      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive('bulletList') ? 'bg-blue-200 dark:bg-blue-800' : ''}"
+      {disabled}
+      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive(
+        'bulletList'
+      )
+        ? 'bg-blue-200 dark:bg-blue-800'
+        : ''}"
       title="Bullet List"
     >
       <List class="w-4 h-4" />
@@ -313,8 +367,12 @@
     <button
       type="button"
       onclick={toggleOrderedList}
-      disabled={disabled}
-      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive('orderedList') ? 'bg-blue-200 dark:bg-blue-800' : ''}"
+      {disabled}
+      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive(
+        'orderedList'
+      )
+        ? 'bg-blue-200 dark:bg-blue-800'
+        : ''}"
       title="Ordered List"
     >
       <ListOrdered class="w-4 h-4" />
@@ -322,8 +380,12 @@
     <button
       type="button"
       onclick={toggleBlockquote}
-      disabled={disabled}
-      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive('blockquote') ? 'bg-blue-200 dark:bg-blue-800' : ''}"
+      {disabled}
+      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive(
+        'blockquote'
+      )
+        ? 'bg-blue-200 dark:bg-blue-800'
+        : ''}"
       title="Quote"
     >
       <Quote class="w-4 h-4" />
@@ -336,8 +398,12 @@
     <button
       type="button"
       onclick={editor?.isActive('link') ? unsetLink : setLink}
-      disabled={disabled}
-      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive('link') ? 'bg-blue-200 dark:bg-blue-800' : ''}"
+      {disabled}
+      class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors {editor?.isActive(
+        'link'
+      )
+        ? 'bg-blue-200 dark:bg-blue-800'
+        : ''}"
       title={editor?.isActive('link') ? 'Remove Link' : 'Add Link'}
     >
       <LinkIcon class="w-4 h-4" />
@@ -348,7 +414,13 @@
   <div class="prose-wrapper" bind:this={editorContainer}>
     <div bind:this={editorElement}></div>
     <!-- Resize handle indicator -->
-    <div class="resize-handle" onmousedown={startResize} role="separator" aria-orientation="horizontal" aria-label="Drag to resize editor">
+    <div
+      class="resize-handle"
+      onmousedown={startResize}
+      role="separator"
+      aria-orientation="horizontal"
+      aria-label="Drag to resize editor"
+    >
       <div class="resize-handle-bar"></div>
     </div>
   </div>
@@ -383,7 +455,6 @@
     color: #6b7280;
   }
 
-  
   :global(.prose-wrapper .ProseMirror h1) {
     font-size: 2em;
     font-weight: bold;
@@ -442,7 +513,6 @@
     padding: 0;
   }
 
-  
   :global(.dark .prose-wrapper .ProseMirror blockquote) {
     border-left-color: #4b5563;
     color: #9ca3af;

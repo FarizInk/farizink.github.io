@@ -1,5 +1,12 @@
 import { writable, get } from 'svelte/store';
-import { getNotes, getDeletedNotes, permanentDeleteNote, restoreNote, type Note, type NoteFilters } from '../notes';
+import {
+  getNotes,
+  getDeletedNotes,
+  permanentDeleteNote,
+  restoreNote,
+  type Note,
+  type NoteFilters
+} from '../notes';
 import { toast } from 'svelte-sonner';
 import { PaginatedStore } from './PaginatedStore';
 import type { PaginatedResponse } from './PaginatedStore';
@@ -48,7 +55,7 @@ class NotesStore extends PaginatedStore<Note> {
   protected async _fetchData(
     page: number,
     limit: number,
-    filters?: any,
+    filters?: NoteFilters | undefined,
     append: boolean = false
   ): Promise<void> {
     const response = await getNotes(page, limit, filters);
@@ -65,8 +72,8 @@ class NotesStore extends PaginatedStore<Note> {
     // Sync with exported stores for backward compatibility
     notes.set(this.getData());
     currentPage.set(this.getCurrentPage());
-    hasMore.set(this.getHasMore());  // Now uses base class method correctly
-    totalCount.set(this.getTotalCount());  // Now uses base class method correctly
+    hasMore.set(this.getHasMore()); // Now uses base class method correctly
+    totalCount.set(this.getTotalCount()); // Now uses base class method correctly
   }
 
   /**
@@ -123,7 +130,9 @@ class NotesStore extends PaginatedStore<Note> {
   prependNote(note: Note): void {
     // Get current value
     let currentNotes: Note[] = [];
-    const unsub = notes.subscribe(v => { currentNotes = v; });
+    const unsub = notes.subscribe(v => {
+      currentNotes = v;
+    });
     unsub();
 
     // Create new array with note prepended and sorted
@@ -141,9 +150,7 @@ class NotesStore extends PaginatedStore<Note> {
     // Update the notes store and sort in one operation
     notes.update(currentNotes => {
       // Update the specific note
-      const updated = currentNotes.map(note =>
-        note.id === noteId ? updatedNote : note
-      );
+      const updated = currentNotes.map(note => (note.id === noteId ? updatedNote : note));
 
       // Sort by updated_at descending
       return sortNotes(updated, { sortBy: 'updated_at', sortOrder: 'desc' });
@@ -224,7 +231,7 @@ class DeletedNotesStore extends PaginatedStore<Note> {
   protected async _fetchData(
     page: number,
     limit: number,
-    filters?: any,
+    filters?: NoteFilters | undefined,
     append: boolean = false
   ): Promise<void> {
     const response = await getDeletedNotes(page, limit, filters);

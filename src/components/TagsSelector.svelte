@@ -32,13 +32,11 @@
     id
   }: Props = $props();
 
-
   // Component state
   let isOpen = $state(false);
   let searchQuery = $state('');
   let focusedIndex = $state(-1);
   let searchInputElement = $state<HTMLInputElement | null>(null);
-
 
   // Computed: Filter options based on search query
   let filteredOptions = $derived.by(() => {
@@ -46,17 +44,20 @@
       return options;
     } else {
       const query = searchQuery.toLowerCase();
-      const filtered = options.filter(option =>
-        option.label.toLowerCase().includes(query) ||
-        option.description?.toLowerCase().includes(query) ||
-        option.value.toLowerCase().includes(query)
+      const filtered = options.filter(
+        option =>
+          option.label.toLowerCase().includes(query) ||
+          option.description?.toLowerCase().includes(query) ||
+          option.value.toLowerCase().includes(query)
       );
       return filtered;
     }
   });
 
   // Computed: Get selected options
-  let selectedOptions = $derived.by(() => options.filter(option => selectedValues.includes(option.value)));
+  let selectedOptions = $derived.by(() =>
+    options.filter(option => selectedValues.includes(option.value))
+  );
 
   // Auto-focus search input when dropdown opens
   $effect(() => {
@@ -126,9 +127,11 @@
     }
 
     if (onchange) {
-      onchange(new CustomEvent('change', {
-        detail: { selectedValues, option, action: isSelected ? 'remove' : 'add' }
-      }));
+      onchange(
+        new CustomEvent('change', {
+          detail: { selectedValues, option, action: isSelected ? 'remove' : 'add' }
+        })
+      );
     }
   }
 
@@ -136,18 +139,22 @@
     selectedValues = selectedValues.filter(v => v !== value);
     const option = options.find(opt => opt.value === value);
     if (onchange) {
-      onchange(new CustomEvent('change', {
-        detail: { selectedValues, option, action: 'remove' }
-      }));
+      onchange(
+        new CustomEvent('change', {
+          detail: { selectedValues, option, action: 'remove' }
+        })
+      );
     }
   }
 
   function clearAll() {
     selectedValues = [];
     if (onchange) {
-      onchange(new CustomEvent('change', {
-        detail: { selectedValues, option: null, action: 'clear' }
-      }));
+      onchange(
+        new CustomEvent('change', {
+          detail: { selectedValues, option: null, action: 'clear' }
+        })
+      );
     }
   }
 
@@ -166,10 +173,10 @@
     class:border-yellow-500={isOpen}
     onclick={toggleDropdown}
     onkeydown={handleKeydown}
-    disabled={disabled}
+    {disabled}
     aria-expanded={isOpen}
     aria-haspopup="dialog"
-    aria-labelledby={id ? undefined : "tags-selector-label"}
+    aria-labelledby={id ? undefined : 'tags-selector-label'}
   >
     <!-- Selected Chips Display -->
     <div class="flex-1 flex flex-wrap items-center gap-2">
@@ -178,9 +185,15 @@
       {:else}
         {#each selectedOptions as option (option.value)}
           <span
-            class="tag-chip text-xs flex items-center gap-1.5 px-2.5 py-1 rounded-full border transition-all duration-200 hover:shadow-sm {!option.color ? 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700' : ''}"
-            style="background-color: {option.color ? option.color + '20' : undefined}; color: {option.color || undefined}; border-color: {option.color ? option.color + '40' : undefined}"
-            onkeydown={(e) => {
+            class="tag-chip text-xs flex items-center gap-1.5 px-2.5 py-1 rounded-full border transition-all duration-200 hover:shadow-sm {!option.color
+              ? 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700'
+              : ''}"
+            style="background-color: {option.color
+              ? option.color + '20'
+              : undefined}; color: {option.color || undefined}; border-color: {option.color
+              ? option.color + '40'
+              : undefined}"
+            onkeydown={e => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 e.stopPropagation();
@@ -189,7 +202,9 @@
             }}
           >
             <div
-              class="w-2 h-2 rounded-full {!option.color ? 'bg-yellow-600 dark:bg-primary-600' : ''}"
+              class="w-2 h-2 rounded-full {!option.color
+                ? 'bg-yellow-600 dark:bg-primary-600'
+                : ''}"
               style="background-color: {option.color || undefined}"
             ></div>
             {option.label}
@@ -197,12 +212,12 @@
               role="button"
               tabindex="0"
               class="hover:bg-black/10 dark:hover:bg-white/20 rounded-full p-0.5 transition-colors cursor-pointer"
-              onclick={(e) => {
+              onclick={e => {
                 e.stopPropagation();
                 e.preventDefault();
                 removeValue(option.value);
               }}
-              onkeydown={(e) => {
+              onkeydown={e => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
                   e.stopPropagation();
@@ -224,12 +239,12 @@
     <button
       type="button"
       class="absolute top-4 right-3 text-secondary-400 hover:text-danger-500 transition-colors"
-      onclick={(e) => {
+      onclick={e => {
         e.stopPropagation();
         e.preventDefault();
         clearAll();
       }}
-      onkeydown={(e) => {
+      onkeydown={e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           e.stopPropagation();
@@ -245,7 +260,7 @@
 
 <!-- Tags Selector Modal -->
 <Modal
-  bind:isOpen={isOpen}
+  bind:isOpen
   onClose={handleModalClose}
   maxW="max-w-md"
   title="Select Tags"
@@ -257,7 +272,9 @@
       {#if searchable}
         <div>
           <div class="relative">
-            <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-secondary-400" />
+            <Search
+              class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-secondary-400"
+            />
             <input
               bind:this={searchInputElement}
               type="text"
@@ -282,27 +299,40 @@
             {#each filteredOptions as option, index (option.value)}
               <button
                 type="button"
-                class="tag-option text-sm px-3 py-1.5 rounded-full border transition-all duration-200 flex items-center gap-2 {focusedIndex === index ? 'ring-2 ring-yellow-500 dark:ring-primary-500 ring-offset-1' : ''} {selectedValues.includes(option.value) ? 'shadow-sm' : 'hover:shadow-sm opacity-80 hover:opacity-100'} {option.color ? '' : 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700'}"
-                onclick={(e) => {
+                class="tag-option text-sm px-3 py-1.5 rounded-full border transition-all duration-200 flex items-center gap-2 {focusedIndex ===
+                index
+                  ? 'ring-2 ring-yellow-500 dark:ring-primary-500 ring-offset-1'
+                  : ''} {selectedValues.includes(option.value)
+                  ? 'shadow-sm'
+                  : 'hover:shadow-sm opacity-80 hover:opacity-100'} {option.color
+                  ? ''
+                  : 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700'}"
+                onclick={e => {
                   e.preventDefault();
                   e.stopPropagation();
                   selectOption(option);
                 }}
-                onkeydown={(e) => {
+                onkeydown={e => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     e.stopPropagation();
                     selectOption(option);
                   }
                 }}
-                onmouseenter={() => focusedIndex = index}
+                onmouseenter={() => (focusedIndex = index)}
                 role="option"
                 aria-selected={selectedValues.includes(option.value)}
-                style="background-color: {option.color ? option.color + '20' : undefined}; color: {option.color || undefined}; border-color: {option.color ? option.color + '40' : undefined}"
+                style="background-color: {option.color
+                  ? option.color + '20'
+                  : undefined}; color: {option.color || undefined}; border-color: {option.color
+                  ? option.color + '40'
+                  : undefined}"
               >
                 <!-- Selected Indicator -->
                 {#if selectedValues.includes(option.value)}
-                  <div class="w-3.5 h-3.5 bg-yellow-600 dark:bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <div
+                    class="w-3.5 h-3.5 bg-yellow-600 dark:bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0"
+                  >
                     <Check class="w-2.5 h-2.5 text-white" />
                   </div>
                 {:else}
@@ -314,7 +344,9 @@
 
                 <!-- Tag Color Dot -->
                 <div
-                  class="w-2 h-2 rounded-full flex-shrink-0 {!option.color ? 'bg-yellow-600 dark:bg-primary-600' : ''}"
+                  class="w-2 h-2 rounded-full flex-shrink-0 {!option.color
+                    ? 'bg-yellow-600 dark:bg-primary-600'
+                    : ''}"
                   style="background-color: {option.color || undefined}"
                 ></div>
 
@@ -329,7 +361,9 @@
   {/snippet}
 
   {#snippet footer()}
-    <div class="flex items-center justify-between text-sm text-secondary-600 dark:text-secondary-400">
+    <div
+      class="flex items-center justify-between text-sm text-secondary-600 dark:text-secondary-400"
+    >
       <span>
         {selectedOptions.length} of {options.length} selected
       </span>

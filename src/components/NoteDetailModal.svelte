@@ -1,8 +1,24 @@
 <script lang="ts">
   import type { Note } from '../lib/notes';
   import { formatDate, getFileUrl } from '../lib/notes';
-  import { handleImageError, formatFileSize, getFileIconType } from '../lib/uiUtils';
-  import { X, ExternalLink, Calendar, Tag, Star, Clock, Edit, Trash2, Link2, File, Image as ImageIcon, Download, Eye, AlertTriangle, Share2 } from '@lucide/svelte';
+  import { handleImageError, formatFileSize } from '../lib/uiUtils';
+  import {
+    X,
+    ExternalLink,
+    Calendar,
+    Tag,
+    Star,
+    Clock,
+    Edit,
+    Trash2,
+    Link2,
+    File,
+    Image as ImageIcon,
+    Download,
+    Eye,
+    AlertTriangle,
+    Share2
+  } from '@lucide/svelte';
   import Modal from './Modal.svelte';
 
   let {
@@ -76,16 +92,13 @@
     const fileUrl = getFileUrl(file);
     window.open(fileUrl, '_blank');
   }
-
-  // Helper to get icon component for file type
-  function getFileIcon(mimeType?: string) {
-    return getFileIconType(mimeType);
-  }
 </script>
 
-<Modal isOpen={shouldShowModal} onClose={onClose} maxW="max-w-6xl" showCloseButton={false}>
+<Modal isOpen={shouldShowModal} {onClose} maxW="max-w-6xl" showCloseButton={false}>
   {#snippet header()}
-    <div class="flex items-start justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+    <div
+      class="flex items-start justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700"
+    >
       <div class="flex-1 min-w-0 pr-4">
         <div class="flex items-center gap-3 mb-2">
           {#if isDeleted}
@@ -201,9 +214,7 @@
           <div class="flex items-center gap-3">
             <Link2 class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-blue-900 dark:text-blue-100 mb-1">
-                External Link
-              </p>
+              <p class="text-sm font-medium text-blue-900 dark:text-blue-100 mb-1">External Link</p>
               <a
                 href={note.link}
                 target="_blank"
@@ -233,7 +244,7 @@
             Images ({note.files.filter(f => f?.mime_type?.startsWith('image/')).length})
           </h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {#each note.files.filter(f => f?.mime_type?.startsWith('image/')) as file, index (file.id + '-' + index)}
+            {#each note.files.filter( f => f?.mime_type?.startsWith('image/') ) as file, index (file.id + '-' + index)}
               <div
                 class="group relative bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 overflow-hidden hover:shadow-lg transition-all"
               >
@@ -246,13 +257,17 @@
                     onerror={handleImageError}
                   />
                   <!-- Fallback for broken images -->
-                  <div class="hidden w-full h-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                  <div
+                    class="hidden w-full h-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center"
+                  >
                     <ImageIcon class="w-12 h-12 text-gray-500" />
                   </div>
                 </div>
 
                 <!-- Image Info Overlay -->
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
                   <div class="absolute bottom-0 left-0 right-0 p-3 text-white">
                     <h3 class="font-medium truncate text-sm" title={file.original_name}>
                       {file.metadata?.title || file.original_name}
@@ -268,7 +283,9 @@
                 </div>
 
                 <!-- Image Actions -->
-                <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div
+                  class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
                   <div class="flex gap-1">
                     <button
                       onclick={() => viewFile(file)}
@@ -323,7 +340,9 @@
               >
                 <!-- File Icon -->
                 <div class="flex-shrink-0">
-                  <div class="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                  <div
+                    class="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center"
+                  >
                     {#if file?.mime_type === 'application/pdf'}
                       <File class="w-8 h-8 text-red-600 dark:text-red-400" />
                     {:else if file?.mime_type?.includes('document')}
@@ -338,7 +357,10 @@
 
                 <!-- File Info -->
                 <div class="flex-1 min-w-0">
-                  <h3 class="font-medium text-gray-900 dark:text-white mb-1 truncate" title={file.original_name}>
+                  <h3
+                    class="font-medium text-gray-900 dark:text-white mb-1 truncate"
+                    title={file.original_name}
+                  >
                     {file.metadata?.title || file.original_name}
                   </h3>
                   <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
@@ -396,11 +418,19 @@
           <div class="flex flex-wrap gap-2">
             {#each note.tags as tag, index (index)}
               <div
-                class="flex items-center gap-1.5 px-3 py-2 hover:bg-opacity-80 rounded-full border transition-colors {!tag.color ? 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700' : ''}"
-                style="background-color: {tag.color ? tag.color + '20' : undefined}; color: {tag.color || undefined}; border-color: {tag.color ? tag.color + '40' : undefined}"
+                class="flex items-center gap-1.5 px-3 py-2 hover:bg-opacity-80 rounded-full border transition-colors {!tag.color
+                  ? 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700'
+                  : ''}"
+                style="background-color: {tag.color
+                  ? tag.color + '20'
+                  : undefined}; color: {tag.color || undefined}; border-color: {tag.color
+                  ? tag.color + '40'
+                  : undefined}"
               >
                 <div
-                  class="w-3 h-3 rounded-full {!tag.color ? 'bg-yellow-600 dark:bg-primary-600' : ''}"
+                  class="w-3 h-3 rounded-full {!tag.color
+                    ? 'bg-yellow-600 dark:bg-primary-600'
+                    : ''}"
                   style="background-color: {tag.color || undefined}"
                 ></div>
                 <span class="text-sm font-medium">{tag.name || tag.tag}</span>
@@ -418,9 +448,7 @@
           >
             <Calendar class="w-8 h-8 text-gray-400" />
           </div>
-          <p class="text-gray-500 dark:text-gray-400">
-            No additional content available
-          </p>
+          <p class="text-gray-500 dark:text-gray-400">No additional content available</p>
         </div>
       {/if}
     </div>

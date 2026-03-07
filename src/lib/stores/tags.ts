@@ -9,12 +9,11 @@ export const isLoadingTags = writable<boolean>(false);
 export const tagsError = writable<string | null>(null);
 
 // Derived store for tag options
-export const tagOptions = derived(
-  tags,
-  $tags => $tags.map(tag => ({
-    value: tag.id,  // Use UUID as value
+export const tagOptions = derived(tags, $tags =>
+  $tags.map(tag => ({
+    value: tag.id, // Use UUID as value
     label: tag.name || tag.tag,
-    description: tag.tag,  // Show slug as description
+    description: tag.tag, // Show slug as description
     color: tag.color // Keep null as null, components will handle fallback
   }))
 );
@@ -61,7 +60,9 @@ class TagsStore {
   addTag(tag: Tag): void {
     // Get current value
     let currentTags: Tag[] = [];
-    const unsub = tags.subscribe(v => { currentTags = v; });
+    const unsub = tags.subscribe(v => {
+      currentTags = v;
+    });
     unsub();
 
     // Create new array with tag added
@@ -75,13 +76,13 @@ class TagsStore {
   updateTag(tagId: string, newTag: Tag): void {
     // Get current value
     let currentTags: Tag[] = [];
-    const unsub = tags.subscribe(v => { currentTags = v; });
+    const unsub = tags.subscribe(v => {
+      currentTags = v;
+    });
     unsub();
 
     // Create new array with updated tag
-    const newTags = currentTags.map(tag =>
-      tag.tag === tagId ? newTag : tag
-    );
+    const newTags = currentTags.map(tag => (tag.tag === tagId ? newTag : tag));
 
     // Use set() for explicit reactivity
     tags.set(newTags);

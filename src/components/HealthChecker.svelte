@@ -49,41 +49,6 @@
     }
   }
 
-  function formatBytes(bytes: number): string {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
-  }
-
-  function formatUptime(seconds: number): string {
-    const minute = 60;
-    const hour = 60 * minute;
-    const day = 24 * hour;
-    const week = 7 * day;
-    const month = 30 * day;
-    const year = 365 * day;
-
-    const years = Math.floor(seconds / year);
-    const months = Math.floor((seconds % year) / month);
-    const weeks = Math.floor((seconds % month) / week);
-    const days = Math.floor((seconds % week) / day);
-    const hours = Math.floor((seconds % day) / hour);
-    const minutes = Math.floor((seconds % hour) / minute);
-
-    const parts: string[] = [];
-
-    if (years > 0) parts.push(`${years}y`);
-    if (months > 0) parts.push(`${months}mo`);
-    if (weeks > 0) parts.push(`${weeks}w`);
-    if (days > 0) parts.push(`${days}d`);
-    if (hours > 0) parts.push(`${hours}h`);
-    if (minutes > 0) parts.push(`${minutes}m`);
-
-    return parts.length > 0 ? parts.join(' ') : '0m';
-  }
-
   // Helper functions for potential future use
   // function getStatusIcon() {
   //   if (isChecking) return Activity;
@@ -182,17 +147,13 @@
         <!-- Service -->
         <div class="flex items-center gap-1">
           <div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-          <span class="text-gray-900 dark:text-white font-medium"
-            >{healthData.service}</span
-          >
+          <span class="text-gray-900 dark:text-white font-medium">{healthData.service}</span>
         </div>
 
         <!-- Status -->
         <div class="flex items-center gap-1">
           <div class="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-          <span class="text-gray-900 dark:text-white font-medium"
-            >{healthData.status}</span
-          >
+          <span class="text-gray-900 dark:text-white font-medium">{healthData.status}</span>
         </div>
 
         <!-- Timestamp -->

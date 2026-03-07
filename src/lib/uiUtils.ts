@@ -1,4 +1,3 @@
-import type { NoteFile } from './notes';
 import { addRefreshParam, isPresignedUrl } from './notes';
 import { Image as ImageIcon, File } from '@lucide/svelte';
 
@@ -63,10 +62,7 @@ export function formatMimeType(mimeType?: string): string {
   if (!mimeType) return 'file';
 
   // Remove common prefixes for cleaner display
-  return mimeType
-    .replace('application/', '')
-    .replace('image/', '')
-    .replace('text/', '');
+  return mimeType.replace('application/', '').replace('image/', '').replace('text/', '');
 }
 
 /**
@@ -101,7 +97,10 @@ export { getFileUrl, isPresignedUrl, addRefreshParam } from './notes';
  * Get CSS background color with opacity for tag colors
  * Useful for tag badge styling
  */
-export function getTagBackgroundColor(color: string | null, opacity: number = 0.2): string | undefined {
+export function getTagBackgroundColor(
+  color: string | null,
+  opacity: number = 0.2
+): string | undefined {
   if (!color) return undefined;
 
   // If color is already in hex format, add opacity

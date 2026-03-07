@@ -12,7 +12,7 @@ export interface LoginResponse {
   token: {
     accessToken?: object;
     plainTextToken: string;
-    [key: string]: any;
+    [key: string]: string | number | boolean | object;
   };
   token_type: string;
   expires_in: number;
@@ -67,7 +67,7 @@ async function checkHealth(): Promise<boolean> {
       timeout: 3000
     });
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -122,7 +122,7 @@ export async function getCurrentUser(): Promise<{ username: string } | null> {
     // Laravel API returns user data directly
     const data: MeResponse = response.data;
     return data.name ? { username: data.name } : null;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -175,7 +175,11 @@ export function clearAuth(): void {
 /**
  * Save authentication data to localStorage
  */
-export function saveAuth(token: string | { plainTextToken: string }, username: string, expiresIn?: string): void {
+export function saveAuth(
+  token: string | { plainTextToken: string },
+  username: string,
+  expiresIn?: string
+): void {
   const tokenValue = typeof token === 'string' ? token : token.plainTextToken;
   localStorage.setItem('authToken', tokenValue);
   localStorage.setItem('authTokenExpiry', expiresIn || '');
@@ -191,9 +195,13 @@ export async function login(
   password: string
 ): Promise<{ success: boolean; data?: LoginResponse; error?: string }> {
   try {
-    const response = await apiClient.post('/api/login', { email, password }, {
-      timeout: 10000
-    });
+    const response = await apiClient.post(
+      '/api/login',
+      { email, password },
+      {
+        timeout: 10000
+      }
+    );
 
     return {
       success: true,
@@ -223,11 +231,15 @@ export async function logout(): Promise<void> {
   try {
     // Call Laravel logout endpoint
     if (token) {
-      await apiClient.post('/api/logout', {}, {
-        timeout: 5000
-      });
+      await apiClient.post(
+        '/api/logout',
+        {},
+        {
+          timeout: 5000
+        }
+      );
     }
-  } catch (error) {
+  } catch {
     // Continue with local logout even if API call fails
   } finally {
     // Clear local auth data

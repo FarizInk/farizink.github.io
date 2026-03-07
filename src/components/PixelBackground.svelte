@@ -23,13 +23,14 @@
     inset: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(at 40% 20%, #fbbf24 0px, transparent 40%),
-                radial-gradient(at 80% 0%, #fcd34d 0px, transparent 40%),
-                radial-gradient(at 0% 50%, #f59e0b 0px, transparent 40%),
-                radial-gradient(at 80% 50%, #fde68a 0px, transparent 40%),
-                radial-gradient(at 0% 100%, #d97706 0px, transparent 40%),
-                radial-gradient(at 80% 100%, #fbbf24 0px, transparent 40%),
-                radial-gradient(at 0% 0%, #fcd34d 0px, transparent 40%);
+    background:
+      radial-gradient(at 40% 20%, #fbbf24 0px, transparent 40%),
+      radial-gradient(at 80% 0%, #fcd34d 0px, transparent 40%),
+      radial-gradient(at 0% 50%, #f59e0b 0px, transparent 40%),
+      radial-gradient(at 80% 50%, #fde68a 0px, transparent 40%),
+      radial-gradient(at 0% 100%, #d97706 0px, transparent 40%),
+      radial-gradient(at 80% 100%, #fbbf24 0px, transparent 40%),
+      radial-gradient(at 0% 0%, #fcd34d 0px, transparent 40%);
     animation: mesh-move 25s ease-in-out infinite;
     filter: blur(80px);
     opacity: 0.5;
@@ -66,13 +67,14 @@
 
   /* Dark mode - purple gradient */
   :global(.dark) .mesh-gradient {
-    background: radial-gradient(at 40% 20%, #7c3aed 0px, transparent 40%),
-                radial-gradient(at 80% 0%, #8b5cf6 0px, transparent 40%),
-                radial-gradient(at 0% 50%, #6d28d9 0px, transparent 40%),
-                radial-gradient(at 80% 50%, #a78bfa 0px, transparent 40%),
-                radial-gradient(at 0% 100%, #5b21b6 0px, transparent 40%),
-                radial-gradient(at 80% 100%, #7c3aed 0px, transparent 40%),
-                radial-gradient(at 0% 0%, #8b5cf6 0px, transparent 40%);
+    background:
+      radial-gradient(at 40% 20%, #7c3aed 0px, transparent 40%),
+      radial-gradient(at 80% 0%, #8b5cf6 0px, transparent 40%),
+      radial-gradient(at 0% 50%, #6d28d9 0px, transparent 40%),
+      radial-gradient(at 80% 50%, #a78bfa 0px, transparent 40%),
+      radial-gradient(at 0% 100%, #5b21b6 0px, transparent 40%),
+      radial-gradient(at 80% 100%, #7c3aed 0px, transparent 40%),
+      radial-gradient(at 0% 0%, #8b5cf6 0px, transparent 40%);
     opacity: 0.4;
   }
 

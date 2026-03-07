@@ -565,8 +565,8 @@
                 class="flex items-center gap-1 px-2 py-1 rounded-md {apiHealthStatus === 'ok'
                   ? 'bg-green-50 dark:bg-green-900/30'
                   : apiHealthStatus === 'checking'
-                  ? 'bg-blue-50 dark:bg-blue-900/30'
-                  : 'bg-red-50 dark:bg-red-900/30'}"
+                    ? 'bg-blue-50 dark:bg-blue-900/30'
+                    : 'bg-red-50 dark:bg-red-900/30'}"
               >
                 {#if apiHealthStatus === 'checking'}
                   <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>

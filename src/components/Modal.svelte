@@ -9,7 +9,7 @@
     return {
       duration,
       css: (t: number) => {
-        const scale = 0.95 + (t * 0.05);
+        const scale = 0.95 + t * 0.05;
 
         return `
           opacity: ${t};
@@ -111,9 +111,7 @@
     ></div>
 
     <!-- Modal Container -->
-    <div
-      class="flex items-center justify-center min-h-full w-full text-center"
-    >
+    <div class="flex items-center justify-center min-h-full w-full text-center">
       <div
         class="relative bg-white dark:bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all my-8 w-full {maxW}"
         transition:simpleScale
@@ -122,7 +120,9 @@
         {#if header}
           {@render header()}
         {:else if title}
-          <div class="flex items-center justify-between px-3 py-3 sm:px-6 sm:py-4 border-b border-gray-200 dark:border-gray-700">
+          <div
+            class="flex items-center justify-between px-3 py-3 sm:px-6 sm:py-4 border-b border-gray-200 dark:border-gray-700"
+          >
             <h2 id="modal-title" class="text-xl font-semibold text-gray-900 dark:text-white">
               {title}
             </h2>
@@ -152,7 +152,9 @@
 
         <!-- Footer Slot -->
         {#if footer}
-          <div class="flex items-center justify-end gap-3 px-3 py-3 sm:px-6 sm:py-4 border-t border-gray-200 dark:border-gray-700">
+          <div
+            class="flex items-center justify-end gap-3 px-3 py-3 sm:px-6 sm:py-4 border-t border-gray-200 dark:border-gray-700"
+          >
             {@render footer()}
           </div>
         {/if}

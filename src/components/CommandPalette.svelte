@@ -2,7 +2,7 @@
   import { navigate, type Route } from '../lib/router';
   import { allRoutes } from '../routes/index';
   import { Search, Command, LogOut, User } from '@lucide/svelte';
-  import { getValidatedAuthState, logout, getAuthState, type AuthState } from '../lib/auth';
+  import { getValidatedAuthState, logout } from '../lib/auth';
   import { onMount } from 'svelte';
 
   let { isOpen = $bindable(false) } = $props();

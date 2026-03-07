@@ -72,7 +72,7 @@ export abstract class PaginatedStore<T> {
   /**
    * Load initial data (page 1) - clears existing data
    */
-  async loadData(filters?: any): Promise<void> {
+  async loadData(filters?: unknown): Promise<void> {
     const loading = get(this.isLoading);
     if (loading) return;
 
@@ -95,7 +95,7 @@ export abstract class PaginatedStore<T> {
   /**
    * Load more data (pagination) - appends to existing data
    */
-  async loadMore(filters?: any): Promise<void> {
+  async loadMore(filters?: unknown): Promise<void> {
     const loading = get(this.isLoading);
     const more = get(this.hasMore);
     const currentData = get(this.data);
@@ -128,7 +128,7 @@ export abstract class PaginatedStore<T> {
   protected abstract _fetchData(
     page: number,
     limit: number,
-    filters?: any,
+    filters?: unknown,
     append?: boolean
   ): Promise<void>;
 
@@ -137,10 +137,7 @@ export abstract class PaginatedStore<T> {
    * @param response - Paginated response from API
    * @param append - Whether data was appended or replaced
    */
-  protected updatePaginationState(
-    response: PaginatedResponse<T>,
-    append: boolean = false
-  ): void {
+  protected updatePaginationState(response: PaginatedResponse<T>, append: boolean = false): void {
     const { pagination, data: items } = response;
 
     if (append) {
@@ -160,17 +157,18 @@ export abstract class PaginatedStore<T> {
     // - If no items returned, we've reached the end (regardless of what backend says)
     // - If page < totalPages based on total count, there's more data
     // - Calculate expected totalPages from total count for validation
-    const calculatedTotalPages = pagination.limit > 0
-      ? Math.ceil(pagination.total / pagination.limit)
-      : pagination.totalPages || 1;
+    const calculatedTotalPages =
+      pagination.limit > 0
+        ? Math.ceil(pagination.total / pagination.limit)
+        : pagination.totalPages || 1;
 
     // Use the smaller of backend's totalPages and our calculated value for safety
     const effectiveTotalPages = Math.min(pagination.totalPages || 1, calculatedTotalPages);
 
     const hasMoreItems =
-      items.length > 0 &&              // Must have data in this response
+      items.length > 0 && // Must have data in this response
       validPage < effectiveTotalPages && // Must not be at last page
-      pagination.total > 0;            // Must have total count
+      pagination.total > 0; // Must have total count
 
     this.hasMore.set(hasMoreItems);
     this.totalCount.set(pagination.total);
@@ -224,11 +222,9 @@ export abstract class PaginatedStore<T> {
    * @param idValue - The value to match against
    * @param updatedItem - The updated item
    */
-  updateItem(idKey: keyof T, idValue: any, updatedItem: T): void {
+  updateItem(idKey: keyof T, idValue: unknown, updatedItem: T): void {
     this.data.update(currentData =>
-      currentData.map(item =>
-        item[idKey] === idValue ? updatedItem : item
-      )
+      currentData.map(item => (item[idKey] === idValue ? updatedItem : item))
     );
   }
 
@@ -237,10 +233,8 @@ export abstract class PaginatedStore<T> {
    * @param idKey - The key to use for matching items
    * @param idValue - The value to match against
    */
-  removeItem(idKey: keyof T, idValue: any): void {
-    this.data.update(currentData =>
-      currentData.filter(item => item[idKey] !== idValue)
-    );
+  removeItem(idKey: keyof T, idValue: unknown): void {
+    this.data.update(currentData => currentData.filter(item => item[idKey] !== idValue));
   }
 
   /**

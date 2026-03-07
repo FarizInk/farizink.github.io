@@ -12,14 +12,7 @@
     Hash,
     Type
   } from '@lucide/svelte';
-  import {
-    getTags,
-    createTag,
-    updateTag,
-    deleteTag,
-    type Tag,
-    type TagCreateRequest
-  } from '../lib/tags';
+  import { createTag, updateTag, deleteTag, type Tag, type TagCreateRequest } from '../lib/tags';
   import { tags, tagsStore, isLoadingTags } from '../lib/stores/tags';
   import Modal from './Modal.svelte';
 
@@ -31,7 +24,7 @@
   let searchQuery = $state('');
   let lastSearchQuery = $state('');
   let searchTimeout: ReturnType<typeof setTimeout> | null = null;
-  let isSearchTyping = $state(false);
+  let isSearchTyping = $derived(searchQuery.trim().length > 0);
 
   // Form state
   let isCreating = $state(false);
@@ -46,16 +39,11 @@
   // Track initial load to prevent infinite loop
   let hasLoadedInitially = $state(false);
 
-  // Combined loading state (local + global)
-  let isAnyLoading = $derived($isLoadingTags || isLoading);
-
   // Event dispatcher
   const dispatch = createEventDispatcher();
 
-  // Watch search query for typing indicator
-  $effect(() => {
-    isSearchTyping = searchQuery.trim().length > 0;
-  });
+  // Combined loading state (local + global)
+  let isAnyLoading = $derived.by(() => $isLoadingTags || isLoading);
 
   // Load initial tags when modal opens
   $effect(() => {
@@ -143,9 +131,12 @@
     // Check for duplicate tag (excluding current tag if editing)
     // Use safe array access to prevent errors
     const currentTags = $tags || [];
-    const duplicateTag = currentTags.find((t: Tag) =>
-      t && t.tag && t.tag.toLowerCase() === formData.tag.toLowerCase() &&
-      t.tag !== editingTag?.tag
+    const duplicateTag = currentTags.find(
+      (t: Tag) =>
+        t &&
+        t.tag &&
+        t.tag.toLowerCase() === formData.tag.toLowerCase() &&
+        t.tag !== editingTag?.tag
     );
 
     if (duplicateTag) {
@@ -182,7 +173,9 @@
   }
 
   async function handleDelete(tag: Tag) {
-    if (!confirm(`Are you sure you want to delete "${tag.name}"?\n\nThis action cannot be undone.`)) {
+    if (
+      !confirm(`Are you sure you want to delete "${tag.name}"?\n\nThis action cannot be undone.`)
+    ) {
       return;
     }
 
@@ -234,13 +227,19 @@
 
 <Modal {isOpen} onClose={handleClose} maxW="max-w-4xl" showCloseButton={false}>
   {#snippet header()}
-    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+    <div
+      class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700"
+    >
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-yellow-100 dark:bg-primary-900 rounded-lg flex items-center justify-center">
+        <div
+          class="w-10 h-10 bg-yellow-100 dark:bg-primary-900 rounded-lg flex items-center justify-center"
+        >
           <TagIcon class="w-5 h-5 text-yellow-600 dark:text-primary-400" />
         </div>
         <div>
-          <h2 id="modal-title" class="text-xl font-bold text-gray-900 dark:text-white">Manage Tags</h2>
+          <h2 id="modal-title" class="text-xl font-bold text-gray-900 dark:text-white">
+            Manage Tags
+          </h2>
           <p class="text-sm text-gray-500 dark:text-gray-400">
             {($tags || []).length} tag{($tags || []).length !== 1 ? 's' : ''} total
           </p>
@@ -269,9 +268,17 @@
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             {#if isSearchTyping}
               <div class="flex items-center gap-1">
-                <div class="w-1 h-1 bg-yellow-600 dark:bg-primary-600 rounded-full animate-pulse"></div>
-                <div class="w-1 h-1 bg-primary-600 rounded-full animate-pulse" style="animation-delay: 0.1s"></div>
-                <div class="w-1 h-1 bg-primary-600 rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
+                <div
+                  class="w-1 h-1 bg-yellow-600 dark:bg-primary-600 rounded-full animate-pulse"
+                ></div>
+                <div
+                  class="w-1 h-1 bg-primary-600 rounded-full animate-pulse"
+                  style="animation-delay: 0.1s"
+                ></div>
+                <div
+                  class="w-1 h-1 bg-primary-600 rounded-full animate-pulse"
+                  style="animation-delay: 0.2s"
+                ></div>
               </div>
             {:else if isAnyLoading && searchQuery}
               <RotateCw class="w-4 h-4 text-yellow-600 dark:text-primary-600 animate-spin" />
@@ -282,15 +289,21 @@
           {#if searchQuery}
             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
               {#if isSearchTyping}
-                <span class="text-xs text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-400 px-2 py-1 rounded">
+                <span
+                  class="text-xs text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-400 px-2 py-1 rounded"
+                >
                   Typing...
                 </span>
               {:else if isAnyLoading}
-                <span class="text-xs text-yellow-600 bg-yellow-100 dark:bg-primary-900 dark:text-primary-300 px-2 py-1 rounded">
+                <span
+                  class="text-xs text-yellow-600 bg-yellow-100 dark:bg-primary-900 dark:text-primary-300 px-2 py-1 rounded"
+                >
                   Searching...
                 </span>
               {:else}
-                <span class="text-xs text-green-600 bg-green-100 dark:bg-green-900 dark:text-green-300 px-2 py-1 rounded">
+                <span
+                  class="text-xs text-green-600 bg-green-100 dark:bg-green-900 dark:text-green-300 px-2 py-1 rounded"
+                >
                   Ready
                 </span>
               {/if}
@@ -326,7 +339,9 @@
     <div class="flex flex-col" style="max-height: calc(90vh - 200px);">
       <!-- Create/Edit Form -->
       {#if isCreating || isEditing}
-        <div class="p-6 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800">
+        <div
+          class="p-6 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800"
+        >
           <div class="flex items-center justify-between mb-4">
             <h3 class="font-semibold text-blue-900 dark:text-blue-100">
               {isCreating ? 'Create New Tag' : 'Edit Tag'}
@@ -341,7 +356,10 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label for="tag-identifier" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                for="tag-identifier"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 <Hash class="w-4 h-4 inline mr-1" />
                 Tag Identifier
               </label>
@@ -359,7 +377,10 @@
             </div>
 
             <div>
-              <label for="tag-display-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                for="tag-display-name"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 <Type class="w-4 h-4 inline mr-1" />
                 Display Name
               </label>
@@ -378,8 +399,13 @@
           </div>
 
           <div>
-            <label for="tag-color-hex" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Color <span class="text-gray-400 font-normal">(Optional - Leave empty for primary color)</span>
+            <label
+              for="tag-color-hex"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Color <span class="text-gray-400 font-normal"
+                >(Optional - Leave empty for primary color)</span
+              >
             </label>
             <div class="flex items-center gap-3">
               <input
@@ -402,7 +428,7 @@
                 {#if formData.color}
                   <button
                     type="button"
-                    onclick={() => formData.color = ''}
+                    onclick={() => (formData.color = '')}
                     class="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                     title="Clear color"
                     disabled={isAnyLoading}
@@ -418,11 +444,7 @@
           </div>
 
           <div class="flex justify-end gap-2 mt-4">
-            <button
-              onclick={handleCancel}
-              class="btn btn-secondary"
-              disabled={isAnyLoading}
-            >
+            <button onclick={handleCancel} class="btn btn-secondary" disabled={isAnyLoading}>
               Cancel
             </button>
             <button
@@ -458,11 +480,13 @@
             <p class="text-gray-500 dark:text-gray-400 mb-4">
               {searchQuery
                 ? 'Try adjusting your search terms'
-                : 'Create your first tag to organize your notes'
-              }
+                : 'Create your first tag to organize your notes'}
             </p>
             {#if !searchQuery}
-              <button onclick={handleCreateNew} class="btn bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700">
+              <button
+                onclick={handleCreateNew}
+                class="btn bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700"
+              >
                 <Plus class="w-4 h-4 mr-2" />
                 Create First Tag
               </button>
@@ -480,12 +504,18 @@
                       <div class="flex items-center gap-2 mb-1">
                         <div class="flex items-center gap-2">
                           <div
-                            class="w-4 h-4 rounded-full {!tag.color ? 'bg-yellow-600 dark:bg-primary-600' : ''}"
+                            class="w-4 h-4 rounded-full {!tag.color
+                              ? 'bg-yellow-600 dark:bg-primary-600'
+                              : ''}"
                             style="background-color: {tag.color || undefined}"
                           ></div>
                           <span
-                            class="inline-block px-2 py-1 text-xs font-medium rounded {!tag.color ? 'bg-yellow-50 text-yellow-700 dark:bg-primary-900/20 dark:text-primary-300' : ''}"
-                            style="background-color: {tag.color ? tag.color + '20' : undefined}; color: {tag.color || undefined}"
+                            class="inline-block px-2 py-1 text-xs font-medium rounded {!tag.color
+                              ? 'bg-yellow-50 text-yellow-700 dark:bg-primary-900/20 dark:text-primary-300'
+                              : ''}"
+                            style="background-color: {tag.color
+                              ? tag.color + '20'
+                              : undefined}; color: {tag.color || undefined}"
                           >
                             {tag.tag}
                           </span>

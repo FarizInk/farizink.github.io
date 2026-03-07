@@ -20,6 +20,17 @@ export default [
     }
   },
   {
+    files: ['**/*.svelte.ts'],
+    languageOptions: {
+      parser: svelte.parser,
+      parserOptions: {
+        parser: tseslint.parser,
+        extraFileExtensions: ['.svelte.ts'],
+        sourceType: 'module'
+      }
+    }
+  },
+  {
     files: ['**/*.js', '**/*.ts', '**/*.svelte'],
     languageOptions: {
       globals: {
@@ -43,6 +54,12 @@ export default [
     files: ['src/lib/router.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off'
+    }
+  },
+  {
+    files: ['src/components/NoteDetailModal.svelte', 'src/pages/Notes.svelte'],
+    rules: {
+      'svelte/no-at-html-tags': 'off'
     }
   },
   {

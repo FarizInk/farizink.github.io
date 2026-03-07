@@ -2,7 +2,11 @@
   import { MonitorSmartphone, Play, Pause, X } from '@lucide/svelte';
   import SpotifyLogoIcon from './icons/SpotifyLogoIcon.svelte';
   import { onMount, onDestroy } from 'svelte';
-  import { createWebSocket, type WebSocketState, SPOTIFY_WEBSOCKET_CONFIG } from '../lib/websocket.svelte';
+  import {
+    createWebSocket,
+    type WebSocketState,
+    SPOTIFY_WEBSOCKET_CONFIG
+  } from '../lib/websocket.svelte';
 
   interface SpotifyDevice {
     id: string;
@@ -35,10 +39,10 @@
   let isComponentMounted = false;
 
   // Smooth progress tracking
-  let baseProgressMs = $state(0);      // Progress from last SSE update
+  let baseProgressMs = $state(0); // Progress from last SSE update
   let lastUpdateTimestamp = $state(0); // When SSE last updated
-  let durationMs = $state(0);          // Track duration
-  let wasPlaying = false;              // Track play state changes
+  let durationMs = $state(0); // Track duration
+  let wasPlaying = false; // Track play state changes
 
   // State
   let spotify = $state(false);
@@ -180,7 +184,7 @@
     ws = createWebSocket({
       ...SPOTIFY_WEBSOCKET_CONFIG,
       events: {
-        SpotifyTrackUpdated: (data) => handleTrackUpdate(data as WebSocketTrackData)
+        SpotifyTrackUpdated: data => handleTrackUpdate(data as WebSocketTrackData)
       },
       onStateChange: handleStateChange,
       reconnectInterval: 5000

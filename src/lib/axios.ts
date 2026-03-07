@@ -1,4 +1,9 @@
-import axios, { type AxiosError, type InternalAxiosRequestConfig, type AxiosResponse, isAxiosError } from 'axios';
+import axios, {
+  type AxiosError,
+  type InternalAxiosRequestConfig,
+  type AxiosResponse,
+  isAxiosError
+} from 'axios';
 import { API_BASE_URL } from './constants';
 
 // Create axios instance with default config
@@ -7,7 +12,7 @@ export const apiClient = axios.create({
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
+    Accept: 'application/json'
   }
 });
 
@@ -57,7 +62,7 @@ export { isAxiosError };
 export function getPublicHeaders() {
   return {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
+    Accept: 'application/json'
   };
 }
 
@@ -66,7 +71,7 @@ export function getAuthHeaders() {
   const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
+    Accept: 'application/json'
   };
 
   if (token) {

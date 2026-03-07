@@ -31,7 +31,6 @@
     id
   }: Props = $props();
 
-
   // Component state
   let isOpen = $state(false);
   let searchQuery = $state('');
@@ -43,24 +42,26 @@
   let searchInputElement = $state<HTMLInputElement | null>(null);
   let dropdownPosition = $state({ top: 0, left: 0, width: 0 });
 
-
   // Computed: Filter options based on search query
   let filteredOptions = $derived.by(() => {
     if (!searchQuery.trim()) {
       return options;
     } else {
       const query = searchQuery.toLowerCase();
-      const filtered = options.filter(option =>
-        option.label.toLowerCase().includes(query) ||
-        option.description?.toLowerCase().includes(query) ||
-        option.value.toLowerCase().includes(query)
+      const filtered = options.filter(
+        option =>
+          option.label.toLowerCase().includes(query) ||
+          option.description?.toLowerCase().includes(query) ||
+          option.value.toLowerCase().includes(query)
       );
       return filtered;
     }
   });
 
   // Computed: Get selected options
-  let selectedOptions = $derived.by(() => options.filter(option => selectedValues.includes(option.value)));
+  let selectedOptions = $derived.by(() =>
+    options.filter(option => selectedValues.includes(option.value))
+  );
 
   // Auto-focus search input when dropdown opens
   $effect(() => {
@@ -209,9 +210,11 @@
     }
 
     if (onchange) {
-      onchange(new CustomEvent('change', {
-        detail: { selectedValues, option, action: isSelected ? 'remove' : 'add' }
-      }));
+      onchange(
+        new CustomEvent('change', {
+          detail: { selectedValues, option, action: isSelected ? 'remove' : 'add' }
+        })
+      );
     }
   }
 
@@ -219,18 +222,22 @@
     selectedValues = selectedValues.filter(v => v !== value);
     const option = options.find(opt => opt.value === value);
     if (onchange) {
-      onchange(new CustomEvent('change', {
-        detail: { selectedValues, option, action: 'remove' }
-      }));
+      onchange(
+        new CustomEvent('change', {
+          detail: { selectedValues, option, action: 'remove' }
+        })
+      );
     }
   }
 
   function clearAll() {
     selectedValues = [];
     if (onchange) {
-      onchange(new CustomEvent('change', {
-        detail: { selectedValues, option: null, action: 'clear' }
-      }));
+      onchange(
+        new CustomEvent('change', {
+          detail: { selectedValues, option: null, action: 'clear' }
+        })
+      );
     }
   }
 </script>
@@ -244,10 +251,10 @@
     class:border-yellow-500={isOpen}
     onclick={toggleDropdown}
     onkeydown={handleKeydown}
-    disabled={disabled}
+    {disabled}
     aria-expanded={isOpen}
     aria-haspopup="listbox"
-    aria-labelledby={id ? undefined : "multiselect-label"}
+    aria-labelledby={id ? undefined : 'multiselect-label'}
   >
     <!-- Selected Items Display -->
     <div class="flex-1 flex flex-wrap items-center gap-1">
@@ -256,11 +263,19 @@
       {:else}
         {#each selectedOptions as option (option.value)}
           <span
-            class="text-xs flex items-center gap-1 px-2 py-1 rounded-full border {!option.color ? 'bg-yellow-100 text-yellow-700 border-yellow-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700' : ''}"
-            style="background-color: {option.color ? option.color + '20' : undefined}; color: {option.color || undefined}; border-color: {option.color ? option.color + '40' : undefined}"
+            class="text-xs flex items-center gap-1 px-2 py-1 rounded-full border {!option.color
+              ? 'bg-yellow-100 text-yellow-700 border-yellow-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700'
+              : ''}"
+            style="background-color: {option.color
+              ? option.color + '20'
+              : undefined}; color: {option.color || undefined}; border-color: {option.color
+              ? option.color + '40'
+              : undefined}"
           >
             <div
-              class="w-2 h-2 rounded-full {!option.color ? 'bg-yellow-600 dark:bg-primary-600' : ''}"
+              class="w-2 h-2 rounded-full {!option.color
+                ? 'bg-yellow-600 dark:bg-primary-600'
+                : ''}"
               style="background-color: {option.color || undefined}"
             ></div>
             {option.label}
@@ -268,11 +283,11 @@
               role="button"
               tabindex="0"
               class="hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full p-0.5 transition-colors cursor-pointer"
-              onclick={(e) => {
+              onclick={e => {
                 e.stopPropagation();
                 removeValue(option.value);
               }}
-              onkeydown={(e) => {
+              onkeydown={e => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
                   removeValue(option.value);
@@ -298,7 +313,7 @@
     <button
       type="button"
       class="absolute top-2 right-8 text-xs text-secondary-400 hover:text-danger-500 transition-colors"
-      onclick={(e) => {
+      onclick={e => {
         e.stopPropagation();
         clearAll();
       }}
@@ -309,97 +324,110 @@
   {/if}
 
   <!-- Dropdown Content (Portal) -->
-{#if isOpen}
-  {@const portalId = `multiple-select-portal-${Math.random().toString(36).substr(2, 9)}`}
+  {#if isOpen}
+    {@const portalId = `multiple-select-portal-${Math.random().toString(36).substr(2, 9)}`}
 
-  <!-- Portal container -->
-  {#if typeof document !== 'undefined'}
-    <div
-      bind:this={dropdownElement}
-      id={portalId}
-      role="listbox"
-      tabindex="-1"
-      class="fixed z-[9999] bg-white dark:bg-secondary-800 border border-secondary-200 dark:border-secondary-600 rounded-lg shadow-lg overflow-hidden"
-      style="top: {dropdownPosition.top}px; left: {dropdownPosition.left}px; width: {dropdownPosition.width}px; min-width: 200px;"
-    >
-      <!-- Search Input -->
-      {#if searchable}
-        <div class="p-3 border-b border-secondary-200 dark:border-secondary-600">
-          <div class="relative">
-            <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-secondary-400" />
-            <input
-              bind:this={searchInputElement}
-              type="text"
-              class="input !pl-9"
-              placeholder="Search options..."
-              bind:value={searchQuery}
-              onkeydown={handleKeydown}
-              aria-label="Search options"
-            />
+    <!-- Portal container -->
+    {#if typeof document !== 'undefined'}
+      <div
+        bind:this={dropdownElement}
+        id={portalId}
+        role="listbox"
+        tabindex="-1"
+        class="fixed z-[9999] bg-white dark:bg-secondary-800 border border-secondary-200 dark:border-secondary-600 rounded-lg shadow-lg overflow-hidden"
+        style="top: {dropdownPosition.top}px; left: {dropdownPosition.left}px; width: {dropdownPosition.width}px; min-width: 200px;"
+      >
+        <!-- Search Input -->
+        {#if searchable}
+          <div class="p-3 border-b border-secondary-200 dark:border-secondary-600">
+            <div class="relative">
+              <Search
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-secondary-400"
+              />
+              <input
+                bind:this={searchInputElement}
+                type="text"
+                class="input !pl-9"
+                placeholder="Search options..."
+                bind:value={searchQuery}
+                onkeydown={handleKeydown}
+                aria-label="Search options"
+              />
+            </div>
           </div>
-        </div>
-      {/if}
+        {/if}
 
-      <!-- Options List -->
-      <div class={`${maxHeight} overflow-y-auto`}>
-        {#if filteredOptions.length === 0}
-          <div class="p-4 text-center text-secondary-500 text-sm">
-            {searchQuery ? 'No options found' : 'No options available'}
+        <!-- Options List -->
+        <div class={`${maxHeight} overflow-y-auto`}>
+          {#if filteredOptions.length === 0}
+            <div class="p-4 text-center text-secondary-500 text-sm">
+              {searchQuery ? 'No options found' : 'No options available'}
+            </div>
+          {:else}
+            <div role="listbox" aria-label="Options">
+              {#each filteredOptions as option, index (option.value)}
+                <button
+                  type="button"
+                  class="w-full px-3 py-2 text-left text-sm transition-colors flex items-center gap-3 border-b border-secondary-100 dark:border-secondary-700 last:border-b-0 {focusedIndex ===
+                  index
+                    ? 'bg-yellow-50 dark:bg-primary-900/20'
+                    : 'hover:bg-secondary-50 dark:hover:bg-secondary-700'}"
+                  onclick={() => selectOption(option)}
+                  onmouseenter={() => (focusedIndex = index)}
+                  role="option"
+                  aria-selected={selectedValues.includes(option.value)}
+                >
+                  <!-- Checkbox/Icon -->
+                  <div class="flex-shrink-0">
+                    {#if selectedValues.includes(option.value)}
+                      <div
+                        class="w-4 h-4 bg-yellow-600 dark:bg-primary-600 rounded flex items-center justify-center"
+                      >
+                        <Check class="w-3 h-3 text-white" />
                       </div>
-        {:else}
-          <div role="listbox" aria-label="Options">
-            {#each filteredOptions as option, index (option.value)}
-              <button
-                type="button"
-                class="w-full px-3 py-2 text-left text-sm transition-colors flex items-center gap-3 border-b border-secondary-100 dark:border-secondary-700 last:border-b-0 {focusedIndex === index ? 'bg-yellow-50 dark:bg-primary-900/20' : 'hover:bg-secondary-50 dark:hover:bg-secondary-700'}"
-                onclick={() => selectOption(option)}
-                onmouseenter={() => focusedIndex = index}
-                role="option"
-                aria-selected={selectedValues.includes(option.value)}
-              >
-                <!-- Checkbox/Icon -->
-                <div class="flex-shrink-0">
-                  {#if selectedValues.includes(option.value)}
-                    <div class="w-4 h-4 bg-yellow-600 dark:bg-primary-600 rounded flex items-center justify-center">
-                      <Check class="w-3 h-3 text-white" />
-                    </div>
-                  {:else}
-                    <div class="w-4 h-4 border border-secondary-300 dark:border-secondary-600 rounded"></div>
-                  {/if}
-                </div>
-
-                <!-- Option Content -->
-                <div class="flex-1 min-w-0 flex items-center gap-2">
-                  <div
-                    class="w-3 h-3 rounded-full flex-shrink-0 {!option.color ? 'bg-yellow-600 dark:bg-primary-600' : ''}"
-                    style="background-color: {option.color || undefined}"
-                  ></div>
-                  <div class="flex-1 min-w-0">
-                    <div class="font-medium text-secondary-900 dark:text-white truncate">
-                      {option.label}
-                    </div>
-                    {#if option.description}
-                      <div class="text-xs text-secondary-500 dark:text-secondary-400 truncate">
-                        {option.description}
-                      </div>
+                    {:else}
+                      <div
+                        class="w-4 h-4 border border-secondary-300 dark:border-secondary-600 rounded"
+                      ></div>
                     {/if}
                   </div>
-                </div>
-              </button>
-            {/each}
+
+                  <!-- Option Content -->
+                  <div class="flex-1 min-w-0 flex items-center gap-2">
+                    <div
+                      class="w-3 h-3 rounded-full flex-shrink-0 {!option.color
+                        ? 'bg-yellow-600 dark:bg-primary-600'
+                        : ''}"
+                      style="background-color: {option.color || undefined}"
+                    ></div>
+                    <div class="flex-1 min-w-0">
+                      <div class="font-medium text-secondary-900 dark:text-white truncate">
+                        {option.label}
+                      </div>
+                      {#if option.description}
+                        <div class="text-xs text-secondary-500 dark:text-secondary-400 truncate">
+                          {option.description}
+                        </div>
+                      {/if}
+                    </div>
+                  </div>
+                </button>
+              {/each}
+            </div>
+          {/if}
+        </div>
+
+        <!-- Footer with selection count -->
+        {#if selectedOptions.length > 0}
+          <div
+            class="p-2 border-t border-secondary-200 dark:border-secondary-600 bg-secondary-50 dark:bg-secondary-700"
+          >
+            <p class="text-xs text-secondary-600 dark:text-secondary-400 text-center">
+              {selectedOptions.length} of {options.length} selected
+            </p>
           </div>
         {/if}
       </div>
-
-      <!-- Footer with selection count -->
-      {#if selectedOptions.length > 0}
-        <div class="p-2 border-t border-secondary-200 dark:border-secondary-600 bg-secondary-50 dark:bg-secondary-700">
-          <p class="text-xs text-secondary-600 dark:text-secondary-400 text-center">
-            {selectedOptions.length} of {options.length} selected
-          </p>
-        </div>
-      {/if}
-    </div>
+    {/if}
   {/if}
-{/if}
 </div>

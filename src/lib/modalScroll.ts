@@ -7,7 +7,7 @@ let originalBodyPaddingRight = '';
 
 // Track modal instances for nested modal support
 // Each modal gets a unique ID when it opens
-let modalStack: string[] = [];
+const modalStack: string[] = [];
 let modalIdCounter = 0;
 
 export function preventBodyScroll(): string {

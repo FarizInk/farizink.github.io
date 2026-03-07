@@ -13,8 +13,7 @@
     Lock,
     Star,
     Tag as TagIcon,
-    RotateCw,
-    Clock
+    RotateCw
   } from '@lucide/svelte';
 
   interface SortOption {
@@ -26,7 +25,12 @@
   interface Props {
     isOpen: boolean;
     onClose: () => void;
-    onApply: (filters: NoteFilters, searchQuery: string, includeTags: string[], excludeTags: string[]) => void;
+    onApply: (
+      filters: NoteFilters,
+      searchQuery: string,
+      includeTags: string[],
+      excludeTags: string[]
+    ) => void;
     onClear: () => void;
     title: string;
     searchPlaceholder: string;
@@ -109,20 +113,17 @@
   }
 </script>
 
-<Modal
-  {isOpen}
-  {onClose}
-  maxW={expertFilterMode ? 'max-w-3xl' : 'max-w-lg'}
-  {title}
->
+<Modal {isOpen} {onClose} maxW={expertFilterMode ? 'max-w-3xl' : 'max-w-lg'} {title}>
   {#snippet body()}
     <!-- Mode Toggle -->
-    <div class="flex items-center justify-between mb-4 pb-3 border-b border-secondary-200 dark:border-secondary-700">
+    <div
+      class="flex items-center justify-between mb-4 pb-3 border-b border-secondary-200 dark:border-secondary-700"
+    >
       <span class="text-sm font-medium text-secondary-700 dark:text-secondary-300">
         {expertFilterMode ? 'Expert Mode' : 'Simple Mode'}
       </span>
       <button
-        onclick={() => expertFilterMode = !expertFilterMode}
+        onclick={() => (expertFilterMode = !expertFilterMode)}
         class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors {expertFilterMode
           ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
           : 'border-secondary-300 dark:border-secondary-600 text-secondary-600 dark:text-secondary-400 hover:border-secondary-400 dark:hover:border-secondary-500'}"
@@ -140,14 +141,16 @@
           <label class="label">Search</label>
           <div class="relative group">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search class="w-4 h-4 text-secondary-400 group-focus-within:text-yellow-500 dark:group-focus-within:text-primary-500 transition-colors" />
+              <Search
+                class="w-4 h-4 text-secondary-400 group-focus-within:text-yellow-500 dark:group-focus-within:text-primary-500 transition-colors"
+              />
             </div>
             <input
               type="text"
               placeholder={searchPlaceholder}
               class="input w-full !pl-10"
               bind:value={tempSearchQuery}
-              onkeydown={(e) => e.key === 'Enter' && handleApply()}
+              onkeydown={e => e.key === 'Enter' && handleApply()}
               autocomplete="off"
               bind:this={expertSearchInput}
             />
@@ -158,16 +161,23 @@
         <div class="md:col-span-2">
           <span class="label block mb-2">Sort By</span>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {#each sortOptions as sortOption}
+            {#each sortOptions as sortOption (sortOption.value)}
               {@const Icon = sortOption.icon}
               <div class="p-3 bg-secondary-50 dark:bg-secondary-800 rounded-lg">
-                <div class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2 flex items-center gap-1">
+                <div
+                  class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2 flex items-center gap-1"
+                >
                   <Icon class="w-4 h-4" />
                   {sortOption.label}
                 </div>
                 <div class="flex gap-2">
                   <button
-                    onclick={() => tempFilters = { ...tempFilters, sortBy: sortOption.value, sortOrder: 'desc' }}
+                    onclick={() =>
+                      (tempFilters = {
+                        ...tempFilters,
+                        sortBy: sortOption.value,
+                        sortOrder: 'desc'
+                      })}
                     class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors flex items-center justify-center gap-1 {tempFilters.sortBy ===
                       sortOption.value && tempFilters.sortOrder === 'desc'
                       ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
@@ -177,7 +187,12 @@
                     Newest
                   </button>
                   <button
-                    onclick={() => tempFilters = { ...tempFilters, sortBy: sortOption.value, sortOrder: 'asc' }}
+                    onclick={() =>
+                      (tempFilters = {
+                        ...tempFilters,
+                        sortBy: sortOption.value,
+                        sortOrder: 'asc'
+                      })}
                     class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors flex items-center justify-center gap-1 {tempFilters.sortBy ===
                       sortOption.value && tempFilters.sortOrder === 'asc'
                       ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
@@ -198,27 +213,29 @@
             <span class="label block mb-2">Public Status</span>
             <div class="flex flex-col gap-2">
               <button
-                onclick={() => tempFilters = { ...tempFilters, isPublic: true }}
-                class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic === true
+                onclick={() => (tempFilters = { ...tempFilters, isPublic: true })}
+                class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic ===
+                true
                   ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                   : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
               >
                 Public Only
               </button>
               <button
-                onclick={() => tempFilters = { ...tempFilters, isPublic: false }}
-                class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic === false
+                onclick={() => (tempFilters = { ...tempFilters, isPublic: false })}
+                class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic ===
+                false
                   ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                   : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
               >
                 Private Only
               </button>
               <button
-                onclick={() => tempFilters = { ...tempFilters, isPublic: undefined }}
+                onclick={() => (tempFilters = { ...tempFilters, isPublic: undefined })}
                 class="px-3 py-2 text-sm rounded-md border border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors text-left {tempFilters.isPublic ===
-                  undefined
-                    ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
-                    : ''}"
+                undefined
+                  ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
+                  : ''}"
               >
                 All
               </button>
@@ -231,23 +248,25 @@
           <span class="label block mb-2">Favorite Status</span>
           <div class="flex flex-col gap-2">
             <button
-              onclick={() => tempFilters = { ...tempFilters, isFavorite: true }}
-              class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite === true
+              onclick={() => (tempFilters = { ...tempFilters, isFavorite: true })}
+              class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite ===
+              true
                 ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
               Favorites Only
             </button>
             <button
-              onclick={() => tempFilters = { ...tempFilters, isFavorite: false }}
-              class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite === false
+              onclick={() => (tempFilters = { ...tempFilters, isFavorite: false })}
+              class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite ===
+              false
                 ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
               Non-Favorites
             </button>
             <button
-              onclick={() => tempFilters = { ...tempFilters, isFavorite: undefined }}
+              onclick={() => (tempFilters = { ...tempFilters, isFavorite: undefined })}
               class="px-3 py-2 text-sm rounded-md border border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors text-left {tempFilters.isFavorite ===
               undefined
                 ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
@@ -283,14 +302,18 @@
           </div>
         {:else if $isLoadingTags}
           <div class="md:col-span-2">
-            <div class="flex items-center justify-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg">
+            <div
+              class="flex items-center justify-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg"
+            >
               <RotateCw class="w-4 h-4 text-secondary-400 animate-spin mr-2" />
               <span class="text-sm text-secondary-500">Loading tags...</span>
             </div>
           </div>
         {:else}
           <div class="md:col-span-2">
-            <div class="text-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg">
+            <div
+              class="text-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg"
+            >
               <TagIcon class="w-8 h-8 text-secondary-300 mx-auto mb-2" />
               <p class="text-sm text-secondary-500">No tags available</p>
             </div>
@@ -312,7 +335,7 @@
             placeholder={searchPlaceholder}
             class="input w-full"
             bind:value={tempSearchQuery}
-            onkeydown={(e) => e.key === 'Enter' && handleApply()}
+            onkeydown={e => e.key === 'Enter' && handleApply()}
             autocomplete="off"
             bind:this={simpleSearchInput}
           />
@@ -326,8 +349,14 @@
           </label>
           <div class="grid grid-cols-2 gap-2">
             <button
-              onclick={() => tempFilters = { ...tempFilters, sortBy: tempFilters.sortBy || defaultSortBy, sortOrder: 'desc' }}
-              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1.5 {tempFilters.sortOrder === 'desc'
+              onclick={() =>
+                (tempFilters = {
+                  ...tempFilters,
+                  sortBy: tempFilters.sortBy || defaultSortBy,
+                  sortOrder: 'desc'
+                })}
+              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1.5 {tempFilters.sortOrder ===
+              'desc'
                 ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
@@ -335,8 +364,14 @@
               Newest
             </button>
             <button
-              onclick={() => tempFilters = { ...tempFilters, sortBy: tempFilters.sortBy || defaultSortBy, sortOrder: 'asc' }}
-              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1.5 {tempFilters.sortOrder === 'asc'
+              onclick={() =>
+                (tempFilters = {
+                  ...tempFilters,
+                  sortBy: tempFilters.sortBy || defaultSortBy,
+                  sortOrder: 'asc'
+                })}
+              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1.5 {tempFilters.sortOrder ===
+              'asc'
                 ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
@@ -355,16 +390,18 @@
             </label>
             <div class="grid grid-cols-3 gap-2">
               <button
-                onclick={() => tempFilters = { ...tempFilters, isPublic: undefined }}
-                class="px-3 py-2 text-sm rounded-lg border transition-colors {tempFilters.isPublic === undefined
+                onclick={() => (tempFilters = { ...tempFilters, isPublic: undefined })}
+                class="px-3 py-2 text-sm rounded-lg border transition-colors {tempFilters.isPublic ===
+                undefined
                   ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                   : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
               >
                 All
               </button>
               <button
-                onclick={() => tempFilters = { ...tempFilters, isPublic: true }}
-                class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isPublic === true
+                onclick={() => (tempFilters = { ...tempFilters, isPublic: true })}
+                class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isPublic ===
+                true
                   ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                   : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
               >
@@ -372,8 +409,9 @@
                 Public
               </button>
               <button
-                onclick={() => tempFilters = { ...tempFilters, isPublic: false }}
-                class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isPublic === false
+                onclick={() => (tempFilters = { ...tempFilters, isPublic: false })}
+                class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isPublic ===
+                false
                   ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                   : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
               >
@@ -392,16 +430,18 @@
           </label>
           <div class="grid grid-cols-3 gap-2">
             <button
-              onclick={() => tempFilters = { ...tempFilters, isFavorite: undefined }}
-              class="px-3 py-2 text-sm rounded-lg border transition-colors {tempFilters.isFavorite === undefined
+              onclick={() => (tempFilters = { ...tempFilters, isFavorite: undefined })}
+              class="px-3 py-2 text-sm rounded-lg border transition-colors {tempFilters.isFavorite ===
+              undefined
                 ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
               All
             </button>
             <button
-              onclick={() => tempFilters = { ...tempFilters, isFavorite: true }}
-              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isFavorite === true
+              onclick={() => (tempFilters = { ...tempFilters, isFavorite: true })}
+              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isFavorite ===
+              true
                 ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
@@ -409,8 +449,9 @@
               Yes
             </button>
             <button
-              onclick={() => tempFilters = { ...tempFilters, isFavorite: false }}
-              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isFavorite === false
+              onclick={() => (tempFilters = { ...tempFilters, isFavorite: false })}
+              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isFavorite ===
+              false
                 ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
@@ -435,12 +476,16 @@
             />
           </div>
         {:else if $isLoadingTags}
-          <div class="flex items-center justify-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg">
+          <div
+            class="flex items-center justify-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg"
+          >
             <RotateCw class="w-4 h-4 text-secondary-400 animate-spin mr-2" />
             <span class="text-sm text-secondary-500">Loading tags...</span>
           </div>
         {:else}
-          <div class="text-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg">
+          <div
+            class="text-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg"
+          >
             <TagIcon class="w-8 h-8 text-secondary-300 mx-auto mb-2" />
             <p class="text-sm text-secondary-500">No tags available</p>
           </div>

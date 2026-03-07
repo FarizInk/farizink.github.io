@@ -86,10 +86,15 @@
     {#each categories as category (category)}
       <button
         onclick={() => (selectedCategory = category)}
-        class="btn btn-sm {selectedCategory === category ? 'bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700' : 'btn-secondary'}"
+        class="btn btn-sm {selectedCategory === category
+          ? 'bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700'
+          : 'btn-secondary'}"
       >
         {category}
-        <span class="badge bg-yellow-100 text-yellow-700 dark:bg-primary-900 dark:text-primary-300 ml-1">{getCategoryCount(category)}</span>
+        <span
+          class="badge bg-yellow-100 text-yellow-700 dark:bg-primary-900 dark:text-primary-300 ml-1"
+          >{getCategoryCount(category)}</span
+        >
       </button>
     {/each}
   </div>
@@ -122,7 +127,9 @@
                   {tool.name}
                 </h3>
                 <!-- Tool Number Badge -->
-                <div class="badge bg-yellow-100 text-yellow-700 dark:bg-primary-900 dark:text-primary-300 text-xs font-bold">
+                <div
+                  class="badge bg-yellow-100 text-yellow-700 dark:bg-primary-900 dark:text-primary-300 text-xs font-bold"
+                >
                   {index + 1}
                 </div>
                 {#if tool.comingSoon}

@@ -1,4 +1,3 @@
-import { onDestroy } from 'svelte';
 import type { Tag } from './tags';
 import { tagsStore, tags, isLoadingTags, tagsError } from './stores/tags';
 
@@ -115,16 +114,18 @@ export function useModal(options?: {
  * </script>
  * ```
  */
-export function useForm<T extends Record<string, any>>(options: {
+export function useForm<T extends Record<string, unknown>>(options: {
   initialValues: T;
   validate?: (values: T) => Record<keyof T, string | undefined>;
   onSubmit?: (values: T) => void | Promise<void>;
 }) {
   let values = $state<T>({ ...options.initialValues });
-  let errors = $state<Record<keyof T, string | undefined>>({} as any);
-  let touched = $state<Record<keyof T, boolean>>({} as any);
+  let errors = $state<Record<keyof T, string | undefined>>(
+    {} as Record<keyof T, string | undefined>
+  );
+  let touched = $state<Record<keyof T, boolean>>({} as Record<keyof T, boolean>);
   let isSubmitting = $state(false);
-  let isValid = $derived(Object.keys(errors).length === 0);
+  const isValid = $derived(Object.keys(errors).length === 0);
 
   const setValue = <K extends keyof T>(field: K, value: T[K]) => {
     values[field] = value;
@@ -133,7 +134,7 @@ export function useForm<T extends Record<string, any>>(options: {
     // Validate on change if field has been touched
     if (options.validate) {
       const validationErrors = options.validate(values);
-      errors = validationErrors as any;
+      errors = validationErrors as Record<keyof T, string | undefined>;
     }
   };
 
@@ -151,8 +152,8 @@ export function useForm<T extends Record<string, any>>(options: {
 
   const reset = () => {
     values = { ...options.initialValues };
-    errors = {} as any;
-    touched = {} as any;
+    errors = {} as Record<keyof T, string | undefined>;
+    touched = {} as Record<keyof T, boolean>;
     isSubmitting = false;
   };
 
@@ -160,7 +161,7 @@ export function useForm<T extends Record<string, any>>(options: {
     // Validate all fields
     if (options.validate) {
       const validationErrors = options.validate(values);
-      errors = validationErrors as any;
+      errors = validationErrors as Record<keyof T, string | undefined>;
 
       if (Object.keys(validationErrors).length > 0) {
         return;
