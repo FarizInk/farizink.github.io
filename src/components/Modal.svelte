@@ -2,18 +2,20 @@
   import { fade } from 'svelte/transition';
   import { X } from '@lucide/svelte';
   import type { Snippet } from 'svelte';
-  import { preventBodyScroll, restoreBodyScroll, isTopmostModal } from '../lib/modalScroll';
+  import { preventBodyScroll, restoreBodyScroll, isTopmostModal, getModalZIndex } from '../lib/modalScroll';
 
-  // Simple scale transition - smooth & clean
-  function simpleScale(node: HTMLElement, { duration = 120 }: { duration?: number } = {}) {
+  // Enhanced scale transition - smooth & modern
+  function modernScale(_node: HTMLElement, { duration = 200 }: { duration?: number } = {}) {
     return {
       duration,
+      easing: (t: number) => t * (2 - t),
       css: (t: number) => {
-        const scale = 0.95 + t * 0.05;
+        const scale = 0.92 + t * 0.08;
+        const opacity = t;
 
         return `
-          opacity: ${t};
-          transform: scale(${scale});
+          opacity: ${opacity};
+          transform: scale(${scale}) translateY(${10 * (1 - t)}px);
         `;
       }
     };
@@ -26,6 +28,8 @@
     onClose = () => {},
     title = '',
     showCloseButton = true,
+    showHeaderIcon = false,
+    headerIcon,
     children,
     header,
     body,
@@ -37,6 +41,8 @@
     onClose?: () => void;
     title?: string;
     showCloseButton?: boolean;
+    showHeaderIcon?: boolean;
+    headerIcon?: Record<string, unknown>;
     children?: Snippet;
     header?: Snippet;
     body?: Snippet;
@@ -45,6 +51,9 @@
 
   // Store this modal's unique ID
   let currentModalId = $state<string>('');
+
+  // Dynamic z-index based on stack position
+  let modalZIndex = $derived(currentModalId ? getModalZIndex(currentModalId) : 50);
 
   function close() {
     onClose();
@@ -96,14 +105,15 @@
 
 {#if isOpen}
   <div
-    class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center"
+    class="fixed inset-0 flex items-center justify-center p-4"
+    style="z-index: {modalZIndex}"
     aria-labelledby="modal-title"
     role="dialog"
     aria-modal="true"
   >
     <!-- Backdrop -->
     <div
-      class="fixed inset-0 bg-black/50 backdrop-blur-sm"
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
       transition:fade
       role="button"
       tabindex="0"
@@ -111,29 +121,34 @@
     ></div>
 
     <!-- Modal Container -->
-    <div class="flex items-center justify-center min-h-full w-full text-center">
+    <div class="flex items-center justify-center w-full">
       <div
-        class="relative bg-white dark:bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all my-8 w-full {maxW}"
-        transition:simpleScale
+        class="relative w-full {maxW} bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden transform transition-all"
+        transition:modernScale
       >
         <!-- Header Slot with Title and Close Button -->
         {#if header}
           {@render header()}
         {:else if title}
-          <div
-            class="flex items-center justify-between px-3 py-3 sm:px-6 sm:py-4 border-b border-gray-200 dark:border-gray-700"
-          >
-            <h2 id="modal-title" class="text-xl font-semibold text-gray-900 dark:text-white">
-              {title}
-            </h2>
+          <div class="modal-header">
+            <div class="flex items-center gap-3 flex-1 min-w-0 px-1">
+              {#if showHeaderIcon && headerIcon}
+                <div class="modal-icon">
+                  <svelte:component this={headerIcon} class="w-5 h-5" />
+                </div>
+              {/if}
+              <h2 id="modal-title" class="modal-title flex-1">
+                {title}
+              </h2>
+            </div>
             {#if showCloseButton}
               <button
                 type="button"
                 onclick={close}
-                class="w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
+                class="modal-close-btn"
                 aria-label="Close modal"
               >
-                <X class="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                <X class="w-5 h-5" />
               </button>
             {/if}
           </div>
@@ -141,20 +156,18 @@
 
         <!-- Body Slot -->
         {#if body}
-          <div class="px-3 py-3 sm:px-6 sm:py-4">
+          <div class="modal-body overflow-y-auto">
             {@render body()}
           </div>
         {:else if children}
-          <div class="px-3 py-3 sm:px-6 sm:py-4">
+          <div class="modal-body overflow-y-auto">
             {@render children()}
           </div>
         {/if}
 
         <!-- Footer Slot -->
         {#if footer}
-          <div
-            class="flex items-center justify-end gap-3 px-3 py-3 sm:px-6 sm:py-4 border-t border-gray-200 dark:border-gray-700"
-          >
+          <div class="modal-footer">
             {@render footer()}
           </div>
         {/if}
@@ -162,3 +175,148 @@
     </div>
   </div>
 {/if}
+
+<style>
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1rem;
+  }
+
+  .modal-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    background: linear-gradient(135deg, rgb(254 252 232), rgb(250 204 21));
+    border-radius: 0.5rem;
+    color: rgb(161 98 7);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  :global(.dark) .modal-icon {
+    background: linear-gradient(135deg, rgb(30 20 50), rgb(88 28 135));
+    color: rgb(250 204 21);
+  }
+
+  .modal-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: rgb(17 24 39);
+    line-height: 1.4;
+  }
+
+  :global(.dark) .modal-title {
+    color: rgb(255 255 255);
+  }
+
+  .modal-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    background: rgb(243 244 246);
+    border-radius: 0.5rem;
+    color: rgb(107 114 128);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .modal-close-btn:hover {
+    background: rgb(229 231 235);
+    color: rgb(17 24 39);
+  }
+
+  :global(.dark) .modal-close-btn {
+    background: rgb(31 41 55);
+  }
+
+  :global(.dark) .modal-close-btn:hover {
+    background: rgb(55 65 81);
+    color: rgb(255 255 255);
+  }
+
+  .modal-close-btn:focus-visible {
+    outline: 2px solid rgb(251 191 36);
+    outline-offset: 2px;
+  }
+
+  :global(.dark) .modal-close-btn:focus-visible {
+    outline-color: rgb(139 92 246);
+  }
+
+  .modal-body {
+    max-height: calc(100vh - 240px);
+  }
+
+  .modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+  }
+
+  :global(.dark) .modal-footer {
+    border-top-color: rgb(55 65 81);
+  }
+
+  /* Custom scrollbar */
+  .modal-body::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .modal-body::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .modal-body::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
+
+  :global(.dark) .modal-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Responsive padding */
+  @media (min-width: 640px) {
+    .modal-header {
+      padding: 1rem 1.5rem;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.5rem;
+    }
+  }
+
+  /* Animation for backdrop */
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Animation for modal content */
+  @keyframes modalSlideUp {
+    from {
+      opacity: 0;
+      transform: scale(0.92) translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  /* Accessibility - focus trap */
+  .modal-content:focus-visible {
+    outline: none;
+  }
+</style>

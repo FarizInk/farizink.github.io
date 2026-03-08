@@ -1,6 +1,6 @@
 <script lang="ts">
   import ToolLayout from '../../components/ToolLayout.svelte';
-  import { Link, Shield, Zap, CreditCard } from '@lucide/svelte';
+  import { Link, Shield, Zap, CreditCard, Copy } from '@lucide/svelte';
 
   let inputText = $state('');
   let encodedText = $state('');
@@ -99,8 +99,27 @@ https://demo.com/search?query=测试&lang=zh-CN`;
   title="URL Encoder"
   description="Encode and decode URLs for safe transmission and parameter handling."
   icon={Link}
-  color="primary"
+  color="warning"
 >
+  <!-- Hero Section -->
+  <div
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+  >
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
+          <Link class="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">URL Encoder/Decoder</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Encode and decode URLs for safe transmission
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Tab Navigation -->
   <div class="mb-6">
     <div class="flex justify-center">
@@ -110,7 +129,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
         <button
           onclick={() => (activeTab = 'single')}
           class="px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'single'
-            ? 'bg-primary-100 dark:bg-primary-900/20 text-green-700 dark:text-green-300'
+            ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
             : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
         >
           Single URL
@@ -118,7 +137,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
         <button
           onclick={() => (activeTab = 'batch')}
           class="px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'batch'
-            ? 'bg-primary-100 dark:bg-primary-900/20 text-green-700 dark:text-green-300'
+            ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
             : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
         >
           Batch Processing
@@ -128,15 +147,25 @@ https://demo.com/search?query=测试&lang=zh-CN`;
   </div>
 
   <!-- Controls -->
-  <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
+  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
     {#if activeTab === 'single'}
-      <button onclick={encodeUrl} class="btn btn-primary"> Encode URL </button>
-      <button onclick={decodeUrl} class="btn btn-primary"> Decode URL </button>
+      <button class="btn btn-copy" onclick={encodeUrl}>
+        Encode URL
+      </button>
+      <button class="btn btn-copy" onclick={decodeUrl}>
+        Decode URL
+      </button>
     {:else}
-      <button onclick={encodeBatch} class="btn btn-primary"> Process Batch </button>
-      <button onclick={loadSampleUrls} class="btn btn-primary"> Load Sample URLs </button>
+      <button class="btn btn-copy" onclick={encodeBatch}>
+        Process Batch
+      </button>
+      <button class="btn btn-secondary" onclick={loadSampleUrls}>
+        Load Sample URLs
+      </button>
     {/if}
-    <button onclick={clearAll} class="btn btn-primary"> Clear All </button>
+    <button class="btn btn-secondary" onclick={clearAll}>
+      Clear All
+    </button>
   </div>
 
   {#if activeTab === 'single'}
@@ -154,7 +183,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
         <textarea
           bind:value={inputText}
           placeholder="Enter text or URL to encode/decode..."
-          class="w-full h-64 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          class="code-editor h-64"
         ></textarea>
 
         <!-- Quick Examples -->
@@ -166,7 +195,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
                 inputText = 'https://example.com/search?q=hello world&category=web development';
                 encodeUrl();
               }}
-              class="block w-full text-left text-sm text-primary-600 dark:text-primary-400 hover:underline"
+              class="block w-full text-left text-sm text-warning-600 dark:text-primary-400 hover:underline"
             >
               Query parameters with spaces
             </button>
@@ -175,7 +204,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
                 inputText = 'https://test.com/path?name=John Doe&city=New York';
                 encodeUrl();
               }}
-              class="block w-full text-left text-sm text-primary-600 dark:text-primary-400 hover:underline"
+              class="block w-full text-left text-sm text-warning-600 dark:text-primary-400 hover:underline"
             >
               Multiple parameters with special characters
             </button>
@@ -184,7 +213,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
                 inputText = 'https://site.com/search?q=测试&lang=zh-CN';
                 encodeUrl();
               }}
-              class="block w-full text-left text-sm text-primary-600 dark:text-primary-400 hover:underline"
+              class="block w-full text-left text-sm text-warning-600 dark:text-primary-400 hover:underline"
             >
               International characters (Chinese)
             </button>
@@ -199,11 +228,9 @@ https://demo.com/search?query=测试&lang=zh-CN`;
           <div class="flex justify-between items-center mb-2">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Encoded URL</h2>
             {#if encodedText}
-              <button
-                onclick={() => copyToClipboard(encodedText, 'encoded')}
-                class="btn btn-primary btn-sm"
-              >
-                {copiedText === 'encoded' ? '✓ Copied!' : 'Copy'}
+              <button class="btn btn-sm btn-copy" onclick={() => copyToClipboard(encodedText, 'encoded')}>
+                <Copy class="w-3.5 h-3.5" />
+                {copiedText === 'encoded' ? 'Copied!' : 'Copy'}
               </button>
             {/if}
           </div>
@@ -212,7 +239,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
             <textarea
               bind:value={encodedText}
               placeholder="Encoded URL will appear here..."
-              class="w-full h-28 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none"
+              class="code-editor h-28 bg-gray-50 dark:bg-gray-900"
             ></textarea>
             {#if !encodedText}
               <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -231,11 +258,9 @@ https://demo.com/search?query=测试&lang=zh-CN`;
               Decoded URL (Round-trip)
             </h2>
             {#if decodedText}
-              <button
-                onclick={() => copyToClipboard(decodedText, 'decoded')}
-                class="btn btn-primary btn-sm"
-              >
-                {copiedText === 'decoded' ? '✓ Copied!' : 'Copy'}
+              <button class="btn btn-sm btn-copy" onclick={() => copyToClipboard(decodedText, 'decoded')}>
+                <Copy class="w-3.5 h-3.5" />
+                {copiedText === 'decoded' ? 'Copied!' : 'Copy'}
               </button>
             {/if}
           </div>
@@ -244,7 +269,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
             <textarea
               bind:value={decodedText}
               placeholder="Decoded URL will appear here..."
-              class="w-full h-28 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none"
+              class="code-editor h-28 bg-gray-50 dark:bg-gray-900"
             ></textarea>
             {#if !decodedText}
               <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -274,7 +299,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
         <textarea
           bind:value={batchInput}
           placeholder="Enter multiple URLs or text strings, one per line..."
-          class="w-full h-96 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          class="code-editor h-96"
         ></textarea>
       </div>
 
@@ -283,8 +308,9 @@ https://demo.com/search?query=测试&lang=zh-CN`;
         <div class="flex justify-between items-center mb-2">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Batch Results</h2>
           {#if batchResults.length > 0}
-            <button onclick={copyBatchResults} class="btn btn-primary btn-sm">
-              {copiedText === 'batch' ? '✓ Copied!' : 'Copy All'}
+            <button class="btn btn-sm btn-copy" onclick={copyBatchResults}>
+              <Copy class="w-3.5 h-3.5" />
+              {copiedText === 'batch' ? 'Copied!' : 'Copy All'}
             </button>
           {/if}
         </div>
@@ -313,7 +339,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
                       </div>
                     </div>
                     <div>
-                      <span class="text-xs font-medium text-primary-600 dark:text-primary-400"
+                      <span class="text-xs font-medium text-warning-600 dark:text-primary-400"
                         >Encoded:</span
                       >
                       <div class="font-mono text-xs text-green-700 dark:text-green-300 break-all">
@@ -321,12 +347,10 @@ https://demo.com/search?query=测试&lang=zh-CN`;
                       </div>
                     </div>
                     <div>
-                      <span class="text-xs font-medium text-primary-600 dark:text-primary-400"
+                      <span class="text-xs font-medium text-warning-600 dark:text-primary-400"
                         >Decoded:</span
                       >
-                      <div
-                        class="font-mono text-xs text-primary-700 dark:text-primary-300 break-all"
-                      >
+                      <div class="font-mono text-xs text-warning-700 dark:text-warning-300 break-all">
                         {result.decoded}
                       </div>
                     </div>
@@ -341,46 +365,46 @@ https://demo.com/search?query=测试&lang=zh-CN`;
   {/if}
 
   <!-- Features Section -->
-  <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <Shield class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <Shield class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Safe Encoding</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Properly encodes special characters, spaces, and international characters for safe URL
         transmission
       </p>
     </div>
 
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <Zap class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Batch Processing</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Process multiple URLs at once with batch mode for efficient workflow
       </p>
     </div>
 
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <CreditCard class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <CreditCard class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Round-trip Testing</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Automatic round-trip testing ensures your URLs decode back to the original text
       </p>
     </div>

@@ -248,7 +248,7 @@
     bind:this={triggerElement}
     type="button"
     class="input flex items-center gap-2 min-h-10 text-left cursor-pointer disabled:cursor-not-allowed"
-    class:border-yellow-500={isOpen}
+    class:border-warning-500={isOpen}
     onclick={toggleDropdown}
     onkeydown={handleKeydown}
     {disabled}
@@ -264,7 +264,7 @@
         {#each selectedOptions as option (option.value)}
           <span
             class="text-xs flex items-center gap-1 px-2 py-1 rounded-full border {!option.color
-              ? 'bg-yellow-100 text-yellow-700 border-yellow-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700'
+              ? 'bg-warning-100 text-warning-700 border-warning-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700'
               : ''}"
             style="background-color: {option.color
               ? option.color + '20'
@@ -274,7 +274,7 @@
           >
             <div
               class="w-2 h-2 rounded-full {!option.color
-                ? 'bg-yellow-600 dark:bg-primary-600'
+                ? 'bg-warning-600 dark:bg-primary-600'
                 : ''}"
               style="background-color: {option.color || undefined}"
             ></div>
@@ -370,7 +370,7 @@
                   type="button"
                   class="w-full px-3 py-2 text-left text-sm transition-colors flex items-center gap-3 border-b border-secondary-100 dark:border-secondary-700 last:border-b-0 {focusedIndex ===
                   index
-                    ? 'bg-yellow-50 dark:bg-primary-900/20'
+                    ? 'bg-warning-50 dark:bg-primary-900/20'
                     : 'hover:bg-secondary-50 dark:hover:bg-secondary-700'}"
                   onclick={() => selectOption(option)}
                   onmouseenter={() => (focusedIndex = index)}
@@ -381,7 +381,7 @@
                   <div class="flex-shrink-0">
                     {#if selectedValues.includes(option.value)}
                       <div
-                        class="w-4 h-4 bg-yellow-600 dark:bg-primary-600 rounded flex items-center justify-center"
+                        class="w-4 h-4 bg-warning-600 dark:bg-primary-600 rounded flex items-center justify-center"
                       >
                         <Check class="w-3 h-3 text-white" />
                       </div>
@@ -396,7 +396,7 @@
                   <div class="flex-1 min-w-0 flex items-center gap-2">
                     <div
                       class="w-3 h-3 rounded-full flex-shrink-0 {!option.color
-                        ? 'bg-yellow-600 dark:bg-primary-600'
+                        ? 'bg-warning-600 dark:bg-primary-600'
                         : ''}"
                       style="background-color: {option.color || undefined}"
                     ></div>

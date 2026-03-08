@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Image, Copy, Download, Type, Zap, Palette, Check } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
+  import { toast } from 'svelte-sonner';
 
   let inputText = $state('');
   let asciiArt = $state('');
@@ -185,6 +186,7 @@
     setTimeout(() => {
       copiedText = '';
     }, 2000);
+    toast.success('ASCII art copied to clipboard');
   }
 
   function downloadAsciiArt() {
@@ -195,16 +197,19 @@
     a.download = 'ascii-art.txt';
     a.click();
     URL.revokeObjectURL(url);
+    toast.success('ASCII art downloaded');
   }
 
   function clearAll() {
     inputText = '';
     asciiArt = '';
+    toast.success('Cleared all');
   }
 
   function loadSampleText() {
     inputText = 'HELLO';
     generateAsciiArt();
+    toast.success('Sample text loaded');
   }
 
   // React to changes in input text or style
@@ -217,51 +222,64 @@
   title="ASCII Art Generator"
   description="Convert text into ASCII art with different styles. Perfect for terminal displays and creative text art."
   icon={Image}
-  color="secondary"
+  color="warning"
 >
+  <!-- Hero Section -->
+  <div
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+  >
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
+          <Image class="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">ASCII Art Generator</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Convert text to creative ASCII art</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Controls -->
-  <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
+  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
     <button
       onclick={loadSampleText}
-      class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+      class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
+      >Load Sample Text</button
     >
-      Load Sample Text
-    </button>
     <button
       onclick={clearAll}
-      class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+      class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+      >Clear All</button
     >
-      Clear All
-    </button>
   </div>
 
   <!-- Style Selector -->
-  <div class="mb-6">
-    <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
-    >
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Art Style</h3>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {#each Object.entries(asciiStyles) as [key, style], index (index)}
-          <button
-            onclick={() => (selectedStyle = key)}
-            class="p-4 border-2 rounded-lg transition-all {selectedStyle === key
-              ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
-              : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'}"
-          >
-            <div class="text-left">
-              <h4 class="font-medium text-gray-900 dark:text-white mb-1">{style.name}</h4>
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                {key === 'standard'
-                  ? 'Classic ASCII style with standard characters'
-                  : key === 'block'
-                    ? 'Bold block style using full Unicode blocks'
-                    : 'Minimal style using basic ASCII characters'}
-              </p>
-            </div>
-          </button>
-        {/each}
-      </div>
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+  >
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Art Style</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {#each Object.entries(asciiStyles) as [key, style], index (index)}
+        <button
+          onclick={() => (selectedStyle = key)}
+          class="p-4 border-2 rounded-lg transition-all text-left {selectedStyle === key
+            ? 'border-warning-400 dark:border-primary-500 bg-warning-50 dark:bg-primary-900/20'
+            : 'border-gray-200 dark:border-gray-600 hover:border-warning-300 dark:hover:border-primary-400'}"
+        >
+          <div class="text-left">
+            <h4 class="font-medium text-gray-900 dark:text-white mb-1">{style.name}</h4>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              {key === 'standard'
+                ? 'Classic ASCII style with standard characters'
+                : key === 'block'
+                  ? 'Bold block style using full Unicode blocks'
+                  : 'Minimal style using basic ASCII characters'}
+            </p>
+          </div>
+        </button>
+      {/each}
     </div>
   </div>
 
@@ -270,7 +288,7 @@
     class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
   >
     <div class="flex justify-between items-center mb-4">
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Input Text</h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-0">Input Text</h3>
       <span class="text-sm text-gray-500 dark:text-gray-400">
         {inputText.length} characters
       </span>
@@ -279,7 +297,7 @@
       type="text"
       bind:value={inputText}
       placeholder="Enter text to convert to ASCII art..."
-      class="w-full p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+      class="w-full px-4 py-3 font-mono text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
       maxlength={10}
     />
     <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
@@ -294,25 +312,25 @@
       class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
     >
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">ASCII Art Result</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-0">ASCII Art Result</h3>
         <div class="flex gap-2">
           <button
             onclick={copyToClipboard}
-            class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+            class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
           >
             {#if copiedText === 'ascii'}
-              <Check class="w-4 h-4" />
+              <Check class="w-4 h-4 mr-2" />
               Copied!
             {:else}
-              <Copy class="w-4 h-4" />
+              <Copy class="w-4 h-4 mr-2" />
               Copy
             {/if}
           </button>
           <button
             onclick={downloadAsciiArt}
-            class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+            class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
           >
-            <Download class="w-4 h-4" />
+            <Download class="w-4 h-4 mr-2" />
             Download
           </button>
         </div>
@@ -377,45 +395,45 @@
   </div>
 
   <!-- Features Section -->
-  <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <Type class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <Type class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Multiple Styles</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Choose from standard, block, and simple ASCII art styles for different use cases
       </p>
     </div>
 
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <Zap class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Real-time Preview</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         See your ASCII art generated instantly as you type with automatic updates
       </p>
     </div>
 
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <Palette class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <Palette class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Easy Export</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Copy to clipboard or download your ASCII art as a text file for easy sharing
       </p>
     </div>

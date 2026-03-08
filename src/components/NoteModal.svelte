@@ -3,7 +3,7 @@
   import { createNote, createNoteWithFormData, updateNote, validateTagIds } from '../lib/notes';
   import { notesStore } from '../lib/stores/notes';
   import { tags } from '../lib/stores/tags';
-  import { Link2, Paperclip, Loader } from '@lucide/svelte';
+  import { Link2, Paperclip, Loader, Plus, Edit2, X, FileText } from '@lucide/svelte';
   import { toast } from 'svelte-sonner';
   import TagsSelector from './TagsSelector.svelte';
   import FileUpload from './FileUpload.svelte';
@@ -280,12 +280,46 @@
   }
 
   const title = $derived(mode === 'create' ? 'Create Note' : 'Edit Note');
+  const headerIcon = $derived(mode === 'create' ? Plus : Edit2);
 </script>
 
-<Modal {isOpen} onClose={closeModal} maxW="max-w-4xl" {title} showCloseButton={false}>
+<Modal {isOpen} onClose={closeModal} maxW="max-w-4xl" showCloseButton={false}>
+  {#snippet header()}
+    <div class="py-5 px-6 bg-gradient-to-br from-warning-50 to-amber-50 dark:from-primary-900/30 dark:to-primary-800/20 border-b border-warning-200 dark:border-primary-700">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-warning-400 to-amber-500 dark:from-primary-500 dark:to-primary-600 flex items-center justify-center shadow-lg">
+            {#if mode === 'create'}
+              <Plus class="w-6 h-6 text-white" />
+            {:else}
+              <Edit2 class="w-6 h-6 text-white" />
+            {/if}
+          </div>
+          <div>
+            <h2 id="modal-title" class="text-lg font-bold text-gray-900 dark:text-white">
+              {title}
+            </h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              {mode === 'create' ? 'Create a new note to save your thoughts' : 'Edit your note details'}
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onclick={closeModal}
+          class="w-9 h-9 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 flex items-center justify-center transition-colors"
+          aria-label="Close modal"
+        >
+          <X class="w-5 h-5 text-gray-600 dark:text-gray-400" />
+        </button>
+      </div>
+    </div>
+  {/snippet}
+
   {#snippet body()}
-    <div class="max-h-[calc(100vh-240px)] overflow-y-auto pr-2 -mr-2">
-      <form id="note-form" onsubmit={handleSubmit} class="space-y-4">
+    <div class="max-h-[calc(100vh-240px)] overflow-y-auto">
+      <div class="px-4 sm:px-6 py-6">
+        <form id="note-form" onsubmit={handleSubmit} class="space-y-4">
         <!-- Name -->
         <div>
           <label for="name" class="label">Name *</label>
@@ -352,7 +386,7 @@
               type="button"
               onclick={() =>
                 alert('Use the "Manage Tags" button in the Notes page to create new tags.')}
-              class="text-yellow-600 hover:text-yellow-700 dark:text-primary-400 dark:hover:text-primary-300 underline"
+              class="text-warning-600 hover:text-warning-700 dark:text-primary-400 dark:hover:text-primary-300 underline"
             >
               Manage tags
             </button>
@@ -364,13 +398,13 @@
           <button
             type="button"
             onclick={() => (showFileSection = !showFileSection)}
-            class="flex items-center gap-2 text-sm font-medium text-secondary-700 dark:text-secondary-300 hover:text-yellow-600 dark:hover:text-primary-400 transition-colors"
+            class="flex items-center gap-2 text-sm font-medium text-secondary-700 dark:text-secondary-300 hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
           >
             <Paperclip class="w-4 h-4" />
             <span>{mode === 'edit' ? 'Manage Files' : 'Attach Files'}</span>
             {#if (formData.files && formData.files.length > 0) || (mode === 'edit' && note?.files && note.files.length > 0)}
               <span
-                class="badge bg-yellow-100 text-yellow-700 dark:bg-primary-900 dark:text-primary-300 text-xs"
+                class="badge bg-warning-100 text-warning-700 dark:bg-primary-900 dark:text-primary-300 text-xs"
               >
                 ({(formData.files?.length || 0) +
                   (mode === 'edit' && note?.files ? note.files.length : 0)})
@@ -419,36 +453,54 @@
           </div>
         </div>
       </form>
+      </div>
     </div>
   {/snippet}
 
   {#snippet footer()}
-    <button
-      type="button"
-      onclick={closeModal}
-      class="px-4 py-2 border border-secondary-300 dark:border-secondary-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
-      disabled={isLoading}
-    >
-      Cancel
-    </button>
-    <button
-      type="button"
-      class="px-4 py-2 btn bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700 disabled:opacity-50 flex items-center"
-      disabled={isLoading || !formData.name?.trim()}
-      onclick={e => {
-        e.preventDefault();
-        const form = document.getElementById('note-form') as HTMLFormElement;
-        if (form) {
-          form.requestSubmit();
-        }
-      }}
-    >
-      {#if isLoading}
-        <Loader class="w-4 h-4 animate-spin mr-2" />
-        {mode === 'create' ? 'Creating...' : 'Updating...'}
-      {:else}
-        {mode === 'create' ? 'Create Note' : 'Update Note'}
-      {/if}
-    </button>
+    <div class="py-4 bg-secondary-50 dark:bg-secondary-900/30">
+      <div class="flex items-center justify-between px-6 gap-6">
+        <div class="text-sm text-secondary-600 dark:text-secondary-400">
+          <span>
+            {mode === 'create' ? 'Fill in the details to create a new note' : 'Make changes to your note'}
+          </span>
+        </div>
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            onclick={closeModal}
+            class="px-5 py-2.5 border border-secondary-300 dark:border-secondary-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-secondary-50 dark:hover:bg-secondary-800 transition-colors font-medium disabled:opacity-50"
+            disabled={isLoading}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="px-5 py-2.5 bg-gradient-to-r from-warning-500 to-amber-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-600 dark:hover:to-primary-700 dark:from-primary-500 dark:to-primary-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 flex items-center gap-2 disabled:opacity-50"
+            disabled={isLoading || !formData.name?.trim()}
+            onclick={e => {
+              e.preventDefault();
+              const form = document.getElementById('note-form') as HTMLFormElement;
+              if (form) {
+                form.requestSubmit();
+              }
+            }}
+          >
+            {#if isLoading}
+              <Loader class="w-4 h-4 animate-spin" />
+              {mode === 'create' ? 'Creating...' : 'Updating...'}
+            {:else}
+              {#if mode === 'create'}
+                <Plus class="w-4 h-4" />
+                Create Note
+              {:else}
+                <Edit2 class="w-4 h-4" />
+                Update Note
+              {/if}
+            {/if}
+          </button>
+        </div>
+      </div>
+    </div>
   {/snippet}
 </Modal>

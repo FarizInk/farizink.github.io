@@ -42,7 +42,7 @@
       <!-- Nickname -->
       <div class="mb-6">
         <p class="text-lg md:text-xl text-black dark:text-gray-400">
-          known as <span class="font-bold text-yellow-600 dark:text-purple-400 italic">Fariz</span>
+          known as <span class="font-bold text-warning-600 dark:text-primary-400 italic">Fariz</span>
         </p>
       </div>
 
@@ -51,7 +51,7 @@
         <p class="text-black dark:text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl">
           Software engineer based in Sidoarjo, Indonesia. Specializing in backend development and
           high-quality web applications. Currently building <span
-            class="italic text-yellow-600 dark:text-purple-400">"gabut"</span
+            class="italic text-warning-600 dark:text-primary-400">"gabut"</span
           > projects and crushing work tasks 🙂
         </p>
       </div>

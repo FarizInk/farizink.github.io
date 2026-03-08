@@ -69,7 +69,7 @@
 
 <div
   class="card card-hover !p-6 group relative overflow-hidden cursor-pointer {!note.is_public
-    ? 'bg-gradient-to-br from-yellow-50 to-yellow-50 dark:from-primary-900/30 dark:to-primary-900/20 border-2 border-yellow-300 dark:border-primary-500 shadow-lg'
+    ? 'bg-gradient-to-br from-warning-50 to-warning-50 dark:from-primary-900/30 dark:to-primary-900/20 border-2 border-warning-300 dark:border-primary-500 shadow-lg'
     : ''}"
   role="button"
   tabindex="0"
@@ -85,7 +85,7 @@
   <!-- Card Accent Border -->
   {#if note.is_favorite}
     <div
-      class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-yellow-400 to-yellow-600"
+      class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-warning-400 to-warning-600"
     ></div>
   {/if}
 
@@ -96,7 +96,7 @@
       <div class="flex-1 min-w-0 pr-4">
         {#if note.name}
           <h3
-            class="text-xl font-bold text-secondary-900 dark:text-white group-hover:text-yellow-600 dark:group-hover:text-primary-400 transition-all duration-200 mb-2"
+            class="text-xl font-bold text-secondary-900 dark:text-white group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-all duration-200 mb-2"
             title={note.name}
           >
             {note.name}
@@ -105,12 +105,12 @@
 
         {#if note.link}
           <div class="flex items-center gap-2">
-            <Link2 class="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+            <Link2 class="w-4 h-4 text-warning-600 dark:text-primary-400 flex-shrink-0" />
             <a
               href={note.link}
               target="_blank"
               rel="noopener noreferrer"
-              class="text-sm text-blue-700 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 transition-colors cursor-pointer truncate hover:underline"
+              class="text-sm text-warning-700 dark:text-primary-300 hover:text-warning-800 dark:hover:text-primary-200 transition-colors cursor-pointer truncate hover:underline"
               title={note.link}
             >
               {truncateText(note.link, 60)}
@@ -225,7 +225,7 @@
         {#each note.tags.slice(0, 5) as tag, index (index)}
           <div
             class="tag-group flex items-center gap-2 px-3 py-1.5 hover:bg-opacity-80 rounded-full border transition-all duration-200 {!tag.color
-              ? 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700'
+              ? 'bg-warning-50 text-warning-700 border-warning-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700'
               : ''}"
             style="background-color: {tag.color
               ? tag.color + '20'
@@ -235,7 +235,7 @@
           >
             <div
               class="w-3 h-3 rounded-full tag-hover-scale transition-transform duration-200 {!tag.color
-                ? 'bg-yellow-600 dark:bg-primary-600'
+                ? 'bg-warning-600 dark:bg-primary-600'
                 : ''}"
               style="background-color: {tag.color || undefined}"
             ></div>
@@ -313,11 +313,11 @@
               e.stopPropagation();
               handleShare();
             }}
-            class="w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-blue-300 dark:hover:border-blue-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
+            class="w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
             title="Share note"
           >
             <Share2
-              class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
+              class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors"
             />
           </button>
           <!-- Edit and Delete buttons - Only show when authenticated -->
@@ -327,11 +327,11 @@
                 e.stopPropagation();
                 handleEdit();
               }}
-              class="w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-yellow-50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-yellow-300 dark:hover:border-primary-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
+              class="w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
               title="Edit note"
             >
               <Pencil
-                class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-yellow-600 dark:group-hover:text-primary-400"
+                class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400"
               />
             </button>
 
@@ -386,7 +386,7 @@
 
   /* Enhanced hover effects */
   .group:hover {
-    transform: scale(1.02);
+    /* transform removed */
   }
 
   /* Smooth color transitions */

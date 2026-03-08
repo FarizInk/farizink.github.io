@@ -37,24 +37,24 @@
     <!-- Warning for files marked for deletion -->
     {#if filesToDelete.length > 0}
       <div
-        class="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-primary-800 rounded-lg p-4"
+        class="bg-warning-50 dark:bg-yellow-900/10 border border-warning-200 dark:border-primary-800 rounded-lg p-4"
       >
         <div class="flex items-start justify-between">
           <div class="flex-1">
             <div class="flex items-center gap-2 mb-1">
-              <AlertTriangle class="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+              <AlertTriangle class="w-5 h-5 text-warning-600 dark:text-warning-400" />
               <span class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
                 {filesToDelete.length} file{filesToDelete.length > 1 ? 's' : ''} marked for deletion
               </span>
             </div>
-            <p class="text-xs text-yellow-700 dark:text-yellow-300">
+            <p class="text-xs text-warning-700 dark:text-warning-300">
               These files will be permanently removed when you update the note.
             </p>
           </div>
           <button
             type="button"
             onclick={undoDeleteAll}
-            class="px-3 py-1.5 text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 hover:bg-yellow-200 dark:hover:bg-yellow-900/50 text-yellow-800 dark:text-yellow-200 rounded-md transition-colors"
+            class="px-3 py-1.5 text-xs font-medium bg-warning-100 dark:bg-yellow-900/30 hover:bg-yellow-200 dark:hover:bg-yellow-900/50 text-yellow-800 dark:text-yellow-200 rounded-md transition-colors"
           >
             Undo All
           </button>
@@ -82,7 +82,7 @@
                 });
                 filesToDelete = filesToDelete.filter(id => !imageIdsToDelete.includes(id));
               }}
-              class="text-xs text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300"
+              class="text-xs text-warning-600 dark:text-warning-400 hover:text-warning-700 dark:hover:text-warning-300"
             >
               Undo Images ({filesToDelete.filter(id => {
                 const file = files.find(f => f.id === id);
@@ -205,7 +205,7 @@
                 });
                 filesToDelete = filesToDelete.filter(id => !fileIdsToDelete.includes(id));
               }}
-              class="text-xs text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300"
+              class="text-xs text-warning-600 dark:text-warning-400 hover:text-warning-700 dark:hover:text-warning-300"
             >
               Undo Files ({filesToDelete.filter(id => {
                 const file = files.find(f => f.id === id);

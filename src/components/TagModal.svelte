@@ -7,14 +7,13 @@
     Plus,
     Edit2,
     Trash2,
-    Save,
     RotateCw,
-    Hash,
-    Type
+    CircleX
   } from '@lucide/svelte';
-  import { createTag, updateTag, deleteTag, type Tag, type TagCreateRequest } from '../lib/tags';
+  import { deleteTag, type Tag } from '../lib/tags';
   import { tags, tagsStore, isLoadingTags } from '../lib/stores/tags';
   import Modal from './Modal.svelte';
+  import TagFormModal from './TagFormModal.svelte';
 
   // Props
   let { isOpen = $bindable(false) }: { isOpen: boolean } = $props();
@@ -26,15 +25,10 @@
   let searchTimeout: ReturnType<typeof setTimeout> | null = null;
   let isSearchTyping = $derived(searchQuery.trim().length > 0);
 
-  // Form state
-  let isCreating = $state(false);
-  let isEditing = $state(false);
+  // Tag Form Modal state
+  let showTagFormModal = $state(false);
+  let tagFormMode = $state<'create' | 'edit'>('create');
   let editingTag = $state<Tag | null>(null);
-  let formData = $state<TagCreateRequest>({
-    tag: '',
-    name: '',
-    color: '#61DAFB'
-  });
 
   // Track initial load to prevent infinite loop
   let hasLoadedInitially = $state(false);
@@ -101,75 +95,20 @@
   }
 
   function handleCreateNew() {
-    isCreating = true;
-    isEditing = false;
+    tagFormMode = 'create';
     editingTag = null;
-    formData = { tag: '', name: '', color: '' };
+    showTagFormModal = true;
   }
 
   function handleEdit(tag: Tag) {
-    isCreating = false;
-    isEditing = true;
+    tagFormMode = 'edit';
     editingTag = tag;
-    formData = { tag: tag.tag, name: tag.name, color: tag.color || '' };
+    showTagFormModal = true;
   }
 
-  function handleCancel() {
-    isCreating = false;
-    isEditing = false;
-    editingTag = null;
-    formData = { tag: '', name: '', color: '' };
-  }
-
-  async function handleSave() {
-    // Validation
-    if (!formData.tag.trim() || !formData.name.trim()) {
-      toast.error('Tag and name are required');
-      return;
-    }
-
-    // Check for duplicate tag (excluding current tag if editing)
-    // Use safe array access to prevent errors
-    const currentTags = $tags || [];
-    const duplicateTag = currentTags.find(
-      (t: Tag) =>
-        t &&
-        t.tag &&
-        t.tag.toLowerCase() === formData.tag.toLowerCase() &&
-        t.tag !== editingTag?.tag
-    );
-
-    if (duplicateTag) {
-      toast.error('Tag identifier already exists');
-      return;
-    }
-
-    try {
-      // Prepare data with nullable color
-      const submitData = {
-        ...formData,
-        color: formData.color?.trim() || undefined
-      };
-
-      if (isCreating) {
-        // createTag now returns Tag directly
-        const newTag = await createTag(submitData);
-        // Add to store from response
-        tagsStore.addTag(newTag);
-        toast.success('Tag created successfully');
-      } else if (isEditing && editingTag) {
-        // updateTag now returns Tag directly
-        const updatedTag = await updateTag(editingTag.tag, submitData);
-        // Update store from response
-        tagsStore.updateTag(editingTag.tag, updatedTag);
-        toast.success('Tag updated successfully');
-      }
-
-      handleCancel();
-    } catch (error) {
-      toast.error(isCreating ? 'Failed to create tag' : 'Failed to update tag');
-      console.error('Save tag error:', error);
-    }
+  function handleTagFormSuccess() {
+    // Refresh tags list after form is saved
+    loadTags();
   }
 
   async function handleDelete(tag: Tag) {
@@ -197,7 +136,6 @@
   function handleClose() {
     isOpen = false;
     dispatch('close');
-    handleCancel();
     lastSearchQuery = '';
   }
 
@@ -227,331 +165,293 @@
 
 <Modal {isOpen} onClose={handleClose} maxW="max-w-4xl" showCloseButton={false}>
   {#snippet header()}
-    <div
-      class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700"
-    >
-      <div class="flex items-center gap-3">
-        <div
-          class="w-10 h-10 bg-yellow-100 dark:bg-primary-900 rounded-lg flex items-center justify-center"
-        >
-          <TagIcon class="w-5 h-5 text-yellow-600 dark:text-primary-400" />
-        </div>
-        <div>
-          <h2 id="modal-title" class="text-xl font-bold text-gray-900 dark:text-white">
-            Manage Tags
-          </h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400">
-            {($tags || []).length} tag{($tags || []).length !== 1 ? 's' : ''} total
-          </p>
-        </div>
-      </div>
-      <button
-        onclick={handleClose}
-        class="w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
-        aria-label="Close modal"
-      >
-        <X class="w-5 h-5 text-gray-500 dark:text-gray-400" />
-      </button>
-    </div>
-
-    <!-- Search & Actions -->
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-      <div class="flex flex-col sm:flex-row gap-4">
-        <!-- Search -->
-        <div class="relative flex-1">
-          <input
-            type="text"
-            placeholder="Search tags..."
-            class="input !pl-10"
-            bind:value={searchQuery}
-          />
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            {#if isSearchTyping}
-              <div class="flex items-center gap-1">
-                <div
-                  class="w-1 h-1 bg-yellow-600 dark:bg-primary-600 rounded-full animate-pulse"
-                ></div>
-                <div
-                  class="w-1 h-1 bg-primary-600 rounded-full animate-pulse"
-                  style="animation-delay: 0.1s"
-                ></div>
-                <div
-                  class="w-1 h-1 bg-primary-600 rounded-full animate-pulse"
-                  style="animation-delay: 0.2s"
-                ></div>
-              </div>
-            {:else if isAnyLoading && searchQuery}
-              <RotateCw class="w-4 h-4 text-yellow-600 dark:text-primary-600 animate-spin" />
-            {:else}
-              <TagIcon class="w-4 h-4 text-gray-400" />
-            {/if}
+    <div class="py-5 px-6 bg-gradient-to-br from-warning-50 to-amber-50 dark:from-primary-900/30 dark:to-primary-800/20 border-b border-warning-200 dark:border-primary-700">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-warning-400 to-amber-500 dark:from-primary-500 dark:to-primary-600 flex items-center justify-center shadow-lg">
+            <TagIcon class="w-6 h-6 text-white" />
           </div>
-          {#if searchQuery}
-            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-              {#if isSearchTyping}
-                <span
-                  class="text-xs text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-400 px-2 py-1 rounded"
-                >
-                  Typing...
-                </span>
-              {:else if isAnyLoading}
-                <span
-                  class="text-xs text-yellow-600 bg-yellow-100 dark:bg-primary-900 dark:text-primary-300 px-2 py-1 rounded"
-                >
-                  Searching...
-                </span>
-              {:else}
-                <span
-                  class="text-xs text-green-600 bg-green-100 dark:bg-green-900 dark:text-green-300 px-2 py-1 rounded"
-                >
-                  Ready
-                </span>
-              {/if}
-            </div>
-          {/if}
+          <div>
+            <h2 id="modal-title" class="text-lg font-bold text-gray-900 dark:text-white">
+              Manage Tags
+            </h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              {($tags || []).length} tag{($tags || []).length !== 1 ? 's' : ''} total
+            </p>
+          </div>
         </div>
-
-        <!-- Actions -->
-        <div class="flex gap-2">
+        <div class="flex items-center gap-2">
+          <!-- Refresh Button -->
           <button
             onclick={handleRefresh}
             disabled={isAnyLoading}
-            class="btn btn-secondary flex items-center gap-2"
+            class="w-9 h-9 rounded-lg bg-white dark:bg-secondary-700 hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
+            title="Refresh tags"
           >
-            <RotateCw class={`w-4 h-4 ${isAnyLoading ? 'animate-spin' : ''}`} />
-            Refresh
+            <RotateCw class={`w-4 h-4 text-secondary-600 dark:text-secondary-300 ${isAnyLoading ? 'animate-spin' : ''}`} />
           </button>
-
+          <!-- New Tag Button -->
           <button
             onclick={handleCreateNew}
-            class="btn bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700 flex items-center gap-2"
-            disabled={isCreating || isEditing}
+            class="px-4 py-2 bg-gradient-to-r from-warning-500 to-amber-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-600 dark:hover:to-primary-700 dark:from-primary-500 dark:to-primary-600 text-white font-medium rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={showTagFormModal || isAnyLoading}
           >
             <Plus class="w-4 h-4" />
-            New Tag
+            <span class="hidden sm:inline">New Tag</span>
           </button>
+          <!-- Close Button -->
+          <button
+            onclick={handleClose}
+            class="w-9 h-9 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 flex items-center justify-center transition-colors"
+            aria-label="Close modal"
+          >
+            <X class="w-5 h-5 text-gray-600 dark:text-gray-400" />
+          </button>
+        </div>
+      </div>
+
+      <!-- Search Input -->
+      <div class="mt-4">
+        <div class="relative group">
+          <TagIcon
+            class="absolute left-3.5 top-1/2 transform -translate-y-1/2 w-4.5 h-4.5 text-secondary-400 group-focus-within:text-warning-500 dark:group-focus-within:text-primary-400 transition-colors"
+          />
+          <input
+            type="text"
+            class="input !pl-11 !py-2.5 border-secondary-200 dark:border-secondary-600 focus:border-warning-500 dark:focus:border-primary-500 focus:shadow-[0_0_0_3px_rgba(251,191,36,0.1)] dark:focus:shadow-[0_0_0_3px_rgba(139,92,246,0.1)]"
+            placeholder="Search tags by name or identifier..."
+            bind:value={searchQuery}
+          />
+          {#if searchQuery}
+            <button
+              type="button"
+              onclick={() => (searchQuery = '')}
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 rounded-md hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors"
+              aria-label="Clear search"
+            >
+              <X class="w-4 h-4 text-secondary-400 hover:text-secondary-600 dark:hover:text-secondary-300" />
+            </button>
+          {/if}
+          <!-- Search Status Indicator -->
+          {#if searchQuery}
+            <div class="absolute inset-y-0 right-10 flex items-center">
+              {#if isSearchTyping || isAnyLoading}
+                <div class="flex items-center gap-1 px-2 py-1 rounded-full bg-warning-100 dark:bg-primary-900/30">
+                  <div class="w-1.5 h-1.5 bg-warning-600 dark:bg-primary-500 rounded-full animate-ping"></div>
+                  <span class="text-xs text-warning-700 dark:text-primary-300">
+                    {isSearchTyping ? 'Typing...' : 'Searching...'}
+                  </span>
+                </div>
+              {:else}
+                <div class="flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 dark:bg-green-900/30">
+                  <div class="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                  <span class="text-xs text-green-700 dark:text-green-300">Ready</span>
+                </div>
+              {/if}
+            </div>
+          {/if}
         </div>
       </div>
     </div>
   {/snippet}
 
   {#snippet body()}
-    <div class="flex flex-col" style="max-height: calc(90vh - 200px);">
-      <!-- Create/Edit Form -->
-      {#if isCreating || isEditing}
-        <div
-          class="p-6 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800"
-        >
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="font-semibold text-blue-900 dark:text-blue-100">
-              {isCreating ? 'Create New Tag' : 'Edit Tag'}
-            </h3>
-            <button
-              onclick={handleCancel}
-              class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200"
-            >
-              Cancel
-            </button>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label
-                for="tag-identifier"
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
-                <Hash class="w-4 h-4 inline mr-1" />
-                Tag Identifier
-              </label>
-              <input
-                id="tag-identifier"
-                type="text"
-                placeholder="e.g., programming"
-                class="input"
-                bind:value={formData.tag}
-                disabled={isAnyLoading}
-              />
-              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Used internally (lowercase, no spaces)
-              </p>
-            </div>
-
-            <div>
-              <label
-                for="tag-display-name"
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
-                <Type class="w-4 h-4 inline mr-1" />
-                Display Name
-              </label>
-              <input
-                id="tag-display-name"
-                type="text"
-                placeholder="e.g., Programming Resources"
-                class="input"
-                bind:value={formData.name}
-                disabled={isAnyLoading}
-              />
-              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                User-friendly name shown in interface
-              </p>
-            </div>
-          </div>
-
-          <div>
-            <label
-              for="tag-color-hex"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-            >
-              Color <span class="text-gray-400 font-normal"
-                >(Optional - Leave empty for primary color)</span
-              >
-            </label>
-            <div class="flex items-center gap-3">
-              <input
-                id="tag-color"
-                type="color"
-                class="w-12 h-12 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer"
-                bind:value={formData.color}
-                disabled={isAnyLoading}
-              />
-              <div class="flex-1 relative">
-                <input
-                  id="tag-color-hex"
-                  type="text"
-                  placeholder="#61DAFB (optional)"
-                  class="input w-full pr-20"
-                  bind:value={formData.color}
-                  disabled={isAnyLoading}
-                  pattern="^#[0-9A-Fa-f]{6}$"
-                />
-                {#if formData.color}
-                  <button
-                    type="button"
-                    onclick={() => (formData.color = '')}
-                    class="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                    title="Clear color"
-                    disabled={isAnyLoading}
-                  >
-                    <X class="w-4 h-4" />
-                  </button>
-                {/if}
+    <div class="px-6 py-5" style="max-height: calc(90vh - 220px);">
+      <!-- Tags List -->
+      <div class="overflow-y-auto p-2" style="max-height: calc(90vh - 220px);">
+        {#if isAnyLoading}
+          <div class="flex flex-col items-center justify-center py-16">
+            <div class="relative">
+              <div class="w-16 h-16 rounded-2xl bg-secondary-100 dark:bg-secondary-800 flex items-center justify-center">
+                <RotateCw class="w-8 h-8 text-warning-600 dark:text-primary-400 animate-spin" />
               </div>
+              <div
+                class="absolute inset-0 w-16 h-16 rounded-2xl bg-warning-400/20 dark:bg-primary-400/20 animate-ping"
+              ></div>
             </div>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Enter hex color code (e.g., #61DAFB) or leave empty to use primary theme color
+            <p class="mt-4 text-secondary-600 dark:text-secondary-400 font-medium">
+              Loading tags...
             </p>
           </div>
-
-          <div class="flex justify-end gap-2 mt-4">
-            <button onclick={handleCancel} class="btn btn-secondary" disabled={isAnyLoading}>
-              Cancel
-            </button>
-            <button
-              onclick={handleSave}
-              class="btn bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700 flex items-center gap-2"
-              disabled={isLoading || !formData.tag.trim() || !formData.name.trim()}
-            >
-              {#if isAnyLoading}
-                <RotateCw class="w-4 h-4 animate-spin" />
-                Saving...
-              {:else}
-                <Save class="w-4 h-4" />
-                {isCreating ? 'Create Tag' : 'Update Tag'}
-              {/if}
-            </button>
-          </div>
-        </div>
-      {/if}
-
-      <!-- Tags List -->
-      <div class="flex-1 overflow-y-auto">
-        {#if isAnyLoading}
-          <div class="flex items-center justify-center py-12">
-            <RotateCw class="w-6 h-6 text-yellow-600 dark:text-primary-600 animate-spin" />
-            <span class="ml-2 text-gray-600 dark:text-gray-400">Loading tags...</span>
-          </div>
         {:else if ($tags || []).length === 0}
-          <div class="text-center py-12">
-            <TagIcon class="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
+          <div class="text-center py-16">
+            <div
+              class="w-20 h-20 mx-auto mb-5 rounded-3xl bg-gradient-to-br from-secondary-100 to-secondary-200 dark:from-secondary-800 dark:to-secondary-700 flex items-center justify-center"
+            >
+              <TagIcon class="w-10 h-10 text-secondary-400" />
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
               {searchQuery ? 'No tags found' : 'No tags created yet'}
             </h3>
-            <p class="text-gray-500 dark:text-gray-400 mb-4">
+            <p class="text-secondary-600 dark:text-secondary-400 mb-6 max-w-xs mx-auto">
               {searchQuery
-                ? 'Try adjusting your search terms'
-                : 'Create your first tag to organize your notes'}
+                ? 'Try adjusting your search terms to find tags'
+                : 'Create your first tag to start organizing notes'}
             </p>
             {#if !searchQuery}
               <button
                 onclick={handleCreateNew}
-                class="btn bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700"
+                class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-warning-500 to-amber-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-600 dark:hover:to-primary-700 dark:from-primary-500 dark:to-primary-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
               >
-                <Plus class="w-4 h-4 mr-2" />
-                Create First Tag
+                <Plus class="w-5 h-5" />
+                Create Your First Tag
               </button>
             {/if}
           </div>
         {:else}
-          <div class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {#each $tags.filter(t => t) as tag (tag.id)}
-                <div
-                  class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600 hover:border-yellow-300 dark:hover:border-primary-600 transition-colors"
-                >
-                  <div class="flex items-start justify-between">
-                    <div class="flex-1 min-w-0">
-                      <div class="flex items-center gap-2 mb-1">
-                        <div class="flex items-center gap-2">
-                          <div
-                            class="w-4 h-4 rounded-full {!tag.color
-                              ? 'bg-yellow-600 dark:bg-primary-600'
-                              : ''}"
-                            style="background-color: {tag.color || undefined}"
-                          ></div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {#each $tags.filter(t => t) as tag (tag.id)}
+              {@const isEditingThis = showTagFormModal && editingTag?.id === tag.id}
+              <div
+                class="tag-card group relative p-4 rounded-2xl border-2 transition-all duration-200 {isEditingThis
+                  ? 'bg-warning-100 dark:bg-primary-900/40 border-warning-400 dark:border-primary-500'
+                  : 'bg-white dark:bg-secondary-800 border-secondary-200 dark:border-secondary-700 hover:border-warning-300 dark:hover:border-primary-600 hover:shadow-lg hover:-translate-y-1'}"
+              >
+                <div class="flex items-start justify-between">
+                  <div class="flex-1 min-w-0">
+                    <!-- Tag Badge -->
+                    <div class="flex items-center gap-3 mb-3">
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-2">
                           <span
-                            class="inline-block px-2 py-1 text-xs font-medium rounded {!tag.color
-                              ? 'bg-yellow-50 text-yellow-700 dark:bg-primary-900/20 dark:text-primary-300'
-                              : ''}"
+                            class="inline-block px-2.5 py-1 text-xs font-semibold rounded-lg {tag.color
+                              ? ''
+                              : 'bg-warning-50 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300 border border-warning-200 dark:border-primary-700'}"
                             style="background-color: {tag.color
-                              ? tag.color + '20'
-                              : undefined}; color: {tag.color || undefined}"
+                              ? tag.color + '15'
+                              : undefined}; color: {tag.color || undefined}; border-color: {tag.color
+                              ? tag.color + '40'
+                              : undefined}"
                           >
                             {tag.tag}
                           </span>
                         </div>
+                        <h3 class="font-bold text-gray-900 dark:text-white truncate">
+                          {tag.name}
+                        </h3>
                       </div>
-                      <h3 class="font-medium text-gray-900 dark:text-white truncate">
-                        {tag.name}
-                      </h3>
-                      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        Created {formatDate(tag.created_at)}
-                      </p>
                     </div>
 
-                    <div class="flex items-center gap-1 ml-2">
-                      <button
-                        onclick={() => handleEdit(tag)}
-                        class="w-8 h-8 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition-colors"
-                        title="Edit tag"
-                      >
-                        <Edit2 class="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                      </button>
-                      <button
-                        onclick={() => handleDelete(tag)}
-                        class="w-8 h-8 rounded-md hover:bg-red-100 dark:hover:bg-red-900/30 flex items-center justify-center transition-colors"
-                        title="Delete tag"
-                      >
-                        <Trash2 class="w-4 h-4 text-red-500 dark:text-red-400" />
-                      </button>
+                    <!-- Meta Info -->
+                    <div class="flex items-center gap-3 text-xs text-secondary-500 dark:text-secondary-400">
+                      <div class="flex items-center gap-1">
+                        <svg
+                          class="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                        Created {formatDate(tag.created_at)}
+                      </div>
                     </div>
                   </div>
+
+                  <!-- Action Buttons -->
+                  <div class="flex items-center gap-1.5 ml-3">
+                    <button
+                      onclick={() => handleEdit(tag)}
+                      class="w-9 h-9 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 flex items-center justify-center transition-all duration-200 group/btn"
+                      title="Edit tag"
+                      disabled={showTagFormModal}
+                    >
+                      <Edit2 class="w-4 h-4 text-secondary-500 dark:text-secondary-400 group-hover/btn:text-warning-600 dark:group-hover/btn:text-primary-400" />
+                    </button>
+                    <button
+                      onclick={() => handleDelete(tag)}
+                      class="w-9 h-9 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 flex items-center justify-center transition-all duration-200 group/btn"
+                      title="Delete tag"
+                      disabled={showTagFormModal}
+                    >
+                      <Trash2 class="w-4 h-4 text-red-500 dark:text-red-400 group-hover/btn:text-red-600 dark:group-hover/btn:text-red-300" />
+                    </button>
+                  </div>
                 </div>
-              {/each}
-            </div>
+
+                <!-- Hover Glow Effect -->
+                {#if !isEditingThis}
+                  <div
+                    class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+                    style="background: radial-gradient(circle at center, {tag.color || 'rgb(251,191,36)'}08 0%, transparent 70%)"
+                  ></div>
+                {/if}
+              </div>
+            {/each}
           </div>
         {/if}
       </div>
     </div>
   {/snippet}
+
+  {#snippet footer()}
+    <div class="py-4 bg-secondary-50 dark:bg-secondary-900/30">
+      <div class="flex items-center justify-between px-6 gap-6">
+        <div class="text-sm text-secondary-600 dark:text-secondary-400">
+          <span>
+            {$tags.length} tag{$tags.length !== 1 ? 's' : ''} created
+          </span>
+        </div>
+        <button
+          type="button"
+          onclick={handleClose}
+          class="px-5 py-2.5 bg-gradient-to-r from-warning-500 to-amber-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-600 dark:hover:to-primary-700 dark:from-primary-500 dark:to-primary-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 flex items-center gap-2"
+        >
+          <TagIcon class="w-4 h-4" />
+          Done
+        </button>
+      </div>
+    </div>
+  {/snippet}
 </Modal>
+
+<style>
+  /* Tag card animation */
+  .tag-card {
+    animation: cardIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes cardIn {
+    from {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Stagger animation for cards */
+  .tag-card:nth-child(1) {
+    animation-delay: 0ms;
+  }
+  .tag-card:nth-child(2) {
+    animation-delay: 25ms;
+  }
+  .tag-card:nth-child(3) {
+    animation-delay: 50ms;
+  }
+  .tag-card:nth-child(4) {
+    animation-delay: 75ms;
+  }
+  .tag-card:nth-child(5) {
+    animation-delay: 100ms;
+  }
+  .tag-card:nth-child(n+6) {
+    animation-delay: 125ms;
+  }
+</style>
+
+<!-- Tag Form Modal -->
+<TagFormModal
+  bind:isOpen={showTagFormModal}
+  mode={tagFormMode}
+  tag={editingTag}
+  onSuccess={handleTagFormSuccess}
+/>

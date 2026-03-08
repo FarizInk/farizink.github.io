@@ -1,6 +1,7 @@
 <script lang="ts">
   import ToolLayout from '../../components/ToolLayout.svelte';
-  import { FileText, Eye, Edit, Zap, Code, Download } from '@lucide/svelte';
+  import { FileText, Eye, Edit, Zap, Code, Download, Copy } from '@lucide/svelte';
+  import { toast } from 'svelte-sonner';
 
   let markdownText = $state(
     '# Welcome to Markdown Preview' +
@@ -63,7 +64,6 @@
   );
 
   let htmlContent = $state('');
-  let copiedText = $state('');
 
   function updatePreview() {
     // Basic markdown to HTML conversion
@@ -106,18 +106,12 @@
 
   function copyToClipboard() {
     navigator.clipboard.writeText(markdownText);
-    copiedText = 'markdown';
-    setTimeout(() => {
-      copiedText = '';
-    }, 2000);
+    toast.success('Markdown copied to clipboard');
   }
 
   function copyHtmlToClipboard() {
     navigator.clipboard.writeText(htmlContent);
-    copiedText = 'html';
-    setTimeout(() => {
-      copiedText = '';
-    }, 2000);
+    toast.success('HTML copied to clipboard');
   }
 
   function downloadHtml() {
@@ -128,6 +122,7 @@
     a.download = 'markdown-preview.html';
     a.click();
     URL.revokeObjectURL(url);
+    toast.success('HTML downloaded');
   }
 
   function loadSample() {
@@ -172,11 +167,13 @@ print([fibonacci(i) for i in range(10)])
 Visit [GitHub](https://github.com) for more resources!`;
 
     updatePreview();
+    toast.success('Sample markdown loaded');
   }
 
   function clearAll() {
     markdownText = '';
     htmlContent = '';
+    toast.success('Cleared all');
   }
 
   // Calculate line count
@@ -192,46 +189,68 @@ Visit [GitHub](https://github.com) for more resources!`;
   title="Markdown Preview"
   description="Preview markdown text with live rendering and syntax highlighting."
   icon={FileText}
-  color="secondary"
+  color="warning"
 >
-  <!-- Controls -->
-  <div class="mb-6 flex flex-wrap gap-4 items-center justify-between">
-    <div class="flex items-center gap-4">
-      <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-        <FileText class="w-4 h-4" />
-        <span>{lineCount} lines</span>
+  <!-- Hero Section -->
+  <div
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+  >
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
+          <FileText class="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Markdown Preview</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Live markdown rendering with syntax highlighting
+          </p>
+        </div>
       </div>
-    </div>
-    <div class="flex gap-2">
-      <button onclick={loadSample} class="btn btn-secondary btn-sm"> Load Sample </button>
-      <button onclick={clearAll} class="btn btn-secondary btn-sm"> Clear </button>
     </div>
   </div>
 
+  <!-- Controls -->
+  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
+    <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+      <FileText class="w-4 h-4" />
+      <span>{lineCount} lines</span>
+    </div>
+    <button
+      onclick={loadSample}
+      class="btn btn-copy">Load Sample</button
+    >
+    <button
+      onclick={clearAll}
+      class="btn btn-secondary">Clear</button
+    >
+  </div>
+
   <!-- Editor and Preview -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Markdown Editor -->
     <div
       class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"
     >
       <div
-        class="bg-gray-50 dark:bg-gray-700 px-4 py-3 border-b border-gray-200 dark:border-gray-600"
+        class="bg-gray-50 dark:bg-gray-700 px-4 py-3 border-b border-gray-200 dark:border-gray-600 flex items-center justify-between"
       >
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <Edit class="w-4 h-4 text-gray-600 dark:text-gray-400" />
-            <span class="text-sm font-medium text-gray-900 dark:text-white">Markdown Editor</span>
-          </div>
-          <button onclick={copyToClipboard} class="btn btn-primary btn-sm">
-            {copiedText === 'markdown' ? '✓ Copied!' : 'Copy Markdown'}
-          </button>
+        <div class="flex items-center gap-2">
+          <Edit class="w-4 h-4 text-gray-600 dark:text-gray-400" />
+          <span class="text-sm font-medium text-gray-900 dark:text-white">Markdown Editor</span>
         </div>
+        <button
+          onclick={copyToClipboard}
+          class="p-2 rounded-lg transition-colors text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20"
+        >
+          <Copy class="w-4 h-4" />
+        </button>
       </div>
       <div class="relative">
         <textarea
           bind:value={markdownText}
           placeholder="Enter your markdown text here..."
-          class="w-full h-96 p-4 font-mono text-sm border-0 resize-none focus:ring-0 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+          class="w-full h-96 p-4 font-mono text-sm border-0 resize-none focus:ring-0 bg-white dark:bg-gray-800 text-gray-900 dark:text-white code-editor"
         ></textarea>
       </div>
     </div>
@@ -241,22 +260,25 @@ Visit [GitHub](https://github.com) for more resources!`;
       class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"
     >
       <div
-        class="bg-gray-50 dark:bg-gray-700 px-4 py-3 border-b border-gray-200 dark:border-gray-600"
+        class="bg-gray-50 dark:bg-gray-700 px-4 py-3 border-b border-gray-200 dark:border-gray-600 flex items-center justify-between"
       >
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <Eye class="w-4 h-4 text-gray-600 dark:text-gray-400" />
-            <span class="text-sm font-medium text-gray-900 dark:text-white">Live Preview</span>
-          </div>
-          <div class="flex gap-2">
-            <button onclick={copyHtmlToClipboard} class="btn btn-primary btn-sm">
-              {copiedText === 'html' ? '✓ Copied!' : 'Copy HTML'}
-            </button>
-            <button onclick={downloadHtml} class="btn btn-primary btn-sm">
-              <Download class="w-4 h-4 mr-1" />
-              Download
-            </button>
-          </div>
+        <div class="flex items-center gap-2">
+          <Eye class="w-4 h-4 text-gray-600 dark:text-gray-400" />
+          <span class="text-sm font-medium text-gray-900 dark:text-white">Live Preview</span>
+        </div>
+        <div class="flex gap-2">
+          <button
+            onclick={copyHtmlToClipboard}
+            class="p-2 rounded-lg transition-colors text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20"
+          >
+            <Copy class="w-4 h-4" />
+          </button>
+          <button
+            onclick={downloadHtml}
+            class="p-2 rounded-lg transition-colors text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20"
+          >
+            <Download class="w-4 h-4" />
+          </button>
         </div>
       </div>
       <div class="h-96 overflow-y-auto p-6 prose prose-sm dark:prose-invert max-w-none">
@@ -264,9 +286,11 @@ Visit [GitHub](https://github.com) for more resources!`;
           <!-- eslint-disable-next-line svelte/no-at-html-tags -->
           {@html htmlContent}
         {:else}
-          <div class="flex items-center justify-center h-full text-gray-400 dark:text-gray-600">
-            <div class="text-center">
-              <Eye class="w-12 h-12 mx-auto mb-4 opacity-50" />
+          <div
+            class="flex items-center justify-center h-full text-gray-400 dark:text-gray-600 text-center"
+          >
+            <div>
+              <Eye class="w-12 h-12 mb-2 opacity-50 mx-auto" />
               <p>Your markdown preview will appear here</p>
               <p class="text-sm">Start typing in the editor to see the live preview</p>
             </div>
@@ -277,45 +301,45 @@ Visit [GitHub](https://github.com) for more resources!`;
   </div>
 
   <!-- Features Section -->
-  <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-secondary-100 dark:bg-secondary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <Zap class="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
+        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Live Preview</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         See your markdown rendered in real-time as you type with instant updates
       </p>
     </div>
 
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-secondary-100 dark:bg-secondary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <Code class="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
+        <Code class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Syntax Highlighting</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Code blocks with proper formatting and highlighting for better readability
       </p>
     </div>
 
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-secondary-100 dark:bg-secondary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <Download class="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
+        <Download class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Export Options</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Download your formatted content as HTML or copy to clipboard with one click
       </p>
     </div>

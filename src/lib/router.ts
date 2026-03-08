@@ -8,6 +8,8 @@ export interface Route {
   description?: string;
   keywords?: string;
   robots?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  icon?: any;
 }
 
 export interface RouterState {

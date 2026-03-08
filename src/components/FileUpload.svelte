@@ -188,8 +188,8 @@
           border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors
           ${
             dragActive
-              ? 'border-yellow-500 bg-yellow-50 dark:bg-primary-900/20 dark:border-primary-500'
-              : 'border-secondary-300 dark:border-secondary-600 hover:border-yellow-400 dark:hover:border-primary-500'
+              ? 'border-warning-500 bg-warning-50 dark:bg-primary-900/20 dark:border-primary-500'
+              : 'border-secondary-300 dark:border-secondary-600 hover:border-warning-400 dark:hover:border-primary-500'
           }
           ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         `}

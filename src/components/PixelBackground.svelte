@@ -1,14 +1,16 @@
 <script lang="ts">
-  // Mesh Gradient Background - CPU-efficient CSS-only animated background
-  // No canvas, no requestAnimationFrame, near 0% CPU usage
+  // Soft Waves Background - Calm, organic, inspired by Japanese minimalist design
+  // Uses CSS gradients with smooth curves and gentle motion
 </script>
 
-<div class="mesh-background">
-  <div class="mesh-gradient"></div>
+<div class="waves-background">
+  <div class="wave wave-1"></div>
+  <div class="wave wave-2"></div>
+  <div class="wave wave-3"></div>
 </div>
 
 <style>
-  .mesh-background {
+  .waves-background {
     position: fixed;
     top: 0;
     left: 0;
@@ -16,74 +18,113 @@
     height: 100vh;
     z-index: -1;
     pointer-events: none;
+    background: linear-gradient(180deg, #fefce8 0%, #fef3c7 100%);
+    overflow: hidden;
   }
 
-  .mesh-gradient {
+  .wave {
     position: absolute;
-    inset: -50%;
     width: 200%;
     height: 200%;
-    background:
-      radial-gradient(at 40% 20%, #fbbf24 0px, transparent 40%),
-      radial-gradient(at 80% 0%, #fcd34d 0px, transparent 40%),
-      radial-gradient(at 0% 50%, #f59e0b 0px, transparent 40%),
-      radial-gradient(at 80% 50%, #fde68a 0px, transparent 40%),
-      radial-gradient(at 0% 100%, #d97706 0px, transparent 40%),
-      radial-gradient(at 80% 100%, #fbbf24 0px, transparent 40%),
-      radial-gradient(at 0% 0%, #fcd34d 0px, transparent 40%);
-    animation: mesh-move 25s ease-in-out infinite;
-    filter: blur(80px);
-    opacity: 0.5;
+    opacity: 0.3;
     will-change: transform;
   }
 
-  /* Firefox optimization - reduced blur for better CPU performance */
-  @supports (-moz-appearance: none) {
-    .mesh-gradient {
-      filter: blur(50px);
-      inset: -30%;
-      width: 160%;
-      height: 160%;
-    }
+  .wave-1 {
+    top: -30%;
+    left: -50%;
+    background: radial-gradient(ellipse at center, #fbbf24 0%, transparent 60%);
+    animation: wave-drift-1 25s ease-in-out infinite;
   }
 
-  @keyframes mesh-move {
-    0% {
-      transform: translate(0, 0) rotate(0deg) scale(1);
-    }
-    25% {
-      transform: translate(5%, 5%) rotate(1deg) scale(1.02);
+  .wave-2 {
+    bottom: -40%;
+    right: -50%;
+    background: radial-gradient(ellipse at center, #fcd34d 0%, transparent 60%);
+    animation: wave-drift-2 30s ease-in-out infinite;
+  }
+
+  .wave-3 {
+    top: 30%;
+    left: 30%;
+    background: radial-gradient(ellipse at center, #fde68a 0%, transparent 50%);
+    opacity: 0.2;
+    animation: wave-drift-3 35s ease-in-out infinite;
+  }
+
+  @keyframes wave-drift-1 {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
     }
     50% {
-      transform: translate(-3%, 3%) rotate(-1deg) scale(1.05);
+      transform: translate(10%, 15%) scale(1.1);
     }
-    75% {
-      transform: translate(3%, -3%) rotate(0.5deg) scale(0.98);
-    }
+  }
+
+  @keyframes wave-drift-2 {
+    0%,
     100% {
-      transform: translate(0, 0) rotate(0deg) scale(1);
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(-15%, -10%) scale(1.05);
     }
   }
 
-  /* Dark mode - purple gradient */
-  :global(.dark) .mesh-gradient {
-    background:
-      radial-gradient(at 40% 20%, #7c3aed 0px, transparent 40%),
-      radial-gradient(at 80% 0%, #8b5cf6 0px, transparent 40%),
-      radial-gradient(at 0% 50%, #6d28d9 0px, transparent 40%),
-      radial-gradient(at 80% 50%, #a78bfa 0px, transparent 40%),
-      radial-gradient(at 0% 100%, #5b21b6 0px, transparent 40%),
-      radial-gradient(at 80% 100%, #7c3aed 0px, transparent 40%),
-      radial-gradient(at 0% 0%, #8b5cf6 0px, transparent 40%);
-    opacity: 0.4;
+  @keyframes wave-drift-3 {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(5%, -5%) scale(1.15);
+    }
   }
 
-  /* Respect user's motion preferences */
+  /* Firefox optimization */
+  @supports (-moz-appearance: none) {
+    .wave-3 {
+      display: none;
+    }
+  }
+
+  /* Dark mode */
+  :global(.dark) .waves-background {
+    background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%);
+  }
+
+  :global(.dark) .wave-1 {
+    background: radial-gradient(ellipse at center, #7c3aed 0%, transparent 60%);
+    opacity: 0.2;
+  }
+
+  :global(.dark) .wave-2 {
+    background: radial-gradient(ellipse at center, #8b5cf6 0%, transparent 60%);
+    opacity: 0.15;
+  }
+
+  :global(.dark) .wave-3 {
+    background: radial-gradient(ellipse at center, #a78bfa 0%, transparent 50%);
+    opacity: 0.1;
+  }
+
+  /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .mesh-gradient {
-      animation: none;
-      filter: blur(60px);
-      opacity: 0.6;
+    .wave {
+      animation: none !important;
+    }
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .wave {
+      width: 150%;
+      height: 150%;
+    }
+
+    .wave-3 {
+      display: none;
     }
   }
 </style>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Droplets, Copy, Zap, Plus, Trash2, Palette } from '@lucide/svelte';
+  import { Droplets, Copy, Zap, Plus, Trash2, Palette, Download } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
 
   let gradientType = $state('linear');
@@ -152,11 +152,28 @@
   title="CSS Gradient Generator"
   description="Create stunning CSS gradients with color stops, direction, and live preview."
   icon={Palette}
-  color="primary"
+  color="warning"
 >
+  <!-- Hero Section -->
+  <div
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+  >
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
+          <Palette class="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">CSS Gradient Generator</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Create stunning CSS gradients</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Gradient Preview -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
   >
     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Preview</h3>
     <div class="h-48 w-full rounded-lg shadow-inner" style="background: {gradientStyle()}"></div>
@@ -166,7 +183,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
     <!-- Gradient Settings -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
     >
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Gradient Settings</h3>
 
@@ -178,11 +195,7 @@
           >
             Gradient Type
           </label>
-          <select
-            id="gradient-type-select"
-            bind:value={gradientType}
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-          >
+          <select id="gradient-type-select" bind:value={gradientType} class="tool-select">
             <option value="linear">Linear</option>
             <option value="radial">Radial</option>
             <option value="conic">Conic</option>
@@ -196,11 +209,7 @@
           >
             {gradientType === 'linear' ? 'Direction' : 'Shape'}
           </label>
-          <select
-            id="gradient-direction"
-            bind:value={gradientDirection}
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-          >
+          <select id="gradient-direction" bind:value={gradientDirection} class="tool-select">
             {#if gradientType === 'linear'}
               <option value="0deg">↑ Top</option>
               <option value="45deg">↗ Top Right</option>
@@ -230,15 +239,12 @@
 
     <!-- Color Stops -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
     >
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Color Stops</h3>
-        <button
-          onclick={addColorStop}
-          class="px-3 py-1 bg-primary-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1"
-        >
-          <Plus class="w-4 h-4" />
+        <button class="btn btn-sm btn-copy" onclick={addColorStop}>
+          <Plus class="w-4 h-4 mr-1" />
           Add Stop
         </button>
       </div>
@@ -257,7 +263,7 @@
               bind:value={stop.color}
               oninput={() => updateColorStop(index, 'color', stop.color)}
               placeholder="#000000"
-              class="flex-1 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm"
+              class="tool-input flex-1 text-sm px-2 py-1"
             />
             <div class="flex items-center gap-1">
               <input
@@ -271,14 +277,14 @@
                   )}
                 min="0"
                 max="100"
-                class="w-20"
+                class="w-20 h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-yellow-500 dark:accent-purple-500"
               />
               <span class="text-sm text-gray-600 dark:text-gray-400 w-10">{stop.position}%</span>
             </div>
             {#if gradientStops.length > 2}
               <button
                 onclick={() => removeColorStop(index)}
-                class="p-1 text-red-600 hover:text-red-700 transition-colors"
+                class="p-1 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
               >
                 <Trash2 class="w-4 h-4" />
               </button>
@@ -291,22 +297,18 @@
 
   <!-- CSS Output -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
   >
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white">CSS Code</h3>
       <div class="flex gap-2">
-        <button
-          onclick={() => copyToClipboard(cssCode, 'css')}
-          class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          {copiedText === 'css' ? '✓ Copied!' : 'Copy CSS'}
+        <button class="btn btn-sm btn-copy" onclick={() => copyToClipboard(cssCode, 'css')}>
+          <Copy class="w-4 h-4 mr-1" />
+          {copiedText === 'css' ? 'Copied!' : 'Copy CSS'}
         </button>
-        <button
-          onclick={downloadCss}
-          class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-        >
-          Download CSS
+        <button class="btn btn-sm" onclick={downloadCss} style="background-color: #16a34a; color: white;">
+          <Download class="w-4 h-4 mr-1" />
+          Download
         </button>
       </div>
     </div>
@@ -317,14 +319,14 @@
 
   <!-- Preset Gradients -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
   >
     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Preset Gradients</h3>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       {#each presetGradients as preset, i (preset.name + i)}
         <button
           onclick={() => loadPreset(preset)}
-          class="p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-blue-400 transition-colors"
+          class="p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-warning-500 dark:hover:border-primary-400 transition-colors"
         >
           <div
             class="h-16 w-full rounded mb-2"
@@ -339,47 +341,47 @@
   </div>
 
   <!-- Features Section -->
-  <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <Droplets class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <Droplets class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
         Multiple Gradient Types
       </h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Create linear, radial, and conic gradients with customizable directions
       </p>
     </div>
 
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <Copy class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <Copy class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Live Preview</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         See your gradient in real-time as you adjust colors and positions
       </p>
     </div>
 
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <Zap class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">CSS Export</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Copy clean CSS code or download as a file for immediate use
       </p>
     </div>

@@ -93,35 +93,39 @@
   icon={Hash}
   color="warning"
 >
+  <!-- Hero Section -->
+  <div
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+  >
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
+          <Hash class="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Hash Generator</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Generate secure hashes instantly</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Controls -->
-  <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
-    <button
-      onclick={generateAllHashes}
-      disabled={!inputText.trim()}
-      class="px-4 py-2 bg-secondary-600 text-white rounded-lg hover:bg-secondary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      Generate Hashes
-    </button>
-    <button
-      onclick={loadSampleText}
-      class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-    >
+  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
+    <button class="btn btn-copy" onclick={loadSampleText}>
       Load Sample Text
     </button>
-    <button
-      onclick={clearAll}
-      class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-    >
+    <button class="btn btn-secondary" onclick={clearAll}>
       Clear All
     </button>
   </div>
 
   <!-- Input Section -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
   >
     <div class="flex justify-between items-center mb-4">
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Input Text</h3>
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input Text</h2>
       <span class="text-sm text-gray-500 dark:text-gray-400">
         {inputText.length} characters
       </span>
@@ -129,7 +133,7 @@
     <textarea
       bind:value={inputText}
       placeholder="Enter text to generate hashes..."
-      class="w-full h-32 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-secondary-500 focus:border-transparent"
+      class="code-editor h-32"
     ></textarea>
   </div>
 
@@ -138,14 +142,14 @@
     <div class="space-y-4 mb-6">
       {#each Object.entries(hashes) as [algorithm, hash] (algorithm)}
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
         >
           <div class="flex justify-between items-center mb-3">
             <div class="flex items-center gap-3">
               <div
-                class="w-10 h-10 bg-secondary-100 dark:bg-secondary-900/20 rounded-lg flex items-center justify-center"
+                class="w-10 h-10 bg-warning-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center"
               >
-                <Hash class="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
+                <Hash class="w-5 h-5 text-warning-600 dark:text-primary-400" />
               </div>
               <div>
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -159,7 +163,7 @@
 
             <button
               onclick={() => copyToClipboard(hash, algorithm)}
-              class="px-4 py-2 bg-secondary-600 text-white rounded-lg hover:bg-secondary-700 transition-colors"
+              class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
             >
               {copiedText === algorithm ? '✓ Copied!' : 'Copy Hash'}
             </button>
@@ -178,7 +182,7 @@
 
   <!-- Hash Information -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
   >
     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">About Hash Algorithms</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -210,45 +214,45 @@
   </div>
 
   <!-- Features Section -->
-  <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-amber-100 dark:bg-amber-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <Hash class="w-6 h-6 text-amber-600 dark:text-amber-400" />
+        <Hash class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Multiple Algorithms</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Generate MD5, SHA1, SHA256, and SHA512 hashes for different security needs
       </p>
     </div>
 
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-amber-100 dark:bg-amber-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <FileText class="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
+        <FileText class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Data Verification</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Verify file integrity and authenticate data transfers with cryptographic hashes
       </p>
     </div>
 
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-amber-100 dark:bg-amber-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <Zap class="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
+        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Instant Results</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Generate hashes instantly with real-time updates as you type
       </p>
     </div>

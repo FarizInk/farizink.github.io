@@ -17,7 +17,9 @@
     Download,
     Eye,
     AlertTriangle,
-    Share2
+    Share2,
+    Globe,
+    Paperclip
   } from '@lucide/svelte';
   import Modal from './Modal.svelte';
 
@@ -52,7 +54,6 @@
 
   function handleEdit() {
     if (note) onEdit?.(note);
-    onClose();
   }
 
   function handleDelete() {
@@ -96,137 +97,185 @@
 
 <Modal isOpen={shouldShowModal} {onClose} maxW="max-w-6xl" showCloseButton={false}>
   {#snippet header()}
-    <div
-      class="flex items-start justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700"
-    >
-      <div class="flex-1 min-w-0 pr-4">
-        <div class="flex items-center gap-3 mb-2">
+    <!-- Enhanced Header with Glass Morphism -->
+    <div class="py-4 px-4 sm:px-6 bg-gradient-to-b from-white/80 to-white/50 dark:from-gray-900/80 dark:to-gray-900/50 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
+      <div class="flex items-start gap-4">
+        <!-- Status Icon Badge -->
+        <div class="flex-shrink-0">
           {#if isDeleted}
             <div
-              class="w-8 h-8 rounded-full bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/30 dark:to-red-800/30 flex items-center justify-center"
-            >
-              <AlertTriangle class="w-4 h-4 text-red-600 dark:text-red-400" />
+              class="relative group">
+              <div
+                class="absolute inset-0 bg-red-500/20 rounded-full animate-ping opacity-75"
+              ></div>
+              <div
+                class="relative w-12 h-12 rounded-full bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/40 dark:to-red-800/40 flex items-center justify-center ring-2 ring-red-200 dark:ring-red-800/50 group-hover:scale-110 transition-transform duration-200"
+              >
+                <AlertTriangle class="w-6 h-6 text-red-600 dark:text-red-400" />
+              </div>
             </div>
           {:else if note.is_favorite}
             <div
-              class="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-900/30 dark:to-yellow-800/30 flex items-center justify-center"
-            >
-              <Star
-                class="w-4 h-4 text-yellow-600 dark:text-yellow-400 fill-yellow-600 dark:fill-yellow-400"
-              />
-            </div>
-          {/if}
-
-          <h2 id="modal-title" class="text-xl font-semibold text-gray-900 dark:text-white truncate">
-            {note.name || 'Untitled Note'}
-          </h2>
-        </div>
-
-        <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-          {#if isDeleted && note.deleted_at}
-            <div class="flex items-center gap-1 text-red-600 dark:text-red-400">
-              <AlertTriangle class="w-4 h-4" />
-              <span>Deleted: {formatDate(note.deleted_at)}</span>
+              class="relative group">
+              <div
+                class="absolute -inset-1 bg-gradient-to-r from-warning-400 to-amber-400 rounded-full blur opacity-40 group-hover:opacity-60 transition-opacity"
+              ></div>
+              <div
+                class="relative w-12 h-12 rounded-full bg-gradient-to-br from-warning-100 to-warning-200 dark:from-warning-900/40 dark:to-warning-900/40 flex items-center justify-center ring-2 ring-warning-200 dark:ring-warning-800/50 group-hover:scale-110 transition-transform duration-200"
+              >
+                <Star class="w-6 h-6 text-warning-600 dark:text-warning-400 fill-warning-600 dark:fill-warning-400" />
+              </div>
             </div>
           {:else}
-            <div class="flex items-center gap-1">
-              <Calendar class="w-4 h-4" />
-              <span>Created: {formatDate(note.created_at)}</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <Clock class="w-4 h-4" />
-              <span>Updated: {formatDate(note.updated_at)}</span>
+            <div
+              class="w-12 h-12 rounded-full bg-gradient-to-br from-secondary-100 to-secondary-200 dark:from-secondary-800 dark:to-secondary-700 flex items-center justify-center ring-2 ring-secondary-200 dark:ring-secondary-700"
+            >
+              <Calendar class="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
             </div>
           {/if}
         </div>
-      </div>
 
-      <!-- Actions -->
-      <div class="flex items-center gap-2">
-        {#if note.link}
+        <!-- Title & Meta Info -->
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-2">
+            <h1
+              id="modal-title"
+              class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight"
+            >
+              {note.name || 'Untitled Note'}
+            </h1>
+          </div>
+
+          <!-- Meta Info Pills -->
+          <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+            {#if isDeleted && note.deleted_at}
+              <div
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 font-medium border border-red-200 dark:border-red-800"
+              >
+                <AlertTriangle class="w-3.5 h-3.5" />
+                <span>Deleted {formatDate(note.deleted_at)}</span>
+              </div>
+            {:else}
+              <div
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-50 dark:bg-secondary-800 text-secondary-700 dark:text-secondary-300 font-medium"
+              >
+                <Calendar class="w-3.5 h-3.5" />
+                <span>Created {formatDate(note.created_at)}</span>
+              </div>
+              <div
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-50 dark:bg-secondary-800 text-secondary-700 dark:text-secondary-300 font-medium"
+              >
+                <Clock class="w-3.5 h-3.5" />
+                <span>Updated {formatDate(note.updated_at)}</span>
+              </div>
+            {/if}
+            {#if note.files && note.files.length > 0}
+              <div
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-medium"
+              >
+                <Paperclip class="w-3.5 h-3.5" />
+                <span>{note.files.length} file{note.files.length > 1 ? 's' : ''}</span>
+              </div>
+            {/if}
+            {#if note.tags && note.tags.length > 0}
+              <div
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-warning-50 dark:bg-primary-900/20 text-warning-700 dark:text-primary-400 font-medium"
+              >
+                <Tag class="w-3.5 h-3.5" />
+                <span>{note.tags.length} tag{note.tags.length > 1 ? 's' : ''}</span>
+              </div>
+            {/if}
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+          {#if note.link}
+            <button
+              onclick={handleLinkClick}
+              class="group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 transition-all duration-200 hover:scale-105 active:scale-95"
+              title="Open link"
+            >
+              <ExternalLink class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
+            </button>
+          {/if}
+
           <button
-            onclick={handleLinkClick}
-            class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 border border-blue-200 dark:border-blue-800 flex items-center justify-center transition-colors"
-            title="Open link"
+            onclick={handleShare}
+            class="group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 transition-all duration-200 hover:scale-105 active:scale-95"
+            title="Share note"
           >
-            <ExternalLink class="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <Share2 class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
           </button>
-        {/if}
 
-        <button
-          onclick={handleShare}
-          class="w-10 h-10 rounded-lg bg-secondary-100 dark:bg-secondary-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-blue-300 dark:hover:border-blue-800 flex items-center justify-center transition-colors"
-          title="Share note"
-        >
-          <Share2 class="w-5 h-5 text-secondary-600 dark:text-secondary-300" />
-        </button>
+          {#if isDeleted}
+            {#if hasAuthToken && onPermanentDelete}
+              <button
+                onclick={handlePermanentDelete}
+                class="group relative p-2 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 transition-all duration-200 hover:scale-105 active:scale-95"
+                title="Permanently delete note"
+              >
+                <Trash2 class="w-5 h-5 text-red-600 dark:text-red-400" />
+              </button>
+            {/if}
+          {:else}
+            {#if hasAuthToken}
+              <button
+                onclick={handleEdit}
+                class="group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 transition-all duration-200 hover:scale-105 active:scale-95"
+                title="Edit note"
+              >
+                <Edit class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
+              </button>
 
-        {#if isDeleted}
-          <!-- Permanent Delete button for deleted notes -->
-          {#if hasAuthToken && onPermanentDelete}
-            <button
-              onclick={handlePermanentDelete}
-              class="w-10 h-10 rounded-lg bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 flex items-center justify-center transition-colors"
-              title="Permanently delete note"
-            >
-              <Trash2 class="w-5 h-5 text-red-600 dark:text-red-400" />
-            </button>
+              <button
+                onclick={handleDelete}
+                class="group relative p-2 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 transition-all duration-200 hover:scale-105 active:scale-95"
+                title="Delete note"
+              >
+                <Trash2 class="w-5 h-5 text-red-600 dark:text-red-400" />
+              </button>
+            {/if}
           {/if}
-        {:else}
-          <!-- Edit and Delete buttons for regular notes -->
-          {#if hasAuthToken}
-            <button
-              onclick={handleEdit}
-              class="w-10 h-10 rounded-lg bg-yellow-50 dark:bg-primary-900/20 hover:bg-yellow-100 dark:hover:bg-primary-900/30 border border-yellow-200 dark:border-primary-800 flex items-center justify-center transition-colors"
-              title="Edit note"
-            >
-              <Edit class="w-5 h-5 text-yellow-600 dark:text-primary-400" />
-            </button>
 
-            <button
-              onclick={handleDelete}
-              class="w-10 h-10 rounded-lg bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 flex items-center justify-center transition-colors"
-              title="Delete note"
-            >
-              <Trash2 class="w-5 h-5 text-red-600 dark:text-red-400" />
-            </button>
-          {/if}
-        {/if}
+          <div class="w-px h-8 bg-gray-200 dark:bg-gray-700 mx-1"></div>
 
-        <button
-          onclick={onClose}
-          class="w-10 h-10 rounded-lg bg-secondary-100 dark:bg-secondary-700 hover:bg-secondary-200 dark:hover:bg-secondary-600 flex items-center justify-center transition-colors"
-          title="Close modal"
-        >
-          <X class="w-5 h-5 text-secondary-600 dark:text-secondary-300" />
-        </button>
+          <button
+            onclick={onClose}
+            class="group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-secondary-200 dark:hover:bg-secondary-600 border border-secondary-200 dark:border-secondary-600 transition-all duration-200 hover:scale-105 active:scale-95"
+            title="Close modal"
+          >
+            <X class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" />
+          </button>
+        </div>
       </div>
     </div>
   {/snippet}
 
   {#snippet body()}
     <div class="overflow-y-auto max-h-[calc(90vh-180px)]">
-      <!-- Link Section -->
-      {#if note.link}
-        <div
-          class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/10 rounded-lg border border-blue-200 dark:border-blue-800"
-        >
+      <div class="px-4 sm:px-6 py-6">
+        <!-- Link Section -->
+        {#if note.link}
+          <div
+            class="mb-6 p-4 bg-warning-50 dark:bg-primary-900/10 rounded-lg border border-warning-200 dark:border-primary-800"
+          >
           <div class="flex items-center gap-3">
-            <Link2 class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+            <Link2 class="w-5 h-5 text-warning-600 dark:text-primary-400 flex-shrink-0" />
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-blue-900 dark:text-blue-100 mb-1">External Link</p>
+              <p class="text-sm font-medium text-warning-900 dark:text-primary-100 mb-1">External Link</p>
               <a
                 href={note.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="text-blue-700 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 truncate block"
+                class="text-warning-700 dark:text-primary-300 hover:text-warning-800 dark:hover:text-primary-200 truncate block"
               >
                 {note.link}
               </a>
             </div>
             <button
               onclick={handleLinkClick}
-              class="px-3 py-2 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg transition-colors text-sm font-medium"
+              class="px-3 py-2 bg-warning-600 dark:bg-primary-600 hover:bg-warning-700 dark:hover:bg-primary-700 text-white rounded-lg transition-colors text-sm font-medium"
             >
               Visit
             </button>
@@ -240,7 +289,7 @@
           <h3
             class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2"
           >
-            <ImageIcon class="w-5 h-5 text-yellow-600 dark:text-primary-400" />
+            <ImageIcon class="w-5 h-5 text-warning-600 dark:text-primary-400" />
             Images ({note.files.filter(f => f?.mime_type?.startsWith('image/')).length})
           </h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -315,7 +364,7 @@
           <h3
             class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2"
           >
-            <div class="w-1 h-6 bg-yellow-600 dark:bg-primary-600 rounded-full"></div>
+            <div class="w-1 h-6 bg-warning-600 dark:bg-primary-600 rounded-full"></div>
             Description
           </h3>
           <div class="prose prose-sm max-w-none dark:prose-invert text-gray-700 dark:text-gray-300">
@@ -330,7 +379,7 @@
           <h3
             class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2"
           >
-            <File class="w-5 h-5 text-yellow-600 dark:text-primary-400" />
+            <File class="w-5 h-5 text-warning-600 dark:text-primary-400" />
             Files ({note.files.filter(f => !f?.mime_type?.startsWith('image/')).length})
           </h3>
           <div class="space-y-3">
@@ -387,7 +436,7 @@
                 <div class="flex items-center gap-2">
                   <button
                     onclick={() => viewFile(file)}
-                    class="flex items-center gap-1 px-3 py-1.5 text-sm bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded transition-colors"
+                    class="flex items-center gap-1 px-3 py-1.5 text-sm bg-warning-50 dark:bg-primary-900/20 hover:bg-warning-100 dark:hover:bg-primary-900/30 text-warning-700 dark:text-primary-300 rounded transition-colors"
                   >
                     <Eye class="w-3 h-3" />
                     View
@@ -412,14 +461,14 @@
           <h3
             class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2"
           >
-            <Tag class="w-5 h-5 text-yellow-600 dark:text-primary-400" />
+            <Tag class="w-5 h-5 text-warning-600 dark:text-primary-400" />
             Tags
           </h3>
           <div class="flex flex-wrap gap-2">
             {#each note.tags as tag, index (index)}
               <div
                 class="flex items-center gap-1.5 px-3 py-2 hover:bg-opacity-80 rounded-full border transition-colors {!tag.color
-                  ? 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700'
+                  ? 'bg-warning-50 text-warning-700 border-warning-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700'
                   : ''}"
                 style="background-color: {tag.color
                   ? tag.color + '20'
@@ -429,7 +478,7 @@
               >
                 <div
                   class="w-3 h-3 rounded-full {!tag.color
-                    ? 'bg-yellow-600 dark:bg-primary-600'
+                    ? 'bg-warning-600 dark:bg-primary-600'
                     : ''}"
                   style="background-color: {tag.color || undefined}"
                 ></div>
@@ -451,6 +500,7 @@
           <p class="text-gray-500 dark:text-gray-400">No additional content available</p>
         </div>
       {/if}
+      </div>
     </div>
   {/snippet}
 </Modal>

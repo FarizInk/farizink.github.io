@@ -1,5 +1,6 @@
 import Home from '../pages/Home.svelte';
 import Notes from '../pages/Notes.svelte';
+import { House, FileText, User } from '@lucide/svelte';
 
 export const mainRoutes = [
   {
@@ -10,7 +11,8 @@ export const mainRoutes = [
       'Software engineer passionate about building innovative solutions and developer tools. Explore my projects and free online utilities.',
     keywords:
       'fariz, software engineer, developer tools, web development, programming, javascript, typescript, svelte',
-    robots: 'index, follow'
+    robots: 'index, follow',
+    icon: House
   },
   {
     path: '/notes',
@@ -19,7 +21,8 @@ export const mainRoutes = [
     description:
       'Manage your personal notes, thoughts, and ideas with our intuitive note-taking application.',
     keywords: 'notes, notebook, writing, personal notes, ideas, thoughts, documentation',
-    robots: 'index, follow'
+    robots: 'index, follow',
+    icon: FileText
   },
   {
     path: '/login',
@@ -27,6 +30,7 @@ export const mainRoutes = [
     title: 'Login - Fariz',
     description: 'Sign in to your account to access personalized features.',
     keywords: 'login, sign in, authentication, account',
-    robots: 'noindex, nofollow'
+    robots: 'noindex, nofollow',
+    icon: User
   }
 ];

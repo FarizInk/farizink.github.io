@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { Mail, Lock, Eye, EyeOff, X } from '@lucide/svelte';
+  import { Mail, Lock, Eye, EyeOff, User, Sparkles } from '@lucide/svelte';
   import { saveAuth, login } from '../lib/auth';
   import { toast } from 'svelte-sonner';
+  import Modal from './Modal.svelte';
 
   let { isOpen = $bindable(false) } = $props();
 
@@ -9,42 +10,14 @@
   let password = $state('');
   let showPassword = $state(false);
   let isLoading = $state(false);
-  let errorMessage = $state(''); // eslint-disable-line @typescript-eslint/no-unused-vars
-
   let emailInput = $state<HTMLInputElement>();
-  let modalElement = $state<HTMLDivElement>();
 
   function closeModal() {
     isOpen = false;
     email = '';
     password = '';
     showPassword = false;
-    errorMessage = '';
   }
-
-  // Handle ESC key to close modal
-  function handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape' && isOpen) {
-      closeModal();
-    }
-  }
-
-  // Set up autofocus and keyboard listeners when modal opens
-  $effect(() => {
-    if (isOpen) {
-      // Focus email input when modal opens
-      setTimeout(() => {
-        emailInput?.focus();
-      }, 100);
-
-      // Add global keyboard listener for ESC
-      document.addEventListener('keydown', handleKeydown);
-
-      return () => {
-        document.removeEventListener('keydown', handleKeydown);
-      };
-    }
-  });
 
   async function handleLogin(event: Event) {
     event.preventDefault();
@@ -55,7 +28,6 @@
     }
 
     isLoading = true;
-    errorMessage = '';
 
     try {
       // Use login function from auth.ts
@@ -105,131 +77,130 @@
       console.error('Login error:', error);
     } finally {
       isLoading = false;
-      // Refocus email input after submit attempt
+    }
+  }
+
+  // Focus email input when modal opens
+  $effect(() => {
+    if (isOpen) {
       setTimeout(() => {
         emailInput?.focus();
       }, 100);
     }
-  }
+  });
 </script>
 
-<!-- Backdrop -->
-{#if isOpen}
-  <div
-    class="fixed inset-0 bg-black/20 backdrop-blur-sm z-[60] flex items-center justify-center p-4"
-    onclick={e => {
-      if (e.target === e.currentTarget) {
-        closeModal();
-      }
-    }}
-    onkeydown={handleKeydown}
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="login-modal-title"
-    tabindex="-1"
-  >
-    <!-- Modal -->
-    <div
-      bind:this={modalElement}
-      class="bg-white dark:bg-secondary-800 rounded-lg shadow-2xl w-full max-w-md border border-secondary-200 dark:border-secondary-700 overflow-hidden"
-      role="document"
-    >
-      <!-- Header -->
-      <div
-        class="flex items-center justify-between p-6 border-b border-secondary-200 dark:border-secondary-700"
-      >
-        <h2
-          id="login-modal-title"
-          class="text-xl font-semibold text-secondary-900 dark:text-secondary-50"
-        >
-          Login
-        </h2>
-        <button
-          onclick={closeModal}
-          class="w-8 h-8 rounded-lg hover:bg-secondary-100 dark:hover:bg-secondary-700 flex items-center justify-center transition-colors"
-          aria-label="Close login modal"
-        >
-          <X class="w-4 h-4 text-secondary-500 dark:text-secondary-400" />
-        </button>
-      </div>
-
-      <!-- Form -->
-      <div class="p-6">
-        <form onsubmit={handleLogin}>
-          <!-- Email Field -->
-          <div class="mb-4">
-            <label for="email" class="label"> Email </label>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail class="w-4 h-4 text-secondary-400" />
-              </div>
-              <input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                class="input !pl-10"
-                bind:value={email}
-                bind:this={emailInput}
-                disabled={isLoading}
-                autocomplete="email"
-                required
-              />
-            </div>
-          </div>
-
-          <!-- Password Field -->
-          <div class="mb-6">
-            <label for="password" class="label"> Password </label>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock class="w-4 h-4 text-secondary-400" />
-              </div>
-              <input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Enter your password"
-                class="input !pl-10 pr-10"
-                bind:value={password}
-                disabled={isLoading}
-                autocomplete="current-password"
-                required
-              />
-              <button
-                type="button"
-                onclick={() => (showPassword = !showPassword)}
-                class="absolute inset-y-0 right-0 pr-3 flex items-center"
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-              >
-                {#if showPassword}
-                  <EyeOff
-                    class="w-4 h-4 text-secondary-400 hover:text-secondary-600 dark:hover:text-secondary-300"
-                  />
-                {:else}
-                  <Eye
-                    class="w-4 h-4 text-secondary-400 hover:text-secondary-600 dark:hover:text-secondary-300"
-                  />
-                {/if}
-              </button>
-            </div>
-          </div>
-
-          <!-- Submit Button -->
-          <button
-            type="submit"
-            class="btn btn-primary w-full flex items-center justify-center"
-            disabled={isLoading || !email.trim() || !password.trim()}
-          >
-            {#if isLoading}
-              <div
-                class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"
-              ></div>
-              Signing in...
-            {:else}
-              Sign In
-            {/if}
-          </button>
-        </form>
+<Modal
+  bind:isOpen={isOpen}
+  onClose={closeModal}
+  maxW="max-w-md"
+  title=""
+  showCloseButton={true}
+>
+  {#snippet header()}
+    <div class="py-6 bg-gradient-to-br from-warning-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20">
+      <div class="flex items-center gap-3 px-6">
+        <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-amber-400 dark:from-primary-500 dark:to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
+          <User class="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Welcome Back</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Sign in to your account</p>
+        </div>
       </div>
     </div>
-  </div>
-{/if}
+  {/snippet}
+
+  {#snippet body()}
+    <div class="py-6">
+      <form onsubmit={handleLogin} class="px-6 space-y-5">
+        <!-- Email Field -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Email Address
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Mail class="w-5 h-5 text-gray-400 dark:text-gray-500" />
+            </div>
+            <input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              class="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-warning-500 dark:focus:border-purple-500 focus:shadow-[0_0_0_4px_rgba(251,191,36,0.1)] dark:focus:shadow-[0_0_0_4px_rgba(139,92,246,0.1)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              bind:value={email}
+              bind:this={emailInput}
+              disabled={isLoading}
+              autocomplete="email"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Password
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Lock class="w-5 h-5 text-gray-400 dark:text-gray-500" />
+            </div>
+            <input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Enter your password"
+              class="w-full pl-11 pr-12 py-3 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-warning-500 dark:focus:border-purple-500 focus:shadow-[0_0_0_4px_rgba(251,191,36,0.1)] dark:focus:shadow-[0_0_0_4px_rgba(139,92,246,0.1)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              bind:value={password}
+              disabled={isLoading}
+              autocomplete="current-password"
+              required
+            />
+            <button
+              type="button"
+              onclick={() => (showPassword = !showPassword)}
+              class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+            >
+              {#if showPassword}
+                <EyeOff class="w-5 h-5" />
+              {:else}
+                <Eye class="w-5 h-5" />
+              {/if}
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          disabled={isLoading || !email.trim() || !password.trim()}
+          class="w-full flex items-center justify-center gap-2 py-3.5 bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 dark:from-primary-500 dark:to-primary-600 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-md"
+        >
+          {#if isLoading}
+            <div class="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
+            <span>Signing in...</span>
+          {:else}
+            <Sparkles class="w-5 h-5" />
+            <span>Sign In</span>
+          {/if}
+        </button>
+      </form>
+
+      <!-- Helper Text -->
+      <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 px-6">
+        <p class="text-center text-sm text-gray-500 dark:text-gray-400">
+          Don't have an account?
+          <a
+            href="/notes"
+            class="ml-1 font-semibold text-warning-600 dark:text-primary-400 hover:text-warning-700 dark:hover:text-primary-300 transition-colors"
+            onclick={closeModal}
+          >
+            Contact me
+          </a>
+          to get access.
+        </p>
+      </div>
+    </div>
+  {/snippet}
+</Modal>

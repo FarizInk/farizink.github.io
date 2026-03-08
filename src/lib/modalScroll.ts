@@ -79,3 +79,13 @@ export function getOpenModalCount(): number {
 export function getModalStack(): string[] {
   return [...modalStack];
 }
+
+/**
+ * Get the z-index for a modal based on its position in the stack
+ * Base z-index is 50, each modal level adds 10
+ */
+export function getModalZIndex(modalId: string): number {
+  const index = modalStack.indexOf(modalId);
+  // Base z-index 50, plus 10 for each level in the stack
+  return 50 + (index + 1) * 10;
+}

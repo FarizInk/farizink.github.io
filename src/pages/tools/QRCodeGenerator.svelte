@@ -97,15 +97,32 @@
   title="QR Code Generator"
   description="Generate custom QR codes for URLs, text, or any data with customizable options."
   icon={QrCode}
-  color="success"
+  color="warning"
 >
+  <!-- Hero Section -->
+  <div
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+  >
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
+          <QrCode class="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">QR Code Generator</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Generate custom QR codes with ease</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Controls -->
-  <div class="mb-6 flex justify-center flex-wrap gap-2">
-    <button onclick={generateQRCode} class="btn btn-primary btn-sm">
+  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
+    <button class="btn btn-copy" onclick={generateQRCode}>
       <RefreshCw class="w-4 h-4 mr-2" />
       Generate
     </button>
-    <button onclick={resetForm} class="btn btn-primary btn-sm">Reset</button>
+    <button class="btn btn-secondary" onclick={resetForm}>Reset</button>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -125,7 +142,7 @@
           placeholder="Enter text, URL, or any data to encode..."
           rows="4"
           class="textarea {error
-            ? 'border-danger-500 focus:border-danger-500 focus:ring-danger-500'
+            ? 'border-red-200 dark:border-red-600 focus:border-red-500 focus:ring-red-500'
             : ''}"
         ></textarea>
         {#if error}
@@ -156,7 +173,7 @@
             max="500"
             step="50"
             bind:value={size}
-            class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-success-500"
+            class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-yellow-500"
           />
         </div>
 
@@ -201,7 +218,7 @@
             type="checkbox"
             id="include-margin"
             bind:checked={includeMargin}
-            class="w-4 h-4 text-success-600 bg-gray-100 border-gray-300 rounded focus:ring-success-500 dark:focus:ring-success-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            class="w-4 h-4 text-warning-600 dark:text-primary-500 bg-gray-100 border-gray-300 rounded focus:ring-success-500 dark:focus:ring-success-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <label
             for="include-margin"
@@ -244,9 +261,9 @@
           </div>
         {:else if error}
           <div
-            class="bg-danger-100 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800 rounded-xl p-6"
+            class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6"
           >
-            <p class="text-danger-600 dark:text-danger-400 text-center">
+            <p class="text-red-600 dark:text-red-400 text-center">
               {error}
             </p>
           </div>
@@ -261,14 +278,12 @@
       </div>
 
       <!-- Info Section -->
-      <div
-        class="bg-success-100 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-xl p-4"
-      >
-        <div class="flex items-center gap-2 mb-2 text-success-800 dark:text-success-200">
+      <div class="bg-warning-100 dark:bg-primary-900/20 text-yellow-800 dark:text-primary-200">
+        <div class="flex items-center gap-2 mb-2 text-yellow-800 dark:text-yellow-200">
           <Info class="w-4 h-4" />
           <h4 class="text-sm font-semibold">Tips</h4>
         </div>
-        <ul class="text-sm text-success-700 dark:text-success-300 space-y-1 list-disc list-inside">
+        <ul class="text-sm text-warning-700 dark:text-primary-300 space-y-1 list-disc list-inside">
           <li>QR codes can store up to 4,296 alphanumeric characters</li>
           <li>Higher error correction levels create more complex but more robust codes</li>
           <li>Test your QR code before using it in production</li>

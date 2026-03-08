@@ -646,3 +646,290 @@ html.dark body {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* ============================================================
+   TOOL PAGE SHARED STYLES
+   ============================================================ */
+
+/* Tool Page Container */
+.tool-page-container {
+  @apply min-h-screen py-8 px-4;
+  @apply max-w-6xl mx-auto;
+}
+
+/* Tool Card - Reusable card component */
+.tool-card {
+  @apply bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6;
+  @apply shadow-sm transition-all duration-200;
+}
+
+.tool-card:hover {
+  @apply shadow-md;
+}
+
+/* Section Title */
+.section-title {
+  @apply text-lg font-semibold text-gray-900 dark:text-white mb-4;
+}
+
+.section-title-sm {
+  @apply text-base font-semibold text-gray-900 dark:text-white mb-2;
+}
+
+/* Control Label */
+.control-label {
+  @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2;
+}
+
+/* Action Bar - Centered button container */
+.action-bar {
+  @apply flex justify-center flex-wrap gap-3 mb-6;
+}
+
+/* Code Editor/Textarea */
+.code-editor {
+  @apply w-full p-4 font-mono text-sm rounded-lg resize-none;
+  @apply border border-gray-300 dark:border-gray-600;
+  @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-white;
+  @apply focus:ring-2 focus:ring-yellow-500 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent;
+  @apply focus:outline-none;
+}
+
+/* Input/Select */
+.tool-input {
+  @apply w-full px-4 py-2.5 text-sm rounded-lg;
+  @apply border border-gray-300 dark:border-gray-600;
+  @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-white;
+  @apply focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent;
+  @apply focus:outline-none transition-all;
+}
+
+.tool-select {
+  @apply w-full px-4 py-2.5 text-sm rounded-lg;
+  @apply border border-gray-300 dark:border-gray-600;
+  @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-white;
+  @apply focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent;
+  @apply focus:outline-none transition-all;
+  @apply appearance-none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1.25rem 1.25rem;
+  padding-right: 2.5rem;
+}
+
+.dark .tool-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+}
+
+/* Button Icon */
+.btn-icon {
+  @apply p-2 rounded-lg transition-colors;
+  @apply text-gray-600 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-purple-400;
+  @apply hover:bg-yellow-50 dark:hover:bg-purple-900/20;
+  @apply focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400;
+}
+
+.btn-icon:disabled {
+  @apply opacity-50 cursor-not-allowed hover:text-gray-600 dark:hover:text-gray-400;
+}
+
+/* Info Card */
+.info-card {
+  @apply p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg;
+}
+
+/* Result Card */
+.result-card {
+  @apply p-4 bg-gray-50 dark:bg-gray-700 rounded-lg;
+  @apply border border-gray-200 dark:border-gray-600;
+}
+
+/* Placeholder */
+.placeholder {
+  @apply absolute inset-0 flex flex-col items-center justify-center p-6;
+  @apply pointer-events-none;
+}
+
+.placeholder p {
+  @apply text-gray-400 dark:text-gray-600;
+}
+
+/* Features Grid */
+.features-grid {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-4 mt-8;
+}
+
+.feature-card {
+  @apply p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700;
+  @apply transition-all duration-200;
+}
+
+.feature-card:hover {
+  @apply -translate-y-1 shadow-lg;
+  @apply border-yellow-300 dark:border-purple-400;
+}
+
+.feature-icon {
+  @apply w-12 h-12 rounded-lg flex items-center justify-center mb-4;
+  @apply bg-yellow-100 dark:bg-purple-900/20;
+  @apply text-yellow-600 dark:text-purple-400;
+}
+
+.feature-title {
+  @apply text-base font-semibold text-gray-900 dark:text-white mb-2;
+}
+
+.feature-description {
+  @apply text-sm text-gray-600 dark:text-gray-400 leading-relaxed;
+}
+
+/* Status Cards */
+.status-success {
+  @apply bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300;
+  @apply border border-green-200 dark:border-green-800;
+}
+
+.status-error {
+  @apply bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300;
+  @apply border border-red-200 dark:border-red-800;
+}
+
+.status-warning {
+  @apply bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300;
+  @apply border border-yellow-200 dark:border-yellow-800;
+}
+
+/* Stats Card */
+.stats-card {
+  @apply flex justify-center gap-6 sm:gap-8 p-4 rounded-xl border;
+  @apply bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700;
+  @apply flex-wrap;
+}
+
+.stat-item {
+  @apply text-center;
+}
+
+.stat-label {
+  @apply text-sm text-gray-600 dark:text-gray-400;
+}
+
+.stat-value {
+  @apply text-lg font-semibold text-gray-900 dark:text-white;
+}
+
+/* Mode Toggle */
+.mode-toggle-card {
+  @apply bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 mb-6;
+}
+
+.mode-toggle {
+  @apply inline-flex rounded-lg border border-gray-200 dark:border-gray-700;
+  @apply bg-white dark:bg-gray-800 p-1;
+}
+
+.mode-btn {
+  @apply px-4 py-2 rounded-md text-sm font-medium transition-all;
+  @apply text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white;
+}
+
+.mode-btn.active {
+  @apply bg-yellow-100 dark:bg-purple-900/20;
+  @apply text-yellow-700 dark:text-purple-300;
+  @apply font-semibold;
+}
+
+/* Tab Navigation */
+.tab-nav {
+  @apply flex flex-wrap gap-2 mb-6 border-b border-gray-200 dark:border-gray-700;
+  @apply overflow-x-auto;
+}
+
+.tab-btn {
+  @apply px-4 py-2 text-sm font-medium transition-colors;
+  @apply text-gray-600 dark:text-gray-400 border-b-2 border-transparent;
+  @apply hover:text-gray-900 dark:hover:text-white;
+}
+
+.tab-btn.active {
+  @apply text-yellow-600 dark:text-purple-400;
+  @apply border-yellow-400 dark:border-purple-400;
+}
+
+/* Preset Button */
+.preset-btn {
+  @apply px-3 py-2 text-sm rounded-lg border transition-all text-left;
+  @apply bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700;
+  @apply text-gray-700 dark:text-gray-300;
+  @apply hover:border-yellow-300 dark:hover:border-purple-400;
+}
+
+.preset-btn.active {
+  @apply border-yellow-400 dark:border-purple-500;
+  @apply bg-yellow-50 dark:bg-purple-900/20;
+  @apply text-yellow-700 dark:text-purple-300;
+}
+
+/* Slider */
+.slider {
+  @apply w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer;
+  accent-color: #f59e0b;
+}
+
+.dark .slider {
+  accent-color: #8b5cf6;
+}
+
+/* Inline Input */
+.inline-input {
+  @apply px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg;
+  @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-white;
+  @apply focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent;
+  @apply focus:outline-none;
+}
+
+/* Quick Button */
+.quick-btn {
+  @apply px-3 py-1.5 text-xs font-medium rounded-lg border transition-all;
+  @apply bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700;
+  @apply text-gray-700 dark:text-gray-300;
+}
+
+.quick-btn.active {
+  @apply bg-yellow-100 dark:bg-purple-900/20;
+  @apply border-yellow-400 dark:border-purple-500;
+  @apply text-yellow-700 dark:text-purple-300;
+}
+
+/* Result Row */
+.result-row {
+  @apply flex justify-between items-center p-3 rounded-lg;
+  @apply bg-gray-50 dark:bg-gray-700/50;
+}
+
+.result-label {
+  @apply text-sm text-gray-600 dark:text-gray-400;
+}
+
+.result-value {
+  @apply text-lg font-semibold text-gray-900 dark:text-white;
+}
+
+/* Copy Button with Icon */
+.btn-copy {
+  @apply inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg;
+  @apply transition-all duration-200;
+  @apply bg-yellow-500 text-white hover:bg-yellow-600;
+  @apply dark:bg-purple-500 dark:hover:bg-purple-600;
+}
+
+/* Card Header */
+.card-header {
+  @apply flex items-center justify-between mb-4;
+}
+
+/* Text Count Badge */
+.text-count {
+  @apply text-xs text-gray-500 dark:text-gray-400;
+}
