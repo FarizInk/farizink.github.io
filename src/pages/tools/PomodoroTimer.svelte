@@ -376,7 +376,7 @@
                 stroke="currentColor"
                 stroke-width="8"
                 fill="none"
-                class="text-gray-200 dark:text-gray-700"
+                class="pomodoro-circle text-gray-200 dark:text-gray-700"
               />
               <!-- Progress circle -->
               <circle
@@ -388,7 +388,7 @@
                 fill="none"
                 stroke-dasharray={2 * Math.PI * 45}
                 stroke-dashoffset={2 * Math.PI * 45 * (1 - progress / 100)}
-                class="transition-all duration-1000 ease-linear
+                class="pomodoro-circle transition-all duration-1000 ease-linear
               {currentSession === 'work'
                   ? 'text-warning-600 dark:text-primary-400'
                   : 'text-green-600 dark:text-green-400'}"
@@ -622,7 +622,7 @@
   </div>
 
   <!-- Pomodoro Recommendation Note -->
-  <div class="mt-4 sm:mt-6 p-4 sm:p-6 rounded-lg border recommendation-note">
+  <div class="mt-4 sm:mt-6 p-4 sm:p-6 rounded-lg border pomodoro-recommendation-note">
     <h4 class="font-semibold mb-2 sm:mb-3 text-sm sm:text-base">🍅 Why Pomodoro Technique?</h4>
     <p class="text-xs sm:text-sm mb-3 sm:mb-4">
       The Pomodoro Technique was developed by Francesco Cirillo in the late 1980s. It's a time
@@ -635,15 +635,3 @@
     </div>
   </div>
 </ToolLayout>
-
-<style>
-  /* Ensure smooth transitions */
-  circle {
-    transition: stroke-dashoffset 1s linear;
-  }
-
-  /* Recommendation Note */
-  .recommendation-note {
-    @apply bg-warning-50 dark:bg-primary-900/20 border-warning-200 dark:border-primary-800 text-warning-900 dark:text-yellow-100;
-  }
-</style>

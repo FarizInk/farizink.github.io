@@ -10,9 +10,9 @@ export interface AuthState {
 // Laravel API Response Types
 export interface LoginResponse {
   token: {
-    accessToken?: object;
+    accessToken?: unknown;
     plainTextToken: string;
-    [key: string]: string | number | boolean | object;
+    [key: string]: string | number | boolean | unknown;
   };
   token_type: string;
   expires_in: number;

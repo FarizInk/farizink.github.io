@@ -410,44 +410,6 @@
   {/snippet}
 </Modal>
 
-<style>
-  /* Tag card animation */
-  .tag-card {
-    animation: cardIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  @keyframes cardIn {
-    from {
-      opacity: 0;
-      transform: translateY(-8px) scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  /* Stagger animation for cards */
-  .tag-card:nth-child(1) {
-    animation-delay: 0ms;
-  }
-  .tag-card:nth-child(2) {
-    animation-delay: 25ms;
-  }
-  .tag-card:nth-child(3) {
-    animation-delay: 50ms;
-  }
-  .tag-card:nth-child(4) {
-    animation-delay: 75ms;
-  }
-  .tag-card:nth-child(5) {
-    animation-delay: 100ms;
-  }
-  .tag-card:nth-child(n+6) {
-    animation-delay: 125ms;
-  }
-</style>
-
 <!-- Tag Form Modal -->
 <TagFormModal
   bind:isOpen={showTagFormModal}

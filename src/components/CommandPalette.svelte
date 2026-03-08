@@ -84,12 +84,15 @@
     }
   }
 
-  function navigateToRoute(route: { path: string; title?: string; description?: string }) {
+  function navigateToRoute(route: { path: string; title?: string; description?: string }, event?: Event) {
+    // Stop event propagation to prevent it from reaching the login modal backdrop
+    event?.stopPropagation();
+
     // Handle special routes like login
     if (route.path === '/login') {
       // Dispatch custom event to Navigation component
-      const event = new CustomEvent('open-login-modal');
-      document.dispatchEvent(event);
+      const evt = new CustomEvent('open-login-modal');
+      document.dispatchEvent(evt);
       closeModal();
     } else if (route.path === '/logout') {
       handleLogout();
@@ -340,8 +343,14 @@
                 class="w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group {i === selectedIndex
                   ? 'bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-primary-900/30 dark:to-primary-800/20 border-2 border-warning-400 dark:border-primary-400 shadow-md'
                   : 'hover:bg-gray-50 dark:hover:bg-gray-700/50 border-2 border-transparent'}"
-                onclick={() => navigateToRoute(route)}
-                onkeydown={e => (e.key === 'Enter' || e.key === ' ') && navigateToRoute(route)}
+                onclick={(e) => navigateToRoute(route, e)}
+                onkeydown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    navigateToRoute(route, e);
+                  }
+                }}
                 role="option"
                 aria-selected={i === selectedIndex}
                 data-selected={i === selectedIndex}
@@ -477,13 +486,3 @@
     </div>
   </div>
 {/if}
-
-<style>
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-</style>

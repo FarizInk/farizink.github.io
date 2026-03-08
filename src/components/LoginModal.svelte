@@ -175,7 +175,7 @@
         <button
           type="submit"
           disabled={isLoading || !email.trim() || !password.trim()}
-          class="w-full flex items-center justify-center gap-2 py-3.5 bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 dark:from-primary-500 dark:to-primary-600 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-md"
+          class="w-full flex items-center justify-center gap-2 py-3.5 bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 dark:from-primary-500 dark:to-primary-600 dark:hover:from-primary-600 dark:hover:to-primary-700 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-md"
         >
           {#if isLoading}
             <div class="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
@@ -186,21 +186,6 @@
           {/if}
         </button>
       </form>
-
-      <!-- Helper Text -->
-      <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 px-6">
-        <p class="text-center text-sm text-gray-500 dark:text-gray-400">
-          Don't have an account?
-          <a
-            href="/notes"
-            class="ml-1 font-semibold text-warning-600 dark:text-primary-400 hover:text-warning-700 dark:hover:text-primary-300 transition-colors"
-            onclick={closeModal}
-          >
-            Contact me
-          </a>
-          to get access.
-        </p>
-      </div>
     </div>
   {/snippet}
 </Modal>

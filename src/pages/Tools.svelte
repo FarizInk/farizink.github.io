@@ -63,15 +63,15 @@
 
 <div class="tools-page">
   <!-- Hero Section -->
-  <div class="hero-section">
+  <div class="tools-hero-section">
     <div
-      class="hero-badge inline-flex items-center gap-2 px-4 py-2 bg-warning-100 dark:bg-primary-900/30 border border-warning-300 dark:border-primary-700 rounded-full text-warning-700 dark:text-warning-300 text-sm font-medium"
+      class="tools-hero-badge inline-flex items-center gap-2 px-4 py-2 bg-warning-100 dark:bg-primary-900/30 border border-warning-300 dark:border-primary-700 rounded-full text-warning-700 dark:text-warning-300 text-sm font-medium"
     >
       <Sparkles class="w-4 h-4" />
       <span>{totalTools} Tools Available</span>
     </div>
 
-    <h1 class="hero-title">
+    <h1 class="tools-hero-title">
       <span class="text-gray-900 dark:text-white">Developer</span>
       <span
         class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-amber-400 dark:from-primary-400 to-purple-500 bg-gradient-to-l"
@@ -79,7 +79,7 @@
       >
     </h1>
 
-    <p class="hero-description">
+    <p class="tools-hero-description">
       Essential utilities crafted for developers, designers, and creators. Fast, free, and
       privacy-focused.
     </p>
@@ -94,7 +94,7 @@
         class="flex-1 border-none bg-transparent text-base text-gray-900 dark:text-gray-100 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
       />
       {#if searchQuery}
-        <button onclick={() => (searchQuery = '')} class="search-clear" aria-label="Clear search">
+        <button onclick={() => (searchQuery = '')} class="tools-search-clear" aria-label="Clear search">
           <X class="w-3 h-3" />
         </button>
       {/if}
@@ -198,102 +198,3 @@
   {/if}
 </div>
 
-<style>
-  .tools-page {
-    min-height: 100vh;
-    padding: 2rem 1rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  /* Hero Section */
-  .hero-section {
-    text-align: center;
-    margin-bottom: 3rem;
-    animation: fadeIn 0.6s ease-out;
-  }
-
-  .hero-badge {
-    margin-bottom: 1.5rem;
-  }
-
-  .hero-title {
-    font-size: clamp(2.5rem, 8vw, 4rem);
-    font-weight: 800;
-    line-height: 1;
-    margin-bottom: 1rem;
-    letter-spacing: -0.03em;
-  }
-
-  .hero-description {
-    color: #6b7280;
-    font-size: 1.125rem;
-    max-width: 600px;
-    margin: 0 auto 2rem;
-    line-height: 1.6;
-  }
-
-  .dark .hero-description {
-    color: #9ca3af;
-  }
-
-  /* Search - styles moved to inline Tailwind classes */
-
-  .search-clear {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.5rem;
-    height: 1.5rem;
-    background: #e5e7eb;
-    border: none;
-    border-radius: 50%;
-    color: #6b7280;
-    cursor: pointer;
-    margin-left: 0.5rem;
-    transition: all 0.2s;
-  }
-
-  .search-clear:hover {
-    background: #d1d5db;
-    color: #1f2937;
-  }
-
-  .dark .search-clear {
-    background: #374151;
-    color: #9ca3af;
-  }
-
-  .dark .search-clear:hover {
-    background: #4b5563;
-  }
-
-  /* Animations */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Mobile */
-  @media (max-width: 640px) {
-    .hero-title {
-      font-size: 2.5rem;
-    }
-  }
-</style>

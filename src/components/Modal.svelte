@@ -51,6 +51,7 @@
 
   // Store this modal's unique ID
   let currentModalId = $state<string>('');
+  let modalOpenedAt = $state<number>(0);
 
   // Dynamic z-index based on stack position
   let modalZIndex = $derived(currentModalId ? getModalZIndex(currentModalId) : 50);
@@ -72,6 +73,15 @@
   }
 
   function handleKeydown(e: KeyboardEvent) {
+    // Ignore keydown events that happen too soon after modal opens (grace period)
+    // This prevents accidental closure from keyboard events that triggered the modal
+    const timeSinceOpened = Date.now() - modalOpenedAt;
+    const GRACE_PERIOD_MS = 200;
+
+    if (timeSinceOpened < GRACE_PERIOD_MS) {
+      return;
+    }
+
     // ESC key only closes modal if this is the topmost modal
     if (e.key === 'Escape') {
       if (isTopmostModal(currentModalId)) {
@@ -91,6 +101,7 @@
   // Add window-level event listener for ESC key
   $effect(() => {
     if (isOpen) {
+      modalOpenedAt = Date.now();
       // Register this modal and get unique ID
       currentModalId = preventBodyScroll();
       window.addEventListener('keydown', handleKeydown);
@@ -117,7 +128,7 @@
       transition:fade
       role="button"
       tabindex="0"
-      onclick={forceClose ? close : null}
+      onclick={() => forceClose && close()}
     ></div>
 
     <!-- Modal Container -->
@@ -175,148 +186,3 @@
     </div>
   </div>
 {/if}
-
-<style>
-  .modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 1rem;
-  }
-
-  .modal-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    background: linear-gradient(135deg, rgb(254 252 232), rgb(250 204 21));
-    border-radius: 0.5rem;
-    color: rgb(161 98 7);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  }
-
-  :global(.dark) .modal-icon {
-    background: linear-gradient(135deg, rgb(30 20 50), rgb(88 28 135));
-    color: rgb(250 204 21);
-  }
-
-  .modal-title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: rgb(17 24 39);
-    line-height: 1.4;
-  }
-
-  :global(.dark) .modal-title {
-    color: rgb(255 255 255);
-  }
-
-  .modal-close-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    background: rgb(243 244 246);
-    border-radius: 0.5rem;
-    color: rgb(107 114 128);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .modal-close-btn:hover {
-    background: rgb(229 231 235);
-    color: rgb(17 24 39);
-  }
-
-  :global(.dark) .modal-close-btn {
-    background: rgb(31 41 55);
-  }
-
-  :global(.dark) .modal-close-btn:hover {
-    background: rgb(55 65 81);
-    color: rgb(255 255 255);
-  }
-
-  .modal-close-btn:focus-visible {
-    outline: 2px solid rgb(251 191 36);
-    outline-offset: 2px;
-  }
-
-  :global(.dark) .modal-close-btn:focus-visible {
-    outline-color: rgb(139 92 246);
-  }
-
-  .modal-body {
-    max-height: calc(100vh - 240px);
-  }
-
-  .modal-footer {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 0.75rem;
-    padding: 1rem 1.25rem;
-  }
-
-  :global(.dark) .modal-footer {
-    border-top-color: rgb(55 65 81);
-  }
-
-  /* Custom scrollbar */
-  .modal-body::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .modal-body::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .modal-body::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
-  }
-
-  :global(.dark) .modal-body::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-  }
-
-  /* Responsive padding */
-  @media (min-width: 640px) {
-    .modal-header {
-      padding: 1rem 1.5rem;
-    }
-
-    .modal-footer {
-      padding: 1rem 1.5rem;
-    }
-  }
-
-  /* Animation for backdrop */
-  @keyframes modalFadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  /* Animation for modal content */
-  @keyframes modalSlideUp {
-    from {
-      opacity: 0;
-      transform: scale(0.92) translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-    }
-  }
-
-  /* Accessibility - focus trap */
-  .modal-content:focus-visible {
-    outline: none;
-  }
-</style>

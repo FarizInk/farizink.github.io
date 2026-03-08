@@ -371,15 +371,15 @@
 <div class="notes-page">
   {#if viewMode === 'list'}
     <!-- Hero Section -->
-    <div class="hero-section">
+    <div class="notes-hero-section">
       <div
-        class="hero-badge inline-flex items-center gap-2 px-4 py-2 bg-warning-100 dark:bg-primary-900/30 border border-warning-300 dark:border-primary-700 rounded-full text-warning-700 dark:text-warning-300 text-sm font-medium"
+        class="notes-hero-badge inline-flex items-center gap-2 px-4 py-2 bg-warning-100 dark:bg-primary-900/30 border border-warning-300 dark:border-primary-700 rounded-full text-warning-700 dark:text-warning-300 text-sm font-medium"
       >
         <BookOpen class="w-4 h-4" />
         <span>{$totalCount} Note{$totalCount === 1 ? '' : 's'}</span>
       </div>
 
-      <h1 class="hero-title">
+      <h1 class="notes-hero-title">
         <span class="text-gray-900 dark:text-white">My</span>
         <span
           class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-amber-400 dark:from-primary-400 to-purple-500 bg-gradient-to-l"
@@ -387,7 +387,7 @@
         >
       </h1>
 
-      <p class="hero-description">
+      <p class="notes-hero-description">
         Organize your thoughts, ideas, and resources. Fast, searchable, and always available.
       </p>
 
@@ -413,7 +413,7 @@
                 searchQuery = '';
                 loadNotes(false);
               }}
-              class="search-clear"
+              class="notes-search-clear"
               aria-label="Clear search"
             >
               <X class="w-4 h-4" />
@@ -943,239 +943,3 @@
 <!-- Deleted Notes Modal -->
 <DeletedNotesModal bind:isOpen={showDeletedNotesModal} onClose={handleDeletedNotesModalClose} />
 
-<style>
-  .notes-page {
-    min-height: 100vh;
-    padding: 2rem 1rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  /* Hero Section */
-  .hero-section {
-    text-align: center;
-    margin-bottom: 3rem;
-    animation: fadeIn 0.6s ease-out;
-  }
-
-  .hero-badge {
-    margin-bottom: 1.5rem;
-  }
-
-  .hero-title {
-    font-size: clamp(2.5rem, 8vw, 4rem);
-    font-weight: 800;
-    line-height: 1;
-    margin-bottom: 1rem;
-    letter-spacing: -0.03em;
-  }
-
-  .hero-description {
-    color: #6b7280;
-    font-size: 1.125rem;
-    max-width: 600px;
-    margin: 0 auto 2rem;
-    line-height: 1.6;
-  }
-
-  .dark .hero-description {
-    color: #9ca3af;
-  }
-
-  /* Search Container */
-  .search-container {
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  .search-clear {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.75rem;
-    height: 1.75rem;
-    background: #e5e7eb;
-    border: none;
-    border-radius: 50%;
-    color: #6b7280;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .search-clear:hover {
-    background: #d1d5db;
-    color: #1f2937;
-  }
-
-  .dark .search-clear {
-    background: #374151;
-    color: #9ca3af;
-  }
-
-  .dark .search-clear:hover {
-    background: #4b5563;
-  }
-
-  /* Notes Grid */
-  .notes-grid > div {
-    animation: slideUp 0.4s ease-out forwards;
-  }
-
-  /* Detail View */
-  .detail-view {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  /* Animations */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Mobile */
-  @media (max-width: 640px) {
-    .hero-title {
-      font-size: 2.5rem;
-    }
-
-    .notes-page {
-      padding: 1rem;
-    }
-  }
-
-  /* Prose styling */
-  :global(.prose p) {
-    line-height: 1.7;
-    margin: 0 0 1em 0;
-  }
-
-  :global(.prose ul),
-  :global(.prose ol) {
-    margin: 0.75em 0;
-    padding-left: 1.5em;
-  }
-
-  :global(.prose ul) {
-    list-style-type: disc;
-  }
-
-  :global(.prose ol) {
-    list-style-type: decimal;
-  }
-
-  :global(.prose li p) {
-    margin-bottom: 0;
-  }
-
-  :global(.prose h1),
-  :global(.prose h2),
-  :global(.prose h3),
-  :global(.prose h4),
-  :global(.prose h5),
-  :global(.prose h6) {
-    margin: 1.25em 0 0.5em 0;
-    font-weight: 600;
-    line-height: 1.3;
-  }
-
-  :global(.prose h1) {
-    font-size: 1.875rem;
-  }
-
-  :global(.prose h2) {
-    font-size: 1.5rem;
-  }
-
-  :global(.prose h3) {
-    font-size: 1.25rem;
-  }
-
-  :global(.prose a) {
-    color: rgb(139 92 246);
-    text-decoration: underline;
-  }
-
-  :global(.dark .prose a) {
-    color: rgb(167 139 250);
-  }
-
-  :global(.prose a:hover) {
-    text-decoration: none;
-  }
-
-  :global(.prose code) {
-    background-color: rgb(243 244 246);
-    padding: 0.125rem 0.25rem;
-    border-radius: 0.25rem;
-    font-size: 0.875em;
-  }
-
-  :global(.dark .prose code) {
-    background-color: rgb(31 41 55);
-  }
-
-  :global(.prose pre) {
-    background-color: rgb(243 244 246);
-    padding: 1rem;
-    border-radius: 0.5rem;
-    overflow-x: auto;
-    margin: 1em 0;
-  }
-
-  :global(.dark .prose pre) {
-    background-color: rgb(31 41 55);
-  }
-
-  :global(.prose pre code) {
-    background-color: transparent;
-    padding: 0;
-  }
-
-  :global(.prose blockquote) {
-    border-left: 4px solid rgb(139 92 246);
-    padding-left: 1rem;
-    margin: 1em 0;
-    color: rgb(107 114 128);
-    font-style: italic;
-  }
-
-  :global(.dark .prose blockquote) {
-    color: rgb(156 163 175);
-    border-left-color: rgb(139 92 246);
-  }
-
-  :global(.prose strong) {
-    font-weight: 600;
-  }
-
-  :global(.prose em) {
-    font-style: italic;
-  }
-
-  :global(.prose hr) {
-    border: none;
-    border-top: 1px solid rgb(229 231 235);
-    margin: 2em 0;
-  }
-
-  :global(.dark .prose hr) {
-    border-top-color: rgb(55 65 81);
-  }
-</style>

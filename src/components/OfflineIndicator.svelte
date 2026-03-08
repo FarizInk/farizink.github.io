@@ -111,35 +111,3 @@
     </div>
   </div>
 {/if}
-
-<style>
-  @keyframes slide-in-from-top {
-    from {
-      transform: translateY(-100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  @keyframes slide-in-from-bottom {
-    from {
-      transform: translateY(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  .animate-in {
-    animation: slide-in-from-top 0.3s ease-out;
-  }
-
-  .slide-in-from-bottom {
-    animation: slide-in-from-bottom 0.3s ease-out;
-  }
-</style>
