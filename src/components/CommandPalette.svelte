@@ -258,7 +258,7 @@
 <!-- Backdrop -->
 {#if isOpen}
   <div
-    class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] flex items-start justify-center pt-[15vh] animate-in fade-in duration-200"
+    class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] flex items-center justify-center"
     onclick={e => {
       // Only close if clicking the backdrop (not the modal content)
       if (e.target === e.currentTarget) {
@@ -273,7 +273,7 @@
   >
     <!-- Modal -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl mx-4 border border-gray-200 dark:border-gray-700 overflow-hidden animate-in slide-in-from-top-10 duration-300"
+      class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl mx-4 border border-gray-200 dark:border-gray-700 overflow-hidden animate-scale-in"
       role="document"
     >
       <!-- Header with Search -->
