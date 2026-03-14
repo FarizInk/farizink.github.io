@@ -125,17 +125,17 @@
       <div class="mb-4">
         <!-- Multiple Images Grid -->
         {#if note.files.filter(f => f?.mime_type?.startsWith('image/')).length > 1}
-          <div class="grid grid-cols-2 gap-2 rounded-lg overflow-hidden">
+          <div class="grid grid-cols-2 gap-2 overflow-hidden">
             {#each note.files
               .filter(f => f?.mime_type?.startsWith('image/'))
               .slice(0, 4) as file, index ((file?.id || 'unknown') + '-' + index)}
               <div
-                class="relative group/file-preview aspect-square bg-secondary-100 dark:bg-secondary-800"
+                class="relative group/file-preview aspect-square bg-secondary-100 dark:bg-secondary-900 rounded-lg overflow-hidden"
               >
                 <img
                   src={getFileUrl(file)}
                   alt={file?.metadata?.alt || file?.original_name || 'file'}
-                  class="w-full h-full object-cover"
+                  class="w-full h-full object-cover rounded-lg"
                   onerror={handleImageError}
                 />
                 {#if file === note.files.filter( f => f?.mime_type?.startsWith('image/') )[0] && note.files.filter( f => f?.mime_type?.startsWith('image/') ).length > 4}
@@ -165,12 +165,12 @@
             <img
               src={getFileUrl(note.files?.[0])}
               alt={note.files?.[0].metadata?.alt || note.files?.[0].original_name}
-              class="w-full h-48 object-cover"
+              class="w-full h-48 object-cover rounded-lg"
               onerror={handleImageError}
             />
             <!-- Fallback for broken images -->
             <div
-              class="hidden w-full h-48 bg-secondary-200 dark:bg-secondary-700 flex items-center justify-center"
+              class="hidden w-full h-48 bg-secondary-200 dark:bg-secondary-700 flex items-center justify-center rounded-lg"
             >
               <ImageIcon class="w-12 h-12 text-secondary-400" />
             </div>

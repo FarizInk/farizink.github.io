@@ -134,7 +134,7 @@
   {#snippet body()}
     <div class="px-4 sm:px-6 py-6">
       <!-- Content -->
-      <div class="max-h-[calc(100vh-280px)] overflow-y-auto">
+      <div>
         {#if $isLoadingDeletedNotes && $deletedNotes.length === 0}
           <!-- Loading State -->
           <div class="flex flex-col items-center justify-center py-12">

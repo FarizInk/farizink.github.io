@@ -70,7 +70,7 @@
         files: []
       };
       selectedTagIds = tagUuids; // Sync selected tags (UUIDs)
-      showFileSection = true; // Show file section in edit mode to manage existing files
+      showFileSection = false; // Hide file section by default
       filesToDelete = []; // Clear files to delete
     } else if (mode === 'create' && isOpen) {
       formData = {
@@ -285,7 +285,7 @@
 
 <Modal {isOpen} onClose={closeModal} maxW="max-w-4xl" showCloseButton={false}>
   {#snippet header()}
-    <div class="py-5 px-6 bg-gradient-to-br from-warning-50 to-amber-50 dark:from-primary-900/30 dark:to-primary-800/20 border-b border-warning-200 dark:border-primary-700">
+    <div class="py-3 px-4 bg-gradient-to-br from-warning-50 to-amber-50 dark:from-primary-900/30 dark:to-primary-800/20 border-b border-warning-200 dark:border-primary-700">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-warning-400 to-amber-500 dark:from-primary-500 dark:to-primary-600 flex items-center justify-center shadow-lg">
@@ -299,7 +299,7 @@
             <h2 id="modal-title" class="text-lg font-bold text-gray-900 dark:text-white">
               {title}
             </h2>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
+            <p class="text-sm text-gray-600 dark:text-gray-400 hidden sm:block">
               {mode === 'create' ? 'Create a new note to save your thoughts' : 'Edit your note details'}
             </p>
           </div>
@@ -317,8 +317,7 @@
   {/snippet}
 
   {#snippet body()}
-    <div class="max-h-[calc(100vh-240px)] overflow-y-auto">
-      <div class="px-4 sm:px-6 py-6">
+    <div class="px-4 sm:px-6 py-6">
         <form id="note-form" onsubmit={handleSubmit} class="space-y-4">
         <!-- Name -->
         <div>
@@ -453,53 +452,46 @@
           </div>
         </div>
       </form>
-      </div>
     </div>
   {/snippet}
 
   {#snippet footer()}
-    <div class="py-4 bg-secondary-50 dark:bg-secondary-900/30">
-      <div class="flex items-center justify-between px-6 gap-6">
-        <div class="text-sm text-secondary-600 dark:text-secondary-400">
-          <span>
-            {mode === 'create' ? 'Fill in the details to create a new note' : 'Make changes to your note'}
-          </span>
-        </div>
-        <div class="flex items-center gap-3">
-          <button
-            type="button"
-            onclick={closeModal}
-            class="px-5 py-2.5 border border-secondary-300 dark:border-secondary-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-secondary-50 dark:hover:bg-secondary-800 transition-colors font-medium disabled:opacity-50"
-            disabled={isLoading}
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            class="px-5 py-2.5 bg-gradient-to-r from-warning-500 to-amber-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-600 dark:hover:to-primary-700 dark:from-primary-500 dark:to-primary-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 flex items-center gap-2 disabled:opacity-50"
-            disabled={isLoading || !formData.name?.trim()}
-            onclick={e => {
-              e.preventDefault();
-              const form = document.getElementById('note-form') as HTMLFormElement;
-              if (form) {
-                form.requestSubmit();
-              }
-            }}
-          >
-            {#if isLoading}
-              <Loader class="w-4 h-4 animate-spin" />
-              {mode === 'create' ? 'Creating...' : 'Updating...'}
+    <div class="bg-secondary-50 dark:bg-secondary-900/30">
+      <div class="flex items-center justify-end px-3 gap-2">
+        <button
+          type="button"
+          onclick={closeModal}
+          class="px-2.5 py-2 border border-secondary-300 dark:border-secondary-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-secondary-50 dark:hover:bg-secondary-800 transition-colors font-medium disabled:opacity-50 flex items-center justify-center gap-1.5"
+          disabled={isLoading}
+        >
+          <X class="w-4 h-4" />
+          <span class="hidden sm:inline">Cancel</span>
+        </button>
+        <button
+          type="button"
+          class="px-2.5 py-2 bg-gradient-to-r from-warning-500 to-amber-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-600 dark:hover:to-primary-700 dark:from-primary-500 dark:to-primary-600 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 flex items-center justify-center gap-1.5 disabled:opacity-50"
+          disabled={isLoading || !formData.name?.trim()}
+          onclick={e => {
+            e.preventDefault();
+            const form = document.getElementById('note-form') as HTMLFormElement;
+            if (form) {
+              form.requestSubmit();
+            }
+          }}
+        >
+          {#if isLoading}
+            <Loader class="w-4 h-4 animate-spin" />
+            <span class="hidden sm:inline">{mode === 'create' ? 'Creating...' : 'Updating...'}</span>
+          {:else}
+            {#if mode === 'create'}
+              <Plus class="w-4 h-4" />
+              <span class="hidden sm:inline">Create Note</span>
             {:else}
-              {#if mode === 'create'}
-                <Plus class="w-4 h-4" />
-                Create Note
-              {:else}
-                <Edit2 class="w-4 h-4" />
-                Update Note
-              {/if}
+              <Edit2 class="w-4 h-4" />
+              <span class="hidden sm:inline">Update Note</span>
             {/if}
-          </button>
-        </div>
+          {/if}
+        </button>
       </div>
     </div>
   {/snippet}

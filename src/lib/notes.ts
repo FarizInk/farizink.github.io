@@ -34,6 +34,7 @@ export interface Note {
   id: string;
   name: string | null;
   link: string | null;
+  link_summarize: string | null;
   description: string | null;
   is_public: boolean;
   is_favorite: boolean;
@@ -701,6 +702,31 @@ export function convertApiTagsToTagIds(note: Note): string[] {
   }
 
   return note.tags.map(tag => tag.id).filter(id => id && id.trim().length > 0);
+}
+
+export interface RegenerateSummarizeResponse {
+  data: Note;
+}
+
+/**
+ * Regenerate link summarize for a note
+ * Requires authentication
+ */
+export async function regenerateSummarize(id: string): Promise<RegenerateSummarizeResponse> {
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
+  if (!token) {
+    throw new Error('Authentication required');
+  }
+
+  const response = await apiClient.post(
+    `/api/notes/${id}/regenerate-summarize`,
+    {},
+    {
+      timeout: 30000 // Longer timeout for AI summarization
+    }
+  );
+
+  return response.data;
 }
 
 export function validateTagIds(

@@ -258,7 +258,7 @@
 <!-- Backdrop -->
 {#if isOpen}
   <div
-    class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] flex items-center justify-center"
+    class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] flex items-center justify-center"
     onclick={e => {
       // Only close if clicking the backdrop (not the modal content)
       if (e.target === e.currentTarget) {

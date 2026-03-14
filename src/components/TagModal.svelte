@@ -256,9 +256,9 @@
   {/snippet}
 
   {#snippet body()}
-    <div class="px-6 py-5" style="max-height: calc(90vh - 220px);">
+    <div class="px-6 py-5">
       <!-- Tags List -->
-      <div class="overflow-y-auto p-2" style="max-height: calc(90vh - 220px);">
+      <div class="p-2">
         {#if isAnyLoading}
           <div class="flex flex-col items-center justify-center py-16">
             <div class="relative">

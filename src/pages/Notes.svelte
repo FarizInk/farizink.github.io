@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Note } from '../lib/notes';
-  import { deleteNote, getNote, type NoteFilters } from '../lib/notes';
+  import { deleteNote, getNote, regenerateSummarize, type NoteFilters } from '../lib/notes';
   import { toast } from 'svelte-sonner';
   import { tagsStore } from '../lib/stores/tags';
   import { notesStore, notes, isLoadingNotes, hasMore, totalCount } from '../lib/stores/notes';
@@ -30,7 +30,8 @@
     Sparkles,
     Filter,
     X,
-    BookOpen
+    BookOpen,
+    Loader2
   } from '@lucide/svelte';
   import { onMount } from 'svelte';
 
@@ -39,6 +40,8 @@
   let singleNote = $state<Note | null>(null);
   let isLoadingSingleNote = $state(false);
   let isLoadingMore = $state(false);
+  let isRegeneratingSummarize = $state(false);
+  let isSummaryFull = $state(false);
 
   let searchQuery = $state('');
 
@@ -251,6 +254,26 @@
       });
   }
 
+  async function handleRegenerateSummarize(note: Note) {
+    if (!note.link) return;
+
+    isRegeneratingSummarize = true;
+    try {
+      const response = await regenerateSummarize(note.id);
+      // Update the note with new link_summarize
+      if (singleNote && singleNote.id === note.id) {
+        singleNote.link_summarize = response.data.link_summarize;
+      }
+      toast.success('Link summary regenerated successfully!');
+    } catch (error) {
+      console.error('Regenerate summarize error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to regenerate summary';
+      toast.error(errorMessage);
+    } finally {
+      isRegeneratingSummarize = false;
+    }
+  }
+
   function getActiveFilterCount() {
     const count = Object.entries(activeFilters).filter(([key, value]) => {
       if (key === 'sortBy' && value === 'created_at') return false;
@@ -422,14 +445,14 @@
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex items-center gap-3 mt-4">
+        <div class="flex flex-wrap items-center gap-3 mt-4">
           <!-- Filter Button -->
           <button
             onclick={openFilterModal}
             class="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl font-medium text-sm transition-all hover:bg-warning-50 dark:hover:bg-gray-700 hover:border-warning-500/50 dark:hover:border-primary-500/50 hover:-translate-y-0.5 {getActiveFilterCount() > 0 ? 'ring-2 ring-warning-500/20 dark:ring-primary-500/20' : ''}"
           >
             <Filter class="w-4 h-4" />
-            <span>Filter</span>
+            <span class="hidden sm:inline">Filter</span>
             {#if getActiveFilterCount() > 0}
               <span
                 class="flex items-center justify-center min-w-6 h-5 px-1.5 bg-warning-500 dark:bg-primary-500 rounded-full text-xs font-bold text-white"
@@ -693,7 +716,7 @@
             <div
               class="p-4 bg-warning-50 dark:bg-primary-900/10 rounded-xl border border-warning-200 dark:border-primary-800"
             >
-              <div class="flex items-center gap-3">
+              <div class="flex items-center gap-3 mb-3">
                 <div
                   class="flex items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-gray-800"
                 >
@@ -719,18 +742,61 @@
                   Visit
                 </button>
               </div>
+
+              <!-- Link Summarize Section -->
+              <div class="mt-3 pt-3 border-t border-warning-200 dark:border-primary-700">
+                <div class="flex items-center justify-between mb-2">
+                  <p class="text-sm font-semibold text-warning-900 dark:text-primary-100 flex items-center gap-1.5">
+                    <Sparkles class="w-4 h-4" />
+                    AI Summary
+                  </p>
+                  <div class="flex items-center gap-2">
+                    {#if singleNote.link_summarize && (singleNote.link_summarize.length > 150)}
+                      <button
+                        onclick={() => (isSummaryFull = !isSummaryFull)}
+                        class="text-xs text-warning-700 dark:text-primary-300 hover:text-warning-800 dark:hover:text-primary-200 font-medium transition-colors"
+                      >
+                        {isSummaryFull ? 'Show less' : 'Show more'}
+                      </button>
+                    {/if}
+                    {#if hasAuthToken}
+                      <button
+                        onclick={() => handleRegenerateSummarize(singleNote)}
+                        disabled={isRegeneratingSummarize}
+                        class="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-gradient-to-r from-warning-500 to-amber-500 dark:from-primary-600 dark:to-primary-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-700 dark:hover:to-primary-600 text-white rounded-lg transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                        title="Regenerate AI summary"
+                      >
+                        {#if isRegeneratingSummarize}
+                          <Loader2 class="w-3.5 h-3.5 animate-spin" />
+                          <span>Regenerating...</span>
+                        {:else}
+                          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                          </svg>
+                          <span>Regenerate</span>
+                        {/if}
+                      </button>
+                    {/if}
+                  </div>
+                </div>
+                {#if singleNote.link_summarize}
+                  <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                    {isSummaryFull || singleNote.link_summarize.length <= 150
+                      ? singleNote.link_summarize
+                      : singleNote.link_summarize.slice(0, 150) + '...'}
+                  </p>
+                {:else}
+                  <p class="text-sm text-gray-500 dark:text-gray-400 italic">
+                    No summary available yet.{#if hasAuthToken} Click regenerate to generate AI summary.{/if}
+                  </p>
+                {/if}
+              </div>
             </div>
           {/if}
 
           <!-- Description -->
           {#if singleNote.description}
             <div>
-              <h3
-                class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2"
-              >
-                <div class="w-1 h-6 bg-gradient-to-b from-warning-500 to-amber-500 dark:from-primary-400 dark:to-primary-500 rounded-full"></div>
-                Description
-              </h3>
               <div
                 class="prose prose-sm max-w-none dark:prose-invert text-gray-700 dark:text-gray-300"
               >
@@ -753,13 +819,13 @@
                   <div
                     class="group relative bg-gray-50 dark:bg-gray-800 rounded-xl overflow-hidden hover:shadow-lg transition-all border border-gray-200 dark:border-gray-700"
                   >
-                    <div class="aspect-square bg-gray-100 dark:bg-gray-700">
+                    <div class="aspect-square bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
                       <img
                         src={file.presigned_url ||
                           file.url ||
                           `data:${file.mime_type};base64,${file.data}`}
                         alt={file.original_name}
-                        class="w-full h-full object-cover"
+                        class="w-full h-full object-cover rounded-lg"
                       />
                     </div>
                     <div
