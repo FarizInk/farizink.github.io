@@ -1,6 +1,8 @@
 import Home from '../pages/Home.svelte';
 import Notes from '../pages/Notes.svelte';
-import { House, FileText, User } from '@lucide/svelte';
+import TempUpload from '../pages/TempUpload.svelte';
+import Files from '../pages/Files.svelte';
+import { House, FileText, User, Upload } from '@lucide/svelte';
 
 export const mainRoutes = [
   {
@@ -32,5 +34,25 @@ export const mainRoutes = [
     keywords: 'login, sign in, authentication, account',
     robots: 'noindex, nofollow',
     icon: User
+  },
+  {
+    path: '/temp-upload',
+    component: TempUpload,
+    title: 'Temp File Upload - Fariz',
+    description:
+      'Upload and share files temporarily with auto-delete after 24 hours. Fast, secure, and free temporary file hosting.',
+    keywords:
+      'file upload, temp file, share files, temporary storage, file sharing, upload files, 24 hour storage',
+    robots: 'index, follow',
+    icon: Upload
+  },
+  {
+    path: '/files/:code',
+    component: Files,
+    title: 'Shared Files - Fariz',
+    description: 'Download shared temporary files',
+    keywords: 'download, shared files, temp files',
+    robots: 'noindex, nofollow',
+    icon: FileText
   }
 ];

@@ -136,7 +136,11 @@
 
   // Create dynamic routes based on auth state
   let dynamicRoutes = $derived.by(() => {
-    const baseRoutes = allRoutes.filter(route => route.path !== '/login');
+    // Filter out dynamic routes (containing ':') and login route from base routes
+    const baseRoutes = allRoutes.filter(route =>
+      route.path !== '/login' &&
+      !route.path.includes(':') // Exclude dynamic parameter routes like /files/:code
+    );
     const authRoute: Route = authState.isLoggedIn
       ? {
           path: '/logout',
