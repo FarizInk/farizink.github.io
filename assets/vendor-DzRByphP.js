@@ -2794,7 +2794,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"}],["circle",{cx:"13.5",cy:"6.5",r:".5",fill:"currentColor"}],["circle",{cx:"17.5",cy:"10.5",r:".5",fill:"currentColor"}],["circle",{cx:"6.5",cy:"12.5",r:".5",fill:"currentColor"}],["circle",{cx:"8.5",cy:"7.5",r:".5",fill:"currentColor"}]];m(t,p({name:"palette"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Xo(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"}],["path",{d:"M12 22V12"}],["polyline",{points:"3.29 7 12 12 20.71 7"}],["path",{d:"m7.5 4.27 9 5.15"}]];m(t,p({name:"package"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Xo(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2837,7 +2837,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m16 6-8.414 8.586a2 2 0 0 0 2.829 2.829l8.414-8.586a4 4 0 1 0-5.657-5.657l-8.379 8.551a6 6 0 1 0 8.485 8.485l8.379-8.551"}]];m(t,p({name:"paperclip"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Jo(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"}],["circle",{cx:"13.5",cy:"6.5",r:".5",fill:"currentColor"}],["circle",{cx:"17.5",cy:"10.5",r:".5",fill:"currentColor"}],["circle",{cx:"6.5",cy:"12.5",r:".5",fill:"currentColor"}],["circle",{cx:"8.5",cy:"7.5",r:".5",fill:"currentColor"}]];m(t,p({name:"palette"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Jo(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2880,7 +2880,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{x:"14",y:"3",width:"5",height:"18",rx:"1"}],["rect",{x:"5",y:"3",width:"5",height:"18",rx:"1"}]];m(t,p({name:"pause"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function es(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m16 6-8.414 8.586a2 2 0 0 0 2.829 2.829l8.414-8.586a4 4 0 1 0-5.657-5.657l-8.379 8.551a6 6 0 1 0 8.485 8.485l8.379-8.551"}]];m(t,p({name:"paperclip"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function es(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2923,7 +2923,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"}]];m(t,p({name:"pen"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ts(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{x:"14",y:"3",width:"5",height:"18",rx:"1"}],["rect",{x:"5",y:"3",width:"5",height:"18",rx:"1"}]];m(t,p({name:"pause"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ts(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2966,7 +2966,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"}],["path",{d:"m15 5 4 4"}]];m(t,p({name:"pencil"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ns(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"}]];m(t,p({name:"pen"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ns(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3009,7 +3009,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["line",{x1:"19",x2:"5",y1:"5",y2:"19"}],["circle",{cx:"6.5",cy:"6.5",r:"2.5"}],["circle",{cx:"17.5",cy:"17.5",r:"2.5"}]];m(t,p({name:"percent"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function rs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"}],["path",{d:"m15 5 4 4"}]];m(t,p({name:"pencil"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function rs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3052,7 +3052,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"}]];m(t,p({name:"play"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function as(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["line",{x1:"19",x2:"5",y1:"5",y2:"19"}],["circle",{cx:"6.5",cy:"6.5",r:"2.5"}],["circle",{cx:"17.5",cy:"17.5",r:"2.5"}]];m(t,p({name:"percent"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function as(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3095,7 +3095,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M5 12h14"}],["path",{d:"M12 5v14"}]];m(t,p({name:"plus"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ls(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"}]];m(t,p({name:"play"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ls(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3138,7 +3138,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{width:"5",height:"5",x:"3",y:"3",rx:"1"}],["rect",{width:"5",height:"5",x:"16",y:"3",rx:"1"}],["rect",{width:"5",height:"5",x:"3",y:"16",rx:"1"}],["path",{d:"M21 16h-3a2 2 0 0 0-2 2v3"}],["path",{d:"M21 21v.01"}],["path",{d:"M12 7v3a2 2 0 0 1-2 2H7"}],["path",{d:"M3 12h.01"}],["path",{d:"M12 3h.01"}],["path",{d:"M12 16v.01"}],["path",{d:"M16 12h1"}],["path",{d:"M21 12v.01"}],["path",{d:"M12 21v-1"}]];m(t,p({name:"qr-code"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function os(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M5 12h14"}],["path",{d:"M12 5v14"}]];m(t,p({name:"plus"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function os(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3181,7 +3181,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"}],["path",{d:"M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"}]];m(t,p({name:"quote"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ss(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{width:"5",height:"5",x:"3",y:"3",rx:"1"}],["rect",{width:"5",height:"5",x:"16",y:"3",rx:"1"}],["rect",{width:"5",height:"5",x:"3",y:"16",rx:"1"}],["path",{d:"M21 16h-3a2 2 0 0 0-2 2v3"}],["path",{d:"M21 21v.01"}],["path",{d:"M12 7v3a2 2 0 0 1-2 2H7"}],["path",{d:"M3 12h.01"}],["path",{d:"M12 3h.01"}],["path",{d:"M12 16v.01"}],["path",{d:"M16 12h1"}],["path",{d:"M21 12v.01"}],["path",{d:"M12 21v-1"}]];m(t,p({name:"qr-code"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ss(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3224,7 +3224,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21 7v6h-6"}],["path",{d:"M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"}]];m(t,p({name:"redo"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function is(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"}],["path",{d:"M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"}]];m(t,p({name:"quote"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function is(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3267,7 +3267,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"}],["path",{d:"M21 3v5h-5"}],["path",{d:"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"}],["path",{d:"M8 16H3v5"}]];m(t,p({name:"refresh-cw"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function us(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21 7v6h-6"}],["path",{d:"M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"}]];m(t,p({name:"redo"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function us(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3310,7 +3310,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"}],["path",{d:"M3 3v5h5"}]];m(t,p({name:"rotate-ccw"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function cs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"}],["path",{d:"M21 3v5h-5"}],["path",{d:"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"}],["path",{d:"M8 16H3v5"}]];m(t,p({name:"refresh-cw"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function cs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3353,7 +3353,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"}],["path",{d:"M21 3v5h-5"}]];m(t,p({name:"rotate-cw"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function fs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"}],["path",{d:"M3 3v5h5"}]];m(t,p({name:"rotate-ccw"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function fs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3396,7 +3396,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"}],["path",{d:"m14.5 12.5 2-2"}],["path",{d:"m11.5 9.5 2-2"}],["path",{d:"m8.5 6.5 2-2"}],["path",{d:"m17.5 15.5 2-2"}]];m(t,p({name:"ruler"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ds(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"}],["path",{d:"M21 3v5h-5"}]];m(t,p({name:"rotate-cw"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ds(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3439,7 +3439,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"}],["path",{d:"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"}],["path",{d:"M7 3v4a1 1 0 0 0 1 1h7"}]];m(t,p({name:"save"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function vs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"}],["path",{d:"m14.5 12.5 2-2"}],["path",{d:"m11.5 9.5 2-2"}],["path",{d:"m8.5 6.5 2-2"}],["path",{d:"m17.5 15.5 2-2"}]];m(t,p({name:"ruler"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function vs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3482,7 +3482,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m21 21-4.34-4.34"}],["circle",{cx:"11",cy:"11",r:"8"}]];m(t,p({name:"search"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function hs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"}],["path",{d:"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"}],["path",{d:"M7 3v4a1 1 0 0 0 1 1h7"}]];m(t,p({name:"save"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function hs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3525,7 +3525,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M14 17H5"}],["path",{d:"M19 7h-9"}],["circle",{cx:"17",cy:"17",r:"3"}],["circle",{cx:"7",cy:"7",r:"3"}]];m(t,p({name:"settings-2"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function $s(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m21 21-4.34-4.34"}],["circle",{cx:"11",cy:"11",r:"8"}]];m(t,p({name:"search"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function $s(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3568,7 +3568,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"}],["circle",{cx:"12",cy:"12",r:"3"}]];m(t,p({name:"settings"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function _s(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M14 17H5"}],["path",{d:"M19 7h-9"}],["circle",{cx:"17",cy:"17",r:"3"}],["circle",{cx:"7",cy:"7",r:"3"}]];m(t,p({name:"settings-2"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function _s(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3611,7 +3611,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"18",cy:"5",r:"3"}],["circle",{cx:"6",cy:"12",r:"3"}],["circle",{cx:"18",cy:"19",r:"3"}],["line",{x1:"8.59",x2:"15.42",y1:"13.51",y2:"17.49"}],["line",{x1:"15.41",x2:"8.59",y1:"6.51",y2:"10.49"}]];m(t,p({name:"share-2"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function gs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"}],["circle",{cx:"12",cy:"12",r:"3"}]];m(t,p({name:"settings"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function gs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3654,7 +3654,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"}]];m(t,p({name:"shield"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ps(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"18",cy:"5",r:"3"}],["circle",{cx:"6",cy:"12",r:"3"}],["circle",{cx:"18",cy:"19",r:"3"}],["line",{x1:"8.59",x2:"15.42",y1:"13.51",y2:"17.49"}],["line",{x1:"15.41",x2:"8.59",y1:"6.51",y2:"10.49"}]];m(t,p({name:"share-2"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ps(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3697,7 +3697,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m18 14 4 4-4 4"}],["path",{d:"m18 2 4 4-4 4"}],["path",{d:"M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22"}],["path",{d:"M2 6h1.972a4 4 0 0 1 3.6 2.2"}],["path",{d:"M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45"}]];m(t,p({name:"shuffle"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ms(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"}]];m(t,p({name:"shield"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ms(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3740,7 +3740,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M10 5H3"}],["path",{d:"M12 19H3"}],["path",{d:"M14 3v4"}],["path",{d:"M16 17v4"}],["path",{d:"M21 12h-9"}],["path",{d:"M21 19h-5"}],["path",{d:"M21 5h-7"}],["path",{d:"M8 10v4"}],["path",{d:"M8 12H3"}]];m(t,p({name:"sliders-horizontal"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ys(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m18 14 4 4-4 4"}],["path",{d:"m18 2 4 4-4 4"}],["path",{d:"M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22"}],["path",{d:"M2 6h1.972a4 4 0 0 1 3.6 2.2"}],["path",{d:"M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45"}]];m(t,p({name:"shuffle"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ys(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3783,7 +3783,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"}],["path",{d:"M20 2v4"}],["path",{d:"M22 4h-4"}],["circle",{cx:"4",cy:"20",r:"2"}]];m(t,p({name:"sparkles"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function bs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M10 5H3"}],["path",{d:"M12 19H3"}],["path",{d:"M14 3v4"}],["path",{d:"M16 17v4"}],["path",{d:"M21 12h-9"}],["path",{d:"M21 19h-5"}],["path",{d:"M21 5h-7"}],["path",{d:"M8 10v4"}],["path",{d:"M8 12H3"}]];m(t,p({name:"sliders-horizontal"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function bs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3826,7 +3826,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"}],["path",{d:"M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"}]];m(t,p({name:"square-pen"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Ns(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"}],["path",{d:"M20 2v4"}],["path",{d:"M22 4h-4"}],["circle",{cx:"4",cy:"20",r:"2"}]];m(t,p({name:"sparkles"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Ns(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3869,7 +3869,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"}]];m(t,p({name:"star"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Ms(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"}],["path",{d:"M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"}]];m(t,p({name:"square-pen"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Ms(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3912,7 +3912,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 4H9a3 3 0 0 0-2.83 4"}],["path",{d:"M14 12a4 4 0 0 1 0 8H6"}],["line",{x1:"4",x2:"20",y1:"12",y2:"12"}]];m(t,p({name:"strikethrough"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ws(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"}]];m(t,p({name:"star"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ws(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3955,7 +3955,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"12",cy:"12",r:"4"}],["path",{d:"M12 2v2"}],["path",{d:"M12 20v2"}],["path",{d:"m4.93 4.93 1.41 1.41"}],["path",{d:"m17.66 17.66 1.41 1.41"}],["path",{d:"M2 12h2"}],["path",{d:"M20 12h2"}],["path",{d:"m6.34 17.66-1.41 1.41"}],["path",{d:"m19.07 4.93-1.41 1.41"}]];m(t,p({name:"sun"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Ps(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 4H9a3 3 0 0 0-2.83 4"}],["path",{d:"M14 12a4 4 0 0 1 0 8H6"}],["line",{x1:"4",x2:"20",y1:"12",y2:"12"}]];m(t,p({name:"strikethrough"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Ps(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3998,7 +3998,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"}],["circle",{cx:"7.5",cy:"7.5",r:".5",fill:"currentColor"}]];m(t,p({name:"tag"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function xs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"12",cy:"12",r:"4"}],["path",{d:"M12 2v2"}],["path",{d:"M12 20v2"}],["path",{d:"m4.93 4.93 1.41 1.41"}],["path",{d:"m17.66 17.66 1.41 1.41"}],["path",{d:"M2 12h2"}],["path",{d:"M20 12h2"}],["path",{d:"m6.34 17.66-1.41 1.41"}],["path",{d:"m19.07 4.93-1.41 1.41"}]];m(t,p({name:"sun"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function xs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4041,7 +4041,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M13.172 2a2 2 0 0 1 1.414.586l6.71 6.71a2.4 2.4 0 0 1 0 3.408l-4.592 4.592a2.4 2.4 0 0 1-3.408 0l-6.71-6.71A2 2 0 0 1 6 9.172V3a1 1 0 0 1 1-1z"}],["path",{d:"M2 7v6.172a2 2 0 0 0 .586 1.414l6.71 6.71a2.4 2.4 0 0 0 3.191.193"}],["circle",{cx:"10.5",cy:"6.5",r:".5",fill:"currentColor"}]];m(t,p({name:"tags"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Es(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"}],["circle",{cx:"7.5",cy:"7.5",r:".5",fill:"currentColor"}]];m(t,p({name:"tag"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Es(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4084,7 +4084,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"12",cy:"12",r:"10"}],["circle",{cx:"12",cy:"12",r:"6"}],["circle",{cx:"12",cy:"12",r:"2"}]];m(t,p({name:"target"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function As(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M13.172 2a2 2 0 0 1 1.414.586l6.71 6.71a2.4 2.4 0 0 1 0 3.408l-4.592 4.592a2.4 2.4 0 0 1-3.408 0l-6.71-6.71A2 2 0 0 1 6 9.172V3a1 1 0 0 1 1-1z"}],["path",{d:"M2 7v6.172a2 2 0 0 0 .586 1.414l6.71 6.71a2.4 2.4 0 0 0 3.191.193"}],["circle",{cx:"10.5",cy:"6.5",r:".5",fill:"currentColor"}]];m(t,p({name:"tags"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function As(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4127,7 +4127,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"}]];m(t,p({name:"thermometer"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ks(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"12",cy:"12",r:"10"}],["circle",{cx:"12",cy:"12",r:"6"}],["circle",{cx:"12",cy:"12",r:"2"}]];m(t,p({name:"target"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function ks(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4170,7 +4170,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["line",{x1:"10",x2:"14",y1:"2",y2:"2"}],["line",{x1:"12",x2:"15",y1:"14",y2:"11"}],["circle",{cx:"12",cy:"14",r:"8"}]];m(t,p({name:"timer"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Ss(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"}]];m(t,p({name:"thermometer"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Ss(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4213,7 +4213,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M10 11v6"}],["path",{d:"M14 11v6"}],["path",{d:"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"}],["path",{d:"M3 6h18"}],["path",{d:"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"}]];m(t,p({name:"trash-2"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Cs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["line",{x1:"10",x2:"14",y1:"2",y2:"2"}],["line",{x1:"12",x2:"15",y1:"14",y2:"11"}],["circle",{cx:"12",cy:"14",r:"8"}]];m(t,p({name:"timer"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Cs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4256,7 +4256,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 17h6v-6"}],["path",{d:"m22 17-8.5-8.5-5 5L2 7"}]];m(t,p({name:"trending-down"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Ts(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M10 11v6"}],["path",{d:"M14 11v6"}],["path",{d:"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"}],["path",{d:"M3 6h18"}],["path",{d:"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"}]];m(t,p({name:"trash-2"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Ts(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4299,7 +4299,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 7h6v6"}],["path",{d:"m22 7-8.5 8.5-5-5L2 17"}]];m(t,p({name:"trending-up"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Ls(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 17h6v-6"}],["path",{d:"m22 17-8.5-8.5-5 5L2 7"}]];m(t,p({name:"trending-down"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Ls(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4342,7 +4342,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"}],["path",{d:"M12 9v4"}],["path",{d:"M12 17h.01"}]];m(t,p({name:"triangle-alert"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Os(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 7h6v6"}],["path",{d:"m22 7-8.5 8.5-5-5L2 17"}]];m(t,p({name:"trending-up"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Os(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4385,7 +4385,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"}]];m(t,p({name:"twitter"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Hs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"}],["path",{d:"M12 9v4"}],["path",{d:"M12 17h.01"}]];m(t,p({name:"triangle-alert"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Hs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4428,7 +4428,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 4v16"}],["path",{d:"M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2"}],["path",{d:"M9 20h6"}]];m(t,p({name:"type"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Vs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"}]];m(t,p({name:"twitter"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Vs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4471,7 +4471,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 7v6h6"}],["path",{d:"M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"}]];m(t,p({name:"undo"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Is(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 4v16"}],["path",{d:"M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2"}],["path",{d:"M9 20h6"}]];m(t,p({name:"type"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Is(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4514,7 +4514,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 3v12"}],["path",{d:"m17 8-5-5-5 5"}],["path",{d:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}]];m(t,p({name:"upload"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Rs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 7v6h6"}],["path",{d:"M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"}]];m(t,p({name:"undo"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Rs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4557,7 +4557,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"}],["circle",{cx:"12",cy:"7",r:"4"}]];m(t,p({name:"user"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Ds(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 3v12"}],["path",{d:"m17 8-5-5-5 5"}],["path",{d:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}]];m(t,p({name:"upload"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Ds(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4600,7 +4600,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"}],["path",{d:"M16 3.128a4 4 0 0 1 0 7.744"}],["path",{d:"M22 21v-2a4 4 0 0 0-3-3.87"}],["circle",{cx:"9",cy:"7",r:"4"}]];m(t,p({name:"users"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Fs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"}],["circle",{cx:"12",cy:"7",r:"4"}]];m(t,p({name:"user"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Fs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4643,7 +4643,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"}],["path",{d:"M7 2v20"}],["path",{d:"M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"}]];m(t,p({name:"utensils"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function zs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"}],["path",{d:"M16 3.128a4 4 0 0 1 0 7.744"}],["path",{d:"M22 21v-2a4 4 0 0 0-3-3.87"}],["circle",{cx:"9",cy:"7",r:"4"}]];m(t,p({name:"users"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function zs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4686,7 +4686,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"}]];m(t,p({name:"volume"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function qs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"}],["path",{d:"M7 2v20"}],["path",{d:"M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"}]];m(t,p({name:"utensils"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function qs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4729,7 +4729,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"}],["path",{d:"m14 7 3 3"}],["path",{d:"M5 6v4"}],["path",{d:"M19 14v4"}],["path",{d:"M10 2v2"}],["path",{d:"M7 8H3"}],["path",{d:"M21 16h-4"}],["path",{d:"M11 3H9"}]];m(t,p({name:"wand-sparkles"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function js(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"}]];m(t,p({name:"volume"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function js(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4772,7 +4772,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"12",cy:"5",r:"3"}],["path",{d:"M6.5 8a2 2 0 0 0-1.905 1.46L2.1 18.5A2 2 0 0 0 4 21h16a2 2 0 0 0 1.925-2.54L19.4 9.5A2 2 0 0 0 17.48 8Z"}]];m(t,p({name:"weight"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Us(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"}],["path",{d:"m14 7 3 3"}],["path",{d:"M5 6v4"}],["path",{d:"M19 14v4"}],["path",{d:"M10 2v2"}],["path",{d:"M7 8H3"}],["path",{d:"M21 16h-4"}],["path",{d:"M11 3H9"}]];m(t,p({name:"wand-sparkles"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Us(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4815,7 +4815,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 20h.01"}],["path",{d:"M8.5 16.429a5 5 0 0 1 7 0"}],["path",{d:"M5 12.859a10 10 0 0 1 5.17-2.69"}],["path",{d:"M19 12.859a10 10 0 0 0-2.007-1.523"}],["path",{d:"M2 8.82a15 15 0 0 1 4.177-2.643"}],["path",{d:"M22 8.82a15 15 0 0 0-11.288-3.764"}],["path",{d:"m2 2 20 20"}]];m(t,p({name:"wifi-off"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Bs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"12",cy:"5",r:"3"}],["path",{d:"M6.5 8a2 2 0 0 0-1.905 1.46L2.1 18.5A2 2 0 0 0 4 21h16a2 2 0 0 0 1.925-2.54L19.4 9.5A2 2 0 0 0 17.48 8Z"}]];m(t,p({name:"weight"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Bs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4858,7 +4858,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 20h.01"}],["path",{d:"M2 8.82a15 15 0 0 1 20 0"}],["path",{d:"M5 12.859a10 10 0 0 1 14 0"}],["path",{d:"M8.5 16.429a5 5 0 0 1 7 0"}]];m(t,p({name:"wifi"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Ws(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 20h.01"}],["path",{d:"M8.5 16.429a5 5 0 0 1 7 0"}],["path",{d:"M5 12.859a10 10 0 0 1 5.17-2.69"}],["path",{d:"M19 12.859a10 10 0 0 0-2.007-1.523"}],["path",{d:"M2 8.82a15 15 0 0 1 4.177-2.643"}],["path",{d:"M22 8.82a15 15 0 0 0-11.288-3.764"}],["path",{d:"m2 2 20 20"}]];m(t,p({name:"wifi-off"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Ws(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4901,7 +4901,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"}]];m(t,p({name:"wrench"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Ys(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 20h.01"}],["path",{d:"M2 8.82a15 15 0 0 1 20 0"}],["path",{d:"M5 12.859a10 10 0 0 1 14 0"}],["path",{d:"M8.5 16.429a5 5 0 0 1 7 0"}]];m(t,p({name:"wifi"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Ys(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4944,7 +4944,7 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M18 6 6 18"}],["path",{d:"m6 6 12 12"}]];m(t,p({name:"x"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Gs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"}]];m(t,p({name:"wrench"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Gs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4987,4 +4987,47 @@ typeof window<"u"&&((window.__svelte??={}).v??=new Set).add("5");const vt=1,ht=2
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"}]];m(t,p({name:"zap"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}export{Do as $,ml as A,_l as B,hl as C,$l as D,ce as E,Ue as F,Ra as G,Il as H,Qa as I,yl as J,_ as K,c as L,p as M,Ml as N,wl as O,Aa as P,gn as Q,g as R,je as S,xl as T,Fa as U,Jo as V,rs as W,Ys as X,Zo as Y,Rl as Z,sl as _,Oe as a,No as a$,Xl as a0,Xo as a1,_s as a2,us as a3,Ss as a4,ts as a5,Vo as a6,wo as a7,Ll as a8,xs as a9,io as aA,mo as aB,ys as aC,kl as aD,bs as aE,bo as aF,jo as aG,ko as aH,Hs as aI,cs as aJ,ds as aK,El as aL,Ps as aM,Po as aN,ql as aO,Bl as aP,Ns as aQ,ms as aR,Ao as aS,Bo as aT,is as aU,bl as aV,sa as aW,Kl as aX,Ho as aY,Mo as aZ,Rs as a_,so as aa,eo as ab,vs as ac,Ol as ad,Is as ae,Ls as af,go as ag,Vs as ah,ss as ai,Zl as aj,Ro as ak,Ms as al,uo as am,So as an,Co as ao,To as ap,qo as aq,zo as ar,os as as,Fo as at,Fl as au,Vl as av,Uo as aw,as as ax,es as ay,Dl as az,ee as b,Ql as b0,Eo as b1,ls as b2,Qo as b3,Gs as b4,no as b5,jl as b6,qs as b7,vo as b8,Tl as b9,xo as bA,ps as bB,$o as bC,Fs as bD,ks as bE,co as bF,$s as bG,Gl as bH,pl as bI,Yl as bJ,Wl as bK,Ws as bL,Wo as bM,fo as bN,ws as bO,Ko as bP,Yo as bQ,Go as bR,on as bS,oo as bT,Us as bU,ro as bV,to as bW,Bs as bX,lo as bY,Pl as bZ,ao as ba,Oo as bb,gs as bc,ho as bd,hs as be,Io as bf,Cl as bg,Tr as bh,Jl as bi,po as bj,yo as bk,Ds as bl,_o as bm,Os as bn,Ul as bo,fs as bp,js as bq,As as br,zs as bs,ns as bt,Ts as bu,Cs as bv,zl as bw,Lo as bx,Es as by,Hl as bz,$ as c,xa as d,f as e,h as f,R as g,v as h,Al as i,Sl as j,na as k,Nl as l,ca as m,ua as n,qa as o,d as p,Ya as q,Ka as r,de as s,ya as t,ga as u,_n as v,ol as w,H as x,re as y,gl as z};
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M18 6 6 18"}],["path",{d:"m6 6 12 12"}]];m(t,p({name:"x"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}function Zs(t,e){d(e,!0);/**
+ * @license @lucide/svelte v0.544.0 - ISC
+ *
+ * ISC License
+ *
+ * Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2023 as part of Feather (MIT). All other copyright (c) for Lucide are held by Lucide Contributors 2025.
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *
+ * ---
+ *
+ * The MIT License (MIT) (for portions derived from Feather)
+ *
+ * Copyright (c) 2013-2023 Cole Bemis
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"}]];m(t,p({name:"zap"},()=>n,{get iconNode(){return r},children:(l,s)=>{var a=$(),o=h(a);_(o,()=>e.children??c),f(l,a)},$$slots:{default:!0}})),v()}export{Do as $,ml as A,_l as B,hl as C,$l as D,ce as E,Ue as F,Ra as G,Il as H,Qa as I,yl as J,_ as K,c as L,p as M,Ml as N,wl as O,Aa as P,gn as Q,g as R,je as S,xl as T,Fa as U,es as V,as as W,Gs as X,Zo as Y,Rl as Z,sl as _,Oe as a,da as a$,Xl as a0,Jo as a1,gs as a2,cs as a3,Cs as a4,ns as a5,Vo as a6,wo as a7,Ll as a8,Es as a9,io as aA,mo as aB,bs as aC,kl as aD,Ns as aE,bo as aF,jo as aG,ko as aH,Vs as aI,fs as aJ,vs as aK,El as aL,xs as aM,Po as aN,ql as aO,Bl as aP,Ms as aQ,ys as aR,Ao as aS,Bo as aT,us as aU,bl as aV,sa as aW,Kl as aX,vo as aY,Tl as aZ,Qo as a_,so as aa,eo as ab,hs as ac,Ol as ad,Rs as ae,Os as af,go as ag,Is as ah,is as ai,Zl as aj,Ro as ak,ws as al,uo as am,So as an,Co as ao,To as ap,qo as aq,zo as ar,ss as as,Fo as at,Fl as au,Vl as av,Uo as aw,ls as ax,ts as ay,Dl as az,ee as b,Pl as b$,jl as b0,ao as b1,Ho as b2,Mo as b3,Ds as b4,No as b5,Ql as b6,Eo as b7,os as b8,Xo as b9,As as bA,Hl as bB,xo as bC,ms as bD,$o as bE,zs as bF,Ss as bG,co as bH,_s as bI,Gl as bJ,pl as bK,Yl as bL,Wl as bM,Ys as bN,Wo as bO,fo as bP,Ps as bQ,Ko as bR,Yo as bS,Go as bT,on as bU,oo as bV,Bs as bW,ro as bX,to as bY,Ws as bZ,lo as b_,Zs as ba,no as bb,js as bc,Oo as bd,ps as be,ho as bf,$s as bg,Io as bh,Cl as bi,Tr as bj,Jl as bk,po as bl,yo as bm,Fs as bn,_o as bo,Hs as bp,Ul as bq,ds as br,Us as bs,ks as bt,qs as bu,rs as bv,Ls as bw,Ts as bx,zl as by,Lo as bz,$ as c,xa as d,f as e,h as f,R as g,v as h,Al as i,Sl as j,na as k,Nl as l,ca as m,ua as n,qa as o,d as p,Ya as q,Ka as r,de as s,ya as t,ga as u,_n as v,ol as w,H as x,re as y,gl as z};
