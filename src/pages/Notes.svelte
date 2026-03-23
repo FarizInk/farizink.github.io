@@ -621,35 +621,35 @@
 
         <!-- Header Card -->
         <div
-          class="bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg rounded-2xl shadow-lg border border-black/6 dark:border-white/8 p-6 mb-6"
+          class="bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg rounded-2xl shadow-lg border border-black/6 dark:border-white/8 p-4 sm:p-6 mb-6"
         >
-          <div class="flex items-start justify-between gap-4">
+          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-3 mb-3">
+              <div class="flex items-center gap-2 sm:gap-3 mb-3">
                 {#if singleNote.is_favorite}
                   <div
-                    class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-warning-100 to-warning-200 dark:from-warning-900/30 dark:to-warning-800/30"
+                    class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-warning-100 to-warning-200 dark:from-warning-900/30 dark:to-warning-800/30 shrink-0"
                   >
-                    <Star class="w-5 h-5 text-warning-600 dark:text-warning-400 fill-warning-600 dark:fill-warning-400" />
+                    <Star class="w-4 h-4 sm:w-5 sm:h-5 text-warning-600 dark:text-warning-400 fill-warning-600 dark:fill-warning-400" />
                   </div>
                 {/if}
-                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+                <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white break-words">
                   {singleNote.name || 'Untitled Note'}
                 </h1>
               </div>
 
-              <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+              <div class="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                 <div class="flex items-center gap-1.5">
-                  <Calendar class="w-4 h-4" />
-                  <span>Created {new Date(singleNote.created_at).toLocaleDateString('en-US', {
+                  <Calendar class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span class="truncate">Created {new Date(singleNote.created_at).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
                     day: 'numeric'
                   })}</span>
                 </div>
                 <div class="flex items-center gap-1.5">
-                  <Clock class="w-4 h-4" />
-                  <span>Updated {new Date(singleNote.updated_at).toLocaleDateString('en-US', {
+                  <Clock class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span class="truncate">Updated {new Date(singleNote.updated_at).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
                     day: 'numeric'
@@ -657,7 +657,7 @@
                 </div>
                 {#if singleNote.files && singleNote.files.length > 0}
                   <div class="flex items-center gap-1.5">
-                    <ImageIcon class="w-4 h-4" />
+                    <ImageIcon class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     <span>{singleNote.files.length} file{singleNote.files.length === 1 ? '' : 's'}</span>
                   </div>
                 {/if}
@@ -665,30 +665,30 @@
             </div>
 
             <!-- Actions -->
-            <div class="flex items-center gap-2">
+            <div class="flex items-center justify-end gap-1.5 sm:gap-2">
               {#if singleNote.link}
                 <button
                   onclick={() => window.open(singleNote.link, '_blank', 'noopener,noreferrer')}
-                  class="flex items-center justify-center w-10 h-10 rounded-xl bg-warning-50 dark:bg-primary-900/20 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-warning-200 dark:border-primary-800 transition-all"
+                  class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-warning-50 dark:bg-primary-900/20 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-warning-200 dark:border-primary-800 transition-all shrink-0"
                   title="Open link"
                 >
-                  <Link2 class="w-5 h-5 text-warning-600 dark:text-primary-400" />
+                  <Link2 class="w-4 h-4 sm:w-5 sm:h-5 text-warning-600 dark:text-primary-400" />
                 </button>
               {/if}
               <button
                 onclick={() => handleShare(singleNote)}
-                class="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-gray-200 dark:border-gray-700 hover:border-warning-300 dark:hover:border-primary-800 transition-all"
+                class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-gray-200 dark:border-gray-700 hover:border-warning-300 dark:hover:border-primary-800 transition-all shrink-0"
                 title="Share note"
               >
-                <Share2 class="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                <Share2 class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-400" />
               </button>
               {#if hasAuthToken}
                 <button
                   onclick={() => handleEdit(singleNote)}
-                  class="flex items-center justify-center w-10 h-10 rounded-xl bg-warning-50 dark:bg-primary-900/20 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-warning-200 dark:border-primary-800 transition-all"
+                  class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-warning-50 dark:bg-primary-900/20 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-warning-200 dark:border-primary-800 transition-all shrink-0"
                   title="Edit note"
                 >
-                  <Pencil class="w-5 h-5 text-warning-600 dark:text-primary-400" />
+                  <Pencil class="w-4 h-4 sm:w-5 sm:h-5 text-warning-600 dark:text-primary-400" />
                 </button>
                 <button
                   onclick={() => {
@@ -697,10 +697,10 @@
                       backToList();
                     }
                   }}
-                  class="flex items-center justify-center w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 transition-all"
+                  class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 transition-all shrink-0"
                   title="Delete note"
                 >
-                  <Trash2 class="w-5 h-5 text-red-600 dark:text-red-400" />
+                  <Trash2 class="w-4 h-4 sm:w-5 sm:h-5 text-red-600 dark:text-red-400" />
                 </button>
               {/if}
             </div>
@@ -714,11 +714,11 @@
           <!-- Link Section -->
           {#if singleNote.link}
             <div
-              class="p-4 bg-warning-50 dark:bg-primary-900/10 rounded-xl border border-warning-200 dark:border-primary-800"
+              class="p-3 sm:p-4 bg-warning-50 dark:bg-primary-900/10 rounded-xl border border-warning-200 dark:border-primary-800"
             >
-              <div class="flex items-center gap-3 mb-3">
+              <div class="flex flex-col sm:flex-row sm:items-center gap-3">
                 <div
-                  class="flex items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-gray-800"
+                  class="flex items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-gray-800 shrink-0"
                 >
                   <Link2 class="w-5 h-5 text-warning-600 dark:text-primary-400" />
                 </div>
@@ -730,14 +730,14 @@
                     href={singleNote.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="text-warning-700 dark:text-primary-300 hover:text-warning-800 dark:hover:text-primary-200 truncate block"
+                    class="text-warning-700 dark:text-primary-300 hover:text-warning-800 dark:hover:text-primary-200 truncate block text-sm"
                   >
                     {singleNote.link}
                   </a>
                 </div>
                 <button
                   onclick={() => window.open(singleNote.link, '_blank', 'noopener,noreferrer')}
-                  class="px-4 py-2 bg-gradient-to-r from-warning-500 to-amber-500 dark:from-primary-600 dark:to-primary-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-700 dark:hover:to-primary-600 text-white rounded-lg transition-all text-sm font-medium shadow-md"
+                  class="px-4 py-2 bg-gradient-to-r from-warning-500 to-amber-500 dark:from-primary-600 dark:to-primary-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-700 dark:hover:to-primary-600 text-white rounded-lg transition-all text-sm font-medium shadow-md shrink-0"
                 >
                   Visit
                 </button>
@@ -745,12 +745,12 @@
 
               <!-- Link Summarize Section -->
               <div class="mt-3 pt-3 border-t border-warning-200 dark:border-primary-700">
-                <div class="flex items-center justify-between mb-2">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
                   <p class="text-sm font-semibold text-warning-900 dark:text-primary-100 flex items-center gap-1.5">
                     <Sparkles class="w-4 h-4" />
                     AI Summary
                   </p>
-                  <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-2 sm:gap-2">
                     {#if singleNote.link_summarize && (singleNote.link_summarize.length > 150)}
                       <button
                         onclick={() => (isSummaryFull = !isSummaryFull)}
@@ -763,17 +763,17 @@
                       <button
                         onclick={() => handleRegenerateSummarize(singleNote)}
                         disabled={isRegeneratingSummarize}
-                        class="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-gradient-to-r from-warning-500 to-amber-500 dark:from-primary-600 dark:to-primary-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-700 dark:hover:to-primary-600 text-white rounded-lg transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                        class="flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-xs font-medium bg-gradient-to-r from-warning-500 to-amber-500 dark:from-primary-600 dark:to-primary-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-700 dark:hover:to-primary-600 text-white rounded-lg transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
                         title="Regenerate AI summary"
                       >
                         {#if isRegeneratingSummarize}
                           <Loader2 class="w-3.5 h-3.5 animate-spin" />
-                          <span>Regenerating...</span>
+                          <span class="hidden xs:inline">Regenerating...</span>
                         {:else}
                           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                           </svg>
-                          <span>Regenerate</span>
+                          <span class="hidden xs:inline">Regenerate</span>
                         {/if}
                       </button>
                     {/if}
@@ -856,18 +856,18 @@
               <div class="space-y-3">
                 {#each singleNote.files.filter(f => !f.mime_type.startsWith('image/')) as file, index (file.id + '-' + index)}
                   <div
-                    class="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all"
+                    class="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all"
                   >
                     <div
-                      class="flex items-center justify-center w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg"
+                      class="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gray-200 dark:bg-gray-700 rounded-lg shrink-0"
                     >
-                      <File class="w-6 h-6 text-gray-500 dark:text-gray-400" />
+                      <File class="w-5 h-5 sm:w-6 sm:h-6 text-gray-500 dark:text-gray-400" />
                     </div>
                     <div class="flex-1 min-w-0">
-                      <p class="font-medium text-gray-900 dark:text-white truncate">
+                      <p class="font-medium text-gray-900 dark:text-white truncate text-sm">
                         {file.original_name}
                       </p>
-                      <p class="text-sm text-gray-600 dark:text-gray-400">
+                      <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                         {(file.size / 1024).toFixed(0)} KB
                       </p>
                     </div>
@@ -875,7 +875,7 @@
                       href={file.presigned_url || file.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="px-4 py-2 bg-gradient-to-r from-warning-500 to-amber-500 dark:from-primary-600 dark:to-primary-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-700 dark:hover:to-primary-600 text-white rounded-lg transition-all text-sm font-medium shadow-md"
+                      class="px-3 sm:px-4 py-2 bg-gradient-to-r from-warning-500 to-amber-500 dark:from-primary-600 dark:to-primary-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-700 dark:hover:to-primary-600 text-white rounded-lg transition-all text-xs sm:text-sm font-medium shadow-md shrink-0"
                     >
                       View
                     </a>
