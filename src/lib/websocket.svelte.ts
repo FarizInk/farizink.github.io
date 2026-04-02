@@ -5,7 +5,7 @@
  * Handles registration, connection, subscription, and event handling.
  */
 
-import { WS_BASE_URL, SPOTIFY_API } from './constants';
+import { WS_BASE_URL } from './constants';
 
 // ===== Types =====
 
@@ -343,11 +343,3 @@ export function createWebSocket(config: WebSocketConfig): UseWebSocketReturn {
     isConnected: () => manager.isConnected()
   };
 }
-
-// ===== Spotify-specific WebSocket configuration =====
-
-export const SPOTIFY_WEBSOCKET_CONFIG = {
-  registerEndpoint: SPOTIFY_API.WS_REGISTER_ENDPOINT,
-  wsEndpoint: `${WS_BASE_URL}/app/{app_key}`,
-  channel: SPOTIFY_API.WS_CHANNEL
-} as const;
