@@ -224,14 +224,12 @@
     promptEvent.prompt();
     const { outcome } = await promptEvent.userChoice;
 
-    console.log(`User response to install prompt: ${outcome}`);
     deferredPrompt = null;
     canInstall = false;
   }
 
   async function refreshServiceWorker() {
     if (!('serviceWorker' in navigator)) {
-      console.log('Service Worker not supported');
       return;
     }
 
@@ -242,13 +240,11 @@
       const registration = await navigator.serviceWorker.getRegistration();
       if (registration) {
         await registration.unregister();
-        console.log('Service Worker unregistered');
       }
 
       // Clear all caches
       const cacheNames = await caches.keys();
       await Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)));
-      console.log('All caches cleared');
 
       // Reload page
       window.location.reload();
@@ -264,7 +260,6 @@
     navigator.serviceWorker.getRegistration().then(registration => {
       if (registration) {
         registration.addEventListener('updatefound', () => {
-          console.log('Service Worker update found!');
           swUpdateAvailable = true;
         });
       }
@@ -316,10 +311,8 @@
       navigator.serviceWorker
         .register('/sw.js')
         .then(registration => {
-          console.log('Service Worker registered:', registration);
         })
         .catch(error => {
-          console.log('Service Worker registration failed:', error);
         });
     }
   }
@@ -329,7 +322,6 @@
       navigator.serviceWorker.getRegistration().then(registration => {
         if (registration) {
           registration.unregister().then(() => {
-            console.log('Service Worker unregistered');
           });
         }
       });
@@ -405,7 +397,6 @@
     window.addEventListener('appinstalled', () => {
       deferredPrompt = null;
       canInstall = false;
-      console.log('PWA installed - forcing Service Worker ON');
 
       // Force Service Worker to ON for installed PWA
       serviceWorkerEnabled = true;

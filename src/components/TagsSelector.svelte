@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Search, X, Check, CircleX, Tags } from '@lucide/svelte';
+  import { X, Check, Tags, CircleX } from '@lucide/svelte';
   import Modal from './Modal.svelte';
 
   // Props interface
@@ -289,293 +289,89 @@
 <Modal
   bind:isOpen
   onClose={handleModalClose}
-  maxW="max-w-lg"
+  maxW="max-w-md"
   showCloseButton={false}
 >
   {#snippet header()}
-    <div class="py-5 px-6 bg-gradient-to-br from-warning-50 to-amber-50 dark:from-primary-900/30 dark:to-primary-800/20 border-b border-warning-200 dark:border-primary-700">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-warning-400 to-amber-500 dark:from-primary-500 dark:to-primary-600 flex items-center justify-center shadow-lg">
-            <Tags class="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h2 id="modal-title" class="text-lg font-bold text-gray-900 dark:text-white">
-              Select Tags
-            </h2>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-              {selectedOptions.length} selected
-            </p>
-          </div>
+    <div class="flex items-center justify-between px-3 pt-2.5 pb-2 border-b border-secondary-200 dark:border-secondary-700">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-lg bg-warning-100 dark:bg-primary-900 flex items-center justify-center">
+          <Tags class="w-4 h-4 text-warning-600 dark:text-primary-400" />
         </div>
-        <button
-          type="button"
-          onclick={handleModalClose}
-          class="w-8 h-8 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 flex items-center justify-center transition-colors"
-          aria-label="Close modal"
-        >
-          <X class="w-5 h-5 text-gray-600 dark:text-gray-400" />
-        </button>
+        <div>
+          <h2 id="modal-title" class="text-sm font-semibold text-gray-900 dark:text-white">
+            Select Tags
+          </h2>
+        </div>
       </div>
-
-      <!-- Search Input -->
-      {#if searchable}
-        <div class="mt-4">
-          <div class="relative group">
-            <Search
-              class="absolute left-3.5 top-1/2 transform -translate-y-1/2 w-4.5 h-4.5 text-secondary-400 group-focus-within:text-warning-500 dark:group-focus-within:text-primary-400 transition-colors"
-            />
-            <input
-              bind:this={searchInputElement}
-              type="text"
-              class="input !pl-11 !py-2.5 border-secondary-200 dark:border-secondary-600 focus:border-warning-500 dark:focus:border-primary-500 focus:shadow-[0_0_0_3px_rgba(251,191,36,0.1)] dark:focus:shadow-[0_0_0_3px_rgba(139,92,246,0.1)]"
-              placeholder="Search tags by name or identifier..."
-              bind:value={searchQuery}
-              onkeydown={handleKeydown}
-              aria-label="Search tags"
-            />
-            {#if searchQuery}
-              <button
-                type="button"
-                onclick={() => (searchQuery = '')}
-                class="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 rounded-md hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors"
-                aria-label="Clear search"
-              >
-                <CircleX class="w-4 h-4 text-secondary-400 hover:text-secondary-600 dark:hover:text-secondary-300" />
-              </button>
-            {/if}
-          </div>
-        </div>
-      {/if}
+      <button
+        type="button"
+        onclick={handleModalClose}
+        class="w-7 h-7 rounded-lg hover:bg-secondary-100 dark:hover:bg-secondary-700 flex items-center justify-center"
+        aria-label="Close"
+      >
+        <X class="w-4 h-4 text-gray-500" />
+      </button>
     </div>
+    {#if searchable}
+      <div class="px-4 py-2 border-b border-secondary-100 dark:border-secondary-800">
+        <input
+          bind:this={searchInputElement}
+          type="text"
+          class="input !py-1.5 text-sm"
+          placeholder="Search..."
+          bind:value={searchQuery}
+          onkeydown={handleKeydown}
+        />
+      </div>
+    {/if}
   {/snippet}
 
-  {#snippet body()}
-    <div class="px-6 py-5">
-      <!-- Selected Tags Preview (when tags are selected) -->
-      {#if selectedOptions.length > 0}
-        <div class="mb-5 p-4 bg-gradient-to-r from-warning-50/50 to-amber-50/50 dark:from-primary-900/20 dark:to-primary-800/10 rounded-xl border border-warning-200 dark:border-primary-700">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Selected Tags</span>
+{#snippet body()}
+    <div class="p-3 max-h-[50vh] overflow-y-auto">
+      {#if filteredOptions.length === 0}
+        <div class="text-center py-8 text-sm text-secondary-500">
+          No tags found
+        </div>
+      {:else}
+        <div class="flex flex-wrap gap-2">
+          {#each filteredOptions as option (option.value)}
+            {@const isSelected = selectedValues.includes(option.value)}
+            {@const hasColor = !!option.color}
             <button
               type="button"
-              class="text-xs font-medium text-danger-500 hover:text-danger-600 dark:hover:text-danger-400 transition-colors flex items-center gap-1"
-              onclick={clearAll}
+              onclick={() => selectOption(option)}
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 {isSelected
+                ? 'shadow-sm ring-1'
+                : 'hover:shadow-sm'} {hasColor
+                ? (isSelected ? 'border-warning-400 dark:border-primary-500 ring-warning-200 dark:ring-primary-800' : 'border-secondary-200 dark:border-secondary-700 hover:border-warning-300 dark:hover:border-primary-600')
+                : (isSelected ? 'bg-warning-100 text-warning-700 border-warning-400 dark:bg-primary-900/30 dark:text-primary-300 dark:border-primary-500 ring-warning-200 dark:ring-primary-800' : 'bg-warning-50 text-warning-700 border-warning-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700 hover:border-warning-300 dark:hover:border-primary-600')}"
+              style={hasColor ? `background-color: ${option.color}${isSelected ? '20' : '10'}; color: ${option.color}` : ''}
             >
-              <CircleX class="w-3.5 h-3.5" />
-              Clear All
-            </button>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            {#each selectedOptions as option (option.value)}
               <span
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border shadow-sm {option.color
-                  ? ''
-                  : 'bg-white dark:bg-secondary-800 text-warning-700 dark:text-primary-300 border-warning-300 dark:border-primary-600'}"
-                style="background-color: {option.color
-                  ? (option.color + '15')
-                  : undefined}; color: {option.color || undefined}; border-color: {option.color
-                  ? (option.color + '40')
-                  : undefined}"
-              >
-                <div
-                  class="w-2 h-2 rounded-full {option.color
-                    ? ''
-                    : 'bg-warning-500 dark:bg-primary-500'}"
-                  style="background-color: {option.color || undefined}"
-                ></div>
-                {option.label}
-                <button
-                  type="button"
-                  onclick={() => removeValue(option.value)}
-                  class="ml-0.5 rounded-full hover:bg-black/10 dark:hover:bg-white/20 p-0.5 transition-colors"
-                  aria-label={`Remove ${option.label}`}
-                >
-                  <X class="w-3.5 h-3.5" />
-                </button>
-              </span>
-            {/each}
-          </div>
+                class="w-2 h-2 rounded-full flex-shrink-0 {hasColor ? '' : 'bg-warning-500 dark:bg-primary-400'}"
+                style={hasColor ? `background-color: ${option.color}` : ''}
+              ></span>
+              {option.label}
+              {#if isSelected}
+                <Check class="w-3 h-3" />
+              {/if}
+            </button>
+          {/each}
         </div>
       {/if}
-
-      <!-- Available Tags Grid -->
-      <div>
-        <div class="flex items-center justify-between mb-3">
-          <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">
-            Available Tags
-            <span class="ml-2 text-xs font-normal text-secondary-500">
-              ({filteredOptions.length})
-            </span>
-          </h3>
-          {#if searchQuery}
-            <button
-              type="button"
-              class="text-xs text-warning-600 dark:text-primary-400 hover:underline"
-              onclick={() => (searchQuery = '')}
-            >
-              Clear search
-            </button>
-          {/if}
-        </div>
-
-        <div class={`${maxHeight} overflow-y-auto p-2`}>
-          {#if filteredOptions.length === 0}
-            <div class="text-center py-10">
-              <div
-                class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-secondary-100 dark:bg-secondary-800 flex items-center justify-center"
-              >
-                <Search class="w-8 h-8 text-secondary-400" />
-              </div>
-              <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">
-                {searchQuery ? 'No tags found' : 'No tags available'}
-              </h3>
-              <p class="text-sm text-secondary-500 dark:text-secondary-400">
-                {searchQuery
-                  ? 'Try adjusting your search terms'
-                  : 'Create tags to get started'}
-              </p>
-            </div>
-          {:else}
-            <div
-              role="listbox"
-              aria-label="Available tags"
-              class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"
-            >
-              {#each filteredOptions as option, index (option.value)}
-                {@const isSelected = selectedValues.includes(option.value)}
-                {@const isFocused = focusedIndex === index}
-                <button
-                  type="button"
-                  class="tag-card group relative p-3 rounded-xl border-2 text-left transition-all duration-200 {isFocused
-                    ? 'ring-2 ring-warning-400 dark:ring-primary-500 ring-offset-1'
-                    : ''} {isSelected
-                    ? (option.color
-                      ? 'border-current shadow-md scale-[1.02]'
-                      : 'bg-gradient-to-br from-warning-50 to-amber-50 dark:from-primary-900/30 dark:to-primary-800/20 border-warning-400 dark:border-primary-500 shadow-md scale-[1.02]')
-                    : 'bg-white dark:bg-secondary-800 border-secondary-200 dark:border-secondary-700 hover:border-warning-300 dark:hover:border-primary-600 hover:shadow-md'}"
-                  onclick={e => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    selectOption(option);
-                  }}
-                  onkeydown={e => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      selectOption(option);
-                    }
-                  }}
-                  onmouseenter={() => (focusedIndex = index)}
-                  role="option"
-                  aria-selected={isSelected}
-                  style="{option.color && isSelected
-                    ? `background-color: ${option.color}10; border-color: ${option.color}; color: ${option.color}`
-                    : option.color && !isSelected
-                      ? `color: ${option.color}80`
-                      : ''}"
-                >
-                  <!-- Selection Indicator -->
-                  <div
-                    class="absolute top-3 right-3 w-5 h-5 rounded-full flex items-center justify-center transition-all duration-200 {isSelected
-                      ? (option.color
-                        ? ''
-                        : 'bg-warning-500 dark:bg-primary-500')
-                      : 'border-2 border-secondary-300 dark:border-secondary-600'}"
-                    style="{isSelected && option.color
-                      ? `background-color: ${option.color}`
-                      : ''}"
-                  >
-                    {#if isSelected}
-                      <Check class="w-3 h-3 text-white" />
-                    {/if}
-                  </div>
-
-                  <!-- Tag Content -->
-                  <div class="flex items-start gap-3 pr-6">
-                    <!-- Tag Color -->
-                    <div
-                      class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 {option.color
-                        ? ''
-                        : 'bg-gradient-to-br from-warning-100 to-amber-100 dark:from-primary-900/40 dark:to-primary-800/40'}"
-                      style="background-color: {option.color
-                        ? option.color + '20'
-                        : undefined}"
-                    >
-                      <div
-                        class="w-4 h-4 rounded-full {option.color
-                          ? ''
-                          : 'bg-warning-500 dark:bg-primary-500'}"
-                        style="background-color: {option.color || undefined}"
-                      ></div>
-                    </div>
-
-                    <!-- Tag Info -->
-                    <div class="flex-1 min-w-0">
-                      <span
-                        class="block text-sm font-semibold truncate {option.color && isSelected
-                          ? ''
-                          : 'text-gray-900 dark:text-white'}"
-                        style="{option.color && isSelected
-                          ? `color: ${option.color}`
-                          : ''}"
-                      >
-                        {option.label}
-                      </span>
-                      {#if option.description}
-                        <span
-                          class="block text-xs truncate mt-0.5 {option.color && isSelected
-                            ? ''
-                            : 'text-secondary-500 dark:text-secondary-400'}"
-                          style="{option.color && isSelected
-                            ? `color: ${option.color}80`
-                            : ''}"
-                        >
-                          {option.description}
-                        </span>
-                      {/if}
-                    </div>
-                  </div>
-
-                  <!-- Hover Glow Effect (only when not selected) -->
-                  {#if !isSelected}
-                    <div
-                      class="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-                      style="background: radial-gradient(circle at center, {option.color || 'rgb(251,191,36)'}10 0%, transparent 70%)"
-                    ></div>
-                  {/if}
-                </button>
-              {/each}
-            </div>
-          {/if}
-        </div>
-      </div>
     </div>
   {/snippet}
-
   {#snippet footer()}
-    <div class="py-4 bg-secondary-50 dark:bg-secondary-900/30">
-      <div class="flex items-center justify-between px-6 gap-6">
-        <div class="text-sm text-secondary-600 dark:text-secondary-400">
-          <span>
-            {selectedOptions.length} of {options.length} selected
-          </span>
-        </div>
-        <button
-          type="button"
-          onclick={handleModalClose}
-          class="px-5 py-2.5 bg-gradient-to-r from-warning-500 to-amber-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-600 dark:hover:to-primary-700 dark:from-primary-500 dark:to-primary-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 flex items-center gap-2"
-        >
-          {#if selectedOptions.length > 0}
-            <Check class="w-4 h-4" />
-          {:else}
-            <Tags class="w-4 h-4" />
-          {/if}
-          {selectedOptions.length > 0
-            ? `Done (${selectedOptions.length})`
-            : 'Skip'}
-        </button>
-      </div>
-    </div>
+    <span class="text-xs text-secondary-500 mr-auto">
+      {selectedOptions.length} selected
+    </span>
+    <button
+      type="button"
+      onclick={handleModalClose}
+      class="px-3 py-1.5 text-sm bg-warning-500 hover:bg-warning-600 dark:bg-primary-600 dark:hover:bg-primary-700 text-white rounded-lg"
+    >
+      {selectedOptions.length > 0 ? 'Done' : 'Skip'}
+    </button>
   {/snippet}
 </Modal>

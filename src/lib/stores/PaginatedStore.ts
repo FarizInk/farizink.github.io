@@ -70,17 +70,19 @@ export abstract class PaginatedStore<T> {
   }
 
   /**
-   * Load initial data (page 1) - clears existing data
+   * Load initial data (page 1) - clears existing data only if needed
    */
-  async loadData(filters?: unknown): Promise<void> {
+  async loadData(filters?: unknown, clearFirst: boolean = true): Promise<void> {
     const loading = get(this.isLoading);
     if (loading) return;
 
     this.isLoading.set(true);
     this.error.set(null);
 
-    // Clear existing data and reset pagination for fresh load
-    this.clear();
+    // Clear existing data only if explicitly requested (e.g., filter changed)
+    if (clearFirst) {
+      this.clear();
+    }
 
     try {
       await this._fetchData(1, get(this.limit), filters);

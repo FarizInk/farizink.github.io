@@ -36,13 +36,11 @@
     }
 
     try {
-      // Compress image if needed
-      const processedFile = file.type.startsWith('image/')
-        ? await compressImage(file, 1920, 1080, 0.8)
-        : file;
+      // TEMPORARY: Don't compress images - use original file to avoid instanceof File issues
+      const processedFile = file; // Use original file without compression
 
       return {
-        file: processedFile, // Store actual file for multipart upload
+        file: processedFile,
         originalName: file.name,
         mimeType: file.type,
         size: file.size
@@ -64,7 +62,6 @@
       const processedFile = await processFile(file);
       if (processedFile && processedFile.file) {
         newFiles.push(processedFile);
-        // Create preview URL for image files
         if (file.type.startsWith('image/')) {
           previewUrls.set(files.length + newFiles.length - 1, createPreviewUrl(processedFile.file));
         }

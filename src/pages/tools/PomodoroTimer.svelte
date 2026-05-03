@@ -211,7 +211,6 @@
         // Update reactive state to trigger UI re-render
         showSettings = !showSettings;
         showSettings = showSettings;
-        console.log('Notification permission:', permission);
       });
     }
   }

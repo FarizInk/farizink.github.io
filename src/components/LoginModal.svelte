@@ -42,7 +42,6 @@
       // Laravel API returns: { token, token_type, expires_in, user: { name, email, ... } }
       const { token, user } = result.data;
 
-      console.log('Login successful:', { email: user.email, token });
 
       // Store authentication data using auth utilities
       saveAuth(token, user.name);

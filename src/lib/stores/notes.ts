@@ -77,25 +77,43 @@ class NotesStore extends PaginatedStore<Note> {
   }
 
   /**
-   * Load initial notes (page 1) - clears existing notes
+   * Load initial notes (page 1) - uses cache first, then fetch in background
    */
-  async loadNotes(filters?: NoteFilters): Promise<void> {
+  async loadNotes(filters?: NoteFilters, useCache: boolean = true): Promise<void> {
     const loading = get(isLoadingNotes);
     if (loading) return;
-
-    isLoadingNotes.set(true);
-    notesError.set(null);
 
     // Update current filters
     if (filters) {
       currentFilters.set(filters);
     }
 
+    // Try to load from cache first if enabled and cache is valid
+    if (useCache && isCacheValid()) {
+      const cachedNotes = loadNotesFromCache();
+      if (cachedNotes.length > 0) {
+        notes.set(cachedNotes);
+        // Still fetch in background for fresh data
+      }
+    }
+
+    isLoadingNotes.set(true);
+    notesError.set(null);
+
     try {
       await this._fetchData(1, get(notesLimit), filters);
+
+      // Save successful response to cache
+      const fetchedNotes = this.getData();
+      if (fetchedNotes.length > 0) {
+        saveNotesToCache(fetchedNotes);
+      }
     } catch (error) {
       notesError.set(error instanceof Error ? error.message : String(error));
-      notes.set([]);
+      // Don't clear notes if we have cached data
+      if (get(notes).length === 0) {
+        notes.set([]);
+      }
       toast.error('Failed to load notes');
     } finally {
       isLoadingNotes.set(false);
@@ -206,6 +224,50 @@ class NotesStore extends PaginatedStore<Note> {
 
 // Create singleton instance for active notes
 export const notesStore = new NotesStore();
+
+// ============================================================================
+// LOCALSTORAGE CACHE FOR NOTES
+// ============================================================================
+
+const NOTES_CACHE_KEY = 'notes_cache';
+const NOTES_CACHE_TIMESTAMP_KEY = 'notes_cache_timestamp';
+
+// Load cached notes from localStorage
+export function loadNotesFromCache(): Note[] {
+  try {
+    const cached = localStorage.getItem(NOTES_CACHE_KEY);
+    if (cached) {
+      return JSON.parse(cached);
+    }
+  } catch (e) {
+    console.error('Failed to load notes from cache:', e);
+  }
+  return [];
+}
+
+// Save notes to localStorage cache
+export function saveNotesToCache(notesToCache: Note[]): void {
+  try {
+    localStorage.setItem(NOTES_CACHE_KEY, JSON.stringify(notesToCache));
+    localStorage.setItem(NOTES_CACHE_TIMESTAMP_KEY, Date.now().toString());
+  } catch (e) {
+    console.error('Failed to save notes to cache:', e);
+  }
+}
+
+// Check if cache is valid (less than 5 minutes old)
+export function isCacheValid(): boolean {
+  try {
+    const timestamp = localStorage.getItem(NOTES_CACHE_TIMESTAMP_KEY);
+    if (timestamp) {
+      const age = Date.now() - parseInt(timestamp);
+      return age < 5 * 60 * 1000; // 5 minutes
+    }
+  } catch (e) {
+    // Ignore
+  }
+  return false;
+}
 
 // ============================================================================
 // DELETED NOTES STORE (for trash/recycle bin)

@@ -89,7 +89,6 @@ export class WebSocketManager {
    * Register with the backend to get app key
    */
   private async register(): Promise<{ appKey: string; eventName: string }> {
-    console.log('[WebSocket] Registering at:', this.config.registerEndpoint);
 
     const response = await fetch(this.config.registerEndpoint, {
       method: 'POST',
@@ -103,15 +102,11 @@ export class WebSocketManager {
     }
 
     const data = await response.json();
-    console.log('[WebSocket] Registration response:', data);
 
     const appKey = data.data?.app_key || data.app_key || data.key || 'local-app-key';
     const eventName = data.data?.event || data.event || 'SpotifyTrackUpdated';
     const channel = data.data?.channel || data.channel || this.config.channel;
 
-    console.log('[WebSocket] Using app key:', appKey);
-    console.log('[WebSocket] Expected event name:', eventName);
-    console.log('[WebSocket] Expected channel:', channel);
 
     return { appKey, eventName };
   }
@@ -121,8 +116,6 @@ export class WebSocketManager {
    */
   private connectWebSocket(appKey: string, eventName: string): void {
     const wsUrl = this.config.wsEndpoint.replace('{app_key}', appKey);
-    console.log('[WebSocket] Connecting to:', wsUrl);
-    console.log('[WebSocket] Will listen for event:', eventName);
 
     this.dynamicEventName = eventName;
     this.ws = new WebSocket(wsUrl);
@@ -155,7 +148,6 @@ export class WebSocketManager {
    * Subscribe to a channel (Pusher protocol)
    */
   private subscribe(channel: string): void {
-    console.log('[WebSocket] Subscribing to channel:', channel);
 
     if (!this.isConnected()) {
       console.warn('[WebSocket] Cannot subscribe: not connected');
@@ -168,7 +160,6 @@ export class WebSocketManager {
     };
 
     const payload = JSON.stringify(message);
-    console.log('[WebSocket] Sending subscribe message:', payload);
 
     this.ws?.send(payload);
   }
@@ -178,21 +169,16 @@ export class WebSocketManager {
    */
   private handleMessage(data: string): void {
     // Log ALL messages with a visible marker
-    console.log('🔴 [WebSocket] RAW MESSAGE:', data);
-    console.log('='.repeat(80));
 
     try {
       const message: PusherMessage = JSON.parse(data);
-      console.log('[WebSocket] Parsed message:', message);
 
       // Handle Pusher protocol events
       if (message.event === 'pusher:connection_established') {
-        console.log('[WebSocket] Connection established');
         return;
       }
 
       if (message.event === 'pusher:ping') {
-        console.log('[WebSocket] Ping received, sending pong');
         // Respond with pong
         this.ws?.send(JSON.stringify({ event: 'pusher:pong' }));
         return;
@@ -200,24 +186,16 @@ export class WebSocketManager {
 
       // Skip internal events
       if (message.event.startsWith('pusher_internal:')) {
-        console.log('[WebSocket] Skipping internal event:', message.event);
         return;
       }
 
       // Log all available event handlers
-      console.log('[WebSocket] Available handlers:', Object.keys(this.config.events));
-      console.log('[WebSocket] Looking for handler for event:', message.event);
-      console.log('[WebSocket] Dynamic event name from registration:', this.dynamicEventName);
 
       // ⭐ WILDCARD: Log ALL non-Pusher events for debugging
       if (!message.event.startsWith('pusher:')) {
-        console.log('🎯 [WebSocket] CUSTOM EVENT DETECTED:', message.event);
-        console.log('🎯 [WebSocket] Event data:', message.data);
         try {
           const parsedData = JSON.parse(message.data);
-          console.log('🎯 [WebSocket] Parsed event data:', parsedData);
         } catch {
-          console.log('🎯 [WebSocket] Could not parse event data as JSON');
         }
       }
 
@@ -229,20 +207,12 @@ export class WebSocketManager {
       if (!handler && this.dynamicEventName && message.event === this.dynamicEventName) {
         const handlerKeys = Object.keys(this.config.events);
         if (handlerKeys.length > 0) {
-          console.log(
-            '[WebSocket] Using dynamic event mapping:',
-            message.event,
-            '->',
-            handlerKeys[0]
-          );
           handler = this.config.events[handlerKeys[0]];
         }
       }
 
       if (handler) {
-        console.log('[WebSocket] Handler found, parsing data:', message.data);
         const parsedData = JSON.parse(message.data);
-        console.log('[WebSocket] Calling handler with parsed data:', parsedData);
         handler(parsedData);
       } else {
         console.warn('[WebSocket] No handler found for event:', message.event);

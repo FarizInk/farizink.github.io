@@ -158,26 +158,55 @@
   }
 
   function handleEdit(note: Note) {
-    tagsStore.loadTags();
-    modalMode = 'edit';
-    selectedNote = note;
-    isModalOpen = true;
+    // Check if mobile - redirect to edit page
+    if (typeof window !== 'undefined' && window.innerWidth < 640) {
+      // Mobile: redirect to edit page
+      window.location.href = `/notes/edit/${note.id}`;
+    } else {
+      // Desktop: use modal
+      tagsStore.loadTags();
+      modalMode = 'edit';
+      selectedNote = note;
+      isModalOpen = true;
+    }
   }
 
   function handleCreate() {
-    tagsStore.loadTags();
-    modalMode = 'create';
-    selectedNote = null;
-    isModalOpen = true;
+    // Check if mobile - redirect to create page
+    if (typeof window !== 'undefined' && window.innerWidth < 640) {
+      // Mobile: redirect to create page
+      window.location.href = '/notes/create';
+    } else {
+      // Desktop: use modal
+      tagsStore.loadTags();
+      modalMode = 'create';
+      selectedNote = null;
+      isModalOpen = true;
+    }
   }
 
-  function handleModalSuccess() {
+  function handleModalSuccess(savedNote: Note) {
+    if (modalMode === 'create') {
+      notesStore.prependItem(savedNote);
+      notes.update(currentNotes => [savedNote, ...currentNotes]);
+    } else if (modalMode === 'edit') {
+      notesStore.updateItem('id', savedNote.id, savedNote);
+      notes.update(currentNotes =>
+        currentNotes.map(n => n.id === savedNote.id ? savedNote : n)
+      );
+    }
     selectedNote = null;
   }
 
   function handleShowDetail(note: Note) {
-    selectedDetailNote = note;
-    isDetailModalOpen = true;
+    if (typeof window !== 'undefined' && window.innerWidth < 640) {
+      // Mobile: redirect to detail page via URL
+      window.location.href = `/notes?id=${note.id}`;
+    } else {
+      // Desktop: use modal
+      selectedDetailNote = note;
+      isDetailModalOpen = true;
+    }
   }
 
   function handleDetailModalClose() {
@@ -240,6 +269,8 @@
     viewMode = 'list';
     singleNote = null;
     window.history.replaceState({}, '', '/notes');
+    // Reload notes when going back to list
+    loadNotes(false);
   }
 
   function handleShare(note: Note) {
@@ -983,8 +1014,7 @@
 <!-- Tag Management Modal -->
 <TagModal
   bind:isOpen={isTagModalOpen}
-  on:close={() => {
-    isTagModalOpen = false;
+  onclose={() => {
     tagsStore.loadTags(true);
   }}
 />

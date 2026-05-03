@@ -236,7 +236,7 @@ export async function createNote(noteData: CreateNoteData): Promise<NoteResponse
     if (noteData.files) {
       noteData.files.forEach(file => {
         if (file.file) {
-          formData.append('files', file.file);
+          formData.append('files[]', file.file);
         } else if (file.data) {
           // Handle legacy base64 files - convert back to blob
           const byteCharacters = atob(file.data);
@@ -246,7 +246,7 @@ export async function createNote(noteData: CreateNoteData): Promise<NoteResponse
           }
           const byteArray = new Uint8Array(byteNumbers);
           const blob = new Blob([byteArray], { type: file.mimeType });
-          formData.append('files', blob, file.originalName);
+          formData.append('files[]', blob, file.originalName);
         }
       });
     }
@@ -339,7 +339,7 @@ export async function updateNote(id: string, noteData: UpdateNoteData): Promise<
     if (noteData.files) {
       noteData.files.forEach(file => {
         if (file.file) {
-          formData.append('files', file.file);
+          formData.append('files[]', file.file);
         } else if (file.data) {
           // Handle legacy base64 files - convert back to blob
           const byteCharacters = atob(file.data);
@@ -349,7 +349,7 @@ export async function updateNote(id: string, noteData: UpdateNoteData): Promise<
           }
           const byteArray = new Uint8Array(byteNumbers);
           const blob = new Blob([byteArray], { type: file.mimeType });
-          formData.append('files', blob, file.originalName);
+          formData.append('files[]', blob, file.originalName);
         }
       });
     }

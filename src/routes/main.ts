@@ -1,8 +1,10 @@
 import Home from '../pages/Home.svelte';
 import Notes from '../pages/Notes.svelte';
+import NotesCreate from '../pages/NotesCreate.svelte';
+import NotesEdit from '../pages/NotesEdit.svelte';
 import TempUpload from '../pages/TempUpload.svelte';
 import Files from '../pages/Files.svelte';
-import { House, FileText, User, Upload } from '@lucide/svelte';
+import { House, FileText, User, Upload, Plus, Edit2 } from '@lucide/svelte';
 
 export const mainRoutes = [
   {
@@ -25,6 +27,24 @@ export const mainRoutes = [
     keywords: 'notes, notebook, writing, personal notes, ideas, thoughts, documentation',
     robots: 'index, follow',
     icon: FileText
+  },
+  {
+    path: '/notes/create',
+    component: NotesCreate,
+    title: 'Create Note - Fariz',
+    description: 'Create a new note to save your thoughts, ideas, and resources.',
+    keywords: 'create note, new note, write note, save thoughts',
+    robots: 'noindex, nofollow',
+    icon: Plus
+  },
+  {
+    path: '/notes/edit/:id',
+    component: NotesEdit,
+    title: 'Edit Note - Fariz',
+    description: 'Edit your note to update your thoughts, ideas, and resources.',
+    keywords: 'edit note, update note, modify note',
+    robots: 'noindex, nofollow',
+    icon: Edit2
   },
   {
     path: '/login',

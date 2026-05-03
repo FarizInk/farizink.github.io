@@ -2,7 +2,7 @@
   import { fade } from 'svelte/transition';
   import { X } from '@lucide/svelte';
   import type { Snippet } from 'svelte';
-  import { preventBodyScroll, restoreBodyScroll, isTopmostModal, getModalZIndex } from '../lib/modalScroll';
+  import { preventBodyScroll, restoreBodyScroll, isTopmostModal, getModalZIndex, getOpenModalCount } from '../lib/modalScroll';
 
   // Enhanced scale transition - smooth & modern
   function modernScale(_node: HTMLElement, { duration = 200 }: { duration?: number } = {}) {
@@ -17,6 +17,19 @@
           opacity: ${opacity};
           transform: scale(${scale}) translateY(${10 * (1 - t)}px);
         `;
+      }
+    };
+  }
+
+  // Portal action: moves modal DOM to document.body
+  // This prevents nested modals from being clipped by parent modal's overflow/transform
+  function portal(node: HTMLElement) {
+    document.body.appendChild(node);
+    return {
+      destroy() {
+        if (node.parentNode) {
+          node.parentNode.removeChild(node);
+        }
       }
     };
   }
@@ -53,6 +66,11 @@
   let currentModalId = $state<string>('');
   let modalOpenedAt = $state<number>(0);
 
+  // Get open modal count for nesting detection
+  // isNestedModal = true only if there's MORE than one modal open (meaning this modal is NOT the first one)
+  let openCount = $derived(getOpenModalCount());
+  let isNestedModal = $derived(openCount > 1);
+
   // Dynamic z-index based on stack position
   let modalZIndex = $derived(currentModalId ? getModalZIndex(currentModalId) : 50);
 
@@ -74,7 +92,6 @@
 
   function handleKeydown(e: KeyboardEvent) {
     // Ignore keydown events that happen too soon after modal opens (grace period)
-    // This prevents accidental closure from keyboard events that triggered the modal
     const timeSinceOpened = Date.now() - modalOpenedAt;
     const GRACE_PERIOD_MS = 200;
 
@@ -90,8 +107,11 @@
       return;
     }
 
-    // Enter and Space only close modal if not focused on form elements
-    if (forceClose && !isFormElement()) {
+    // Enter and Space only close modal if:
+    // - forceClose is true AND
+    // - not in a form element AND
+    // - this is the topmost modal
+    if (forceClose && isTopmostModal(currentModalId) && !isFormElement()) {
       if (e.key === 'Enter' || e.key === ' ') {
         close();
       }
@@ -116,19 +136,25 @@
 
 {#if isOpen}
   <div
+    use:portal
     class="fixed inset-0 flex items-center justify-center p-4"
     style="z-index: {modalZIndex}"
     aria-labelledby="modal-title"
     role="dialog"
     aria-modal="true"
   >
-    <!-- Backdrop -->
+    <!-- Backdrop: always full screen, darker for nested modals -->
     <div
-      class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+      class="fixed inset-0 {isNestedModal ? 'bg-black/60' : 'bg-black/50'} backdrop-blur-sm"
       transition:fade
       role="button"
       tabindex="0"
-      onclick={() => forceClose && close()}
+      onclick={() => {
+        // Only close on backdrop click if this is the topmost modal
+        if (isTopmostModal(currentModalId) && forceClose) {
+          close();
+        }
+      }}
     ></div>
 
     <!-- Modal Container -->
