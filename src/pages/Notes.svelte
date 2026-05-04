@@ -464,9 +464,10 @@
           {#if searchQuery}
             <button
               onclick={() => {
-                searchQuery = '';
-                loadNotes(false);
-              }}
+               searchQuery = '';
+                saveFiltersToStorage();
+               loadNotes(false);
+             }}
               class="notes-search-clear"
               aria-label="Clear search"
             >
@@ -1038,4 +1039,3 @@
 
 <!-- Deleted Notes Modal -->
 <DeletedNotesModal bind:isOpen={showDeletedNotesModal} onClose={handleDeletedNotesModalClose} />
-

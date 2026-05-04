@@ -44,7 +44,7 @@
   <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="notes-create-page min-h-screen bg-gray-50 dark:bg-gray-900">
+<div class="notes-create-page min-h-screen">
   {#if isCheckingAuth}
     <div class="flex items-center justify-center py-20">
       <div class="w-12 h-12 border-4 border-warning-500 border-t-transparent rounded-full animate-spin"></div>
@@ -67,7 +67,7 @@
             Go Back
           </button>
           <button
-            onclick={() => navigate('/login')}
+            onclick={() => document.dispatchEvent(new CustomEvent('open-login-modal'))}
             class="px-5 py-2.5 bg-gradient-to-r from-warning-500 to-amber-500 dark:from-primary-600 dark:to-primary-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-700 dark:hover:to-primary-600 text-white rounded-lg font-medium transition-all shadow-md"
           >
             Login
