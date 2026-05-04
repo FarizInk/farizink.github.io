@@ -1,4 +1,4 @@
-import { API_BASE_URL } from './constants';
+import { apiClient, isAxiosError } from './axios';
 
 export interface AuthState {
   isLoggedIn: boolean;
@@ -7,75 +7,39 @@ export interface AuthState {
   isValid: boolean;
 }
 
+// Laravel API Response Types
 export interface LoginResponse {
-  success: boolean;
-  data: {
-    token: string;
-    type: string;
-    expiresIn: string | null;
+  token: {
+    accessToken?: unknown;
+    plainTextToken: string;
+    [key: string]: string | number | boolean | unknown;
   };
-  meta: {
-    timestamp: string;
-    path: string;
+  token_type: string;
+  expires_in: number;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    is_admin?: boolean;
+    role?: string;
   };
 }
 
 export interface MeResponse {
-  success: boolean;
-  data: {
-    username: string;
-    authenticated: boolean;
-  };
-  meta: {
-    timestamp: string;
-    path: string;
-  };
+  id: string;
+  name: string;
+  email: string;
+  is_admin?: boolean;
+  role?: string;
 }
 
-export interface ValidateResponse {
-  success: boolean;
-  data: {
-    valid: boolean;
-    token: string;
-    type: string;
-  };
-  meta: {
-    timestamp: string;
-    path: string;
-  };
+export interface LogoutResponse {
+  message: string;
 }
 
-/**
- * @deprecated This function is kept for reference but not used due to rate limiting
- * Use validateToken() which uses /api/me and /health endpoints instead
- */
-export async function validateTokenDeprecated(): Promise<boolean> {
-  const token = localStorage.getItem('authToken');
-
-  if (!token) {
-    return false;
-  }
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/validate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      signal: AbortSignal.timeout(5000)
-    });
-
-    if (!response.ok) {
-      return false;
-    }
-
-    const data: ValidateResponse = await response.json();
-    return data.success && data.data.valid;
-  } catch (error) {
-    console.error('Token validation error:', error);
-    return false;
-  }
+export interface ErrorResponse {
+  message?: string;
+  error?: string;
 }
 
 /**
@@ -99,14 +63,11 @@ export function getAuthState(): AuthState {
  */
 async function checkHealth(): Promise<boolean> {
   try {
-    const response = await fetch(`${API_BASE_URL}/health`, {
-      method: 'GET',
-      signal: AbortSignal.timeout(3000) // 3 second timeout
+    await apiClient.get('/api/health', {
+      timeout: 3000
     });
-
-    return response.ok;
-  } catch (error) {
-    console.error('Health check error:', error);
+    return true;
+  } catch {
     return false;
   }
 }
@@ -115,48 +76,31 @@ async function checkHealth(): Promise<boolean> {
  * Validate stored token using /api/me with health check fallback
  */
 export async function validateToken(): Promise<boolean> {
-  const token = localStorage.getItem('authToken');
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
 
   if (!token) {
     return false;
   }
 
   try {
-    // Try to get current user using /api/me
-    const response = await fetch(`${API_BASE_URL}/api/me`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      signal: AbortSignal.timeout(5000) // 5 second timeout
+    const response = await apiClient.get('/api/me', {
+      timeout: 5000
     });
 
-    if (response.ok) {
-      const data: MeResponse = await response.json();
-      return data.success && data.data.authenticated;
-    }
-
-    // If /api/me failed, check if API is healthy
-    const isApiHealthy = await checkHealth();
-    if (isApiHealthy) {
-      // API is healthy but /api/me failed, so token is invalid
-      return false;
-    } else {
-      // API is not healthy, can't determine token validity
-      console.warn('API is not healthy, unable to validate token');
-      return true; // Assume token is valid to avoid unnecessary logout during API issues
-    }
+    const data: MeResponse = response.data;
+    return !!(data.id && data.email);
   } catch (error) {
-    console.error('Token validation error:', error);
-
-    // Try health check as fallback
-    const isApiHealthy = await checkHealth();
-    if (!isApiHealthy) {
-      console.warn('API is not healthy, assuming token is valid');
-      return true; // Assume valid during API issues
+    if (isAxiosError(error)) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        return false;
+      }
+      if (error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT') {
+        return true;
+      }
     }
 
-    return false;
+    const isApiHealthy = await checkHealth();
+    return !isApiHealthy;
   }
 }
 
@@ -164,29 +108,21 @@ export async function validateToken(): Promise<boolean> {
  * Get current user info using /api/me
  */
 export async function getCurrentUser(): Promise<{ username: string } | null> {
-  const token = localStorage.getItem('authToken');
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
 
   if (!token) {
     return null;
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/me`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      signal: AbortSignal.timeout(5000)
+    const response = await apiClient.get('/api/me', {
+      timeout: 5000
     });
 
-    if (!response.ok) {
-      return null;
-    }
-
-    const data: MeResponse = await response.json();
-    return data.success && data.data.authenticated ? { username: data.data.username } : null;
-  } catch (error) {
-    console.error('Get current user error:', error);
+    // Laravel API returns user data directly
+    const data: MeResponse = response.data;
+    return data.name ? { username: data.name } : null;
+  } catch {
     return null;
   }
 }
@@ -202,16 +138,6 @@ export async function getValidatedAuthState(): Promise<AuthState> {
   }
 
   const isValid = await validateToken();
-  if (!isValid) {
-    // Token is invalid, clear auth data and logout user
-    console.log('Token validation failed, logging out user');
-    clearAuth();
-
-    // Dispatch logout event for other components
-    document.dispatchEvent(new CustomEvent('logout-success'));
-
-    return { isLoggedIn: false, username: null, token: null, isValid: false };
-  }
 
   // Try to get current user info to update username
   const userInfo = await getCurrentUser();
@@ -223,7 +149,17 @@ export async function getValidatedAuthState(): Promise<AuthState> {
     }
   }
 
-  return { ...basicState, isValid: true };
+  const validatedState = { ...basicState, isValid };
+
+  // Only clear auth and logout if token is actually invalid (not just network error)
+  // The validateToken() function already handles network errors by returning true
+  if (!isValid) {
+    clearAuth();
+    document.dispatchEvent(new CustomEvent('logout-success'));
+    return { isLoggedIn: false, username: null, token: null, isValid: false };
+  }
+
+  return validatedState;
 }
 
 /**
@@ -239,20 +175,77 @@ export function clearAuth(): void {
 /**
  * Save authentication data to localStorage
  */
-export function saveAuth(token: string, username: string, expiresIn?: string): void {
-  localStorage.setItem('authToken', token);
+export function saveAuth(
+  token: string | { plainTextToken: string },
+  username: string,
+  expiresIn?: string
+): void {
+  const tokenValue = typeof token === 'string' ? token : token.plainTextToken;
+  localStorage.setItem('authToken', tokenValue);
   localStorage.setItem('authTokenExpiry', expiresIn || '');
   localStorage.setItem('isLoggedIn', 'true');
   localStorage.setItem('username', username);
 }
 
 /**
+ * Login with email and password using Laravel API
+ */
+export async function login(
+  email: string,
+  password: string
+): Promise<{ success: boolean; data?: LoginResponse; error?: string }> {
+  try {
+    const response = await apiClient.post(
+      '/api/login',
+      { email, password },
+      {
+        timeout: 10000
+      }
+    );
+
+    return {
+      success: true,
+      data: response.data as LoginResponse
+    };
+  } catch (error) {
+    if (isAxiosError(error)) {
+      const errorMessage = error.response?.data?.message || error.message || 'Login failed';
+      return {
+        success: false,
+        error: errorMessage
+      };
+    }
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Network error'
+    };
+  }
+}
+
+/**
  * Logout user
  */
 export async function logout(): Promise<void> {
-  // Clear local auth data
-  clearAuth();
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
 
-  // Dispatch logout event for other components
-  document.dispatchEvent(new CustomEvent('logout-success'));
+  try {
+    // Call Laravel logout endpoint
+    if (token) {
+      await apiClient.post(
+        '/api/logout',
+        {},
+        {
+          timeout: 5000
+        }
+      );
+    }
+  } catch {
+    // Continue with local logout even if API call fails
+  } finally {
+    // Clear local auth data
+    clearAuth();
+
+    // Dispatch logout event for other components
+    document.dispatchEvent(new CustomEvent('logout-success'));
+  }
 }

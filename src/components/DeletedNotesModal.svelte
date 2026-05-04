@@ -1,16 +1,20 @@
 <script lang="ts">
   import type { Note } from '../lib/notes';
-  import { deletedNotesStore, deletedNotes, isLoadingDeletedNotes, hasMoreDeleted, deletedCount, notesStore } from '../lib/stores/notes';
+  import {
+    deletedNotesStore,
+    deletedNotes,
+    isLoadingDeletedNotes,
+    hasMoreDeleted,
+    deletedCount,
+    notesStore
+  } from '../lib/stores/notes';
   import { permanentDeleteNote, restoreNote } from '../lib/notes';
   import { toast } from 'svelte-sonner';
   import NoteCard from './NoteCard.svelte';
   import Modal from './Modal.svelte';
-  import { RefreshCw, RotateCw, Plus, Trash2 } from '@lucide/svelte';
+  import { RefreshCw, RotateCw, Plus, Trash2, X } from '@lucide/svelte';
 
-  let {
-    isOpen = $bindable(false),
-    onSuccess
-  } = $props<{
+  let { isOpen = $bindable(false), onSuccess } = $props<{
     isOpen?: boolean;
     onSuccess?: () => void;
   }>();
@@ -66,11 +70,14 @@
 
   function handleShare(note: Note) {
     const shareUrl = `${window.location.origin}/notes?id=${note.id}`;
-    navigator.clipboard.writeText(shareUrl).then(() => {
-      toast.success('Link copied to clipboard!');
-    }).catch(() => {
-      toast.error('Failed to copy link');
-    });
+    navigator.clipboard
+      .writeText(shareUrl)
+      .then(() => {
+        toast.success('Link copied to clipboard!');
+      })
+      .catch(() => {
+        toast.error('Failed to copy link');
+      });
   }
 
   function closeModal() {
@@ -78,71 +85,75 @@
   }
 </script>
 
-<Modal
-  {isOpen}
-  onClose={closeModal}
-  maxW="max-w-4xl"
-  title="Deleted Notes"
-  showCloseButton={true}
->
+<Modal {isOpen} onClose={closeModal} maxW="max-w-4xl" showCloseButton={false}>
   {#snippet header()}
-    <div class="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-200 dark:border-gray-700">
-      <div class="flex items-center gap-3">
-        <Trash2 class="w-5 h-5 text-red-500" />
-        <h2 id="modal-title" class="text-xl font-semibold text-gray-900 dark:text-white">
-          Deleted Notes
-        </h2>
-        {#if $deletedCount > 0}
-          <span class="badge badge-danger text-xs">
-            {$deletedCount}
-          </span>
-        {/if}
-      </div>
-      <div class="flex items-center gap-2">
-        <button
-          onclick={handleRefresh}
-          disabled={$isLoadingDeletedNotes}
-          class="w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center transition-colors disabled:opacity-50"
-          title="Refresh"
-        >
-          <RefreshCw
-            class={`w-4 h-4 text-gray-600 dark:text-gray-400 ${$isLoadingDeletedNotes ? 'animate-spin' : ''}`}
-          />
-        </button>
-        <button
-          onclick={closeModal}
-          class="w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
-          aria-label="Close modal"
-        >
-          <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+    <div class="py-5 px-6 bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border-b border-red-200 dark:border-red-800">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 dark:from-red-600 dark:to-orange-600 flex items-center justify-center shadow-lg">
+            <Trash2 class="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h2 id="modal-title" class="text-lg font-bold text-gray-900 dark:text-white">
+              Deleted Notes
+            </h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              {#if $deletedCount > 0}
+                {$deletedCount} note{$deletedCount === 1 ? '' : ''} in trash
+              {:else}
+                Trash is empty
+              {/if}
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            onclick={handleRefresh}
+            disabled={$isLoadingDeletedNotes}
+            class="w-9 h-9 rounded-lg bg-white dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-500 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
+            title="Refresh"
+          >
+            <RefreshCw
+              class={`w-4 h-4 text-secondary-600 dark:text-secondary-300 ${$isLoadingDeletedNotes ? 'animate-spin' : ''}`}
+            />
+          </button>
+          <button
+            type="button"
+            onclick={closeModal}
+            class="w-9 h-9 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 flex items-center justify-center transition-colors"
+            aria-label="Close modal"
+          >
+            <X class="w-5 h-5 text-gray-600 dark:text-gray-400" />
+          </button>
+        </div>
       </div>
     </div>
   {/snippet}
 
   {#snippet body()}
-    <div class="px-4 sm:px-6 py-4">
+    <div class="px-4 sm:px-6 py-6">
       <!-- Content -->
-      <div class="max-h-[calc(100vh-280px)] overflow-y-auto pr-2 -mr-2">
+      <div>
         {#if $isLoadingDeletedNotes && $deletedNotes.length === 0}
           <!-- Loading State -->
           <div class="flex flex-col items-center justify-center py-12">
-            <RotateCw class="w-8 h-8 text-yellow-600 dark:text-primary-400 animate-spin mb-4" />
-            <p class="text-secondary-500 dark:text-secondary-400">Loading deleted notes...</p>
+            <RotateCw class="w-8 h-8 text-warning-600 dark:text-primary-400 animate-spin mb-4" />
+            <p class="text-secondary-500 dark:text-secondary-400">Loading notes...</p>
           </div>
         {:else if $deletedNotes.length === 0}
           <!-- Empty State -->
           <div class="text-center py-12">
-            <div class="w-16 h-16 bg-secondary-100 dark:bg-secondary-800 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div
+              class="w-16 h-16 bg-secondary-100 dark:bg-secondary-800 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
               <Trash2 class="w-8 h-8 text-secondary-400" />
             </div>
             <h3 class="text-lg font-semibold text-secondary-900 dark:text-white mb-2">
               Trash is empty
             </h3>
             <p class="text-sm text-secondary-500 dark:text-secondary-400">
-              Deleted notes will appear here temporarily
+              Notes in trash will appear here temporarily
             </p>
           </div>
         {:else}
@@ -162,9 +173,9 @@
             {/each}
           </div>
 
-          <!-- Load More Button -->
-          {#if $hasMoreDeleted}
-            <div class="mt-6 flex justify-center">
+          <!-- Load More Button / End Indicator -->
+          <div class="mt-6 flex justify-center">
+            {#if $hasMoreDeleted}
               <button
                 onclick={handleLoadMore}
                 disabled={$isLoadingDeletedNotes}
@@ -178,20 +189,23 @@
                   Load More
                 {/if}
               </button>
-            </div>
-          {/if}
-
-          <!-- End Indicator -->
-          {#if !$hasMoreDeleted && $deletedNotes.length > 0}
-            <div class="mt-6 text-center">
-              <div class="inline-flex items-center gap-2 px-4 py-2 bg-secondary-100 dark:bg-secondary-700 rounded-full">
+            {:else if $deletedNotes.length > 0}
+              <!-- End of list - show total count -->
+              <div
+                class="inline-flex items-center gap-2 px-4 py-2 bg-secondary-100 dark:bg-secondary-700 rounded-full"
+              >
                 <div class="w-2 h-2 bg-secondary-400 dark:bg-secondary-500 rounded-full"></div>
                 <span class="text-sm text-secondary-600 dark:text-secondary-400">
-                  Showing all {$deletedNotes.length} deleted notes
+                  Showing all {$deletedNotes.length} of {$deletedCount} notes
                 </span>
               </div>
-            </div>
-          {/if}
+            {:else}
+              <!-- No deleted notes -->
+              <div class="text-center">
+                <p class="text-secondary-500 dark:text-secondary-400">No notes in trash</p>
+              </div>
+            {/if}
+          </div>
         {/if}
       </div>
     </div>

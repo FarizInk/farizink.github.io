@@ -211,7 +211,6 @@
         // Update reactive state to trigger UI re-render
         showSettings = !showSettings;
         showSettings = showSettings;
-        console.log('Notification permission:', permission);
       });
     }
   }
@@ -239,8 +238,27 @@
   title="Pomodoro Timer"
   description="Boost your productivity with focused work sessions and regular breaks"
   icon={Timer}
-  color="primary"
+  color="warning"
 >
+  <!-- Hero Section -->
+  <div
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+  >
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
+          <Timer class="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Pomodoro Timer</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Boost your productivity with focused work sessions
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="grid xl:grid-cols-3 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
     <!-- Main Timer Section -->
     <div class="xl:col-span-2 lg:col-span-1">
@@ -333,7 +351,7 @@
             <div
               class="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium
           {currentSession === 'work'
-                ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                ? 'bg-warning-100 text-yellow-800 dark:bg-primary-900 dark:text-yellow-200'
                 : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}"
             >
               {#if currentSession === 'work'}
@@ -357,7 +375,7 @@
                 stroke="currentColor"
                 stroke-width="8"
                 fill="none"
-                class="text-gray-200 dark:text-gray-700"
+                class="pomodoro-circle text-gray-200 dark:text-gray-700"
               />
               <!-- Progress circle -->
               <circle
@@ -369,9 +387,9 @@
                 fill="none"
                 stroke-dasharray={2 * Math.PI * 45}
                 stroke-dashoffset={2 * Math.PI * 45 * (1 - progress / 100)}
-                class="transition-all duration-1000 ease-linear
+                class="pomodoro-circle transition-all duration-1000 ease-linear
               {currentSession === 'work'
-                  ? 'text-blue-600 dark:text-blue-400'
+                  ? 'text-warning-600 dark:text-primary-400'
                   : 'text-green-600 dark:text-green-400'}"
               />
             </svg>
@@ -531,22 +549,19 @@
         <div class="space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
           <div class="flex items-start gap-2">
             <div
-              class="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
-              style="background-color: var(--color-primary-600);"
+              class="w-2 h-2 rounded-full mt-1.5 flex-shrink-0 bg-warning-600 dark:bg-primary-500"
             ></div>
             <p><strong>Work Session:</strong> 25 minutes of focused work</p>
           </div>
           <div class="flex items-start gap-2">
             <div
-              class="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
-              style="background-color: var(--color-success-600);"
+              class="w-2 h-2 rounded-full mt-1.5 flex-shrink-0 bg-green-600 dark:bg-green-500"
             ></div>
             <p><strong>Short Break:</strong> 5 minutes to recharge</p>
           </div>
           <div class="flex items-start gap-2">
             <div
-              class="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
-              style="background-color: var(--color-warning-600);"
+              class="w-2 h-2 rounded-full mt-1.5 flex-shrink-0 bg-amber-600 dark:bg-amber-500"
             ></div>
             <p><strong>Long Break:</strong> 15 minutes after 4 sessions</p>
           </div>
@@ -582,23 +597,23 @@
       </h3>
       <ul class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 space-y-2 sm:space-y-3">
         <li class="flex items-start gap-2">
-          <span class="text-primary-600 dark:text-primary-400">•</span>
+          <span class="text-warning-600 dark:text-primary-400">•</span>
           <span>Use the timer for focused work without distractions</span>
         </li>
         <li class="flex items-start gap-2">
-          <span class="text-primary-600 dark:text-primary-400">•</span>
+          <span class="text-warning-600 dark:text-primary-400">•</span>
           <span>During breaks, step away from your screen and move around</span>
         </li>
         <li class="flex items-start gap-2">
-          <span class="text-primary-600 dark:text-primary-400">•</span>
+          <span class="text-warning-600 dark:text-primary-400">•</span>
           <span>Combine with a to-do list for maximum productivity</span>
         </li>
         <li class="flex items-start gap-2">
-          <span class="text-primary-600 dark:text-primary-400">•</span>
+          <span class="text-warning-600 dark:text-primary-400">•</span>
           <span>Adjust timing based on your personal workflow and energy</span>
         </li>
         <li class="flex items-start gap-2">
-          <span class="text-primary-600 dark:text-primary-400">•</span>
+          <span class="text-warning-600 dark:text-primary-400">•</span>
           <span>Stay hydrated and take care of your posture during sessions</span>
         </li>
       </ul>
@@ -606,10 +621,7 @@
   </div>
 
   <!-- Pomodoro Recommendation Note -->
-  <div
-    class="mt-4 sm:mt-6 p-4 sm:p-6 rounded-lg border dark:bg-primary-900/20 dark:border-primary-800 dark:text-primary-100"
-    style="background-color: var(--color-primary-50); border-color: var(--color-primary-200); color: var(--color-primary-900);"
-  >
+  <div class="mt-4 sm:mt-6 p-4 sm:p-6 rounded-lg border pomodoro-recommendation-note">
     <h4 class="font-semibold mb-2 sm:mb-3 text-sm sm:text-base">🍅 Why Pomodoro Technique?</h4>
     <p class="text-xs sm:text-sm mb-3 sm:mb-4">
       The Pomodoro Technique was developed by Francesco Cirillo in the late 1980s. It's a time
@@ -622,10 +634,3 @@
     </div>
   </div>
 </ToolLayout>
-
-<style>
-  /* Ensure smooth transitions */
-  circle {
-    transition: stroke-dashoffset 1s linear;
-  }
-</style>

@@ -7,7 +7,7 @@ let originalBodyPaddingRight = '';
 
 // Track modal instances for nested modal support
 // Each modal gets a unique ID when it opens
-let modalStack: string[] = [];
+const modalStack: string[] = [];
 let modalIdCounter = 0;
 
 export function preventBodyScroll(): string {
@@ -78,4 +78,14 @@ export function getOpenModalCount(): number {
  */
 export function getModalStack(): string[] {
   return [...modalStack];
+}
+
+/**
+ * Get the z-index for a modal based on its position in the stack
+ * Base z-index is 50, each modal level adds 10
+ */
+export function getModalZIndex(modalId: string): number {
+  const index = modalStack.indexOf(modalId);
+  // Base z-index 50, plus 10 for each level in the stack
+  return 50 + (index + 1) * 10;
 }

@@ -1,5 +1,15 @@
 <script lang="ts">
-  import { Activity, Users, Target, Heart, Info } from '@lucide/svelte';
+  import {
+    Activity,
+    Users,
+    Target,
+    Heart,
+    Info,
+    RotateCcw,
+    Sparkles,
+    Zap,
+    Check
+  } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
 
   // Units state
@@ -15,7 +25,7 @@
   // Results
   let bmi = $state(0);
   let bmiCategory = $state('');
-  let bmiColor = $state('');
+  let bmiColorClass = $state('');
   let idealWeight = $state({ min: 0, max: 0 });
   let healthRisk = $state('');
   let bmr = $state(0);
@@ -76,27 +86,27 @@
       // Determine BMI category
       if (bmi < 18.5) {
         bmiCategory = 'Underweight';
-        bmiColor = 'blue';
+        bmiColorClass = 'bmi-underweight';
         healthRisk = 'May have nutritional deficiency and osteoporosis risk';
       } else if (bmi < 25) {
         bmiCategory = 'Normal Weight';
-        bmiColor = 'green';
+        bmiColorClass = 'bmi-normal';
         healthRisk = 'Low risk of developing health problems';
       } else if (bmi < 30) {
         bmiCategory = 'Overweight';
-        bmiColor = 'yellow';
+        bmiColorClass = 'bmi-overweight';
         healthRisk = 'Increased risk of heart disease, diabetes, and high blood pressure';
       } else if (bmi < 35) {
         bmiCategory = 'Obese Class I';
-        bmiColor = 'orange';
+        bmiColorClass = 'bmi-obese1';
         healthRisk = 'High risk of cardiovascular disease and diabetes';
       } else if (bmi < 40) {
         bmiCategory = 'Obese Class II';
-        bmiColor = 'red';
+        bmiColorClass = 'bmi-obese2';
         healthRisk = 'Very high risk of serious health conditions';
       } else {
         bmiCategory = 'Obese Class III';
-        bmiColor = 'red';
+        bmiColorClass = 'bmi-obese3';
         healthRisk = 'Extremely high risk of life-threatening health conditions';
       }
 
@@ -130,7 +140,7 @@
     } else {
       bmi = 0;
       bmiCategory = '';
-      bmiColor = '';
+      bmiColorClass = '';
       idealWeight = { min: 0, max: 0 };
       healthRisk = '';
       bmr = 0;
@@ -209,58 +219,117 @@
 
     return tips;
   }
+
+  function getBMICardClass() {
+    switch (bmiColorClass) {
+      case 'bmi-underweight':
+        return 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800';
+      case 'bmi-normal':
+        return 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800';
+      case 'bmi-overweight':
+        return 'bg-warning-50 dark:bg-yellow-900/20 border-warning-200 dark:border-yellow-800';
+      case 'bmi-obese1':
+      case 'bmi-obese2':
+      case 'bmi-obese3':
+        return 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800';
+      default:
+        return 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800';
+    }
+  }
+
+  function getBMITextClass() {
+    switch (bmiColorClass) {
+      case 'bmi-underweight':
+        return 'text-blue-700 dark:text-blue-300';
+      case 'bmi-normal':
+        return 'text-green-700 dark:text-green-300';
+      case 'bmi-overweight':
+        return 'text-warning-700 dark:text-warning-300';
+      case 'bmi-obese1':
+      case 'bmi-obese2':
+      case 'bmi-obese3':
+        return 'text-red-700 dark:text-red-300';
+      default:
+        return 'text-green-700 dark:text-green-300';
+    }
+  }
 </script>
 
 <ToolLayout
   title="BMI Calculator"
   description="Calculate your Body Mass Index, ideal weight, and get personalized health insights"
   icon={Activity}
-  color="success"
+  color="warning"
 >
-  <!-- Unit Selection -->
+  <!-- Hero Section -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6"
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
   >
-    <div class="p-6">
-      <div class="flex items-center justify-between">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Measurement Units</h2>
-        <div class="flex gap-2">
-          <button
-            class="btn {units === 'metric' ? 'btn-primary' : 'btn-secondary'}"
-            onclick={() => switchUnits('metric')}
-          >
-            Metric
-          </button>
-          <button
-            class="btn {units === 'imperial' ? 'btn-primary' : 'btn-secondary'}"
-            onclick={() => switchUnits('imperial')}
-          >
-            Imperial
-          </button>
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
+          <Activity class="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">BMI Calculator</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Calculate your Body Mass Index and health insights
+          </p>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- Unit Selection -->
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+  >
+    <div class="flex items-center justify-between">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Measurement Units</h3>
+      <div class="flex gap-2">
+        <button
+          class="btn btn-copy {units === 'metric' ? '' : 'btn-secondary'}"
+          onclick={() => switchUnits('metric')}
+        >
+          Metric
+        </button>
+        <button
+          class="btn btn-copy {units === 'imperial' ? '' : 'btn-secondary'}"
+          onclick={() => switchUnits('imperial')}
+        >
+          Imperial
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
     <!-- Input Form -->
-    <div class="lg:col-span-2 space-y-6">
+    <div class="lg:col-span-2 space-y-4">
       <!-- Basic Information -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
       >
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
-            <Users class="w-6 h-6 mr-2" />
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+            <Users class="w-6 h-6 mr-2 text-warning-600 dark:text-primary-400" />
             Personal Information
-          </h2>
+          </h3>
           <div class="flex gap-2">
-            <button class="btn btn-primary btn-sm" onclick={loadExample}>Example</button>
-            <button class="btn btn-primary btn-sm" onclick={reset}>Reset</button>
+            <button
+              class="btn btn-copy btn-sm"
+              onclick={loadExample}>Example</button
+            >
+            <button
+              class="btn btn-secondary btn-sm"
+              onclick={reset}
+            >
+              <RotateCcw class="w-4 h-4" />
+            </button>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label
               for="height-input"
@@ -269,11 +338,11 @@
               Height ({units === 'metric' ? 'cm' : 'inches'})
             </label>
             <input
-              class="input"
+              class="tool-input"
               id="height-input"
               type="number"
               bind:value={height}
-              placeholder={units === 'metric' ? '170' : '5\'7"'}
+              placeholder={units === 'metric' ? '170' : '67'}
             />
           </div>
 
@@ -285,7 +354,7 @@
               Weight ({units === 'metric' ? 'kg' : 'lbs'})
             </label>
             <input
-              class="input"
+              class="tool-input"
               id="weight-input"
               type="number"
               bind:value={weight}
@@ -293,31 +362,52 @@
             />
           </div>
 
-          <input class="input" id="age-input" type="number" bind:value={age} placeholder="30" />
+          <div>
+            <label
+              for="age-input"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Age</label
+            >
+            <input
+              class="tool-input"
+              id="age-input"
+              type="number"
+              bind:value={age}
+              placeholder="30"
+            />
+          </div>
 
           <div>
             <fieldset>
-              <legend class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Gender
-              </legend>
+              <legend class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >Gender</legend
+              >
               <div class="flex gap-4">
-                <label class="flex items-center">
+                <label class="relative flex items-center cursor-pointer">
                   <input
                     type="radio"
                     bind:group={gender}
                     value="male"
-                    class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500"
+                    class="absolute opacity-0 cursor-pointer h-0 w-0"
                   />
-                  <span class="ml-2 text-gray-700 dark:text-gray-300">Male</span>
+                  <span
+                    class="relative flex-shrink-0 w-5 h-5 border-2 border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800 transition-all hover:border-warning-400 dark:hover:border-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20 checked:border-warning-500 dark:checked:border-primary-500"
+                  ></span>
+                  <span class="text-sm font-medium text-gray-700 dark:text-gray-300 ml-2">Male</span
+                  >
                 </label>
-                <label class="flex items-center">
+                <label class="relative flex items-center cursor-pointer">
                   <input
                     type="radio"
                     bind:group={gender}
                     value="female"
-                    class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500"
+                    class="absolute opacity-0 cursor-pointer h-0 w-0"
                   />
-                  <span class="ml-2 text-gray-700 dark:text-gray-300">Female</span>
+                  <span
+                    class="relative flex-shrink-0 w-5 h-5 border-2 border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800 transition-all hover:border-warning-400 dark:hover:border-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20 checked:border-warning-500 dark:checked:border-primary-500"
+                  ></span>
+                  <span class="text-sm font-medium text-gray-700 dark:text-gray-300 ml-2"
+                    >Female</span
+                  >
                 </label>
               </div>
             </fieldset>
@@ -328,13 +418,12 @@
           <label
             for="activity-level-select"
             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >Activity Level</label
           >
-            Activity Level
-          </label>
           <select
             id="activity-level-select"
             bind:value={activityLevel}
-            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            class="tool-select"
           >
             {#each activityLevels as level (level.value)}
               <option value={level.value}>{level.label} - {level.description}</option>
@@ -346,24 +435,18 @@
       <!-- BMI Result -->
       {#if bmi > 0}
         <div
-          class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
         >
-          <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
-            <Activity class="w-6 h-6 mr-2" />
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+            <Activity class="w-6 h-6 mr-2 text-warning-600 dark:text-primary-400" />
             Your BMI Results
-          </h2>
+          </h3>
 
           <!-- BMI Value and Category -->
           <div class="text-center mb-8">
-            <div
-              class="inline-block p-6 bg-{bmiColor}-50 dark:bg-{bmiColor}-900/20 rounded-lg border-2 border-{bmiColor}-200 dark:border-{bmiColor}-800"
-            >
-              <p class="text-5xl font-bold text-{bmiColor}-700 dark:text-{bmiColor}-300 mb-2">
-                {bmi.toFixed(1)}
-              </p>
-              <p class="text-lg font-medium text-{bmiColor}-600 dark:text-{bmiColor}-400">
-                {bmiCategory}
-              </p>
+            <div class="inline-block p-6 rounded-xl border-2 {getBMICardClass()}">
+              <p class="text-5xl font-bold mb-2 {getBMITextClass()}">{bmi.toFixed(1)}</p>
+              <p class="text-lg font-medium {getBMITextClass()}">{bmiCategory}</p>
             </div>
           </div>
 
@@ -371,13 +454,12 @@
           <div class="mb-8">
             <div class="relative">
               <div
-                class="h-8 bg-gradient-to-r from-blue-400 via-green-400 to-red-400 rounded-full relative"
-              >
-                <div
-                  class="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-gray-900 dark:bg-white rounded-full border-2 border-white dark:border-gray-900 transition-all duration-300"
-                  style="left: {getBMIProgressWidth()}%"
-                ></div>
-              </div>
+                class="h-8 rounded-full relative bg-gradient-to-r from-blue-400 via-green-400 to-red-400"
+              ></div>
+              <div
+                class="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 transition-all duration-300 bg-gray-900 dark:bg-white border-white dark:border-gray-900"
+                style="left: {getBMIProgressWidth()}%; transform: translate(-50%, -50%);"
+              ></div>
               <div class="flex justify-between mt-2 text-xs text-gray-600 dark:text-gray-400">
                 <span>15</span>
                 <span>18.5</span>
@@ -390,36 +472,34 @@
           </div>
 
           <!-- Health Risk -->
-          <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-            <div class="flex items-start">
-              <Info class="w-5 h-5 text-primary-600 dark:text-primary-400 mt-0.5 mr-3" />
-              <div>
-                <p class="font-medium text-gray-900 dark:text-white mb-1">Health Risk Assessment</p>
-                <p class="text-sm text-gray-600 dark:text-gray-400">{healthRisk}</p>
-              </div>
+          <div class="flex items-start p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+            <Info class="w-5 h-5 text-warning-600 dark:text-primary-400 mt-0.5 mr-3 flex-shrink-0" />
+            <div>
+              <p class="font-medium text-gray-900 dark:text-white mb-1">Health Risk Assessment</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">{healthRisk}</p>
             </div>
           </div>
         </div>
 
         <!-- Detailed Results -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Ideal Weight -->
           <div
-            class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+            class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
           >
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-              <Target class="w-5 h-5 mr-2" />
+              <Target class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
               Ideal Weight Range
             </h3>
             <div class="space-y-2">
-              <div class="flex justify-between">
-                <span class="text-gray-600 dark:text-gray-400">Minimum:</span>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600 dark:text-gray-400">Minimum:</span>
                 <span class="font-medium text-gray-900 dark:text-white"
                   >{formatWeight(idealWeight.min)}</span
                 >
               </div>
-              <div class="flex justify-between">
-                <span class="text-gray-600 dark:text-gray-400">Maximum:</span>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600 dark:text-gray-400">Maximum:</span>
                 <span class="font-medium text-gray-900 dark:text-white"
                   >{formatWeight(idealWeight.max)}</span
                 >
@@ -437,30 +517,30 @@
           <!-- Metabolic Information -->
           {#if bmr > 0}
             <div
-              class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+              class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
             >
               <h3
                 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center"
               >
-                <Heart class="w-5 h-5 mr-2" />
+                <Heart class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
                 Metabolic Information
               </h3>
               <div class="space-y-2">
-                <div class="flex justify-between">
-                  <span class="text-gray-600 dark:text-gray-400">BMR:</span>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-gray-600 dark:text-gray-400">BMR:</span>
                   <span class="font-medium text-gray-900 dark:text-white"
                     >{Math.round(bmr)} calories/day</span
                   >
                 </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600 dark:text-gray-400">Daily Calories:</span>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-gray-600 dark:text-gray-400">Daily Calories:</span>
                   <span class="font-medium text-gray-900 dark:text-white"
                     >{formatCalories(dailyCalories)}</span
                   >
                 </div>
-                {#if bodyFatEstimate}
-                  <div class="flex justify-between">
-                    <span class="text-gray-600 dark:text-gray-400">Est. Body Fat:</span>
+                {#if bodyFatEstimate > 0}
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-600 dark:text-gray-400">Est. Body Fat:</span>
                     <span class="font-medium text-gray-900 dark:text-white"
                       >{Math.max(0, bodyFatEstimate).toFixed(1)}%</span
                     >
@@ -474,18 +554,16 @@
     </div>
 
     <!-- Sidebar -->
-    <div class="space-y-6">
+    <div class="space-y-4">
       <!-- BMI Categories -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
       >
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">BMI Categories</h3>
         <div class="space-y-3">
-          <div
-            class="flex items-center justify-between p-2 rounded bg-primary-100 dark:bg-primary-900/20"
-          >
+          <div class="flex items-center justify-between p-2 rounded bg-blue-50 dark:bg-blue-900/20">
             <div class="flex items-center">
-              <div class="w-3 h-3 bg-primary-500 rounded-full mr-3"></div>
+              <div class="w-3 h-3 rounded-full mr-3 bg-blue-500"></div>
               <span class="text-sm text-gray-700 dark:text-gray-300">Underweight</span>
             </div>
             <span class="text-sm text-gray-600 dark:text-gray-400">&lt; 18.5</span>
@@ -494,23 +572,23 @@
             class="flex items-center justify-between p-2 rounded bg-green-50 dark:bg-green-900/20"
           >
             <div class="flex items-center">
-              <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+              <div class="w-3 h-3 rounded-full mr-3 bg-green-500"></div>
               <span class="text-sm text-gray-700 dark:text-gray-300">Normal</span>
             </div>
             <span class="text-sm text-gray-600 dark:text-gray-400">18.5 - 24.9</span>
           </div>
           <div
-            class="flex items-center justify-between p-2 rounded bg-yellow-50 dark:bg-yellow-900/20"
+            class="flex items-center justify-between p-2 rounded bg-warning-50 dark:bg-yellow-900/20"
           >
             <div class="flex items-center">
-              <div class="w-3 h-3 bg-yellow-500 rounded-full mr-3"></div>
+              <div class="w-3 h-3 rounded-full mr-3 bg-warning-500"></div>
               <span class="text-sm text-gray-700 dark:text-gray-300">Overweight</span>
             </div>
             <span class="text-sm text-gray-600 dark:text-gray-400">25 - 29.9</span>
           </div>
           <div class="flex items-center justify-between p-2 rounded bg-red-50 dark:bg-red-900/20">
             <div class="flex items-center">
-              <div class="w-3 h-3 bg-red-500 rounded-full mr-3"></div>
+              <div class="w-3 h-3 rounded-full mr-3 bg-red-500"></div>
               <span class="text-sm text-gray-700 dark:text-gray-300">Obese</span>
             </div>
             <span class="text-sm text-gray-600 dark:text-gray-400">≥ 30</span>
@@ -521,13 +599,15 @@
       <!-- Health Tips -->
       {#if bmi > 0 && getHealthTips().length > 0}
         <div
-          class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
         >
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Health Tips</h3>
           <div class="space-y-3">
             {#each getHealthTips() as tip (tip)}
               <div class="flex items-start">
-                <div class="w-2 h-2 bg-primary-500 rounded-full mt-1.5 mr-3"></div>
+                <div
+                  class="w-2 h-2 rounded-full mt-1.5 mr-3 flex-shrink-0 bg-warning-500 dark:bg-primary-500"
+                ></div>
                 <p class="text-sm text-gray-600 dark:text-gray-400">{tip}</p>
               </div>
             {/each}
@@ -537,13 +617,13 @@
 
       <!-- Important Notes -->
       <div
-        class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6"
+        class="border rounded-lg p-6 bg-warning-50 dark:bg-yellow-900/20 border-warning-200 dark:border-yellow-800"
       >
         <div class="flex items-start">
-          <Info class="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5 mr-3" />
+          <Info class="w-5 h-5 text-warning-600 dark:text-warning-400 mt-0.5 mr-3 flex-shrink-0" />
           <div>
             <h3 class="font-medium text-yellow-800 dark:text-yellow-200 mb-2">Important Notes</h3>
-            <ul class="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
+            <ul class="text-sm text-warning-700 dark:text-warning-300 space-y-1">
               <li>• BMI is a screening tool, not a diagnostic tool</li>
               <li>• It doesn't account for muscle mass or body composition</li>
               <li>• Athletes may have high BMI but low body fat</li>
@@ -553,6 +633,51 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+    <div
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+    >
+      <div
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+      >
+        <Activity class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Accurate BMI</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+        Calculate Body Mass Index with precision using metric or imperial units
+      </p>
+    </div>
+
+    <div
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+    >
+      <div
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+      >
+        <Heart class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Metabolic Insights</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+        Get BMR and daily calorie estimates based on your activity level
+      </p>
+    </div>
+
+    <div
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+    >
+      <div
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+      >
+        <Target class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Health Guidance</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+        Receive personalized health tips and ideal weight recommendations
+      </p>
     </div>
   </div>
 </ToolLayout>

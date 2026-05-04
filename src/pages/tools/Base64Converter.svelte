@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Hash, Upload, Shield, FileText, Zap } from '@lucide/svelte';
+  import { Hash, Upload, Shield, FileText, Zap, Check, Copy } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
 
   let inputText = $state('');
@@ -125,8 +125,27 @@
   title="Base64 Converter"
   description="Encode and decode Base64 strings with support for text and file conversion"
   icon={Hash}
-  color="primary"
+  color="warning"
 >
+  <!-- Hero Section -->
+  <div
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+  >
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
+          <Hash class="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Base64 Converter</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Encode and decode text and files to Base64 format
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Tab Navigation -->
   <div class="mb-6">
     <div class="flex justify-center">
@@ -136,7 +155,7 @@
         <button
           onclick={() => (activeTab = 'text')}
           class="px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'text'
-            ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
+            ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
             : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
         >
           Text Converter
@@ -144,7 +163,7 @@
         <button
           onclick={() => (activeTab = 'file')}
           class="px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'file'
-            ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
+            ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
             : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
         >
           File Converter
@@ -156,20 +175,35 @@
   {#if activeTab === 'text'}
     <!-- Text Converter -->
     <!-- Controls -->
-    <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
-      <button class="btn btn-primary" onclick={encodeBase64}>Encode to Base64</button>
-      <button class="btn btn-primary" onclick={decodeBase64}>Decode from Base64</button>
-      <button class="btn btn-primary btn-sm" onclick={loadSampleText}>Load Sample Text</button>
-      <button class="btn btn-primary btn-sm" onclick={loadSampleBase64}>Load Sample Base64</button>
-      <button class="btn btn-primary btn-sm" onclick={clearAll}>Clear All</button>
+    <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
+      <button
+        class="btn btn-copy"
+        onclick={encodeBase64}>Encode to Base64</button
+      >
+      <button
+        class="btn btn-copy"
+        onclick={decodeBase64}>Decode from Base64</button
+      >
+      <button
+        class="btn btn-secondary"
+        onclick={loadSampleText}>Load Sample Text</button
+      >
+      <button
+        class="btn btn-secondary"
+        onclick={loadSampleBase64}>Load Sample Base64</button
+      >
+      <button
+        class="btn btn-secondary"
+        onclick={clearAll}>Clear All</button
+      >
     </div>
 
     <!-- Error Display -->
     {#if error}
       <div
-        class="mb-4 p-4 bg-danger-100 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800 rounded-lg"
+        class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
       >
-        <p class="text-danger-700 dark:text-danger-400 font-medium">
+        <p class="text-red-700 dark:text-red-400 font-medium">
           Error: {error}
         </p>
       </div>
@@ -179,10 +213,9 @@
       <!-- Input Section -->
       <div>
         <textarea
-          class="textarea"
+          class="code-editor h-64"
           bind:value={inputText}
           placeholder="Enter text or Base64 string to encode/decode..."
-          rows={16}
         ></textarea>
         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-right">
           {inputText.length} characters
@@ -197,7 +230,7 @@
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Base64 Result</h2>
             {#if encodedText}
               <button
-                class="btn btn-primary btn-sm"
+                class="btn btn-copy btn-sm"
                 onclick={() => copyToClipboard(encodedText, 'encoded')}
               >
                 {copiedText === 'encoded' ? '✓ Copied!' : 'Copy'}
@@ -205,10 +238,9 @@
             {/if}
           </div>
           <textarea
-            class="textarea"
+            class="code-editor h-28"
             bind:value={encodedText}
             placeholder="Base64 encoded text will appear here..."
-            rows={7}
           ></textarea>
         </div>
 
@@ -218,7 +250,7 @@
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Decoded Result</h2>
             {#if decodedText}
               <button
-                class="btn btn-primary btn-sm"
+                class="btn btn-copy btn-sm"
                 onclick={() => copyToClipboard(decodedText, 'decoded')}
               >
                 {copiedText === 'decoded' ? '✓ Copied!' : 'Copy'}
@@ -226,10 +258,9 @@
             {/if}
           </div>
           <textarea
-            class="textarea"
+            class="code-editor h-28"
             bind:value={decodedText}
             placeholder="Decoded text will appear here..."
-            rows={7}
           ></textarea>
         </div>
       </div>
@@ -239,7 +270,7 @@
     <div class="max-w-2xl mx-auto">
       <!-- File Upload -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
       >
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Upload File for Base64 Conversion
@@ -251,12 +282,12 @@
           <Upload class="w-12 h-12 mx-auto mb-4 text-gray-400" />
 
           <label for="file-upload" class="cursor-pointer">
-            <span class="text-primary-600 dark:text-blue-400 hover:underline font-medium">
+            <span class="text-warning-600 dark:text-primary-400 hover:underline font-medium">
               Click to upload
             </span>
             <span class="text-gray-600 dark:text-gray-400"> or drag and drop </span>
           </label>
-          <input class="input hidden" id="file-upload" type="file" onchange={handleFileSelect} />
+          <input class="hidden" id="file-upload" type="file" onchange={handleFileSelect} />
           <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Supports any file type</p>
         </div>
 
@@ -274,7 +305,7 @@
         <div class="text-center py-8">
           <div class="inline-flex items-center gap-2">
             <div
-              class="w-5 h-5 border-2 border-primary-600 border-t-transparent rounded-full animate-spin"
+              class="w-5 h-5 border-2 border-yellow-600 dark:border-primary-500 border-t-transparent rounded-full animate-spin"
             ></div>
             <span class="text-gray-600 dark:text-gray-400">Processing file...</span>
           </div>
@@ -284,9 +315,9 @@
       <!-- Error Display -->
       {#if error}
         <div
-          class="mb-4 p-4 bg-danger-100 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800 rounded-lg"
+          class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
         >
-          <p class="text-danger-700 dark:text-danger-400 font-medium">
+          <p class="text-red-700 dark:text-red-400 font-medium">
             Error: {error}
           </p>
         </div>
@@ -295,7 +326,7 @@
       <!-- File Result -->
       {#if fileResult}
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
         >
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Conversion Result
@@ -328,18 +359,24 @@
                 >
                 <div class="flex gap-2">
                   <button
-                    class="btn btn-primary btn-sm"
+                    class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
                     onclick={() =>
                       fileResult && copyToClipboard(fileResult.encoded, 'file-encoded')}
                   >
                     {copiedText === 'file-encoded' ? '✓ Copied!' : 'Copy'}
                   </button>
-                  <button class="btn btn-primary btn-sm" onclick={downloadEncodedFile}>
+                  <button
+                    class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+                    onclick={downloadEncodedFile}
+                  >
                     Download
                   </button>
                 </div>
               </div>
-              <textarea class="textarea" value={fileResult.encoded} rows={8}></textarea>
+              <textarea
+                class="code-editor h-48"
+                value={fileResult.encoded}
+              ></textarea>
             </div>
           </div>
         </div>
@@ -348,46 +385,46 @@
   {/if}
 
   <!-- Features Section -->
-  <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <Shield class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <Shield class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Secure Encoding</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Encode text and files to Base64 format with proper UTF-8 handling for international
         characters
       </p>
     </div>
 
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <FileText class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <FileText class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">File Support</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Convert any file type to Base64 and download the encoded data for easy sharing
       </p>
     </div>
 
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-primary-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <Zap class="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Fast Processing</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Instant encoding and decoding with efficient algorithms for both text and binary data
       </p>
     </div>

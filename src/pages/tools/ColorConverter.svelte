@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Palette, Zap, History, Copy, RefreshCw } from '@lucide/svelte';
+  import { Palette, Zap, History, Copy, RefreshCw, Sparkles, Check } from '@lucide/svelte';
   import { toast } from 'svelte-sonner';
   import ToolLayout from '../../components/ToolLayout.svelte';
 
@@ -204,32 +204,47 @@
   title="Color Converter"
   description="Convert between different color formats instantly. Perfect for designers and developers."
   icon={Palette}
-  color="primary"
+  color="warning"
 >
-  <!-- Controls -->
-  <div class="mb-6 flex justify-center">
-    <button onclick={randomColor} class="btn btn-primary btn-sm">
-      <RefreshCw class="w-4 h-4 mr-2" />
-      Random Color
-    </button>
+  <!-- Hero Section -->
+  <div
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+  >
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
+          <Palette class="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Color Converter</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Convert between HEX, RGB, HSL, HSV, and CMYK
+          </p>
+        </div>
+      </div>
+      <button class="btn btn-copy" onclick={randomColor}>
+        <RefreshCw class="w-4 h-4" />
+        Random Color
+      </button>
+    </div>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Color Preview -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
     >
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Color Preview</h2>
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Color Preview</h2>
       <div
         class="w-full h-48 rounded-xl shadow-inner mb-4 transition-colors duration-300"
         style="background-color: {hexInput}"
       ></div>
       <div class="grid grid-cols-2 gap-4 text-sm">
-        <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+        <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
           <span class="text-gray-600 dark:text-gray-400">HEX:</span>
           <span class="font-mono text-gray-900 dark:text-white ml-2">{hexInput}</span>
         </div>
-        <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+        <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
           <span class="text-gray-600 dark:text-gray-400">RGB:</span>
           <span class="font-mono text-gray-900 dark:text-white ml-2"
             >{rgbInput.r}, {rgbInput.g}, {rgbInput.b}</span
@@ -240,9 +255,9 @@
 
     <!-- Color History -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
     >
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Recent Colors</h2>
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Colors</h2>
       {#if history.length === 0}
         <div
           class="flex flex-col items-center justify-center h-48 text-gray-500 dark:text-gray-400"
@@ -265,7 +280,7 @@
                 aria-label={`Select color ${item.color}`}
               ></button>
               <div
-                class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10"
+                class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none"
               >
                 {item.color}
               </div>
@@ -277,20 +292,23 @@
   </div>
 
   <!-- Color Formats -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
     <!-- HEX Format -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
     >
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">HEX</h3>
       <div class="flex gap-2">
         <input
           bind:value={hexInput}
           oninput={updateFromHex}
-          class="input font-mono"
+          class="tool-input flex-1 font-mono text-sm"
           placeholder="#000000"
         />
-        <button onclick={() => copyToClipboard(hexInput, 'HEX')} class="btn btn-secondary btn-sm">
+        <button
+          onclick={() => copyToClipboard(hexInput, 'HEX')}
+          class="btn btn-secondary"
+        >
           <Copy class="w-4 h-4" />
         </button>
       </div>
@@ -298,7 +316,7 @@
 
     <!-- RGB Format -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
     >
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">RGB</h3>
       <div class="space-y-3">
@@ -317,7 +335,7 @@
               max="255"
               bind:value={rgbInput[channel as keyof typeof rgbInput]}
               oninput={updateFromRgb}
-              class="flex-1 accent-primary-500"
+              class="flex-1 accent-yellow-500 dark:accent-purple-500"
             />
             <input
               type="number"
@@ -325,13 +343,13 @@
               max="255"
               bind:value={rgbInput[channel as keyof typeof rgbInput]}
               oninput={updateFromRgb}
-              class="w-16 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+              class="tool-input w-16 text-sm px-2 py-1"
             />
           </div>
         {/each}
         <button
           onclick={() => copyToClipboard(`rgb(${rgbInput.r}, ${rgbInput.g}, ${rgbInput.b})`, 'RGB')}
-          class="btn btn-secondary w-full mt-2"
+          class="btn btn-copy w-full mt-2"
         >
           Copy RGB
         </button>
@@ -340,7 +358,7 @@
 
     <!-- HSL Format -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
     >
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">HSL</h3>
       <div class="space-y-3">
@@ -359,7 +377,7 @@
               max={channel === 'h' ? 360 : 100}
               bind:value={hslInput[channel as keyof typeof hslInput]}
               oninput={updateFromHsl}
-              class="flex-1 accent-primary-500"
+              class="flex-1 accent-yellow-500 dark:accent-purple-500"
             />
             <input
               type="number"
@@ -367,14 +385,14 @@
               max={channel === 'h' ? 360 : 100}
               bind:value={hslInput[channel as keyof typeof hslInput]}
               oninput={updateFromHsl}
-              class="w-16 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+              class="tool-input w-16 text-sm px-2 py-1"
             />
           </div>
         {/each}
         <button
           onclick={() =>
             copyToClipboard(`hsl(${hslInput.h}, ${hslInput.s}%, ${hslInput.l}%)`, 'HSL')}
-          class="btn btn-secondary w-full mt-2"
+          class="btn btn-copy w-full mt-2"
         >
           Copy HSL
         </button>
@@ -383,7 +401,7 @@
 
     <!-- HSV Format -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
     >
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">HSV</h3>
       <div class="space-y-2">
@@ -402,7 +420,7 @@
         <button
           onclick={() =>
             copyToClipboard(`hsv(${hsvInput.h}, ${hsvInput.s}%, ${hsvInput.v}%)`, 'HSV')}
-          class="btn btn-secondary w-full mt-4"
+          class="btn btn-copy w-full mt-4"
         >
           Copy HSV
         </button>
@@ -411,18 +429,18 @@
 
     <!-- CMYK Format -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
     >
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">CMYK</h3>
       <div class="space-y-2">
         {#each ['c', 'm', 'y', 'k'] as channel (channel)}
           <div class="flex justify-between text-sm">
-            <span class="text-gray-600 dark:text-gray-400 uppercase"
-              >{channel === 'k' ? 'Key (Black)' : channel}:</span
-            >
-            <span class="font-mono text-gray-900 dark:text-white"
-              >{cmykInput[channel as keyof typeof cmykInput]}%</span
-            >
+            <span class="text-gray-600 dark:text-gray-400 uppercase">
+              {channel === 'k' ? 'Key (Black)' : channel}:
+            </span>
+            <span class="font-mono text-gray-900 dark:text-white">
+              {cmykInput[channel as keyof typeof cmykInput]}%
+            </span>
           </div>
         {/each}
         <button
@@ -431,7 +449,7 @@
               `cmyk(${cmykInput.c}%, ${cmykInput.m}%, ${cmykInput.y}%, ${cmykInput.k}%)`,
               'CMYK'
             )}
-          class="btn btn-secondary w-full mt-4"
+          class="btn btn-copy w-full mt-4"
         >
           Copy CMYK
         </button>
@@ -440,31 +458,45 @@
   </div>
 
   <!-- Features Section -->
-  <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-primary-600 dark:text-primary-400">
-        <Palette class="w-5 h-5" />
-        <h3 class="font-medium">Multiple Formats</h3>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+    <div
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+    >
+      <div
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+      >
+        <Palette class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
-      <p class="text-sm text-gray-600 dark:text-gray-400">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Multiple Formats</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Support for HEX, RGB, HSL, HSV, and CMYK color formats
       </p>
     </div>
-    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-primary-600 dark:text-primary-400">
-        <Zap class="w-5 h-5" />
-        <h3 class="font-medium">Live Conversion</h3>
+
+    <div
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+    >
+      <div
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+      >
+        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
-      <p class="text-sm text-gray-600 dark:text-gray-400">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Live Conversion</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Real-time color conversion as you type or adjust sliders
       </p>
     </div>
-    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-primary-600 dark:text-primary-400">
-        <History class="w-5 h-5" />
-        <h3 class="font-medium">Color History</h3>
+
+    <div
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+    >
+      <div
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+      >
+        <History class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
-      <p class="text-sm text-gray-600 dark:text-gray-400">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Color History</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Keep track of your recently used colors for quick access
       </p>
     </div>

@@ -12,7 +12,9 @@
     RotateCcw,
     Copy,
     History,
-    Trash2
+    Trash2,
+    Sparkles,
+    Check
   } from '@lucide/svelte';
   import { toast } from 'svelte-sonner';
 
@@ -28,12 +30,12 @@
 
   // Categories
   const categories = [
-    { id: 'length', name: 'Length', icon: Ruler, color: 'blue' },
-    { id: 'weight', name: 'Weight', icon: Weight, color: 'green' },
-    { id: 'temperature', name: 'Temperature', icon: Thermometer, color: 'red' },
-    { id: 'volume', name: 'Volume', icon: Volume, color: 'purple' },
-    { id: 'time', name: 'Time', icon: Clock, color: 'yellow' },
-    { id: 'speed', name: 'Speed', icon: Zap, color: 'orange' }
+    { id: 'length', name: 'Length', icon: Ruler },
+    { id: 'weight', name: 'Weight', icon: Weight },
+    { id: 'temperature', name: 'Temperature', icon: Thermometer },
+    { id: 'volume', name: 'Volume', icon: Volume },
+    { id: 'time', name: 'Time', icon: Clock },
+    { id: 'speed', name: 'Speed', icon: Zap }
   ];
 
   // Conversion factors (relative to base units)
@@ -59,7 +61,6 @@
       stone: 0.157473
     },
     temperature: {
-      // Special handling for temperature
       celsius: 'celsius',
       fahrenheit: 'fahrenheit',
       kelvin: 'kelvin'
@@ -267,9 +268,6 @@
     fromValue = item.from.split(' ')[0];
     activeCategory = item.category;
 
-    // We can't easily restore exact units from the formatted string,
-    // so we just set the category and value. The user can select units.
-    // Or we could try to parse it if needed, but this is simpler.
     const units = Object.keys(conversionFactors[item.category as Category]);
     fromUnit = units[0];
     toUnit = units[1];
@@ -294,53 +292,65 @@
   title="Unit Converter"
   description="Convert between different units of measurement with precision."
   icon={Calculator}
-  color="primary"
+  color="warning"
 >
-  <!-- Controls -->
-  <div class="mb-6 flex justify-center flex-wrap gap-2">
-    <button onclick={reset} class="btn btn-primary btn-sm">
-      <RotateCcw class="w-4 h-4 mr-2" />
-      Reset
-    </button>
-    <button
-      onclick={clearHistory}
-      class="btn btn-primary btn-sm text-red-500 hover:text-red-600 hover:border-red-200"
-    >
-      <Trash2 class="w-4 h-4 mr-2" />
-      Clear History
-    </button>
-  </div>
-
-  <!-- Category Selection -->
-  <div class="mb-6 overflow-x-auto pb-2">
-    <div class="flex gap-3 min-w-max">
-      {#each categories as category (category.id)}
-        <button
-          onclick={() => {
-            activeCategory = category.id;
-            reset();
-          }}
-          class="flex items-center gap-2 px-4 py-2 rounded-xl border transition-all duration-200 {activeCategory ===
-          category.id
-            ? `border-primary-500 bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300`
-            : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600'}"
-        >
-          <category.icon class="w-4 h-4" />
-          <span class="text-sm font-medium">{category.name}</span>
+  <!-- Hero Section -->
+  <div
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+  >
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
+          <Calculator class="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Unit Converter</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Convert between length, weight, temperature, volume, time, and speed
+          </p>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button class="btn btn-copy" onclick={reset}>
+          <RotateCcw class="w-4 h-4" />
+          Reset
         </button>
-      {/each}
+        <button class="btn btn-secondary" onclick={clearHistory}>
+          <Trash2 class="w-4 h-4" />
+          Clear History
+        </button>
+      </div>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- Category Selection -->
+  <div class="flex gap-3 overflow-x-auto pb-2 mb-6 min-w-max">
+    {#each categories as category (category.id)}
+      <button
+        onclick={() => {
+          activeCategory = category.id;
+          reset();
+        }}
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border transition-all border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-warning-300 dark:hover:border-primary-400 {activeCategory ===
+        category.id
+          ? 'border-warning-400 dark:border-primary-500 bg-warning-50 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
+          : ''}"
+      >
+        <category.icon class="w-4 h-4" />
+        <span class="text-sm font-medium">{category.name}</span>
+      </button>
+    {/each}
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
     <!-- Main Converter -->
-    <div class="lg:col-span-2 space-y-6">
+    <div class="lg:col-span-2 space-y-4">
       <!-- Converter Card -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
       >
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
-          <Calculator class="w-5 h-5 mr-2 text-primary-500" />
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+          <Calculator class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
           Convert {categories.find(c => c.id === activeCategory)?.name}
         </h2>
 
@@ -349,19 +359,17 @@
           <div>
             <label
               for="from-value-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">From</label
             >
-              From
-            </label>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <input
                 id="from-value-input"
                 type="number"
                 bind:value={fromValue}
                 placeholder="Enter value"
-                class="input text-lg"
+                class="tool-input text-lg"
               />
-              <select bind:value={fromUnit} class="select">
+              <select bind:value={fromUnit} class="tool-select">
                 {#each unitOptions as option (option.value)}
                   <option value={option.value}>{option.label}</option>
                 {/each}
@@ -371,7 +379,7 @@
 
           <!-- Swap Button -->
           <div class="flex justify-center">
-            <button onclick={swapUnits} class="btn btn-primary btn-sm rounded-full">
+            <button class="btn btn-copy rounded-full" onclick={swapUnits} style="width: 2.5rem; height: 2.5rem; padding: 0;">
               <ArrowUpDown class="w-5 h-5" />
             </button>
           </div>
@@ -380,10 +388,8 @@
           <div>
             <label
               for="to-value-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">To</label
             >
-              To
-            </label>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div class="relative">
                 <input
@@ -392,17 +398,17 @@
                   bind:value={toValue}
                   readonly
                   placeholder="Result"
-                  class="input text-lg font-medium pr-12"
+                  class="tool-input text-lg font-medium pr-12"
                 />
                 <button
                   onclick={copyResult}
-                  class="absolute right-3 top-1/2 -translate-y-1/2 btn btn-primary btn-sm"
+                  class="btn btn-sm btn-secondary absolute right-3 top-1/2 -translate-y-1/2"
                   title="Copy result"
                 >
                   <Copy class="w-4 h-4" />
                 </button>
               </div>
-              <select bind:value={toUnit} class="select">
+              <select bind:value={toUnit} class="tool-select">
                 {#each unitOptions as option (option.value)}
                   <option value={option.value}>{option.label}</option>
                 {/each}
@@ -413,12 +419,12 @@
           <!-- Formula Information (for temperature) -->
           {#if activeCategory === 'temperature'}
             <div
-              class="bg-primary-100 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-xl p-4"
+              class="p-4 rounded-lg bg-warning-50 dark:bg-primary-900/20 border border-warning-200 dark:border-primary-800"
             >
-              <h3 class="text-sm font-medium text-primary-800 dark:text-primary-200 mb-2">
+              <h3 class="text-sm font-medium text-yellow-800 dark:text-primary-200 mb-2">
                 Conversion Formulas
               </h3>
-              <div class="space-y-1 text-xs text-primary-700 dark:text-primary-300">
+              <div class="space-y-1 text-xs">
                 <p>°C to °F: (°C × 9/5) + 32</p>
                 <p>°F to °C: (°F - 32) × 5/9</p>
                 <p>°C to K: °C + 273.15</p>
@@ -431,73 +437,73 @@
 
       <!-- Quick Reference -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
       >
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Reference</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
           {#if activeCategory === 'length'}
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">1 inch = 2.54 cm</p>
             </div>
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">1 foot = 12 inches</p>
             </div>
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">1 mile = 1.609 km</p>
             </div>
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">1 yard = 0.914 m</p>
             </div>
           {:else if activeCategory === 'weight'}
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">1 kg = 2.205 lbs</p>
             </div>
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">1 lb = 16 oz</p>
             </div>
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">1 ton = 1000 kg</p>
             </div>
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">1 stone = 14 lbs</p>
             </div>
           {:else if activeCategory === 'volume'}
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">1 gallon = 3.785 L</p>
             </div>
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">1 L = 1000 mL</p>
             </div>
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">1 cup = 236.6 mL</p>
             </div>
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">1 quart = 2 pints</p>
             </div>
           {:else if activeCategory === 'time'}
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">1 minute = 60 seconds</p>
             </div>
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">1 hour = 60 minutes</p>
             </div>
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">1 day = 24 hours</p>
             </div>
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">1 week = 7 days</p>
             </div>
           {:else if activeCategory === 'speed'}
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">100 km/h = 27.78 m/s</p>
             </div>
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">60 mph = 96.56 km/h</p>
             </div>
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">1 knot = 1.852 km/h</p>
             </div>
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
               <p class="font-medium text-gray-900 dark:text-white">Mach 1 = 343 m/s</p>
             </div>
           {/if}
@@ -506,20 +512,15 @@
     </div>
 
     <!-- Sidebar -->
-    <div class="space-y-6">
+    <div class="space-y-4">
       <!-- Conversion History -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 sticky top-6"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm sticky"
       >
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">History</h3>
           {#if conversionHistory.length > 0}
-            <button
-              onclick={clearHistory}
-              class="btn btn-primary btn-sm text-red-500 hover:text-red-600"
-            >
-              Clear
-            </button>
+            <button class="btn btn-sm btn-secondary">Clear</button>
           {/if}
         </div>
 
@@ -531,20 +532,17 @@
             <p class="text-sm">No conversions yet</p>
           </div>
         {:else}
-          <div class="space-y-2 max-h-[500px] overflow-y-auto pr-1 custom-scrollbar">
+          <div class="space-y-2 max-h-[400px] overflow-y-auto">
             {#each conversionHistory as item (item.timestamp)}
               <button
                 onclick={() => loadHistoryItem(item)}
-                class="w-full text-left p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group"
+                class="w-full text-left p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <div class="text-sm font-medium text-gray-900 dark:text-white">
                   {item.from}
                 </div>
                 <div class="text-sm text-gray-600 dark:text-gray-400">
                   → {item.to}
-                </div>
-                <div class="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                  {item.timestamp.toLocaleTimeString()}
                 </div>
               </button>
             {/each}
@@ -555,31 +553,45 @@
   </div>
 
   <!-- Features Section -->
-  <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-primary-600 dark:text-primary-400">
-        <Calculator class="w-5 h-5" />
-        <h3 class="font-medium">Precision</h3>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+    <div
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+    >
+      <div
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+      >
+        <Calculator class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
-      <p class="text-sm text-gray-600 dark:text-gray-400">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Precision</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         High-precision calculations for accurate results every time
       </p>
     </div>
-    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-primary-600 dark:text-primary-400">
-        <History class="w-5 h-5" />
-        <h3 class="font-medium">History</h3>
+
+    <div
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+    >
+      <div
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+      >
+        <History class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
-      <p class="text-sm text-gray-600 dark:text-gray-400">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">History</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Automatically saves your recent conversions for quick reference
       </p>
     </div>
-    <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-      <div class="flex items-center gap-2 mb-2 text-primary-600 dark:text-primary-400">
-        <Zap class="w-5 h-5" />
-        <h3 class="font-medium">Fast</h3>
+
+    <div
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+    >
+      <div
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+      >
+        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
-      <p class="text-sm text-gray-600 dark:text-gray-400">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Fast</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Instant conversion as you type with no page reloads
       </p>
     </div>

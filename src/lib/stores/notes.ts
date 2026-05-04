@@ -1,19 +1,28 @@
-import { writable, derived, get } from 'svelte/store';
-import { getNotes, getDeletedNotes, permanentDeleteNote, restoreNote, type Note, type NoteFilters } from '../notes';
+import { writable, get } from 'svelte/store';
+import {
+  getNotes,
+  getDeletedNotes,
+  permanentDeleteNote,
+  restoreNote,
+  type Note,
+  type NoteFilters
+} from '../notes';
 import { toast } from 'svelte-sonner';
+import { PaginatedStore } from './PaginatedStore';
+import type { PaginatedResponse } from './PaginatedStore';
 
-// Basic stores for active notes
+// ============================================================================
+// ACTIVE NOTES STORE
+// ============================================================================
+
+// Basic stores for active notes - kept for backward compatibility
 export const notes = writable<Note[]>([]);
 export const isLoadingNotes = writable<boolean>(false);
 export const notesError = writable<string | null>(null);
 export const currentPage = writable<number>(1);
 export const hasMore = writable<boolean>(true);
 export const totalCount = writable<number>(0);
-
-// Stores for pagination info
 export const notesLimit = writable<number>(12);
-
-// Current filter state (for tracking what filters are applied)
 export const currentFilters = writable<NoteFilters>({
   sortBy: 'created_at',
   sortOrder: 'desc'
@@ -24,8 +33,8 @@ function sortNotes(notesList: Note[], filters: NoteFilters): Note[] {
   const { sortBy, sortOrder } = filters;
 
   return [...notesList].sort((a, b) => {
-    const aValue = sortBy === 'created_at' ? a.createdAt : a.updatedAt;
-    const bValue = sortBy === 'created_at' ? b.createdAt : b.updatedAt;
+    const aValue = sortBy === 'created_at' ? a.created_at : a.updated_at;
+    const bValue = sortBy === 'created_at' ? b.created_at : b.updated_at;
 
     const aTime = new Date(aValue).getTime();
     const bTime = new Date(bValue).getTime();
@@ -34,59 +43,86 @@ function sortNotes(notesList: Note[], filters: NoteFilters): Note[] {
   });
 }
 
-// Global Notes Store class with methods
-class NotesStore {
-  // Clear all notes and reset pagination
-  clear(): void {
-    notes.set([]);
-    currentPage.set(1);
-    hasMore.set(true);
-    totalCount.set(0);
+// Active Notes Store class extending PaginatedStore
+class NotesStore extends PaginatedStore<Note> {
+  constructor() {
+    super(12); // Default limit
   }
 
-  // Reset store state
-  reset(): void {
-    this.clear();
-    isLoadingNotes.set(false);
-    notesError.set(null);
-    currentFilters.set({
-      sortBy: 'created_at',
-      sortOrder: 'desc'
-    });
+  /**
+   * Fetch data from API - implements abstract method from PaginatedStore
+   */
+  protected async _fetchData(
+    page: number,
+    limit: number,
+    filters?: NoteFilters | undefined,
+    append: boolean = false
+  ): Promise<void> {
+    const response = await getNotes(page, limit, filters);
+
+    // Map API response to PaginatedResponse format
+    const paginatedResponse: PaginatedResponse<Note> = {
+      data: response.notes,
+      pagination: response.pagination
+    };
+
+    // Update base class state
+    this.updatePaginationState(paginatedResponse, append);
+
+    // Sync with exported stores for backward compatibility
+    notes.set(this.getData());
+    currentPage.set(this.getCurrentPage());
+    hasMore.set(this.getHasMore()); // Now uses base class method correctly
+    totalCount.set(this.getTotalCount()); // Now uses base class method correctly
   }
 
-  // Load initial notes (page 1) - clears existing notes
-  async loadNotes(filters?: NoteFilters): Promise<void> {
+  /**
+   * Load initial notes (page 1) - uses cache first, then fetch in background
+   */
+  async loadNotes(filters?: NoteFilters, useCache: boolean = true): Promise<void> {
     const loading = get(isLoadingNotes);
     if (loading) return;
-
-    isLoadingNotes.set(true);
-    notesError.set(null);
-
-    // Clear existing notes and reset pagination for fresh load
-    this.clear();
 
     // Update current filters
     if (filters) {
       currentFilters.set(filters);
     }
 
+    // Try to load from cache first if enabled and cache is valid
+    if (useCache && isCacheValid()) {
+      const cachedNotes = loadNotesFromCache();
+      if (cachedNotes.length > 0) {
+        notes.set(cachedNotes);
+        // Still fetch in background for fresh data
+      }
+    }
+
+    isLoadingNotes.set(true);
+    notesError.set(null);
+
     try {
-      const response = await getNotes(1, get(notesLimit), filters);
-      notes.set(response.data.notes);
-      currentPage.set(response.data.pagination.page);
-      hasMore.set(response.data.pagination.page < response.data.pagination.totalPages);
-      totalCount.set(response.data.pagination.total);
+      await this._fetchData(1, get(notesLimit), filters);
+
+      // Save successful response to cache
+      const fetchedNotes = this.getData();
+      if (fetchedNotes.length > 0) {
+        saveNotesToCache(fetchedNotes);
+      }
     } catch (error) {
       notesError.set(error instanceof Error ? error.message : String(error));
-      notes.set([]);
+      // Don't clear notes if we have cached data
+      if (get(notes).length === 0) {
+        notes.set([]);
+      }
       toast.error('Failed to load notes');
     } finally {
       isLoadingNotes.set(false);
     }
   }
 
-  // Load more notes (pagination) - appends to existing notes
+  /**
+   * Load more notes (pagination) - appends to existing notes
+   */
   async loadMore(filters?: NoteFilters): Promise<void> {
     const loading = get(isLoadingNotes);
     const more = get(hasMore);
@@ -97,14 +133,7 @@ class NotesStore {
 
     try {
       const nextPage = get(currentPage) + 1;
-      const response = await getNotes(nextPage, get(notesLimit), filters);
-
-      // Append new notes to existing ones
-      notes.update(currentNotes => [...currentNotes, ...response.data.notes]);
-
-      currentPage.set(response.data.pagination.page);
-      hasMore.set(response.data.pagination.page < response.data.pagination.totalPages);
-      totalCount.set(response.data.pagination.total);
+      await this._fetchData(nextPage, get(notesLimit), filters, true);
     } catch (error) {
       notesError.set(error instanceof Error ? error.message : String(error));
       toast.error('Failed to load more notes');
@@ -113,59 +142,138 @@ class NotesStore {
     }
   }
 
-  // Prepend a new note to the store (after create)
+  /**
+   * Prepend a new note to the store (after create) - with sorting
+   */
   prependNote(note: Note): void {
-    notes.update(currentNotes => {
-      const filters = get(currentFilters);
-      const sorted = sortNotes([note, ...currentNotes], filters);
-      return sorted;
+    // Get current value
+    let currentNotes: Note[] = [];
+    const unsub = notes.subscribe(v => {
+      currentNotes = v;
     });
+    unsub();
+
+    // Create new array with note prepended and sorted
+    const sorted = sortNotes([note, ...currentNotes], { sortBy: 'created_at', sortOrder: 'desc' });
+
+    // Use set() for explicit reactivity
+    notes.set(sorted);
     totalCount.update(count => count + 1);
   }
 
-  // Update a note in the store (after edit) - with re-sorting
+  /**
+   * Update a note in the store (after edit) - with re-sorting
+   */
   updateNote(noteId: string, updatedNote: Note): void {
+    // Update the notes store and sort in one operation
     notes.update(currentNotes => {
-      const filters = get(currentFilters);
+      // Update the specific note
+      const updated = currentNotes.map(note => (note.id === noteId ? updatedNote : note));
 
-      // Remove the old note and add the updated one
-      const filtered = currentNotes.filter(n => n.id !== noteId);
-      const sorted = sortNotes([updatedNote, ...filtered], filters);
-
-      return sorted;
+      // Sort by updated_at descending
+      return sortNotes(updated, { sortBy: 'updated_at', sortOrder: 'desc' });
     });
   }
 
-  // Remove a note from the store (after delete)
+  /**
+   * Remove a note from the store (after delete)
+   */
   removeNote(noteId: string): void {
     notes.update(currentNotes => currentNotes.filter(n => n.id !== noteId));
     totalCount.update(count => Math.max(0, count - 1));
   }
 
-  // Get current notes value
+  /**
+   * Clear all notes and reset pagination
+   */
+  clear(): void {
+    super.clear();
+    notes.set([]);
+    currentPage.set(1);
+    hasMore.set(true);
+    totalCount.set(0);
+  }
+
+  /**
+   * Reset store state
+   */
+  reset(): void {
+    this.clear();
+    isLoadingNotes.set(false);
+    notesError.set(null);
+    currentFilters.set({
+      sortBy: 'created_at',
+      sortOrder: 'desc'
+    });
+  }
+
+  // Getters for backward compatibility
   getCurrentNotes(): Note[] {
     return get(notes);
   }
 
-  // Check if has more pages
-  getHasMore(): boolean {
-    return get(hasMore);
-  }
-
-  // Get total count
-  getTotalCount(): number {
-    return get(totalCount);
-  }
+  // Removed override methods - use base class implementations instead
+  // The base class methods correctly access this.hasMore and this.totalCount
+  // getHasMore(): boolean {
+  //   return get(hasMore);
+  // }
+  // getTotalCount(): number {
+  //   return get(totalCount);
+  // }
 }
 
 // Create singleton instance for active notes
 export const notesStore = new NotesStore();
 
 // ============================================================================
+// LOCALSTORAGE CACHE FOR NOTES
+// ============================================================================
+
+const NOTES_CACHE_KEY = 'notes_cache';
+const NOTES_CACHE_TIMESTAMP_KEY = 'notes_cache_timestamp';
+
+// Load cached notes from localStorage
+export function loadNotesFromCache(): Note[] {
+  try {
+    const cached = localStorage.getItem(NOTES_CACHE_KEY);
+    if (cached) {
+      return JSON.parse(cached);
+    }
+  } catch (e) {
+    console.error('Failed to load notes from cache:', e);
+  }
+  return [];
+}
+
+// Save notes to localStorage cache
+export function saveNotesToCache(notesToCache: Note[]): void {
+  try {
+    localStorage.setItem(NOTES_CACHE_KEY, JSON.stringify(notesToCache));
+    localStorage.setItem(NOTES_CACHE_TIMESTAMP_KEY, Date.now().toString());
+  } catch (e) {
+    console.error('Failed to save notes to cache:', e);
+  }
+}
+
+// Check if cache is valid (less than 5 minutes old)
+export function isCacheValid(): boolean {
+  try {
+    const timestamp = localStorage.getItem(NOTES_CACHE_TIMESTAMP_KEY);
+    if (timestamp) {
+      const age = Date.now() - parseInt(timestamp);
+      return age < 5 * 60 * 1000; // 5 minutes
+    }
+  } catch (e) {
+    // Ignore
+  }
+  return false;
+}
+
+// ============================================================================
 // DELETED NOTES STORE (for trash/recycle bin)
 // ============================================================================
 
-// Basic stores for deleted notes
+// Basic stores for deleted notes - kept for backward compatibility
 export const deletedNotes = writable<Note[]>([]);
 export const isLoadingDeletedNotes = writable<boolean>(false);
 export const deletedNotesError = writable<string | null>(null);
@@ -173,24 +281,42 @@ export const currentDeletedPage = writable<number>(1);
 export const hasMoreDeleted = writable<boolean>(true);
 export const deletedCount = writable<number>(0);
 
-// Global Deleted Notes Store class with methods
-class DeletedNotesStore {
-  // Clear all deleted notes and reset pagination
-  clear(): void {
-    deletedNotes.set([]);
-    currentDeletedPage.set(1);
-    hasMoreDeleted.set(true);
-    deletedCount.set(0);
+// Deleted Notes Store class extending PaginatedStore
+class DeletedNotesStore extends PaginatedStore<Note> {
+  constructor() {
+    super(12); // Default limit
   }
 
-  // Reset store state
-  reset(): void {
-    this.clear();
-    isLoadingDeletedNotes.set(false);
-    deletedNotesError.set(null);
+  /**
+   * Fetch data from API - implements abstract method from PaginatedStore
+   */
+  protected async _fetchData(
+    page: number,
+    limit: number,
+    filters?: NoteFilters | undefined,
+    append: boolean = false
+  ): Promise<void> {
+    const response = await getDeletedNotes(page, limit, filters);
+
+    // Map API response to PaginatedResponse format
+    const paginatedResponse: PaginatedResponse<Note> = {
+      data: response.notes,
+      pagination: response.pagination
+    };
+
+    // Update base class state
+    this.updatePaginationState(paginatedResponse, append);
+
+    // Sync with exported stores for backward compatibility
+    deletedNotes.set(this.getData());
+    currentDeletedPage.set(this.getCurrentPage());
+    hasMoreDeleted.set(this.getHasMore());
+    deletedCount.set(this.getTotalCount());
   }
 
-  // Load initial deleted notes (page 1) - clears existing notes
+  /**
+   * Load initial deleted notes (page 1) - clears existing notes
+   */
   async loadDeletedNotes(filters?: NoteFilters): Promise<void> {
     const loading = get(isLoadingDeletedNotes);
     if (loading) return;
@@ -198,15 +324,8 @@ class DeletedNotesStore {
     isLoadingDeletedNotes.set(true);
     deletedNotesError.set(null);
 
-    // Clear existing notes and reset pagination for fresh load
-    this.clear();
-
     try {
-      const response = await getDeletedNotes(1, get(notesLimit), filters);
-      deletedNotes.set(response.data.notes);
-      currentDeletedPage.set(response.data.pagination.page);
-      hasMoreDeleted.set(response.data.pagination.page < response.data.pagination.totalPages);
-      deletedCount.set(response.data.pagination.total);
+      await this._fetchData(1, get(notesLimit), filters);
     } catch (error) {
       deletedNotesError.set(error instanceof Error ? error.message : String(error));
       deletedNotes.set([]);
@@ -216,7 +335,9 @@ class DeletedNotesStore {
     }
   }
 
-  // Load more deleted notes (pagination) - appends to existing notes
+  /**
+   * Load more deleted notes (pagination) - appends to existing notes
+   */
   async loadMoreDeleted(filters?: NoteFilters): Promise<void> {
     const loading = get(isLoadingDeletedNotes);
     const more = get(hasMoreDeleted);
@@ -227,14 +348,7 @@ class DeletedNotesStore {
 
     try {
       const nextPage = get(currentDeletedPage) + 1;
-      const response = await getDeletedNotes(nextPage, get(notesLimit), filters);
-
-      // Append new deleted notes to existing ones
-      deletedNotes.update(currentNotes => [...currentNotes, ...response.data.notes]);
-
-      currentDeletedPage.set(response.data.pagination.page);
-      hasMoreDeleted.set(response.data.pagination.page < response.data.pagination.totalPages);
-      deletedCount.set(response.data.pagination.total);
+      await this._fetchData(nextPage, get(notesLimit), filters, true);
     } catch (error) {
       deletedNotesError.set(error instanceof Error ? error.message : String(error));
       toast.error('Failed to load more deleted notes');
@@ -243,7 +357,9 @@ class DeletedNotesStore {
     }
   }
 
-  // Permanently delete a note from the store (after permanent delete)
+  /**
+   * Permanently delete a note from the store
+   */
   async permanentlyDeleteNote(noteId: string): Promise<void> {
     try {
       await permanentDeleteNote(noteId);
@@ -253,12 +369,13 @@ class DeletedNotesStore {
       deletedCount.update(count => Math.max(0, count - 1));
     } catch (error) {
       toast.error('Failed to permanently delete note');
-      console.error('Permanent delete error:', error);
       throw error;
     }
   }
 
-  // Restore a deleted note
+  /**
+   * Restore a deleted note
+   */
   async restoreDeletedNote(noteId: string): Promise<Note> {
     try {
       const response = await restoreNote(noteId);
@@ -269,28 +386,47 @@ class DeletedNotesStore {
       return response.data;
     } catch (error) {
       toast.error('Failed to restore note');
-      console.error('Restore error:', error);
       throw error;
     }
   }
 
-  // Remove a deleted note from the store (when API call is done separately)
+  /**
+   * Remove a deleted note from the store (when API call is done separately)
+   */
   removeDeletedNote(noteId: string): void {
     deletedNotes.update(currentNotes => currentNotes.filter(n => n.id !== noteId));
     deletedCount.update(count => Math.max(0, count - 1));
   }
 
-  // Get current deleted notes value
+  /**
+   * Clear all deleted notes and reset pagination
+   */
+  clear(): void {
+    super.clear();
+    deletedNotes.set([]);
+    currentDeletedPage.set(1);
+    hasMoreDeleted.set(true);
+    deletedCount.set(0);
+  }
+
+  /**
+   * Reset store state
+   */
+  reset(): void {
+    this.clear();
+    isLoadingDeletedNotes.set(false);
+    deletedNotesError.set(null);
+  }
+
+  // Getters for backward compatibility
   getCurrentDeletedNotes(): Note[] {
     return get(deletedNotes);
   }
 
-  // Check if has more pages
   getHasMoreDeleted(): boolean {
     return get(hasMoreDeleted);
   }
 
-  // Get total count
   getDeletedCount(): number {
     return get(deletedCount);
   }

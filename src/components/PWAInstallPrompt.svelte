@@ -45,7 +45,6 @@
   }
 
   function handleAppInstalled() {
-    console.log('PWA was installed');
     isInstalled = true;
     showInstallPrompt = false;
     deferredPrompt = null;
@@ -64,12 +63,9 @@
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
 
-    console.log(`User response to install prompt: ${outcome}`);
 
     if (outcome === 'accepted') {
-      console.log('PWA installation accepted');
     } else {
-      console.log('PWA installation dismissed');
     }
 
     deferredPrompt = null;

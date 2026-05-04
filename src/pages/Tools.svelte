@@ -1,6 +1,6 @@
 <script lang="ts">
   import { navigate } from '../lib/router';
-  import { Search, ChevronRight } from '@lucide/svelte';
+  import { Search, Sparkles, X } from '@lucide/svelte';
   import { toolsByCategory } from '../lib/toolsConfig';
 
   let searchQuery = $state('');
@@ -49,6 +49,8 @@
       navigateToTool(toolId);
     }
   }
+
+  const totalTools = $derived(toolsByCategory.flatMap(c => c.tools).length);
 </script>
 
 <svelte:head>
@@ -59,99 +61,114 @@
   />
 </svelte:head>
 
-<div class="container mx-auto px-4 py-6 max-w-4xl">
-  <!-- Header -->
-  <div class="text-center mb-8">
-    <h1 class="text-3xl font-bold text-black dark:text-white mb-2">Developer Tools</h1>
-    <p class="text-black dark:text-gray-400 max-w-2xl mx-auto">
-      Essential tools for developers, designers, and power users.
-    </p>
-  </div>
+<div class="tools-page">
+  <!-- Hero Section -->
+  <div class="tools-hero-section">
+    <div
+      class="tools-hero-badge inline-flex items-center gap-2 px-4 py-2 bg-warning-100 dark:bg-primary-900/30 border border-warning-300 dark:border-primary-700 rounded-full text-warning-700 dark:text-warning-300 text-sm font-medium"
+    >
+      <Sparkles class="w-4 h-4" />
+      <span>{totalTools} Tools Available</span>
+    </div>
 
-  <!-- Search Bar -->
-  <div class="max-w-md mx-auto mb-6">
-    <div class="relative">
-      <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+    <h1 class="tools-hero-title">
+      <span class="text-gray-900 dark:text-white">Developer</span>
+      <span
+        class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-amber-400 dark:from-primary-400 to-purple-500 bg-gradient-to-l"
+        >Tools</span
+      >
+    </h1>
+
+    <p class="tools-hero-description">
+      Essential utilities crafted for developers, designers, and creators. Fast, free, and
+      privacy-focused.
+    </p>
+
+    <!-- Search Bar -->
+    <div class="peer relative max-w-500 mx-auto flex items-center p-3.5 border-2 rounded-xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg transition-all border-warning-500/20 dark:border-primary-500/20 focus-within:border-warning-500 focus-within:shadow-[0_0_0_4px_rgba(251,191,36,0.1)] dark:focus-within:border-purple-500 dark:focus-within:shadow-[0_0_0_4px_rgba(139,92,246,0.1)]">
+      <Search class="mr-3 text-gray-400 dark:text-gray-500 transition-colors peer-focus:dark:text-primary-400 peer-focus:text-yellow-500" />
       <input
         type="text"
         bind:value={searchQuery}
         placeholder="Search tools..."
-        class="input w-full !pl-10 text-sm"
+        class="flex-1 border-none bg-transparent text-base text-gray-900 dark:text-gray-100 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
       />
+      {#if searchQuery}
+        <button onclick={() => (searchQuery = '')} class="tools-search-clear" aria-label="Clear search">
+          <X class="w-3 h-3" />
+        </button>
+      {/if}
     </div>
   </div>
 
-  <!-- Category Filter -->
-  <div class="flex flex-wrap justify-center gap-1 mb-6">
+  <!-- Category Tabs -->
+  <div class="flex flex-wrap justify-center gap-2 mb-8">
     {#each categories as category (category)}
       <button
         onclick={() => (selectedCategory = category)}
-        class="btn btn-sm {selectedCategory === category ? 'bg-yellow-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700' : 'btn-secondary'}"
+        class="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl font-medium text-sm transition-all {selectedCategory ===
+        category
+          ? 'bg-gradient-to-r from-yellow-500 to-amber-500 dark:from-primary-600 dark:to-primary-500 border-transparent text-white shadow-lg'
+          : 'text-gray-600 dark:text-gray-400 hover:bg-warning-50 dark:hover:bg-gray-700 hover:border-warning-500/50 dark:hover:border-primary-500/50 hover:-translate-y-0.5'}"
       >
         {category}
-        <span class="badge bg-yellow-100 text-yellow-700 dark:bg-primary-900 dark:text-primary-300 ml-1">{getCategoryCount(category)}</span>
+        <span
+          class="flex items-center justify-center min-w-7 h-6 px-2 bg-gray-100 dark:bg-gray-700 rounded-full text-xs font-bold {selectedCategory ===
+          category
+            ? 'bg-white/20 text-white'
+            : 'text-gray-600 dark:text-gray-400'}"
+        >
+          {getCategoryCount(category)}
+        </span>
       </button>
     {/each}
   </div>
 
-  <!-- Tools List -->
-  <div
-    class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-700"
-  >
+  <!-- Tools Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
     {#each filteredTools as tool, index (tool.id)}
       <button
         onclick={() => navigateToTool(tool.id)}
         onkeydown={e => handleKeydown(e, tool.id)}
-        class="w-full text-left p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:focus:ring-primary-500 focus:ring-inset group"
+        class="flex gap-4 p-5 bg-white/90 dark:bg-gray-900/90 border border-black/6 dark:border-white/8 rounded-xl text-left transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-warning-500/30 dark:hover:border-primary-500/30 hover:shadow-yellow-500/15 dark:hover:shadow-purple-500/15 focus:outline-none focus:border-warning-500 dark:focus:border-purple-500 focus:ring-3 focus:ring-yellow-500/20 dark:focus:ring-purple-500/20"
+        style="animation-delay: {index * 50}ms"
         tabindex="0"
         aria-label="Open {tool.name}"
       >
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <div
-              class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 dark:from-primary-500 dark:to-primary-700 rounded-lg flex items-center justify-center flex-shrink-0"
-            >
-              <tool.icon class="w-5 h-5 text-white" />
-            </div>
-
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2">
-                <h3
-                  class="font-semibold text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-primary-400 transition-colors"
-                >
-                  {tool.name}
-                </h3>
-                <!-- Tool Number Badge -->
-                <div class="badge bg-yellow-100 text-yellow-700 dark:bg-primary-900 dark:text-primary-300 text-xs font-bold">
-                  {index + 1}
-                </div>
-                {#if tool.comingSoon}
-                  <span class="badge badge-warning"> Coming Soon </span>
-                {/if}
-              </div>
-              <p class="text-sm text-black dark:text-gray-400 mt-1 line-clamp-1">
-                {tool.description}
-              </p>
-            </div>
-          </div>
-
-          <ChevronRight
-            class="w-5 h-5 text-gray-400 group-hover:text-yellow-600 dark:group-hover:text-primary-400 transition-colors flex-shrink-0 ml-3"
-          />
+        <div
+          class="flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-100 to-amber-100 dark:from-primary-900/30 dark:to-primary-800/30 text-warning-700 dark:text-primary-400"
+        >
+          <tool.icon class="w-6 h-6" />
         </div>
 
-        <!-- Features Tags -->
-        <div class="flex flex-wrap gap-1 mt-3 ml-[3.5rem]">
-          {#each tool.features.slice(0, 4) as feature (feature)}
-            <span class="badge">
-              {feature}
-            </span>
-          {/each}
-          {#if tool.features.length > 4}
-            <span class="badge">
-              +{tool.features.length - 4}
-            </span>
-          {/if}
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            <h3 class="text-base font-semibold text-gray-900 dark:text-white">{tool.name}</h3>
+            {#if tool.comingSoon}
+              <span
+                class="px-2 py-0.5 bg-warning-500/15 dark:bg-primary-500/15 text-warning-700 dark:text-primary-400 text-xs font-semibold rounded-full uppercase tracking-wider"
+                >Soon</span
+              >
+            {/if}
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-2 mb-3">
+            {tool.description}
+          </p>
+
+          <div class="flex flex-wrap gap-1.5">
+            {#each tool.features.slice(0, 3) as feature (feature)}
+              <span
+                class="px-2 py-1 bg-black/4 dark:bg-white/6 rounded-md text-gray-600 dark:text-gray-400 text-xs font-medium"
+                >{feature}</span
+              >
+            {/each}
+            {#if tool.features.length > 3}
+              <span
+                class="px-2 py-1 bg-warning-500/10 dark:bg-primary-500/10 text-warning-700 dark:text-primary-400 rounded-md text-xs font-medium"
+                >+{tool.features.length - 3}</span
+              >
+            {/if}
+          </div>
         </div>
       </button>
     {/each}
@@ -160,26 +177,24 @@
   <!-- No Results -->
   {#if filteredTools.length === 0}
     <div
-      class="text-center py-12 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="text-center py-16 px-8 bg-white/90 dark:bg-gray-900/90 rounded-xl border border-dashed border-black/10 dark:border-white/10"
     >
-      <div class="text-gray-400 mb-4">
-        <Search class="w-12 h-12 mx-auto" />
+      <div
+        class="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-warning-500/10 dark:bg-primary-500/10 rounded-full text-yellow-500 dark:text-primary-400"
+      >
+        <Search class="w-12 h-12" />
       </div>
-      <h3 class="text-lg font-semibold text-black dark:text-white mb-2">No tools found</h3>
-      <p class="text-black dark:text-gray-400">
-        Try adjusting your search terms or browse all categories.
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">No tools found</h3>
+      <p class="text-gray-600 dark:text-gray-400 mb-4">
+        Try adjusting your search or browse all categories
       </p>
+      <button
+        onclick={() => (searchQuery = '')}
+        class="inline-flex items-center gap-2 px-4 py-2 bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white text-sm font-medium rounded-lg transition-all"
+      >
+        Clear Search
+      </button>
     </div>
   {/if}
 </div>
 
-<style>
-  .line-clamp-1 {
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-</style>

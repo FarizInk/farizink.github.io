@@ -1,11 +1,11 @@
 <script lang="ts">
+  import { Zap, Download, FileText, RefreshCw, Copy, AlertCircle, Check } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
-  import { Zap, Download, FileText } from '@lucide/svelte';
+  import { toast } from 'svelte-sonner';
 
   let jsInput = $state('');
   let jsOutput = $state('');
   let minified = $state(false);
-  let copiedText = $state('');
   let originalSize = $state(0);
   let minifiedSize = $state(0);
   let compressionRatio = $state(0);
@@ -127,14 +127,12 @@ console.log('Total amount:', result.total);`;
 
     minified = true;
     processJs();
+    toast.success('Sample JavaScript loaded');
   }
 
-  function copyToClipboard(text: string, format: string) {
+  function copyToClipboard(text: string) {
     navigator.clipboard.writeText(text);
-    copiedText = format;
-    setTimeout(() => {
-      copiedText = '';
-    }, 2000);
+    toast.success('Copied to clipboard');
   }
 
   function downloadJs() {
@@ -145,6 +143,7 @@ console.log('Total amount:', result.total);`;
     a.download = minified ? 'script.min.js' : 'script.js';
     a.click();
     URL.revokeObjectURL(url);
+    toast.success('JavaScript downloaded');
   }
 
   function clearAll() {
@@ -154,6 +153,7 @@ console.log('Total amount:', result.total);`;
     minifiedSize = 0;
     compressionRatio = 0;
     error = '';
+    toast.success('Cleared all');
   }
 
   function formatFileSize(bytes: number): string {
@@ -176,17 +176,40 @@ console.log('Total amount:', result.total);`;
   title="JavaScript Minifier"
   description="Minify or beautify JavaScript code with real-time preview and size comparison."
   icon={FileText}
-  color="success"
+  color="warning"
 >
+  <!-- Hero Section -->
+  <div
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+  >
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
+          <FileText class="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+            JavaScript Minifier/Beautifier
+          </h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Optimize or format your JavaScript code
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Mode Toggle -->
-  <div class="mb-6 flex justify-center">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 mb-6 shadow-sm"
+  >
     <div
       class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1"
     >
       <button
         onclick={() => (minified = false)}
         class="px-4 py-2 rounded-md text-sm font-medium transition-colors {!minified
-          ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300'
+          ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
           : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
       >
         Beautify JavaScript
@@ -194,7 +217,7 @@ console.log('Total amount:', result.total);`;
       <button
         onclick={() => (minified = true)}
         class="px-4 py-2 rounded-md text-sm font-medium transition-colors {minified
-          ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300'
+          ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
           : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
       >
         Minify JavaScript
@@ -203,182 +226,183 @@ console.log('Total amount:', result.total);`;
   </div>
 
   <!-- Controls -->
-  <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
+  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
     <button
       onclick={loadSampleJs}
-      class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+      class="btn btn-copy"
     >
+      <RefreshCw class="w-4 h-4 mr-2" />
       Load Sample JavaScript
     </button>
     <button
       onclick={clearAll}
-      class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+      class="btn btn-secondary"
     >
       Clear All
     </button>
     {#if jsOutput}
       <button
-        onclick={() => copyToClipboard(jsOutput, 'output')}
-        class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        onclick={() => copyToClipboard(jsOutput)}
+        class="btn btn-copy"
       >
-        {copiedText === 'output' ? '✓ Copied!' : 'Copy Result'}
+        <Copy class="w-4 h-4 mr-2" />
+        Copy Result
       </button>
       <button
         onclick={downloadJs}
-        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+        class="btn btn-copy"
       >
+        <Download class="w-4 h-4 mr-2" />
         Download JavaScript
       </button>
     {/if}
+  </div>
 
-    <!-- Error Display -->
-    {#if error}
-      <div
-        class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
-      >
-        <p class="text-red-700 dark:text-red-400 font-medium">{error}</p>
+  <!-- Error Display -->
+  {#if error}
+    <div
+      class="flex items-start gap-2 p-3 mb-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"
+    >
+      <AlertCircle class="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+      <p class="text-sm text-red-700 dark:text-red-300 font-medium">{error}</p>
+    </div>
+  {/if}
+
+  <!-- Statistics -->
+  {#if originalSize > 0}
+    <div
+      class="flex justify-center gap-8 p-4 rounded-xl border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 mb-6 flex-wrap shadow-sm"
+    >
+      <div class="text-center">
+        <p class="text-sm text-gray-600 dark:text-gray-400">Original Size</p>
+        <p class="text-lg font-semibold text-gray-900 dark:text-white">
+          {formatFileSize(originalSize)}
+        </p>
       </div>
-    {/if}
 
-    <!-- Statistics -->
-    {#if originalSize > 0}
-      <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 mb-6"
-      >
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          <div>
-            <p class="text-sm text-gray-600 dark:text-gray-400">Original Size</p>
-            <p class="text-lg font-semibold text-gray-900 dark:text-white">
-              {formatFileSize(originalSize)}
-            </p>
-          </div>
-
-          <div>
-            <p class="text-sm text-gray-600 dark:text-gray-400">Processed Size</p>
-            <p class="text-lg font-semibold text-gray-900 dark:text-white">
-              {formatFileSize(minifiedSize)}
-            </p>
-          </div>
-
-          <div>
-            <p class="text-sm text-gray-600 dark:text-gray-400">Size Change</p>
-            <p
-              class="text-lg font-semibold {minifiedSize < originalSize
-                ? 'text-green-600'
-                : 'text-red-600'} dark:text-{minifiedSize < originalSize ? 'green-400' : 'red-400'}"
-            >
-              {minifiedSize < originalSize ? '-' : '+'}{formatFileSize(
-                Math.abs(minifiedSize - originalSize)
-              )}
-            </p>
-          </div>
-
-          <div>
-            <p class="text-sm text-gray-600 dark:text-gray-400">Compression</p>
-            <p class="text-lg font-semibold text-gray-900 dark:text-white">{compressionRatio}%</p>
-          </div>
-        </div>
+      <div class="text-center">
+        <p class="text-sm text-gray-600 dark:text-gray-400">Processed Size</p>
+        <p class="text-lg font-semibold text-gray-900 dark:text-white">
+          {formatFileSize(minifiedSize)}
+        </p>
       </div>
-    {/if}
 
-    <!-- JavaScript Input and Output -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <!-- Input Section -->
-      <div>
-        <div class="flex justify-between items-center mb-2">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input JavaScript</h2>
-          <span class="text-sm text-gray-500 dark:text-gray-400">
-            {jsInput.length} characters
-          </span>
-        </div>
+      <div class="text-center">
+        <p class="text-sm text-gray-600 dark:text-gray-400">Size Change</p>
+        <p
+          class="text-lg font-semibold {minifiedSize < originalSize
+            ? 'text-green-600 dark:text-green-400'
+            : 'text-red-600 dark:text-red-400'}"
+        >
+          {minifiedSize < originalSize ? '-' : '+'}{formatFileSize(
+            Math.abs(minifiedSize - originalSize)
+          )}
+        </p>
+      </div>
 
+      <div class="text-center">
+        <p class="text-sm text-gray-600 dark:text-gray-400">Compression</p>
+        <p class="text-lg font-semibold text-gray-900 dark:text-white">{compressionRatio}%</p>
+      </div>
+    </div>
+  {/if}
+
+  <!-- JavaScript Input and Output -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Input Section -->
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+    >
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input JavaScript</h2>
+        <span class="text-sm text-gray-500 dark:text-gray-400">
+          {jsInput.length} characters
+        </span>
+      </div>
+
+      <textarea
+        bind:value={jsInput}
+        placeholder="Enter your JavaScript code here..."
+        class="code-editor min-h-[400px] lg:min-h-[600px]"
+      ></textarea>
+    </div>
+
+    <!-- Output Section -->
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+    >
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+          {minified ? 'Minified' : 'Beautified'} JavaScript
+        </h2>
+        <span class="text-sm text-gray-500 dark:text-gray-400">
+          {jsOutput.length} characters
+        </span>
+      </div>
+
+      <div class="relative">
         <textarea
-          bind:value={jsInput}
-          placeholder="Enter your JavaScript code here..."
-          class="w-full h-96 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+          bind:value={jsOutput}
+          placeholder="{minified ? 'Minified' : 'Beautified'} JavaScript will appear here..."
+          readonly
+          class="code-editor min-h-[400px] lg:min-h-[600px]"
         ></textarea>
-      </div>
-
-      <!-- Output Section -->
-      <div>
-        <div class="flex justify-between items-center mb-2">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            {minified ? 'Minified' : 'Beautified'} JavaScript
-          </h2>
-          <span class="text-sm text-gray-500 dark:text-gray-400">
-            {jsOutput.length} characters
-          </span>
-        </div>
-
-        <div class="relative">
-          <textarea
-            bind:value={jsOutput}
-            placeholder="{minified ? 'Minified' : 'Beautified'} JavaScript will appear here..."
-            class="w-full h-96 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none"
-          ></textarea>
-          {#if !jsOutput}
-            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <p class="text-gray-400 dark:text-gray-600">
-                Enter JavaScript code to see {minified ? 'minified' : 'beautified'} result
-              </p>
-            </div>
-          {/if}
-        </div>
-      </div>
-    </div>
-
-    <!-- Features Section -->
-    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div
-        class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-      >
-        <div
-          class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center mb-4"
-        >
-          <Zap class="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
-
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            Minify JavaScript
-          </h3>
-          <p class="text-gray-600 dark:text-gray-400">
-            Reduce file size by removing whitespace, comments, and unnecessary characters
-          </p>
-        </div>
-
-        <div
-          class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-        >
+        {#if !jsOutput}
           <div
-            class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center mb-4"
+            class="absolute inset-0 flex flex-col items-center justify-center p-6 pointer-events-none"
           >
-            <FileText class="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
-
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-              Beautify JavaScript
-            </h3>
-            <p class="text-gray-600 dark:text-gray-400">
-              Format JavaScript with proper indentation and line breaks for better readability
+            <FileText class="w-12 h-12 mb-2 opacity-50 text-gray-400 dark:text-gray-600" />
+            <p class="text-gray-400 dark:text-gray-600 text-sm">
+              Enter JavaScript code to see {minified ? 'minified' : 'beautified'} result
             </p>
           </div>
-
-          <div
-            class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-          >
-            <div
-              class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg flex items-center justify-center mb-4"
-            >
-              <Download class="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
-
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                Export Results
-              </h3>
-              <p class="text-gray-600 dark:text-gray-400">
-                Copy to clipboard or download processed JavaScript as a file for immediate use
-              </p>
-            </div>
-          </div>
-        </div>
+        {/if}
       </div>
     </div>
-  </div></ToolLayout
->
+  </div>
+
+  <!-- Features Section -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+    <div
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+    >
+      <div
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+      >
+        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Minify JavaScript</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+        Reduce file size by removing whitespace, comments, and unnecessary characters
+      </p>
+    </div>
+
+    <div
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+    >
+      <div
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+      >
+        <FileText class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Beautify JavaScript</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+        Format JavaScript with proper indentation and line breaks for better readability
+      </p>
+    </div>
+
+    <div
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+    >
+      <div
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+      >
+        <Download class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Export Results</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+        Copy to clipboard or download processed JavaScript as a file for immediate use
+      </p>
+    </div>
+  </div>
+</ToolLayout>

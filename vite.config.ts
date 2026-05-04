@@ -22,11 +22,11 @@ export default defineConfig({
   },
   // Handle client-side routing for SPA
   preview: {
-    port: 4173,
+    port: 3000,
     host: true
   },
   server: {
-    port: 5173,
+    port: 3000,
     host: true
   }
 });

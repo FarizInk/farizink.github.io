@@ -5,7 +5,6 @@
   import TagsSelector from './TagsSelector.svelte';
   import {
     Search,
-    Settings,
     ArrowUp,
     ArrowDown,
     Calendar,
@@ -14,7 +13,9 @@
     Star,
     Tag as TagIcon,
     RotateCw,
-    Clock
+    Filter,
+    X,
+    SlidersHorizontal
   } from '@lucide/svelte';
 
   interface SortOption {
@@ -26,7 +27,12 @@
   interface Props {
     isOpen: boolean;
     onClose: () => void;
-    onApply: (filters: NoteFilters, searchQuery: string, includeTags: string[], excludeTags: string[]) => void;
+    onApply: (
+      filters: NoteFilters,
+      searchQuery: string,
+      includeTags: string[],
+      excludeTags: string[]
+    ) => void;
     onClear: () => void;
     title: string;
     searchPlaceholder: string;
@@ -36,7 +42,7 @@
     defaultSortOrder?: NoteFilters['sortOrder'];
     // Initial values
     initialFilters: NoteFilters;
-    initialSearchQuery: string;
+    searchQuery: string;
     initialIncludeTags: string[];
     initialExcludeTags: string[];
   }
@@ -56,14 +62,13 @@
     defaultSortBy = 'created_at',
     defaultSortOrder = 'desc',
     initialFilters,
-    initialSearchQuery,
+    searchQuery = $bindable(),
     initialIncludeTags,
     initialExcludeTags
   }: Props = $props();
 
   let expertFilterMode = $state(false);
   let tempFilters = $state<NoteFilters>({ ...initialFilters });
-  let tempSearchQuery = $state(initialSearchQuery);
   let tempSelectedIncludeTags = $state<string[]>([...initialIncludeTags]);
   let tempSelectedExcludeTags = $state<string[]>([...initialExcludeTags]);
   let simpleSearchInput: HTMLInputElement | undefined = undefined;
@@ -75,7 +80,7 @@
   $effect(() => {
     if (isOpen) {
       tempFilters = { ...initialFilters };
-      tempSearchQuery = initialSearchQuery;
+      // searchQuery is bound to parent, no need to reset
       tempSelectedIncludeTags = [...initialIncludeTags];
       tempSelectedExcludeTags = [...initialExcludeTags];
       // Focus search input based on mode
@@ -88,7 +93,7 @@
   });
 
   function handleApply() {
-    onApply(tempFilters, tempSearchQuery, tempSelectedIncludeTags, tempSelectedExcludeTags);
+    onApply(tempFilters, searchQuery, tempSelectedIncludeTags, tempSelectedExcludeTags);
     onClose();
   }
 
@@ -97,7 +102,7 @@
       sortBy: defaultSortBy,
       sortOrder: defaultSortOrder
     };
-    tempSearchQuery = '';
+    searchQuery = ''; // Clears parent's searchQuery via binding
     tempSelectedIncludeTags = [];
     tempSelectedExcludeTags = [];
     onClear();
@@ -109,29 +114,57 @@
   }
 </script>
 
-<Modal
-  {isOpen}
-  {onClose}
-  maxW={expertFilterMode ? 'max-w-3xl' : 'max-w-lg'}
-  {title}
->
-  {#snippet body()}
-    <!-- Mode Toggle -->
-    <div class="flex items-center justify-between mb-4 pb-3 border-b border-secondary-200 dark:border-secondary-700">
-      <span class="text-sm font-medium text-secondary-700 dark:text-secondary-300">
-        {expertFilterMode ? 'Expert Mode' : 'Simple Mode'}
-      </span>
-      <button
-        onclick={() => expertFilterMode = !expertFilterMode}
-        class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors {expertFilterMode
-          ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
-          : 'border-secondary-300 dark:border-secondary-600 text-secondary-600 dark:text-secondary-400 hover:border-secondary-400 dark:hover:border-secondary-500'}"
-      >
-        <Settings class="w-3.5 h-3.5" />
-        <span class="hidden sm:inline">{expertFilterMode ? 'Expert' : 'Simple'}</span>
-      </button>
+<Modal {isOpen} {onClose} maxW={expertFilterMode ? 'max-w-3xl' : 'max-w-lg'} showCloseButton={false}>
+  {#snippet header()}
+    <div class="py-5 px-6 bg-gradient-to-br from-warning-50 to-amber-50 dark:from-primary-900/30 dark:to-primary-800/20 border-b border-warning-200 dark:border-primary-700">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-warning-400 to-amber-500 dark:from-primary-500 dark:to-primary-600 flex items-center justify-center shadow-lg">
+            {#if expertFilterMode}
+              <SlidersHorizontal class="w-6 h-6 text-white" />
+            {:else}
+              <Filter class="w-6 h-6 text-white" />
+            {/if}
+          </div>
+          <div>
+            <h2 id="modal-title" class="text-lg font-bold text-gray-900 dark:text-white">
+              {title}
+            </h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              {expertFilterMode ? 'Advanced filtering options' : 'Quick filters for notes'}
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <!-- Mode Toggle Button -->
+          <button
+            type="button"
+            onclick={() => (expertFilterMode = !expertFilterMode)}
+            class="w-9 h-9 rounded-lg bg-white dark:bg-secondary-700 hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
+            title={expertFilterMode ? 'Switch to Simple Mode' : 'Switch to Expert Mode'}
+          >
+            {#if expertFilterMode}
+              <Filter class="w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+            {:else}
+              <SlidersHorizontal class="w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+            {/if}
+          </button>
+          <!-- Close Button -->
+          <button
+            type="button"
+            onclick={onClose}
+            class="w-9 h-9 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 flex items-center justify-center transition-colors"
+            aria-label="Close modal"
+          >
+            <X class="w-5 h-5 text-gray-600 dark:text-gray-400" />
+          </button>
+        </div>
+      </div>
     </div>
+  {/snippet}
 
+  {#snippet body()}
+    <div class="px-4 sm:px-6 py-6">
     {#if expertFilterMode}
       <!-- Expert Mode -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -140,14 +173,16 @@
           <label class="label">Search</label>
           <div class="relative group">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search class="w-4 h-4 text-secondary-400 group-focus-within:text-yellow-500 dark:group-focus-within:text-primary-500 transition-colors" />
+              <Search
+                class="w-4 h-4 text-secondary-400 group-focus-within:text-yellow-500 dark:group-focus-within:text-primary-500 transition-colors"
+              />
             </div>
             <input
               type="text"
               placeholder={searchPlaceholder}
               class="input w-full !pl-10"
-              bind:value={tempSearchQuery}
-              onkeydown={(e) => e.key === 'Enter' && handleApply()}
+              bind:value={searchQuery}
+              onkeydown={e => e.key === 'Enter' && handleApply()}
               autocomplete="off"
               bind:this={expertSearchInput}
             />
@@ -158,29 +193,41 @@
         <div class="md:col-span-2">
           <span class="label block mb-2">Sort By</span>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {#each sortOptions as sortOption}
+            {#each sortOptions as sortOption (sortOption.value)}
               {@const Icon = sortOption.icon}
               <div class="p-3 bg-secondary-50 dark:bg-secondary-800 rounded-lg">
-                <div class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2 flex items-center gap-1">
+                <div
+                  class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2 flex items-center gap-1"
+                >
                   <Icon class="w-4 h-4" />
                   {sortOption.label}
                 </div>
                 <div class="flex gap-2">
                   <button
-                    onclick={() => tempFilters = { ...tempFilters, sortBy: sortOption.value, sortOrder: 'desc' }}
+                    onclick={() =>
+                      (tempFilters = {
+                        ...tempFilters,
+                        sortBy: sortOption.value,
+                        sortOrder: 'desc'
+                      })}
                     class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors flex items-center justify-center gap-1 {tempFilters.sortBy ===
                       sortOption.value && tempFilters.sortOrder === 'desc'
-                      ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
+                      ? 'border-warning-500 bg-warning-50 text-warning-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                       : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
                   >
                     <ArrowDown class="w-3 h-3" />
                     Newest
                   </button>
                   <button
-                    onclick={() => tempFilters = { ...tempFilters, sortBy: sortOption.value, sortOrder: 'asc' }}
+                    onclick={() =>
+                      (tempFilters = {
+                        ...tempFilters,
+                        sortBy: sortOption.value,
+                        sortOrder: 'asc'
+                      })}
                     class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors flex items-center justify-center gap-1 {tempFilters.sortBy ===
                       sortOption.value && tempFilters.sortOrder === 'asc'
-                      ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
+                      ? 'border-warning-500 bg-warning-50 text-warning-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                       : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
                   >
                     <ArrowUp class="w-3 h-3" />
@@ -198,27 +245,29 @@
             <span class="label block mb-2">Public Status</span>
             <div class="flex flex-col gap-2">
               <button
-                onclick={() => tempFilters = { ...tempFilters, isPublic: true }}
-                class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic === true
-                  ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
+                onclick={() => (tempFilters = { ...tempFilters, isPublic: true })}
+                class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic ===
+                true
+                  ? 'border-warning-500 bg-warning-50 text-warning-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                   : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
               >
                 Public Only
               </button>
               <button
-                onclick={() => tempFilters = { ...tempFilters, isPublic: false }}
-                class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic === false
-                  ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
+                onclick={() => (tempFilters = { ...tempFilters, isPublic: false })}
+                class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic ===
+                false
+                  ? 'border-warning-500 bg-warning-50 text-warning-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                   : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
               >
                 Private Only
               </button>
               <button
-                onclick={() => tempFilters = { ...tempFilters, isPublic: undefined }}
+                onclick={() => (tempFilters = { ...tempFilters, isPublic: undefined })}
                 class="px-3 py-2 text-sm rounded-md border border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors text-left {tempFilters.isPublic ===
-                  undefined
-                    ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
-                    : ''}"
+                undefined
+                  ? 'border-warning-500 bg-warning-50 text-warning-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
+                  : ''}"
               >
                 All
               </button>
@@ -231,26 +280,28 @@
           <span class="label block mb-2">Favorite Status</span>
           <div class="flex flex-col gap-2">
             <button
-              onclick={() => tempFilters = { ...tempFilters, isFavorite: true }}
-              class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite === true
-                ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
+              onclick={() => (tempFilters = { ...tempFilters, isFavorite: true })}
+              class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite ===
+              true
+                ? 'border-warning-500 bg-warning-50 text-warning-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
               Favorites Only
             </button>
             <button
-              onclick={() => tempFilters = { ...tempFilters, isFavorite: false }}
-              class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite === false
-                ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
+              onclick={() => (tempFilters = { ...tempFilters, isFavorite: false })}
+              class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite ===
+              false
+                ? 'border-warning-500 bg-warning-50 text-warning-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
               Non-Favorites
             </button>
             <button
-              onclick={() => tempFilters = { ...tempFilters, isFavorite: undefined }}
+              onclick={() => (tempFilters = { ...tempFilters, isFavorite: undefined })}
               class="px-3 py-2 text-sm rounded-md border border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors text-left {tempFilters.isFavorite ===
               undefined
-                ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
+                ? 'border-warning-500 bg-warning-50 text-warning-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : ''}"
             >
               All
@@ -283,14 +334,18 @@
           </div>
         {:else if $isLoadingTags}
           <div class="md:col-span-2">
-            <div class="flex items-center justify-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg">
+            <div
+              class="flex items-center justify-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg"
+            >
               <RotateCw class="w-4 h-4 text-secondary-400 animate-spin mr-2" />
               <span class="text-sm text-secondary-500">Loading tags...</span>
             </div>
           </div>
         {:else}
           <div class="md:col-span-2">
-            <div class="text-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg">
+            <div
+              class="text-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg"
+            >
               <TagIcon class="w-8 h-8 text-secondary-300 mx-auto mb-2" />
               <p class="text-sm text-secondary-500">No tags available</p>
             </div>
@@ -311,8 +366,8 @@
             type="text"
             placeholder={searchPlaceholder}
             class="input w-full"
-            bind:value={tempSearchQuery}
-            onkeydown={(e) => e.key === 'Enter' && handleApply()}
+            bind:value={searchQuery}
+            onkeydown={e => e.key === 'Enter' && handleApply()}
             autocomplete="off"
             bind:this={simpleSearchInput}
           />
@@ -326,18 +381,30 @@
           </label>
           <div class="grid grid-cols-2 gap-2">
             <button
-              onclick={() => tempFilters = { ...tempFilters, sortBy: tempFilters.sortBy || defaultSortBy, sortOrder: 'desc' }}
-              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1.5 {tempFilters.sortOrder === 'desc'
-                ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
+              onclick={() =>
+                (tempFilters = {
+                  ...tempFilters,
+                  sortBy: tempFilters.sortBy || defaultSortBy,
+                  sortOrder: 'desc'
+                })}
+              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1.5 {tempFilters.sortOrder ===
+              'desc'
+                ? 'border-warning-500 bg-warning-50 text-warning-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
               <ArrowDown class="w-3.5 h-3.5" />
               Newest
             </button>
             <button
-              onclick={() => tempFilters = { ...tempFilters, sortBy: tempFilters.sortBy || defaultSortBy, sortOrder: 'asc' }}
-              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1.5 {tempFilters.sortOrder === 'asc'
-                ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
+              onclick={() =>
+                (tempFilters = {
+                  ...tempFilters,
+                  sortBy: tempFilters.sortBy || defaultSortBy,
+                  sortOrder: 'asc'
+                })}
+              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1.5 {tempFilters.sortOrder ===
+              'asc'
+                ? 'border-warning-500 bg-warning-50 text-warning-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
               <ArrowUp class="w-3.5 h-3.5" />
@@ -355,26 +422,29 @@
             </label>
             <div class="grid grid-cols-3 gap-2">
               <button
-                onclick={() => tempFilters = { ...tempFilters, isPublic: undefined }}
-                class="px-3 py-2 text-sm rounded-lg border transition-colors {tempFilters.isPublic === undefined
-                  ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
+                onclick={() => (tempFilters = { ...tempFilters, isPublic: undefined })}
+                class="px-3 py-2 text-sm rounded-lg border transition-colors {tempFilters.isPublic ===
+                undefined
+                  ? 'border-warning-500 bg-warning-50 text-warning-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                   : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
               >
                 All
               </button>
               <button
-                onclick={() => tempFilters = { ...tempFilters, isPublic: true }}
-                class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isPublic === true
-                  ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
+                onclick={() => (tempFilters = { ...tempFilters, isPublic: true })}
+                class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isPublic ===
+                true
+                  ? 'border-warning-500 bg-warning-50 text-warning-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                   : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
               >
                 <Globe class="w-3.5 h-3.5" />
                 Public
               </button>
               <button
-                onclick={() => tempFilters = { ...tempFilters, isPublic: false }}
-                class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isPublic === false
-                  ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
+                onclick={() => (tempFilters = { ...tempFilters, isPublic: false })}
+                class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isPublic ===
+                false
+                  ? 'border-warning-500 bg-warning-50 text-warning-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                   : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
               >
                 <Lock class="w-3.5 h-3.5" />
@@ -392,26 +462,29 @@
           </label>
           <div class="grid grid-cols-3 gap-2">
             <button
-              onclick={() => tempFilters = { ...tempFilters, isFavorite: undefined }}
-              class="px-3 py-2 text-sm rounded-lg border transition-colors {tempFilters.isFavorite === undefined
-                ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
+              onclick={() => (tempFilters = { ...tempFilters, isFavorite: undefined })}
+              class="px-3 py-2 text-sm rounded-lg border transition-colors {tempFilters.isFavorite ===
+              undefined
+                ? 'border-warning-500 bg-warning-50 text-warning-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
               All
             </button>
             <button
-              onclick={() => tempFilters = { ...tempFilters, isFavorite: true }}
-              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isFavorite === true
-                ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
+              onclick={() => (tempFilters = { ...tempFilters, isFavorite: true })}
+              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isFavorite ===
+              true
+                ? 'border-warning-500 bg-warning-50 text-warning-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
               <Star class="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
               Yes
             </button>
             <button
-              onclick={() => tempFilters = { ...tempFilters, isFavorite: false }}
-              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isFavorite === false
-                ? 'border-yellow-500 bg-yellow-50 text-yellow-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
+              onclick={() => (tempFilters = { ...tempFilters, isFavorite: false })}
+              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isFavorite ===
+              false
+                ? 'border-warning-500 bg-warning-50 text-warning-700 dark:border-primary-500 dark:bg-primary-900/20 dark:text-primary-300'
                 : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400 dark:hover:border-secondary-500'}"
             >
               <Star class="w-3.5 h-3.5 text-secondary-400" />
@@ -435,32 +508,53 @@
             />
           </div>
         {:else if $isLoadingTags}
-          <div class="flex items-center justify-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg">
+          <div
+            class="flex items-center justify-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg"
+          >
             <RotateCw class="w-4 h-4 text-secondary-400 animate-spin mr-2" />
             <span class="text-sm text-secondary-500">Loading tags...</span>
           </div>
         {:else}
-          <div class="text-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg">
+          <div
+            class="text-center py-4 border border-secondary-200 dark:border-secondary-600 rounded-lg"
+          >
             <TagIcon class="w-8 h-8 text-secondary-300 mx-auto mb-2" />
             <p class="text-sm text-secondary-500">No tags available</p>
           </div>
         {/if}
       </div>
     {/if}
+    </div>
   {/snippet}
 
   {#snippet footer()}
-    <button
-      onclick={handleClear}
-      class="px-4 py-2 border border-secondary-300 dark:border-secondary-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm"
-    >
-      Clear
-    </button>
-    <button
-      onclick={handleApply}
-      class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700 text-white rounded-lg transition-colors text-sm font-medium"
-    >
-      Apply
-    </button>
+    <div class="py-4 bg-secondary-50 dark:bg-secondary-900/30">
+      <div class="flex items-center justify-between px-6 gap-6">
+        <div class="text-sm text-secondary-600 dark:text-secondary-400">
+          <span>
+            {expertFilterMode
+              ? 'Use advanced filters to find specific notes'
+              : 'Quick filters to find notes'}
+          </span>
+        </div>
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            onclick={handleClear}
+            class="px-4 py-2 border border-secondary-300 dark:border-secondary-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-secondary-50 dark:hover:bg-secondary-800 transition-colors font-medium"
+          >
+            Clear
+          </button>
+          <button
+            type="button"
+            onclick={handleApply}
+            class="px-4 py-2 bg-gradient-to-r from-warning-500 to-amber-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-600 dark:hover:to-primary-700 dark:from-primary-500 dark:to-primary-600 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 flex items-center gap-2"
+          >
+            <Filter class="w-4 h-4" />
+            Apply
+          </button>
+        </div>
+      </div>
+    </div>
   {/snippet}
 </Modal>

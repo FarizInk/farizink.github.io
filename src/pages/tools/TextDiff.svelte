@@ -1,6 +1,7 @@
 <script lang="ts">
   import ToolLayout from '../../components/ToolLayout.svelte';
-  import { GitCompare, FileText, Zap } from '@lucide/svelte';
+  import { GitCompare, FileText, Zap, Download } from '@lucide/svelte';
+  import { toast } from 'svelte-sonner';
 
   let text1 = $state('');
   let text2 = $state('');
@@ -76,6 +77,7 @@ const result = calculateSum(5, 3, 2);
 console.log('Result:', result);`;
 
     calculateDiff();
+    toast.success('Sample text loaded');
   }
 
   function copyDiff() {
@@ -106,6 +108,7 @@ console.log('Result:', result);`;
     setTimeout(() => {
       copiedText = '';
     }, 2000);
+    toast.success('Diff copied to clipboard');
   }
 
   function downloadDiff() {
@@ -137,12 +140,14 @@ console.log('Result:', result);`;
     a.download = 'diff-result.txt';
     a.click();
     URL.revokeObjectURL(url);
+    toast.success('Diff downloaded');
   }
 
   function clearAll() {
     text1 = '';
     text2 = '';
     diffResult = null;
+    toast.success('Cleared all');
   }
 
   function getStats() {
@@ -161,86 +166,114 @@ console.log('Result:', result);`;
   title="Text Diff Tool"
   description="Compare two texts side-by-side and highlight differences."
   icon={GitCompare}
-  color="primary"
+  color="warning"
 >
+  <!-- Hero Section -->
+  <div
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+  >
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
+          <GitCompare class="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Text Diff Tool</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Compare texts and highlight differences
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Options -->
   <div
     class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
   >
     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Diff Options</h3>
     <div class="flex flex-wrap gap-4">
-      <label class="flex items-center gap-2 cursor-pointer">
+      <label class="relative flex items-center cursor-pointer">
         <input
           type="checkbox"
           bind:checked={showLineNumbers}
-          class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+          class="absolute opacity-0 cursor-pointer h-0 w-0"
         />
-        <span class="text-sm text-gray-700 dark:text-gray-300">Show line numbers</span>
+        <span
+          class="relative flex-shrink-0 w-5 h-5 border-2 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 transition-all hover:border-warning-400 dark:hover:border-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20 peer-checked:bg-warning-500 dark:peer-checked:bg-purple-500 peer-checked:border-warning-500 dark:peer-checked:border-purple-500"
+        ></span>
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-300 ml-2"
+          >Show line numbers</span
+        >
       </label>
-      <label class="flex items-center gap-2 cursor-pointer">
+      <label class="relative flex items-center cursor-pointer">
         <input
           type="checkbox"
           bind:checked={ignoreWhitespace}
-          class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+          class="absolute opacity-0 cursor-pointer h-0 w-0"
         />
-        <span class="text-sm text-gray-700 dark:text-gray-300">Ignore whitespace</span>
+        <span
+          class="relative flex-shrink-0 w-5 h-5 border-2 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 transition-all hover:border-warning-400 dark:hover:border-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20 peer-checked:bg-warning-500 dark:peer-checked:bg-purple-500 peer-checked:border-warning-500 dark:peer-checked:border-purple-500"
+        ></span>
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-300 ml-2"
+          >Ignore whitespace</span
+        >
       </label>
-      <label class="flex items-center gap-2 cursor-pointer">
+      <label class="relative flex items-center cursor-pointer">
         <input
           type="checkbox"
           bind:checked={ignoreCase}
-          class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+          class="absolute opacity-0 cursor-pointer h-0 w-0"
         />
-        <span class="text-sm text-gray-700 dark:text-gray-300">Ignore case</span>
+        <span
+          class="relative flex-shrink-0 w-5 h-5 border-2 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 transition-all hover:border-warning-400 dark:hover:border-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20 peer-checked:bg-warning-500 dark:peer-checked:bg-purple-500 peer-checked:border-warning-500 dark:peer-checked:border-purple-500"
+        ></span>
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-300 ml-2">Ignore case</span>
       </label>
     </div>
   </div>
 
   <!-- Controls -->
-  <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
+  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
     <button
       onclick={calculateDiff}
       disabled={isProcessing || !text1 || !text2}
-      class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="btn btn-copy"
     >
       {isProcessing ? 'Calculating...' : 'Compare Text'}
     </button>
     <button
       onclick={loadSampleText}
-      class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+      class="btn btn-secondary">Load Sample Text</button
     >
-      Load Sample Text
-    </button>
     <button
       onclick={clearAll}
-      class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+      class="btn btn-secondary">Clear All</button
     >
-      Clear All
-    </button>
-  </div>
-
-  {#if diffResult}
-    <div class="mb-6 flex flex-wrap gap-4 items-center justify-center">
+    {#if diffResult}
       <button
         onclick={copyDiff}
-        class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        class="btn btn-copy"
       >
         {copiedText === 'diff' ? '✓ Copied!' : 'Copy Diff'}
       </button>
       <button
         onclick={downloadDiff}
-        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+        class="btn btn-copy"
       >
+        <Download class="w-4 h-4 mr-2" />
         Download Diff
       </button>
-    </div>
-  {/if}
+    {/if}
+  </div>
 
   <!-- Input Text Areas -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-    <div>
-      <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Original Text</h2>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+    >
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-0">Original Text</h3>
         <span class="text-sm text-gray-500 dark:text-gray-400">
           {text1.split('\n').length} lines
         </span>
@@ -249,13 +282,15 @@ console.log('Result:', result);`;
       <textarea
         bind:value={text1}
         placeholder="Enter the original text here..."
-        class="w-full h-96 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+        class="code-editor min-h-[400px]"
       ></textarea>
     </div>
 
-    <div>
-      <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Modified Text</h2>
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+    >
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-0">Modified Text</h3>
         <span class="text-sm text-gray-500 dark:text-gray-400">
           {text2.split('\n').length} lines
         </span>
@@ -264,7 +299,7 @@ console.log('Result:', result);`;
       <textarea
         bind:value={text2}
         placeholder="Enter the modified text here..."
-        class="w-full h-96 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+        class="code-editor min-h-[400px]"
       ></textarea>
     </div>
   </div>
@@ -275,120 +310,120 @@ console.log('Result:', result);`;
       class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
     >
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Diff Result</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-0">Diff Result</h3>
         {#if getStats()}
           <div class="flex gap-4 text-sm">
-            <span class="text-primary-600 dark:text-primary-400">+{getStats()!.added} added</span>
+            <span class="text-green-600 dark:text-green-400">+{getStats()!.added} added</span>
             <span class="text-red-600 dark:text-red-400">-{getStats()!.removed} removed</span>
             <span class="text-gray-600 dark:text-gray-400">{getStats()!.unchanged} unchanged</span>
           </div>
         {/if}
+      </div>
 
-        <div class="overflow-x-auto">
-          <div class="min-w-full">
-            {#each diffResult.removed as line, index (line + index + 'removed')}
-              <div class="flex items-start gap-2 py-1">
-                {#if showLineNumbers}
-                  <span class="text-xs text-gray-500 dark:text-gray-400 w-8 text-right"
-                    >{index + 1}</span
-                  >
-                {/if}
-                <span class="text-red-600 dark:text-red-400">-</span>
-                <pre
-                  class="text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded flex-1">{line ||
-                    '\u00A0'}</pre>
-              </div>
-              {#if diffResult.added[index]}
-                <div class="flex items-start gap-2 py-1">
-                  {#if showLineNumbers}
-                    <span class="text-xs text-gray-500 dark:text-gray-400 w-8 text-right"
-                      >{index + 1}</span
-                    >
-                  {/if}
-                  <span class="text-primary-600 dark:text-primary-400">+</span>
-                  <pre
-                    class="text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded flex-1">{diffResult
-                      .added[index] || '\u00A0'}</pre>
-                </div>
+      <div class="overflow-x-auto">
+        <div class="min-w-full">
+          {#each diffResult.removed as line, index (line + index + 'removed')}
+            <div class="flex items-start gap-2 py-1">
+              {#if showLineNumbers}
+                <span class="text-xs text-gray-500 dark:text-gray-400 w-8 text-right">
+                  {index + 1}
+                </span>
               {/if}
-            {/each}
-
-            {#each diffResult.unchanged as line, index (line + index + 'unchanged')}
+              <span class="text-red-600 dark:text-red-400">-</span>
+              <pre
+                class="text-sm px-2 py-1 rounded flex-1 text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/20">{line ||
+                  '\u00A0'}</pre>
+            </div>
+            {#if diffResult.added[index]}
               <div class="flex items-start gap-2 py-1">
                 {#if showLineNumbers}
-                  <span class="text-xs text-gray-500 dark:text-gray-400 w-8 text-right"
-                    >{diffResult.removed.length + index + 1}</span
-                  >
+                  <span class="text-xs text-gray-500 dark:text-gray-400 w-8 text-right">
+                    {index + 1}
+                  </span>
                 {/if}
-                <span class="text-gray-400 dark:text-gray-600"> </span>
+                <span class="text-green-600 dark:text-green-400">+</span>
                 <pre
-                  class="text-sm text-gray-700 dark:text-gray-300 px-2 py-1 rounded flex-1">{line ||
-                    '\u00A0'}</pre>
+                  class="text-sm px-2 py-1 rounded flex-1 text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20">{diffResult
+                    .added[index] || '\u00A0'}</pre>
               </div>
-            {/each}
+            {/if}
+          {/each}
 
-            {#each diffResult.added.slice(diffResult.removed.length) as line, index (line + index + 'added')}
-              <div class="flex items-start gap-2 py-1">
-                {#if showLineNumbers}
-                  <span class="text-xs text-gray-500 dark:text-gray-400 w-8 text-right"
-                    >{diffResult.removed.length + diffResult.unchanged.length + index + 1}</span
-                  >
-                {/if}
-                <span class="text-primary-600 dark:text-primary-400">+</span>
-                <pre
-                  class="text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded flex-1">{line ||
-                    '\u00A0'}</pre>
-              </div>
-            {/each}
-          </div>
+          {#each diffResult.unchanged as line, index (line + index + 'unchanged')}
+            <div class="flex items-start gap-2 py-1">
+              {#if showLineNumbers}
+                <span class="text-xs text-gray-500 dark:text-gray-400 w-8 text-right">
+                  {diffResult.removed.length + index + 1}
+                </span>
+              {/if}
+              <span class="text-gray-400 dark:text-gray-600"> </span>
+              <pre
+                class="text-sm px-2 py-1 rounded flex-1 text-gray-700 dark:text-gray-300">{line ||
+                  '\u00A0'}</pre>
+            </div>
+          {/each}
+
+          {#each diffResult.added.slice(diffResult.removed.length) as line, index (line + index + 'added')}
+            <div class="flex items-start gap-2 py-1">
+              {#if showLineNumbers}
+                <span class="text-xs text-gray-500 dark:text-gray-400 w-8 text-right">
+                  {diffResult.removed.length + diffResult.unchanged.length + index + 1}
+                </span>
+              {/if}
+              <span class="text-green-600 dark:text-green-400">+</span>
+              <pre
+                class="text-sm px-2 py-1 rounded flex-1 text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20">{line ||
+                  '\u00A0'}</pre>
+            </div>
+          {/each}
         </div>
       </div>
     </div>
   {/if}
 
   <!-- Features Section -->
-  <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <GitCompare class="w-6 h-6 text-orange-600 dark:text-orange-400" />
+        <GitCompare class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
         Side by Side Comparison
       </h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Compare two text blocks and easily identify added, removed, and unchanged lines
       </p>
     </div>
 
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <FileText class="w-6 h-6 text-orange-600 dark:text-orange-400" />
+        <FileText class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Flexible Options</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Configure diff comparison with options to ignore whitespace, case sensitivity, and line
         numbers
       </p>
     </div>
 
     <div
-      class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center mb-4"
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
-        <Zap class="w-6 h-6 text-orange-600 dark:text-orange-400" />
+        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Export & Share</h3>
-      <p class="text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
         Copy diff results to clipboard or download as a text file for easy sharing
       </p>
     </div>

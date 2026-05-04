@@ -1,9 +1,36 @@
 <script lang="ts">
   import type { Note } from '../lib/notes';
-  import { formatDate, getFileUrl, addRefreshParam, isPresignedUrl } from '../lib/notes';
-  import { Pencil, Trash2, Link2, Calendar, Image as ImageIcon, File, Paperclip, RotateCcw, Share2 } from '@lucide/svelte';
+  import { formatDate, getFileUrl } from '../lib/notes';
+  import {
+    truncateText,
+    formatFileName,
+    handleImageError,
+    getFileIconColor,
+    formatMimeType
+  } from '../lib/uiUtils';
+  import {
+    Pencil,
+    Trash2,
+    Link2,
+    Calendar,
+    Image as ImageIcon,
+    File,
+    Paperclip,
+    RotateCcw,
+    Share2
+  } from '@lucide/svelte';
 
-  let { note, onEdit, onDelete, hasAuthToken, onShowDetail, isDeleted = false, onPermanentDelete, onRestore, onShare } = $props<{
+  let {
+    note,
+    onEdit,
+    onDelete,
+    hasAuthToken,
+    onShowDetail,
+    isDeleted = false,
+    onPermanentDelete,
+    onRestore,
+    onShare
+  } = $props<{
     note: Note;
     onEdit?: (note: Note) => void;
     onDelete?: (note: Note) => void;
@@ -38,48 +65,12 @@
   function handleShowDetail() {
     onShowDetail?.(note);
   }
-
-  function truncateText(text: string | null, maxLength: number = 100): string {
-    if (!text) return '';
-    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
-  }
-
-  function getFileIcon(mimeType: string) {
-    if (mimeType.startsWith('image/')) {
-      return ImageIcon;
-    }
-    return File;
-  }
-
-  function formatFileName(name: string): string {
-    const maxLength = 20;
-    if (name.length <= maxLength) return name;
-    return name.substring(0, maxLength) + '...';
-  }
-
-  function handleImageError(event: Event) {
-    const img = event.target as HTMLImageElement;
-    const originalSrc = img.src;
-
-    // Try to refresh the URL once if it's a presigned URL
-    if (isPresignedUrl(originalSrc) && !img.dataset.refreshed) {
-      img.dataset.refreshed = 'true';
-      img.src = addRefreshParam(originalSrc);
-    } else {
-      // Fallback to hide image and show placeholder
-      img.style.display = 'none';
-      const placeholder = img.nextElementSibling as HTMLElement;
-      if (placeholder) {
-        placeholder.style.display = 'flex';
-      }
-    }
-  }
-
-
-  </script>
+</script>
 
 <div
-  class="card card-hover !p-6 group relative overflow-hidden cursor-pointer {!note.isPublic ? 'bg-gradient-to-br from-yellow-50 to-yellow-50 dark:from-primary-900/30 dark:to-primary-900/20 border-2 border-yellow-300 dark:border-primary-500 shadow-lg' : ''}"
+  class="card card-hover !p-6 group relative overflow-hidden cursor-pointer {!note.is_public
+    ? 'bg-gradient-to-br from-warning-50 to-warning-50 dark:from-primary-900/30 dark:to-primary-900/20 border-2 border-warning-300 dark:border-primary-500 shadow-lg'
+    : ''}"
   role="button"
   tabindex="0"
   onclick={handleShowDetail}
@@ -92,9 +83,9 @@
   aria-label={`View details for ${note.name || 'note'}`}
 >
   <!-- Card Accent Border -->
-  {#if note.isFavorite}
+  {#if note.is_favorite}
     <div
-      class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-yellow-400 to-yellow-600"
+      class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-warning-400 to-warning-600"
     ></div>
   {/if}
 
@@ -105,7 +96,7 @@
       <div class="flex-1 min-w-0 pr-4">
         {#if note.name}
           <h3
-            class="text-xl font-bold text-secondary-900 dark:text-white group-hover:text-yellow-600 dark:group-hover:text-primary-400 transition-all duration-200 mb-2"
+            class="text-xl font-bold text-secondary-900 dark:text-white group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-all duration-200 mb-2"
             title={note.name}
           >
             {note.name}
@@ -114,12 +105,12 @@
 
         {#if note.link}
           <div class="flex items-center gap-2">
-            <Link2 class="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+            <Link2 class="w-4 h-4 text-warning-600 dark:text-primary-400 flex-shrink-0" />
             <a
               href={note.link}
               target="_blank"
               rel="noopener noreferrer"
-              class="text-sm text-blue-700 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 transition-colors cursor-pointer truncate hover:underline"
+              class="text-sm text-warning-700 dark:text-primary-300 hover:text-warning-800 dark:hover:text-primary-200 transition-colors cursor-pointer truncate hover:underline"
               title={note.link}
             >
               {truncateText(note.link, 60)}
@@ -133,79 +124,94 @@
     {#if note.files && note.files.length > 0}
       <div class="mb-4">
         <!-- Multiple Images Grid -->
-        {#if note.files.filter(f => f.mimeType.startsWith('image/')).length > 1}
-          <div class="grid grid-cols-2 gap-2 rounded-lg overflow-hidden">
-            {#each note.files.filter(f => f.mimeType.startsWith('image/')).slice(0, 4) as file (file.id)}
-              <div class="relative group/file-preview aspect-square bg-secondary-100 dark:bg-secondary-800">
+        {#if note.files.filter(f => f?.mime_type?.startsWith('image/')).length > 1}
+          <div class="grid grid-cols-2 gap-2 overflow-hidden">
+            {#each note.files
+              .filter(f => f?.mime_type?.startsWith('image/'))
+              .slice(0, 4) as file, index ((file?.id || 'unknown') + '-' + index)}
+              <div
+                class="relative group/file-preview aspect-square bg-secondary-100 dark:bg-secondary-900 rounded-lg overflow-hidden"
+              >
                 <img
                   src={getFileUrl(file)}
-                  alt={file.metadata?.alt || file.originalName}
-                  class="w-full h-full object-cover"
+                  alt={file?.metadata?.alt || file?.original_name || 'file'}
+                  class="w-full h-full object-cover rounded-lg"
                   onerror={handleImageError}
                 />
-                {#if file === note.files.filter(f => f.mimeType.startsWith('image/'))[0] && note.files.filter(f => f.mimeType.startsWith('image/')).length > 4}
+                {#if file === note.files.filter( f => f?.mime_type?.startsWith('image/') )[0] && note.files.filter( f => f?.mime_type?.startsWith('image/') ).length > 4}
                   <div class="absolute inset-0 bg-black/60 flex items-center justify-center">
                     <span class="text-white font-semibold text-lg">
-                      +{note.files.filter(f => f.mimeType.startsWith('image/')).length - 3}
+                      +{note.files.filter(f => f?.mime_type?.startsWith('image/')).length - 3}
                     </span>
                   </div>
                 {/if}
-                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover/file-preview:opacity-100 transition-opacity duration-300">
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover/file-preview:opacity-100 transition-opacity duration-300"
+                >
                   <div class="absolute bottom-1 left-1 right-1 text-white">
-                    <p class="text-xs font-medium truncate" title={file.originalName}>
-                      {file.metadata?.title || formatFileName(file.originalName)}
+                    <p class="text-xs font-medium truncate" title={file?.original_name || 'file'}>
+                      {file?.metadata?.title || formatFileName(file?.original_name || 'file')}
                     </p>
                   </div>
                 </div>
               </div>
             {/each}
           </div>
-        <!-- Single Image Preview -->
-        {:else if note.files[0].mimeType.startsWith('image/')}
-          <div class="relative group/file-preview rounded-lg overflow-hidden bg-secondary-100 dark:bg-secondary-800">
+          <!-- Single Image Preview -->
+        {:else if note.files?.[0]?.mime_type?.startsWith('image/')}
+          <div
+            class="relative group/file-preview rounded-lg overflow-hidden bg-secondary-100 dark:bg-secondary-800"
+          >
             <img
-              src={getFileUrl(note.files[0])}
-              alt={note.files[0].metadata?.alt || note.files[0].originalName}
-              class="w-full h-48 object-cover"
+              src={getFileUrl(note.files?.[0])}
+              alt={note.files?.[0].metadata?.alt || note.files?.[0].original_name}
+              class="w-full h-48 object-cover rounded-lg"
               onerror={handleImageError}
             />
             <!-- Fallback for broken images -->
-            <div class="hidden w-full h-48 bg-secondary-200 dark:bg-secondary-700 flex items-center justify-center">
+            <div
+              class="hidden w-full h-48 bg-secondary-200 dark:bg-secondary-700 flex items-center justify-center rounded-lg"
+            >
               <ImageIcon class="w-12 h-12 text-secondary-400" />
             </div>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover/file-preview:opacity-100 transition-opacity duration-300">
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover/file-preview:opacity-100 transition-opacity duration-300"
+            >
               <div class="absolute bottom-2 left-2 right-2 text-white">
-                <p class="text-sm font-medium truncate" title={note.files[0].originalName}>
-                  {note.files[0].metadata?.title || formatFileName(note.files[0].originalName)}
+                <p class="text-sm font-medium truncate" title={note.files?.[0].original_name}>
+                  {note.files?.[0].metadata?.title || formatFileName(note.files?.[0].original_name)}
                 </p>
-                {#if note.files[0].metadata?.width && note.files[0].metadata?.height}
+                {#if note.files?.[0].metadata?.width && note.files?.[0].metadata?.height}
                   <p class="text-xs opacity-90">
-                    {note.files[0].metadata.width} × {note.files[0].metadata.height}
+                    {note.files?.[0]?.metadata?.width} × {note.files?.[0]?.metadata?.height}
                   </p>
                 {/if}
               </div>
             </div>
           </div>
-        <!-- File Icon Preview -->
+          <!-- File Icon Preview -->
         {:else}
-          <div class="flex items-center gap-3 p-3 bg-secondary-100 dark:bg-secondary-800 rounded-lg group hover:bg-secondary-200 dark:hover:bg-secondary-700 transition-colors">
-            <div class="w-10 h-10 bg-secondary-200 dark:bg-secondary-700 rounded flex items-center justify-center">
-              {#if note.files[0].mimeType === 'application/pdf'}
-                <File class="w-5 h-5 text-red-600 dark:text-red-400" />
-              {:else if note.files[0].mimeType.includes('document')}
-                <File class="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              {:else if note.files[0].mimeType.includes('text')}
-                <File class="w-5 h-5 text-green-600 dark:text-green-400" />
+          <div
+            class="flex items-center gap-3 p-3 bg-secondary-100 dark:bg-secondary-800 rounded-lg group hover:bg-secondary-200 dark:hover:bg-secondary-700 transition-colors"
+          >
+            <div
+              class="w-10 h-10 bg-secondary-200 dark:bg-secondary-700 rounded flex items-center justify-center"
+            >
+              {#if note.files?.[0]?.mime_type?.startsWith('image/')}
+                <ImageIcon class="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
               {:else}
-                <File class="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
+                <File class="w-5 h-5 {getFileIconColor(note.files?.[0]?.mime_type)}" />
               {/if}
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-secondary-900 dark:text-white truncate" title={note.files[0].originalName}>
-                {note.files[0].metadata?.title || formatFileName(note.files[0].originalName)}
+              <p
+                class="text-sm font-medium text-secondary-900 dark:text-white truncate"
+                title={note.files?.[0].original_name}
+              >
+                {note.files?.[0].metadata?.title || formatFileName(note.files?.[0].original_name)}
               </p>
               <p class="text-xs text-secondary-500 dark:text-secondary-400 capitalize">
-                {note.files[0].mimeType.replace('application/', '').replace('image/', '')}
+                {formatMimeType(note.files?.[0]?.mime_type)}
               </p>
             </div>
           </div>
@@ -213,17 +219,24 @@
       </div>
     {/if}
 
-    
     <!-- Tags Section -->
     {#if note.tags && note.tags.length > 0}
       <div class="flex flex-wrap gap-2 mb-4">
-        {#each note.tags.slice(0, 5) as tag (tag.tag)}
+        {#each note.tags.slice(0, 5) as tag, index (index)}
           <div
-            class="tag-group flex items-center gap-2 px-3 py-1.5 hover:bg-opacity-80 rounded-full border transition-all duration-200 {!tag.color ? 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700' : ''}"
-            style="background-color: {tag.color ? tag.color + '20' : undefined}; color: {tag.color || undefined}; border-color: {tag.color ? tag.color + '40' : undefined}"
+            class="tag-group flex items-center gap-2 px-3 py-1.5 hover:bg-opacity-80 rounded-full border transition-all duration-200 {!tag.color
+              ? 'bg-warning-50 text-warning-700 border-warning-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700'
+              : ''}"
+            style="background-color: {tag.color
+              ? tag.color + '20'
+              : undefined}; color: {tag.color || undefined}; border-color: {tag.color
+              ? tag.color + '40'
+              : undefined}"
           >
             <div
-              class="w-3 h-3 rounded-full tag-hover-scale transition-transform duration-200 {!tag.color ? 'bg-yellow-600 dark:bg-primary-600' : ''}"
+              class="w-3 h-3 rounded-full tag-hover-scale transition-transform duration-200 {!tag.color
+                ? 'bg-warning-600 dark:bg-primary-600'
+                : ''}"
               style="background-color: {tag.color || undefined}"
             ></div>
             <span class="text-sm font-medium">{tag.name || tag.tag}</span>
@@ -244,21 +257,23 @@
       class="flex items-center justify-between text-sm text-secondary-500 dark:text-secondary-400 pt-4 border-t border-secondary-100 dark:border-secondary-700"
     >
       <div class="flex items-center gap-4">
-        {#if isDeleted && note.deletedAt}
+        {#if isDeleted && note.deleted_at}
           <div class="flex items-center gap-2 text-red-600 dark:text-red-400">
             <Calendar class="w-4 h-4" />
-            <span>Deleted {formatDate(note.deletedAt)}</span>
+            <span>Deleted {formatDate(note.deleted_at)}</span>
           </div>
-        {:else if note.createdAt}
+        {:else if note.created_at}
           <div class="flex items-center gap-2">
             <Calendar class="w-4 h-4" />
-            <span>{formatDate(note.createdAt)}</span>
+            <span>{formatDate(note.created_at)}</span>
           </div>
         {/if}
         {#if note.files && note.files.length > 0}
           <div class="flex items-center gap-1">
             <Paperclip class="w-3 h-3" />
-            <span class="text-xs">{note.files.length} {note.files.length === 1 ? 'file' : 'files'}</span>
+            <span class="text-xs"
+              >{note.files.length} {note.files.length === 1 ? 'file' : 'files'}</span
+            >
           </div>
         {/if}
       </div>
@@ -298,10 +313,12 @@
               e.stopPropagation();
               handleShare();
             }}
-            class="w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-blue-300 dark:hover:border-blue-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
+            class="w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
             title="Share note"
           >
-            <Share2 class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+            <Share2
+              class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors"
+            />
           </button>
           <!-- Edit and Delete buttons - Only show when authenticated -->
           {#if hasAuthToken}
@@ -310,11 +327,11 @@
                 e.stopPropagation();
                 handleEdit();
               }}
-              class="w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-yellow-50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-yellow-300 dark:hover:border-primary-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
+              class="w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
               title="Edit note"
             >
               <Pencil
-                class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-yellow-600 dark:group-hover:text-primary-400"
+                class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400"
               />
             </button>
 
@@ -336,65 +353,3 @@
     </div>
   </div>
 </div>
-
-<style>
-  /* Smooth animations for better UX */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes slideInLeft {
-    from {
-      opacity: 0;
-      transform: translateX(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  /* Stagger animation for tags */
-  .tag-group {
-    animation: slideInLeft 0.3s ease-out forwards;
-    opacity: 0;
-  }
-
-  /* Enhanced hover effects */
-  .group:hover {
-    transform: scale(1.02);
-  }
-
-  /* Smooth color transitions */
-  * {
-    transition:
-      color 0.2s ease,
-      background-color 0.2s ease,
-      border-color 0.2s ease,
-      transform 0.2s ease;
-  }
-
-  /* Card entrance animation */
-  .card {
-    animation: fadeInUp 0.4s ease-out;
-  }
-
-  /* Better readability with improved typography */
-  p {
-    line-height: 1.6;
-    word-wrap: break-word;
-  }
-
-  /* Focus states for accessibility */
-  button:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
-  }
-</style>

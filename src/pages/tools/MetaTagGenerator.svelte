@@ -1,5 +1,15 @@
 <script lang="ts">
-  import { Copy, RefreshCw, Code, Globe, Twitter, Search, FileText } from '@lucide/svelte';
+  import {
+    Copy,
+    RefreshCw,
+    FileText,
+    Search,
+    Globe,
+    Twitter,
+    Code,
+    Download
+  } from '@lucide/svelte';
+  import { toast } from 'svelte-sonner';
   import ToolLayout from '../../components/ToolLayout.svelte';
 
   // Basic SEO Meta Tags
@@ -33,7 +43,6 @@
   let themeColor = $state('#ffffff');
   let viewport = $state('width=device-width, initial-scale=1.0');
   let language = $state('en');
-  let contentType = $state('text/html; charset=utf-8');
   let favicon = $state('/favicon.ico');
 
   // Article specific (if type is article)
@@ -53,7 +62,6 @@
 
   // Component state
   let generatedTags = $state('');
-  let copied = $state(false);
   let activeTab = $state('basic');
 
   // Auto-synchronize fields
@@ -73,151 +81,124 @@
     // Basic SEO Meta Tags
     if (title) {
       tags += '<title>' + escapeHtml(title) + '</title>';
-      tags += String.fromCharCode(10);
+      tags += '\n';
     }
     if (description) {
       tags += '<meta name="description" content="' + escapeHtml(description) + '">';
-      tags += String.fromCharCode(10);
+      tags += '\n';
     }
     if (keywords) {
       tags += '<meta name="keywords" content="' + escapeHtml(keywords) + '">';
-      tags += String.fromCharCode(10);
+      tags += '\n';
     }
     if (author) {
       tags += '<meta name="author" content="' + escapeHtml(author) + '">';
-      tags += String.fromCharCode(10);
+      tags += '\n';
     }
     if (canonicalUrl) {
       tags += '<link rel="canonical" href="' + escapeHtml(canonicalUrl) + '">';
-      tags += String.fromCharCode(10);
+      tags += '\n';
     }
     if (robots) {
       tags += '<meta name="robots" content="' + escapeHtml(robots) + '">';
-      tags += String.fromCharCode(10);
+      tags += '\n';
     }
 
     // Open Graph Meta Tags
-    tags += String.fromCharCode(10) + '<!-- Open Graph Meta Tags -->' + String.fromCharCode(10);
-    tags += '<meta property="og:type" content="' + escapeHtml(ogType) + '">';
-    tags += String.fromCharCode(10);
+    tags += '\n<!-- Open Graph Meta Tags -->\n';
+    tags += '<meta property="og:type" content="' + escapeHtml(ogType) + '">\n';
     if (ogTitle) {
-      tags += '<meta property="og:title" content="' + escapeHtml(ogTitle) + '">';
-      tags += String.fromCharCode(10);
+      tags += '<meta property="og:title" content="' + escapeHtml(ogTitle) + '">\n';
     }
     if (ogDescription) {
-      tags += '<meta property="og:description" content="' + escapeHtml(ogDescription) + '">';
-      tags += String.fromCharCode(10);
+      tags += '<meta property="og:description" content="' + escapeHtml(ogDescription) + '">\n';
     }
     if (ogImage) {
-      tags += '<meta property="og:image" content="' + escapeHtml(ogImage) + '">';
-      tags += String.fromCharCode(10);
+      tags += '<meta property="og:image" content="' + escapeHtml(ogImage) + '">\n';
     }
     if (ogImageAlt) {
-      tags += '<meta property="og:image:alt" content="' + escapeHtml(ogImageAlt) + '">';
-      tags += String.fromCharCode(10);
+      tags += '<meta property="og:image:alt" content="' + escapeHtml(ogImageAlt) + '">\n';
     }
     if (ogUrl) {
-      tags += '<meta property="og:url" content="' + escapeHtml(ogUrl) + '">';
-      tags += String.fromCharCode(10);
+      tags += '<meta property="og:url" content="' + escapeHtml(ogUrl) + '">\n';
     }
     if (ogSitename) {
-      tags += '<meta property="og:site_name" content="' + escapeHtml(ogSitename) + '">';
-      tags += String.fromCharCode(10);
+      tags += '<meta property="og:site_name" content="' + escapeHtml(ogSitename) + '">\n';
     }
     if (ogLocale) {
-      tags += '<meta property="og:locale" content="' + escapeHtml(ogLocale) + '">';
-      tags += String.fromCharCode(10);
+      tags += '<meta property="og:locale" content="' + escapeHtml(ogLocale) + '">\n';
     }
 
     // Twitter Card Meta Tags
-    tags += String.fromCharCode(10) + '<!-- Twitter Card Meta Tags -->' + String.fromCharCode(10);
-    tags += '<meta name="twitter:card" content="' + escapeHtml(twitterCard) + '">';
-    tags += String.fromCharCode(10);
+    tags += '\n<!-- Twitter Card Meta Tags -->\n';
+    tags += '<meta name="twitter:card" content="' + escapeHtml(twitterCard) + '">\n';
     if (twitterTitle) {
-      tags += '<meta name="twitter:title" content="' + escapeHtml(twitterTitle) + '">';
-      tags += String.fromCharCode(10);
+      tags += '<meta name="twitter:title" content="' + escapeHtml(twitterTitle) + '">\n';
     }
     if (twitterDescription) {
-      tags += '<meta name="twitter:description" content="' + escapeHtml(twitterDescription) + '">';
-      tags += String.fromCharCode(10);
+      tags +=
+        '<meta name="twitter:description" content="' + escapeHtml(twitterDescription) + '">\n';
     }
     if (twitterImage) {
-      tags += '<meta name="twitter:image" content="' + escapeHtml(twitterImage) + '">';
-      tags += String.fromCharCode(10);
+      tags += '<meta name="twitter:image" content="' + escapeHtml(twitterImage) + '">\n';
     }
     if (twitterImageAlt) {
-      tags += '<meta name="twitter:image:alt" content="' + escapeHtml(twitterImageAlt) + '">';
-      tags += String.fromCharCode(10);
+      tags += '<meta name="twitter:image:alt" content="' + escapeHtml(twitterImageAlt) + '">\n';
     }
     if (twitterSite) {
-      tags += '<meta name="twitter:site" content="' + escapeHtml(twitterSite) + '">';
-      tags += String.fromCharCode(10);
+      tags += '<meta name="twitter:site" content="' + escapeHtml(twitterSite) + '">\n';
     }
     if (twitterCreator) {
-      tags += '<meta name="twitter:creator" content="' + escapeHtml(twitterCreator) + '">';
-      tags += String.fromCharCode(10);
+      tags += '<meta name="twitter:creator" content="' + escapeHtml(twitterCreator) + '">\n';
     }
 
     // Article specific tags
     if (ogType === 'article') {
-      tags +=
-        String.fromCharCode(10) + '<!-- Article Specific Meta Tags -->' + String.fromCharCode(10);
+      tags += '\n<!-- Article Specific Meta Tags -->\n';
       if (articlePublishedTime) {
         tags +=
           '<meta property="article:published_time" content="' +
           escapeHtml(articlePublishedTime) +
-          '">';
-        tags += String.fromCharCode(10);
+          '">\n';
       }
       if (articleModifiedTime) {
         tags +=
           '<meta property="article:modified_time" content="' +
           escapeHtml(articleModifiedTime) +
-          '">';
-        tags += String.fromCharCode(10);
+          '">\n';
       }
       if (articleAuthor) {
-        tags += '<meta property="article:author" content="' + escapeHtml(articleAuthor) + '">';
-        tags += String.fromCharCode(10);
+        tags += '<meta property="article:author" content="' + escapeHtml(articleAuthor) + '">\n';
       }
       if (articleSection) {
-        tags += '<meta property="article:section" content="' + escapeHtml(articleSection) + '">';
-        tags += String.fromCharCode(10);
+        tags += '<meta property="article:section" content="' + escapeHtml(articleSection) + '">\n';
       }
       if (articleTag) {
-        tags += '<meta property="article:tag" content="' + escapeHtml(articleTag) + '">';
-        tags += String.fromCharCode(10);
+        tags += '<meta property="article:tag" content="' + escapeHtml(articleTag) + '">\n';
       }
     }
 
     // Additional Meta Tags
-    tags += String.fromCharCode(10) + '<!-- Additional Meta Tags -->' + String.fromCharCode(10);
-    tags += '<meta charset="utf-8">';
-    tags += String.fromCharCode(10);
-    tags += '<meta name="viewport" content="' + escapeHtml(viewport) + '">';
-    tags += String.fromCharCode(10);
-    tags += '<meta http-equiv="content-type" content="' + escapeHtml(contentType) + '">';
-    tags += String.fromCharCode(10);
+    tags += '\n<!-- Additional Meta Tags -->\n';
+    tags += '<meta charset="utf-8">\n';
+    tags += '<meta name="viewport" content="' + escapeHtml(viewport) + '">\n';
+    tags +=
+      '<meta http-equiv="content-type" content="' + escapeHtml('text/html; charset=utf-8') + '">\n';
     if (language) {
-      tags += '<meta name="language" content="' + escapeHtml(language) + '">';
-      tags += String.fromCharCode(10);
+      tags += '<meta name="language" content="' + escapeHtml(language) + '">\n';
     }
     if (themeColor) {
-      tags += '<meta name="theme-color" content="' + escapeHtml(themeColor) + '">';
-      tags += String.fromCharCode(10);
+      tags += '<meta name="theme-color" content="' + escapeHtml(themeColor) + '">\n';
     }
     if (favicon) {
-      tags += '<link rel="icon" href="' + escapeHtml(favicon) + '">';
-      tags += String.fromCharCode(10);
+      tags += '<link rel="icon" href="' + escapeHtml(favicon) + '">\n';
     }
 
     // JSON-LD Structured Data
     if (enableJsonLd) {
-      tags +=
-        String.fromCharCode(10) + '<!-- JSON-LD Structured Data -->' + String.fromCharCode(10);
+      tags += '\n<!-- JSON-LD Structured Data -->\n';
       const jsonLd = generateJsonLd();
-      tags += '<script type="application/ld+json">' + jsonLd + '</scr' + 'ipt>';
-      tags += String.fromCharCode(10);
+      tags += '<script type="application/ld+json">' + jsonLd + '</scr' + 'ipt>\n';
     }
 
     generatedTags = tags;
@@ -244,12 +225,8 @@
   }
 
   function copyToClipboard() {
-    navigator.clipboard.writeText(generatedTags).then(() => {
-      copied = true;
-      setTimeout(() => {
-        copied = false;
-      }, 2000);
-    });
+    navigator.clipboard.writeText(generatedTags);
+    toast.success('Copied to clipboard');
   }
 
   function clearAll() {
@@ -277,7 +254,6 @@
     themeColor = '#ffffff';
     viewport = 'width=device-width, initial-scale=1.0';
     language = 'en';
-    contentType = 'text/html; charset=utf-8';
     favicon = '/favicon.ico';
     articlePublishedTime = '';
     articleModifiedTime = '';
@@ -291,6 +267,7 @@
     jsonLdUrl = '';
     jsonLdImage = '';
     generatedTags = '';
+    toast.success('Cleared all');
   }
 
   function loadExample() {
@@ -314,38 +291,30 @@
     jsonLdName = 'My Awesome Website - Home Page';
     jsonLdDescription = description;
     jsonLdUrl = canonicalUrl;
+    toast.success('Example loaded');
   }
 
   function downloadAsHtml() {
     if (!generatedTags) return;
 
     const htmlContent =
-      '<!DOCTYPE html>' +
-      String.fromCharCode(10) +
+      '<!DOCTYPE html>\n' +
       '<html lang="' +
       language +
-      '">' +
-      String.fromCharCode(10) +
-      '<head>' +
-      String.fromCharCode(10) +
+      '">\n' +
+      '<head>\n' +
       generatedTags +
-      '</head>' +
-      String.fromCharCode(10) +
-      '<body>' +
-      String.fromCharCode(10) +
-      '  <!-- Your content goes here -->' +
-      String.fromCharCode(10) +
+      '</head>\n' +
+      '<body>\n' +
+      '  <!-- Your content goes here -->\n' +
       '  <h1>Welcome to ' +
       (title || 'Your Website') +
-      '</h1>' +
-      String.fromCharCode(10) +
+      '</h1>\n' +
       '  <p>' +
       (description || 'Your description here.') +
-      '</p>' +
-      String.fromCharCode(10) +
-      '</body>' +
-      String.fromCharCode(10) +
-      '</html>';
+      '</p>\n' +
+      '</body>\n' +
+      '</html>\n';
 
     const blob = new Blob([htmlContent], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
@@ -356,6 +325,7 @@
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    toast.success('HTML downloaded');
   }
 
   // Auto-generate when inputs change
@@ -364,31 +334,55 @@
   });
 </script>
 
-<svelte:head>
-  <title>Meta Tag Generator - Developer Tools</title>
-  <meta
-    name="description"
-    content="Generate SEO meta tags, Open Graph tags, Twitter cards, and JSON-LD structured data for better search engine optimization"
-  />
-</svelte:head>
-
 <ToolLayout
   title="Meta Tag Generator"
   description="Generate SEO-friendly meta tags for better search engine optimization."
   icon={FileText}
-  color="primary"
+  color="warning"
 >
+  <!-- Hero Section -->
+  <div
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+  >
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
+          <FileText class="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Meta Tag Generator</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Generate SEO-friendly meta tags</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
+    <button
+      class="btn btn-copy"
+      onclick={loadExample}
+    >
+      <RefreshCw class="w-4 h-4 mr-2" />
+      Load Example
+    </button>
+    <button
+      class="btn btn-secondary"
+      onclick={clearAll}>Clear All</button
+    >
+  </div>
+
   <!-- Tab Navigation -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6"
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 mb-6 shadow-sm"
   >
     <div class="flex flex-wrap border-b border-gray-200 dark:border-gray-700">
       {#each [{ id: 'basic', label: 'Basic SEO', icon: Search }, { id: 'opengraph', label: 'Open Graph', icon: Globe }, { id: 'twitter', label: 'Twitter Cards', icon: Twitter }, { id: 'additional', label: 'Additional', icon: Code }, { id: 'jsonld', label: 'JSON-LD', icon: FileText }] as tab (tab.id)}
         <button
           onclick={() => (activeTab = tab.id)}
-          class="flex items-center px-4 py-3 text-sm font-medium border-b-2 transition-colors {activeTab ===
+          class="px-4 py-3 text-sm font-medium border-b-2 transition-colors flex items-center {activeTab ===
           tab.id
-            ? 'border-primary-500 text-primary-600 dark:text-primary-400'
+            ? 'border-warning-500 dark:border-primary-500 text-warning-600 dark:text-primary-400 bg-warning-50 dark:bg-primary-900/20'
             : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
         >
           <tab.icon class="w-4 h-4 mr-2" />
@@ -400,97 +394,89 @@
     <div class="p-6">
       <!-- Basic SEO Tab -->
       {#if activeTab === 'basic'}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="title-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >Page Title *</label
             >
-              Page Title *
-            </label>
             <input
-              class="input"
+              class="tool-input"
               type="text"
               bind:value={title}
               placeholder="Enter page title (50-60 characters recommended)"
             />
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
               {title.length}/60 characters
             </p>
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="description-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >Meta Description *</label
             >
-              Meta Description *
-            </label>
             <textarea
-              class="textarea"
+              class="code-editor min-h-[80px]"
               bind:value={description}
               placeholder="Enter page description (150-160 characters recommended)"
             ></textarea>
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
               {description.length}/160 characters
             </p>
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="keywords-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >Keywords</label
             >
-              Keywords
-            </label>
             <input
               type="text"
               bind:value={keywords}
               placeholder="Enter keywords separated by commas"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="tool-input"
             />
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              for="author-input"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Author</label
             >
-              Author
-            </label>
             <input
               type="text"
               bind:value={author}
               placeholder="Enter author name"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="tool-input"
             />
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="canonical-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >Canonical URL</label
             >
-              Canonical URL
-            </label>
             <input
               type="url"
               bind:value={canonicalUrl}
               placeholder="https://example.com/page"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="tool-input"
             />
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              for="robots-input"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Robots</label
             >
-              Robots
-            </label>
             <select
               bind:value={robots}
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="tool-select"
             >
               <option value="index,follow">Index, Follow</option>
               <option value="index,nofollow">Index, No Follow</option>
@@ -503,91 +489,83 @@
 
       <!-- Open Graph Tab -->
       {#if activeTab === 'opengraph'}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="og-title-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >OG Title</label
             >
-              OG Title
-            </label>
             <input
               type="text"
               bind:value={ogTitle}
               placeholder="Enter Open Graph title"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="tool-input"
             />
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="og-description-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >OG Description</label
             >
-              OG Description
-            </label>
             <textarea
               bind:value={ogDescription}
               placeholder="Enter Open Graph description"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none"
+              class="code-editor min-h-[80px]"
             ></textarea>
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="og-image-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >OG Image URL</label
             >
-              OG Image URL
-            </label>
             <input
               type="url"
               bind:value={ogImage}
               placeholder="https://example.com/image.jpg"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
             />
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="og-alt-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >OG Image Alt</label
             >
-              OG Image Alt
-            </label>
             <input
               type="text"
               bind:value={ogImageAlt}
               placeholder="Describe the image for accessibility"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
             />
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              for="og-url-input"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">OG URL</label
             >
-              OG URL
-            </label>
             <input
               type="url"
               bind:value={ogUrl}
               placeholder="https://example.com/page"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
             />
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              for="og-type-input"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">OG Type</label
             >
-              OG Type
-            </label>
             <select
               bind:value={ogType}
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
             >
               <option value="website">Website</option>
               <option value="article">Article</option>
@@ -600,31 +578,29 @@
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="og-site-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >OG Site Name</label
             >
-              OG Site Name
-            </label>
             <input
               type="text"
               bind:value={ogSitename}
               placeholder="Your website name"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
             />
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="og-locale-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >OG Locale</label
             >
-              OG Locale
-            </label>
             <input
               type="text"
               bind:value={ogLocale}
               placeholder="en_US"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
             />
           </div>
         </div>
@@ -632,80 +608,75 @@
         <!-- Article specific fields -->
         {#if ogType === 'article'}
           <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               Article Specific Tags
             </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label
-                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  for="published-input"
                   class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >Published Time</label
                 >
-                  Published Time
-                </label>
                 <input
                   type="datetime-local"
                   bind:value={articlePublishedTime}
-                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
                 />
               </div>
 
               <div>
                 <label
-                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  for="modified-input"
                   class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >Modified Time</label
                 >
-                  Modified Time
-                </label>
                 <input
                   type="datetime-local"
                   bind:value={articleModifiedTime}
-                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
                 />
               </div>
 
               <div>
                 <label
-                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  for="article-author-input"
                   class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >Article Author</label
                 >
-                  Article Author
-                </label>
                 <input
                   type="text"
                   bind:value={articleAuthor}
                   placeholder="Author name"
-                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
                 />
               </div>
 
               <div>
                 <label
-                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  for="section-input"
                   class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >Article Section</label
                 >
-                  Article Section
-                </label>
                 <input
                   type="text"
                   bind:value={articleSection}
                   placeholder="Technology, Business, etc."
-                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
                 />
               </div>
 
               <div class="md:col-span-2">
                 <label
-                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  for="article-tag-input"
                   class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >Article Tags</label
                 >
-                  Article Tags
-                </label>
                 <input
                   type="text"
                   bind:value={articleTag}
                   placeholder="tag1, tag2, tag3"
-                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
                 />
               </div>
             </div>
@@ -715,17 +686,16 @@
 
       <!-- Twitter Cards Tab -->
       {#if activeTab === 'twitter'}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="twitter-card-type"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >Twitter Card Type</label
             >
-              Twitter Card Type
-            </label>
             <select
               bind:value={twitterCard}
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
             >
               <option value="summary">Summary</option>
               <option value="summary_large_image">Summary with Large Image</option>
@@ -736,90 +706,84 @@
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="twitter-title-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >Twitter Title</label
             >
-              Twitter Title
-            </label>
             <input
               type="text"
               bind:value={twitterTitle}
               placeholder="Enter Twitter card title"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
             />
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="twitter-desc-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >Twitter Description</label
             >
-              Twitter Description
-            </label>
             <textarea
               bind:value={twitterDescription}
               placeholder="Enter Twitter card description"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all resize-none min-h-[80px]"
             ></textarea>
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="twitter-image-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >Twitter Image URL</label
             >
-              Twitter Image URL
-            </label>
             <input
               type="url"
               bind:value={twitterImage}
               placeholder="https://example.com/twitter-image.jpg"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
             />
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="twitter-alt-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >Twitter Image Alt</label
             >
-              Twitter Image Alt
-            </label>
             <input
               type="text"
               bind:value={twitterImageAlt}
               placeholder="Describe the Twitter image"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
             />
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="twitter-site-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >Twitter Site</label
             >
-              Twitter Site
-            </label>
             <input
               type="text"
               bind:value={twitterSite}
               placeholder="@yourwebsite"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
             />
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="twitter-creator-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >Twitter Creator</label
             >
-              Twitter Creator
-            </label>
             <input
               type="text"
               bind:value={twitterCreator}
               placeholder="@author"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
             />
           </div>
         </div>
@@ -827,63 +791,54 @@
 
       <!-- Additional Tab -->
       {#if activeTab === 'additional'}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="theme-color-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >Theme Color</label
             >
-              Theme Color
-            </label>
-            <input
-              type="color"
-              bind:value={themeColor}
-              class="w-full h-10 px-1 py-1 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 cursor-pointer"
-            />
+            <input type="color" bind:value={themeColor} class="w-full h-8 rounded cursor-pointer" />
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="language-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >Language</label
             >
-              Language
-            </label>
             <input
               type="text"
               bind:value={language}
               placeholder="en"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
             />
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+              for="viewport-input"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >Viewport</label
             >
-              Viewport
-            </label>
             <input
               type="text"
               bind:value={viewport}
               placeholder="width=device-width, initial-scale=1.0"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
             />
           </div>
 
           <div>
             <label
-              for="auto-id-{Math.random().toString(36).substr(2, 9)}"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              for="favicon-input"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Favicon</label
             >
-              Favicon
-            </label>
             <input
               type="text"
               bind:value={favicon}
               placeholder="/favicon.ico"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
             />
           </div>
         </div>
@@ -893,32 +848,30 @@
       {#if activeTab === 'jsonld'}
         <div class="space-y-6">
           <div class="flex items-center">
-            <input
-              id="enable-jsonld"
-              type="checkbox"
-              bind:checked={enableJsonLd}
-              class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-            />
-            <label
-              for="enable-jsonld"
-              class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Enable JSON-LD Structured Data
+            <label class="relative flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                bind:checked={enableJsonLd}
+                id="enable-jsonld"
+                class="peer w-5 h-5 text-warning-600 dark:text-primary-400 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded focus:ring-yellow-500 dark:focus:ring-purple-400"
+              />
+              <span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Enable JSON-LD Structured Data</span
+              >
             </label>
           </div>
 
           {#if enableJsonLd}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label
-                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  for="jsonld-type"
                   class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >JSON-LD Type</label
                 >
-                  JSON-LD Type
-                </label>
                 <select
                   bind:value={jsonLdType}
-                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
                 >
                   <option value="WebPage">Web Page</option>
                   <option value="Article">Article</option>
@@ -932,60 +885,55 @@
 
               <div>
                 <label
-                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  for="jsonld-name"
                   class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >Name</label
                 >
-                  Name
-                </label>
                 <input
                   type="text"
                   bind:value={jsonLdName}
                   placeholder="Enter name/title"
-                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
                 />
               </div>
 
               <div>
                 <label
-                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  for="jsonld-description"
                   class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >Description</label
                 >
-                  Description
-                </label>
                 <textarea
                   bind:value={jsonLdDescription}
                   placeholder="Enter description"
-                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all resize-none min-h-[80px]"
                 ></textarea>
               </div>
 
               <div>
                 <label
-                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  for="jsonld-url"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">URL</label
                 >
-                  URL
-                </label>
                 <input
                   type="url"
                   bind:value={jsonLdUrl}
                   placeholder="https://example.com"
-                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
                 />
               </div>
 
               <div>
                 <label
-                  for="auto-id-{Math.random().toString(36).substr(2, 9)}"
+                  for="jsonld-image"
                   class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >Image</label
                 >
-                  Image
-                </label>
                 <input
                   type="url"
                   bind:value={jsonLdImage}
                   placeholder="https://example.com/image.jpg"
-                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
                 />
               </div>
             </div>
@@ -995,37 +943,81 @@
     </div>
   </div>
 
-  <!-- Actions -->
-  <div class="flex flex-wrap gap-3 mb-6">
-    <button class="btn btn-primary" onclick={loadExample}>
-      <RefreshCw class="w-4 h-4 mr-2" />
-      Load Example
-    </button>
-    <button class="btn btn-primary" onclick={clearAll}>Clear All</button>
-  </div>
-
   <!-- Generated Output -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-    <div
-      class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700"
-    >
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Generated Meta Tags</h2>
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+  >
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Generated Meta Tags</h2>
       <div class="flex gap-2">
-        <button class="btn btn-primary btn-sm" onclick={copyToClipboard} disabled={!generatedTags}>
+        <button
+          class="inline-flex items-center justify-center px-3 py-1.5 text-sm bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white rounded-lg transition-all"
+          onclick={copyToClipboard}
+          disabled={!generatedTags}
+        >
           <Copy class="w-4 h-4 mr-1" />
-          {copied ? 'Copied!' : 'Copy'}
+          Copy
         </button>
-        <button class="btn btn-primary btn-sm" onclick={downloadAsHtml} disabled={!generatedTags}>
+        <button
+          class="inline-flex items-center justify-center px-3 py-1.5 text-sm bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white rounded-lg transition-all"
+          onclick={downloadAsHtml}
+          disabled={!generatedTags}
+        >
+          <Download class="w-4 h-4 mr-1" />
           Download HTML
         </button>
       </div>
     </div>
 
-    <div class="p-6">
-      <pre
-        class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm text-gray-700 dark:text-gray-300"><code
+    <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
+      <pre class="text-sm text-gray-700 dark:text-gray-300 overflow-x-auto"><code
           >{generatedTags || 'Fill in the form above to generate meta tags...'}</code
         ></pre>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+    <div
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+    >
+      <div
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+      >
+        <Search class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">SEO Optimized</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+        Generate meta tags that follow SEO best practices for better search rankings
+      </p>
+    </div>
+
+    <div
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+    >
+      <div
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+      >
+        <Twitter class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Social Media Ready</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+        Full support for Open Graph and Twitter Cards for rich social sharing
+      </p>
+    </div>
+
+    <div
+      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+    >
+      <div
+        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+      >
+        <Code class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">JSON-LD Support</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+        Generate structured data for search engines to better understand your content
+      </p>
     </div>
   </div>
 </ToolLayout>

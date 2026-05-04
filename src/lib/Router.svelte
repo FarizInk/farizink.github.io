@@ -27,7 +27,7 @@
   <div class="flex flex-col items-center justify-center min-h-[70vh] text-center px-4">
     <div class="mb-8">
       <div
-        class="w-32 h-32 mx-auto bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20 rounded-full flex items-center justify-center mb-6"
+        class="w-32 h-32 mx-auto bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-primary-900/20 rounded-full flex items-center justify-center mb-6"
       >
         <svg
           class="w-16 h-16 text-blue-600 dark:text-blue-400"

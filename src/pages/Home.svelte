@@ -11,14 +11,42 @@
   const togglePhoto = () => {
     const photos = [photoOne, photoTwo];
     if (!showPhoto) {
-      randPhoto = photos[Math.floor(Math.random() * photos.length)];
+      // Open modal with loading state first
+      showPhoto = true;
       imageLoading = true;
-    }
-    showPhoto = !showPhoto;
-  };
+      randPhoto = null; // Reset previous photo so skeleton shows properly
 
-  const handleImageLoad = () => {
-    imageLoading = false;
+      // Preload image to track actual network loading
+      const randomPhoto = photos[Math.floor(Math.random() * photos.length)];
+      const img = new Image();
+
+      img.onload = () => {
+        // Image loaded successfully
+        randPhoto = randomPhoto;
+        imageLoading = false;
+      };
+
+      img.onerror = () => {
+        // Image failed to load
+        console.error('Failed to load image');
+        randPhoto = randomPhoto; // Still show it even if failed
+        imageLoading = false;
+      };
+
+      // Start loading the image
+      img.src = randomPhoto;
+
+      // Check if image is already cached
+      if (img.complete) {
+        randPhoto = randomPhoto;
+        imageLoading = false;
+      }
+    } else {
+      // Close modal
+      showPhoto = false;
+      randPhoto = null;
+      imageLoading = false;
+    }
   };
 </script>
 
@@ -26,23 +54,24 @@
   <!-- Main Content -->
   <div class="max-w-4xl w-full">
     <div class="text-left">
-      <!-- Name with hidden photo toggle -->
+      <!-- Name with gradient effect -->
       <div class="mb-3">
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-          <button
-            type="button"
-            onclick={() => togglePhoto()}
-            class="cursor-text text-left w-full bg-gradient-to-r from-black via-yellow-700 to-black bg-clip-text text-transparent dark:from-white dark:via-primary-500 dark:to-white dark:text-transparent bg-[length:200%_auto] animate-gradient"
-          >
-            Nizar Alfarizi Akbar
-          </button>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight bg-gradient-to-r from-black via-yellow-700 to-black bg-clip-text text-transparent dark:from-white dark:via-primary-500 dark:to-white dark:text-transparent bg-[length:200%_auto] animate-gradient">
+          Nizar Alfarizi Akbar
         </h1>
       </div>
 
       <!-- Nickname -->
       <div class="mb-6">
         <p class="text-lg md:text-xl text-black dark:text-gray-400">
-          known as <span class="font-bold text-yellow-600 dark:text-purple-400 italic">Fariz</span>
+          known as
+          <button
+            type="button"
+            onclick={() => togglePhoto()}
+            class="font-bold text-warning-600 dark:text-primary-400 italic"
+          >
+            Fariz
+          </button>
         </p>
       </div>
 
@@ -51,7 +80,7 @@
         <p class="text-black dark:text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl">
           Software engineer based in Sidoarjo, Indonesia. Specializing in backend development and
           high-quality web applications. Currently building <span
-            class="italic text-yellow-600 dark:text-purple-400">"gabut"</span
+            class="italic text-warning-600 dark:text-primary-400">"gabut"</span
           > projects and crushing work tasks 🙂
         </p>
       </div>
@@ -69,9 +98,9 @@
   </div>
 
   <!-- Floating Photo Card -->
-  {#if showPhoto && randPhoto}
+  {#if showPhoto}
     <div
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
       onclick={() => (showPhoto = false)}
       onkeydown={e => e.key === 'Escape' && (showPhoto = false)}
       role="dialog"
@@ -79,7 +108,7 @@
       aria-label="Photo modal"
       tabindex="-1"
     >
-      <div class="relative group animate-in zoom-in duration-300" role="document" tabindex="-1">
+      <div class="relative group animate-scale-in" role="document" tabindex="-1">
         <!-- Close button -->
         <button
           onclick={() => (showPhoto = false)}
@@ -95,11 +124,11 @@
 
         <!-- Photo card with natural ratio -->
         <div
-          class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden max-w-sm md:max-w-md lg:max-w-lg"
+          class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden max-w-sm md:max-w-md lg:max-w-lg relative min-w-[280px] sm:min-w-[320px]"
         >
           {#if imageLoading}
             <div
-              class="aspect-[3/4] h-full w-full bg-gradient-to-br from-gray-100 via-gray-200 to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse"
+              class="aspect-[3/4] w-full min-h-[300px] sm:min-h-[400px] bg-gradient-to-br from-gray-100 via-gray-200 to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse"
             >
               <div class="h-full w-full relative overflow-hidden">
                 <div
@@ -113,14 +142,15 @@
               </div>
             </div>
           {/if}
-          <img
-            src={randPhoto}
-            alt="Fariz"
-            class="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500 {imageLoading
-              ? 'opacity-0'
-              : 'opacity-100'}"
-            onload={handleImageLoad}
-          />
+          {#if randPhoto}
+            <img
+              src={randPhoto}
+              alt="Fariz"
+              class="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500 {imageLoading
+                ? 'opacity-0'
+                : 'opacity-100'}"
+            />
+          {/if}
         </div>
 
         <!-- Subtle shadow effect -->
@@ -130,71 +160,4 @@
       </div>
     </div>
   {/if}
-
-  <!-- Subtle hint about the hidden feature -->
-  {#if !showPhoto}
-    <div
-      class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center opacity-0 hover:opacity-100 transition-opacity duration-300"
-    >
-      <p class="text-xs text-gray-400 dark:text-gray-600 italic">Click my name for a surprise</p>
-    </div>
-  {/if}
 </main>
-
-<style>
-  main {
-    min-height: calc(100vh - (40px + 56px));
-  }
-
-  @keyframes gradient {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-
-  @keyframes shimmer {
-    0% {
-      background-position: -200% center;
-    }
-    100% {
-      background-position: 200% center;
-    }
-  }
-
-  @keyframes mesh-text {
-    0% {
-      background-position: 0% 0%;
-    }
-    25% {
-      background-position: 100% 0%;
-    }
-    50% {
-      background-position: 100% 100%;
-    }
-    75% {
-      background-position: 0% 100%;
-    }
-    100% {
-      background-position: 0% 0%;
-    }
-  }
-
-  .animate-shimmer {
-    animation: shimmer 3s ease-in-out infinite;
-  }
-
-  .animate-mesh-text {
-    animation: mesh-text 5s ease-in-out infinite;
-  }
-
-  .animate-gradient {
-    background-size: 200% 200%;
-    animation: gradient 3s ease infinite;
-  }
-</style>

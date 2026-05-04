@@ -4,7 +4,7 @@
   import Router from './lib/Router.svelte';
   import Navigation from './components/Navigation.svelte';
   import ScrollToTop from './components/ScrollToTop.svelte';
-  import PixelBackground from './components/PixelBackground.svelte';
+  import WavesBackground from './components/WavesBackground.svelte';
   import LoveIcon from './components/icons/LoveIcon.svelte';
   import Thanks from './components/Thanks.svelte';
   import Modal from './components/Modal.svelte';
@@ -83,7 +83,7 @@
   class="min-h-screen flex flex-col justify-between relative bg-secondary-50 dark:bg-secondary-900 transition-colors duration-300"
   style="isolation: isolate;"
 >
-  <PixelBackground />
+  <WavesBackground />
   <Navigation />
   <ScrollToTop />
   <div class="flex-1">

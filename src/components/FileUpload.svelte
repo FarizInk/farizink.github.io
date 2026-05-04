@@ -1,7 +1,8 @@
 <script lang="ts">
-  import type { NoteFileData, NoteFile } from '../lib/notes';
+  import type { NoteFileData } from '../lib/notes';
   import { validateFile, compressImage, createPreviewUrl, revokePreviewUrl } from '../lib/notes';
-  import { X, Upload, Image as ImageIcon, File, Trash2, Eye, Star } from '@lucide/svelte';
+  import { formatFileSize, formatFileName } from '../lib/uiUtils';
+  import { Upload, Image as ImageIcon, File, Trash2 } from '@lucide/svelte';
 
   let {
     files = $bindable<NoteFileData[]>([]),
@@ -17,7 +18,7 @@
 
   let fileInputRef = $state<HTMLInputElement | null>(null);
   let dragActive = $state(false);
-  let previewUrls = $state<Map<number, string>>(new Map());
+  let previewUrls = $state(new Map<number, string>());
 
   // Cleanup preview URLs on unmount
   $effect(() => {
@@ -25,27 +26,6 @@
       previewUrls.forEach(url => revokePreviewUrl(url));
     };
   });
-
-  function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }
-
-  function formatFileName(name: string): string {
-    const maxLength = 30;
-    if (name.length <= maxLength) return name;
-    return name.substring(0, maxLength / 2) + '...' + name.substring(name.length - maxLength / 2);
-  }
-
-  function getFileIcon(mimeType: string) {
-    if (mimeType.startsWith('image/')) {
-      return ImageIcon;
-    }
-    return File;
-  }
 
   async function processFile(file: File): Promise<NoteFileData | null> {
     // Validate file
@@ -56,16 +36,11 @@
     }
 
     try {
-      // Compress image if needed
-      const processedFile = file.type.startsWith('image/')
-        ? await compressImage(file, 1920, 1080, 0.8)
-        : file;
-
-      // Create preview URL
-      const previewUrl = createPreviewUrl(processedFile);
+      // TEMPORARY: Don't compress images - use original file to avoid instanceof File issues
+      const processedFile = file; // Use original file without compression
 
       return {
-        file: processedFile, // Store actual file for multipart upload
+        file: processedFile,
         originalName: file.name,
         mimeType: file.type,
         size: file.size
@@ -77,28 +52,24 @@
     }
   }
 
-  
   async function handleFiles(fileList: FileList) {
     if (disabled || files.length >= maxFiles) return;
 
     const newFiles: NoteFileData[] = [];
-    const newPreviewUrls = new Map<number, string>();
 
     for (let i = 0; i < fileList.length && files.length + newFiles.length < maxFiles; i++) {
       const file = fileList[i];
       const processedFile = await processFile(file);
       if (processedFile && processedFile.file) {
         newFiles.push(processedFile);
-        // Create preview URL for image files
         if (file.type.startsWith('image/')) {
-          newPreviewUrls.set(files.length + newFiles.length - 1, createPreviewUrl(processedFile.file));
+          previewUrls.set(files.length + newFiles.length - 1, createPreviewUrl(processedFile.file));
         }
       }
     }
 
     if (newFiles.length > 0) {
       files = [...files, ...newFiles];
-      previewUrls = new Map([...previewUrls, ...newPreviewUrls]);
     }
   }
 
@@ -150,16 +121,17 @@
     newFiles.splice(index, 1);
     files = newFiles;
 
-    // Update preview URLs map
-    const newPreviewUrls = new Map<number, string>();
+    // Update preview URLs map - rebuild without the deleted index
+    const entries: [number, string][] = [];
     previewUrls.forEach((url, i) => {
       if (i < index) {
-        newPreviewUrls.set(i, url);
+        entries.push([i, url]);
       } else if (i > index) {
-        newPreviewUrls.set(i - 1, url);
+        entries.push([i - 1, url]);
       }
     });
-    previewUrls = newPreviewUrls;
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    previewUrls = new Map(entries);
   }
 
   function openFileDialog() {
@@ -174,7 +146,7 @@
       input.type = 'file';
       input.multiple = true;
       // Accept all file types
-      input.onchange = (e) => {
+      input.onchange = e => {
         handleFileInput(e);
         input.remove();
       };
@@ -201,7 +173,7 @@
         multiple
         accept="*/*"
         onchange={handleFileInput}
-        disabled={disabled}
+        {disabled}
         class="hidden"
       />
 
@@ -211,9 +183,10 @@
         onkeydown={e => (e.key === 'Enter' || e.key === ' ') && openFileDialog()}
         class={`
           border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors
-          ${dragActive
-            ? 'border-yellow-500 bg-yellow-50 dark:bg-primary-900/20 dark:border-primary-500'
-            : 'border-secondary-300 dark:border-secondary-600 hover:border-yellow-400 dark:hover:border-primary-500'
+          ${
+            dragActive
+              ? 'border-warning-500 bg-warning-50 dark:bg-primary-900/20 dark:border-primary-500'
+              : 'border-secondary-300 dark:border-secondary-600 hover:border-warning-400 dark:hover:border-primary-500'
           }
           ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         `}
@@ -223,9 +196,7 @@
         <p class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-1">
           Click to upload or drag and drop
         </p>
-        <p class="text-xs text-secondary-500 dark:text-secondary-400">
-          All file types
-        </p>
+        <p class="text-xs text-secondary-500 dark:text-secondary-400">All file types</p>
         <p class="text-xs text-secondary-500 dark:text-secondary-400 mt-1">
           Max {formatFileSize(maxFileSize)} per file, up to {maxFiles} files
         </p>
@@ -245,7 +216,9 @@
           class="flex items-center gap-3 p-3 bg-secondary-50 dark:bg-secondary-800 rounded-lg border border-secondary-200 dark:border-secondary-600"
         >
           <!-- File Icon/Preview -->
-          <div class="flex-shrink-0 w-12 h-12 bg-secondary-100 dark:bg-secondary-700 rounded flex items-center justify-center">
+          <div
+            class="flex-shrink-0 w-12 h-12 bg-secondary-100 dark:bg-secondary-700 rounded flex items-center justify-center"
+          >
             {#if file.mimeType.startsWith('image/')}
               {#if previewUrls.get(index)}
                 <img
@@ -269,7 +242,10 @@
 
           <!-- File Info -->
           <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium text-secondary-900 dark:text-white truncate" title={file.originalName}>
+            <p
+              class="text-sm font-medium text-secondary-900 dark:text-white truncate"
+              title={file.originalName}
+            >
               {formatFileName(file.originalName)}
             </p>
             <p class="text-xs text-secondary-500 dark:text-secondary-400">
@@ -282,7 +258,7 @@
             <button
               type="button"
               onclick={() => removeFile(index)}
-              disabled={disabled}
+              {disabled}
               title="Remove file"
               class="w-8 h-8 rounded hover:bg-red-100 dark:hover:bg-red-900/20 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >

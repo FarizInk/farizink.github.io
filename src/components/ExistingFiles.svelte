@@ -1,12 +1,10 @@
 <script lang="ts">
   import type { NoteFile } from '../lib/notes';
   import { getFileUrl } from '../lib/notes';
+  import { formatFileSize } from '../lib/uiUtils';
   import { File as FileIcon, Trash2, Download, Undo, AlertTriangle } from '@lucide/svelte';
 
-  let {
-    files,
-    filesToDelete = $bindable<string[]>([])
-  } = $props<{
+  let { files, filesToDelete = $bindable<string[]>([]) } = $props<{
     files: NoteFile[];
     filesToDelete: string[];
   }>();
@@ -26,24 +24,11 @@
   function downloadFile(file: NoteFile) {
     const link = document.createElement('a');
     link.href = getFileUrl(file);
-    link.download = file.originalName;
+    link.download = file.original_name;
     link.setAttribute('target', '_blank'); // Open in new tab for presigned URLs
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }
-
-  function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }
-
-  function getFileIcon(mimeType: string) {
-    // Return appropriate icon based on file type
-    return FileIcon;
   }
 </script>
 
@@ -51,23 +36,25 @@
   <div class="space-y-6">
     <!-- Warning for files marked for deletion -->
     {#if filesToDelete.length > 0}
-      <div class="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-primary-800 rounded-lg p-4">
+      <div
+        class="bg-warning-50 dark:bg-yellow-900/10 border border-warning-200 dark:border-primary-800 rounded-lg p-4"
+      >
         <div class="flex items-start justify-between">
           <div class="flex-1">
             <div class="flex items-center gap-2 mb-1">
-              <AlertTriangle class="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+              <AlertTriangle class="w-5 h-5 text-warning-600 dark:text-warning-400" />
               <span class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
                 {filesToDelete.length} file{filesToDelete.length > 1 ? 's' : ''} marked for deletion
               </span>
             </div>
-            <p class="text-xs text-yellow-700 dark:text-yellow-300">
+            <p class="text-xs text-warning-700 dark:text-warning-300">
               These files will be permanently removed when you update the note.
             </p>
           </div>
           <button
             type="button"
             onclick={undoDeleteAll}
-            class="px-3 py-1.5 text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 hover:bg-yellow-200 dark:hover:bg-yellow-900/50 text-yellow-800 dark:text-yellow-200 rounded-md transition-colors"
+            class="px-3 py-1.5 text-xs font-medium bg-warning-100 dark:bg-yellow-900/30 hover:bg-yellow-200 dark:hover:bg-yellow-900/50 text-yellow-800 dark:text-yellow-200 rounded-md transition-colors"
           >
             Undo All
           </button>
@@ -76,43 +63,52 @@
     {/if}
 
     <!-- Images Section -->
-    {#if files.filter(f => f.mimeType.startsWith('image/')).length > 0}
+    {#if files.filter(f => f.mime_type.startsWith('image/')).length > 0}
       <div>
-        <div class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-3 flex items-center justify-between">
-          <span>Images ({files.filter(f => f.mimeType.startsWith('image/')).length})</span>
+        <div
+          class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-3 flex items-center justify-between"
+        >
+          <span>Images ({files.filter(f => f.mime_type.startsWith('image/')).length})</span>
           {#if filesToDelete.filter(id => {
-              const file = files.find(f => f.id === id);
-              return file && file.mimeType.startsWith('image/');
-            }).length > 0}
+            const file = files.find(f => f.id === id);
+            return file && file.mime_type.startsWith('image/');
+          }).length > 0}
             <button
               type="button"
               onclick={() => {
                 const imageIdsToDelete = filesToDelete.filter(id => {
                   const file = files.find(f => f.id === id);
-                  return file && file.mimeType.startsWith('image/');
+                  return file && file.mime_type.startsWith('image/');
                 });
                 filesToDelete = filesToDelete.filter(id => !imageIdsToDelete.includes(id));
               }}
-              class="text-xs text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300"
+              class="text-xs text-warning-600 dark:text-warning-400 hover:text-warning-700 dark:hover:text-warning-300"
             >
               Undo Images ({filesToDelete.filter(id => {
                 const file = files.find(f => f.id === id);
-                return file && file.mimeType.startsWith('image/');
+                return file && file.mime_type.startsWith('image/');
               }).length})
             </button>
           {/if}
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {#each files.filter(f => f.mimeType.startsWith('image/')) as file (file.id)}
+          {#each files.filter( f => f.mime_type.startsWith('image/') ) as file, index (file.id + '-' + index)}
             <div
-              class="relative group aspect-square bg-white dark:bg-secondary-800 rounded-lg border {filesToDelete.includes(file.id) ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/10' : 'border-secondary-200 dark:border-secondary-600'} overflow-hidden transition-all"
+              class="relative group aspect-square bg-white dark:bg-secondary-800 rounded-lg border {filesToDelete.includes(
+                file.id
+              )
+                ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/10'
+                : 'border-secondary-200 dark:border-secondary-600'} overflow-hidden transition-all"
             >
               <!-- Image -->
               <img
                 src={getFileUrl(file)}
-                alt={file.originalName}
+                alt={file.original_name}
                 class="w-full h-full object-cover"
-                onerror={`this.src='data:${file.mimeType};base64,${file.data}'`}
+                onerror={e => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = `data:${file.mime_type};base64,${file.data}`;
+                }}
               />
 
               <!-- Delete Overlay -->
@@ -148,7 +144,9 @@
               {/if}
 
               <!-- Hover Overlay -->
-              <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2 z-20">
+              <div
+                class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2 z-20"
+              >
                 <button
                   type="button"
                   onclick={() => downloadFile(file)}
@@ -171,9 +169,11 @@
               </div>
 
               <!-- File Info -->
-              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
-                <p class="text-white text-xs truncate" title={file.originalName}>
-                  {file.originalName}
+              <div
+                class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2"
+              >
+                <p class="text-white text-xs truncate" title={file.original_name}>
+                  {file.original_name}
                 </p>
                 <p class="text-white/80 text-xs">
                   {formatFileSize(file.size)}
@@ -186,44 +186,52 @@
     {/if}
 
     <!-- Other Files Section -->
-    {#if files.filter(f => !f.mimeType.startsWith('image/')).length > 0}
+    {#if files.filter(f => !f.mime_type.startsWith('image/')).length > 0}
       <div>
-        <div class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-3 flex items-center justify-between">
-          <span>Files ({files.filter(f => !f.mimeType.startsWith('image/')).length})</span>
+        <div
+          class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-3 flex items-center justify-between"
+        >
+          <span>Files ({files.filter(f => !f.mime_type.startsWith('image/')).length})</span>
           {#if filesToDelete.filter(id => {
-              const file = files.find(f => f.id === id);
-              return file && !file.mimeType.startsWith('image/');
-            }).length > 0}
+            const file = files.find(f => f.id === id);
+            return file && !file.mime_type.startsWith('image/');
+          }).length > 0}
             <button
               type="button"
               onclick={() => {
                 const fileIdsToDelete = filesToDelete.filter(id => {
                   const file = files.find(f => f.id === id);
-                  return file && !file.mimeType.startsWith('image/');
+                  return file && !file.mime_type.startsWith('image/');
                 });
                 filesToDelete = filesToDelete.filter(id => !fileIdsToDelete.includes(id));
               }}
-              class="text-xs text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300"
+              class="text-xs text-warning-600 dark:text-warning-400 hover:text-warning-700 dark:hover:text-warning-300"
             >
               Undo Files ({filesToDelete.filter(id => {
                 const file = files.find(f => f.id === id);
-                return file && !file.mimeType.startsWith('image/');
+                return file && !file.mime_type.startsWith('image/');
               }).length})
             </button>
           {/if}
         </div>
         <div class="space-y-2">
-          {#each files.filter(f => !f.mimeType.startsWith('image/')) as file (file.id)}
+          {#each files.filter(f => !f.mime_type.startsWith('image/')) as file, index (file.id + '-' + index)}
             <div
-              class="flex items-center gap-3 p-3 bg-white dark:bg-secondary-800 rounded-lg border {filesToDelete.includes(file.id) ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/10' : 'border-secondary-200 dark:border-secondary-600'} transition-colors"
+              class="flex items-center gap-3 p-3 bg-white dark:bg-secondary-800 rounded-lg border {filesToDelete.includes(
+                file.id
+              )
+                ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/10'
+                : 'border-secondary-200 dark:border-secondary-600'} transition-colors"
             >
               <!-- File Icon -->
-              <div class="w-12 h-12 bg-secondary-100 dark:bg-secondary-700 rounded-lg flex items-center justify-center">
-                {#if file.mimeType === 'application/pdf'}
+              <div
+                class="w-12 h-12 bg-secondary-100 dark:bg-secondary-700 rounded-lg flex items-center justify-center"
+              >
+                {#if file.mime_type === 'application/pdf'}
                   <FileIcon class="w-6 h-6 text-red-600 dark:text-red-400" />
-                {:else if file.mimeType.includes('document')}
+                {:else if file.mime_type.includes('document')}
                   <FileIcon class="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                {:else if file.mimeType.includes('text')}
+                {:else if file.mime_type.includes('text')}
                   <FileIcon class="w-6 h-6 text-green-600 dark:text-green-400" />
                 {:else}
                   <FileIcon class="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
@@ -233,10 +241,10 @@
               <!-- File Info -->
               <div class="flex-1 min-w-0">
                 <p class="text-sm font-medium text-secondary-900 dark:text-white truncate">
-                  {file.originalName}
+                  {file.original_name}
                 </p>
                 <p class="text-xs text-secondary-500 dark:text-secondary-400">
-                  {file.mimeType.split('/')[1] || file.mimeType} • {formatFileSize(file.size)}
+                  {file.mime_type.split('/')[1] || file.mime_type} • {formatFileSize(file.size)}
                 </p>
                 {#if filesToDelete.includes(file.id)}
                   <p class="text-xs text-red-600 dark:text-red-400 font-medium mt-1">
@@ -281,6 +289,5 @@
         </div>
       </div>
     {/if}
-
-    </div>
+  </div>
 {/if}
