@@ -6,7 +6,7 @@
 
   let hasAuthToken = $state(false);
   let isCheckingAuth = $state(true);
-  let formSubmitFn: any = null;
+  let formSubmitFn: (() => void) | null = null;
 
   onMount(() => {
     hasAuthToken = typeof localStorage !== 'undefined' ? !!localStorage.getItem('authToken') : false;

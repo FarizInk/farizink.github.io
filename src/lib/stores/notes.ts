@@ -239,8 +239,8 @@ export function loadNotesFromCache(): Note[] {
     if (cached) {
       return JSON.parse(cached);
     }
-  } catch (e) {
-    console.error('Failed to load notes from cache:', e);
+  } catch {
+    console.error('Failed to load notes from cache:');
   }
   return [];
 }
@@ -250,8 +250,8 @@ export function saveNotesToCache(notesToCache: Note[]): void {
   try {
     localStorage.setItem(NOTES_CACHE_KEY, JSON.stringify(notesToCache));
     localStorage.setItem(NOTES_CACHE_TIMESTAMP_KEY, Date.now().toString());
-  } catch (e) {
-    console.error('Failed to save notes to cache:', e);
+  } catch {
+    console.error('Failed to save notes to cache:');
   }
 }
 
@@ -263,7 +263,7 @@ export function isCacheValid(): boolean {
       const age = Date.now() - parseInt(timestamp);
       return age < 5 * 60 * 1000; // 5 minutes
     }
-  } catch (e) {
+  } catch {
     // Ignore
   }
   return false;

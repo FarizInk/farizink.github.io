@@ -11,7 +11,7 @@
   let note = $state<Note | null>(null);
   let isLoadingNote = $state(false);
   let noteError = $state<string | null>(null);
-  let formSubmitFn: any = null;
+  let formSubmitFn: (() => void) | null = null;
 
   onMount(() => {
     hasAuthToken = typeof localStorage !== 'undefined' ? !!localStorage.getItem('authToken') : false;
