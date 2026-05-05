@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { DollarSign, Calculator, Users, Copy, Sparkles, Zap, Check } from '@lucide/svelte';
+  import { DollarSign, Calculator, Users, Copy, Sparkles } from '@lucide/svelte';
   import { toast } from 'svelte-sonner';
   import ToolLayout from '../../components/ToolLayout.svelte';
 

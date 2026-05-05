@@ -8,8 +8,7 @@
     RotateCcw,
     Copy,
     Sparkles,
-    Zap,
-    Check
+
   } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
 

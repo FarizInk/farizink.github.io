@@ -40,7 +40,7 @@
     isLoading = true;
     try {
       await tagsStore.loadTags();
-    } catch (error) {
+    } catch {
       toast.error('Failed to load tags');
     } finally {
       isLoading = false;
@@ -69,7 +69,7 @@
       await deleteTag(tag.tag);
       tagsStore.removeTag(tag.tag);
       toast.success('Tag deleted');
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete tag');
     }
   }

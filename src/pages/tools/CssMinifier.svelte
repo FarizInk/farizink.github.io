@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Zap, Download, FileText, RefreshCw, Copy, Check } from '@lucide/svelte';
+  import { Zap, Download, FileText, RefreshCw, Copy } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
   import { toast } from 'svelte-sonner';
 

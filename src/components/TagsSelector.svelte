@@ -16,7 +16,6 @@
     placeholder?: string;
     searchable?: boolean;
     disabled?: boolean;
-    maxHeight?: string;
     onchange?: (event: CustomEvent) => void;
     id?: string;
   }
@@ -27,7 +26,6 @@
     placeholder = 'Select tags...',
     searchable = true,
     disabled = false,
-    maxHeight = 'max-h-48',
     onchange,
     id
   }: Props = $props();
@@ -135,17 +133,6 @@
     }
   }
 
-  function removeValue(value: string) {
-    selectedValues = selectedValues.filter(v => v !== value);
-    const option = options.find(opt => opt.value === value);
-    if (onchange) {
-      onchange(
-        new CustomEvent('change', {
-          detail: { selectedValues, option, action: 'remove' }
-        })
-      );
-    }
-  }
 
   function clearAll() {
     selectedValues = [];

@@ -5,7 +5,7 @@
  * Handles registration, connection, subscription, and event handling.
  */
 
-import { WS_BASE_URL } from './constants';
+
 
 // ===== Types =====
 
@@ -105,7 +105,7 @@ export class WebSocketManager {
 
     const appKey = data.data?.app_key || data.app_key || data.key || 'local-app-key';
     const eventName = data.data?.event || data.event || 'SpotifyTrackUpdated';
-    const channel = data.data?.channel || data.channel || this.config.channel;
+    
 
 
     return { appKey, eventName };
@@ -194,8 +194,9 @@ export class WebSocketManager {
       // ⭐ WILDCARD: Log ALL non-Pusher events for debugging
       if (!message.event.startsWith('pusher:')) {
         try {
-          const parsedData = JSON.parse(message.data);
+          JSON.parse(message.data);
         } catch {
+          // ignore parse errors
         }
       }
 

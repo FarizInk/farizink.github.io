@@ -6,7 +6,6 @@
   import {
     Download,
     Copy,
-    ExternalLink,
     Clock,
     AlertCircle,
     File,
@@ -33,7 +32,6 @@
   let shortlinkCode = $state('');
   let inputCode = $state('');
   let isLoading = $state(false);
-  let isInitialLoad = $state(true);
   let error = $state<string | null>(null);
   let data = $state<ShortlinkData | null>(null);
 
@@ -66,10 +64,8 @@
     shortlinkCode = getShortlinkCode();
 
     if (!shortlinkCode) {
-      isInitialLoad = false;
       isLoading = false;
     } else {
-      isInitialLoad = false;
       loadFiles();
     }
 
@@ -131,13 +127,6 @@
     }
   }
 
-  function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-  }
 
   function formatExpiresAt(dateStr: string): string {
     const date = new Date(dateStr);

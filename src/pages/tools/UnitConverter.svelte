@@ -13,8 +13,6 @@
     Copy,
     History,
     Trash2,
-    Sparkles,
-    Check
   } from '@lucide/svelte';
   import { toast } from 'svelte-sonner';
 

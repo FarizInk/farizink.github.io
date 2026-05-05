@@ -3,8 +3,9 @@ import Notes from '../pages/Notes.svelte';
 import NotesCreate from '../pages/NotesCreate.svelte';
 import NotesEdit from '../pages/NotesEdit.svelte';
 import TempUpload from '../pages/TempUpload.svelte';
+import Finance from '../pages/Finance.svelte';
 import Files from '../pages/Files.svelte';
-import { House, FileText, User, Upload, Plus, Edit2 } from '@lucide/svelte';
+import { House, FileText, User, Upload, Plus, Edit2, Wallet } from '@lucide/svelte';
 
 export const mainRoutes = [
   {
@@ -54,6 +55,15 @@ export const mainRoutes = [
     keywords: 'login, sign in, authentication, account',
     robots: 'noindex, nofollow',
     icon: User
+  },
+  {
+    path: '/finance',
+    component: Finance,
+    title: 'Finance - Fariz',
+    description: 'Track your personal income and expenses.',
+    keywords: 'finance, money tracker, income, expense, budget',
+    robots: 'noindex, nofollow',
+    icon: Wallet
   },
   {
     path: '/temp-upload',

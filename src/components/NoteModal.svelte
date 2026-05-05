@@ -19,7 +19,7 @@
     onSuccess
   }: Props = $props();
 
-  let formSubmitFn: any = null;
+  let formSubmitFn: (() => void) | null = null;
 
   function closeModal() {
     isOpen = false;
@@ -29,6 +29,7 @@
     if (formSubmitFn) {
       formSubmitFn();
     } else {
+      // no form submit function available
     }
   }
 
@@ -36,6 +37,7 @@
     if (mode === 'create') {
       toast.success('Note created successfully!');
     } else {
+      // no form submit function available
       toast.success('Note updated successfully!');
     }
     onSuccess?.(savedNote);

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Note } from '../lib/notes';
+  import type { NoteFileData } from '../lib/notes';
   import type { Tag } from '../lib/tags';
   import { createNote, updateNote } from '../lib/notes';
   import { tags } from '../lib/stores/tags';
@@ -35,7 +36,7 @@
   let localIsPublic = $state(true);
   let localIsFavorite = $state(false);
   let localSelectedTagIds = $state<string[]>([]);
-  let localFiles = $state<any[]>([]);
+  let localFiles = $state<NoteFileData[]>([]);
   let localFilesToDelete = $state<string[]>([]);
   let localShowFileSection = $state(false);
   let isLoading = $state(false);
@@ -99,7 +100,7 @@
       // Check if we have files to upload
       const hasFiles = localFiles && localFiles.length > 0;
 
-      let response: any;
+      let response: { id: string; [key: string]: unknown };
       if (hasFiles) {
         // Use FormData for file uploads - build it here to bypass Svelte proxy issues
         const formData = new FormData();
@@ -169,7 +170,7 @@
         }
       } else {
         // No files - use JSON
-        const submissionData: any = {
+        const submissionData: Record<string, unknown> = {
           name: localName,
           link: localLink,
           description: localDescription,
@@ -181,7 +182,7 @@
         if (mode === 'create') {
           response = await createNote(submissionData);
         } else if (note) {
-          const updateData: any = {
+          const updateData: Record<string, unknown> = {
             name: localName,
             link: localLink,
             description: localDescription,

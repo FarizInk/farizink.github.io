@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Hash, Upload, Shield, FileText, Zap, Check, Copy } from '@lucide/svelte';
+  import { Hash, Upload, Shield, FileText, Zap } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
 
   let inputText = $state('');

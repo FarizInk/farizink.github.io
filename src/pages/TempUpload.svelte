@@ -11,7 +11,6 @@
     Clock,
     Trash2,
     Check,
-    AlertCircle,
     Download,
     ExternalLink
   } from '@lucide/svelte';
@@ -358,14 +357,6 @@
     }
   }
 
-  function getFileIcon(mimeType: string): string {
-    if (mimeType.startsWith('image/')) return '';
-    if (mimeType.startsWith('video/')) return '';
-    if (mimeType.startsWith('audio/')) return '';
-    if (mimeType.includes('pdf')) return '';
-    if (mimeType.includes('zip') || mimeType.includes('rar')) return '';
-    return '';
-  }
 </script>
 
 <svelte:head>

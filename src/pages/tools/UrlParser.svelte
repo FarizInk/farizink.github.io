@@ -1,6 +1,6 @@
 <script lang="ts">
   import ToolLayout from '../../components/ToolLayout.svelte';
-  import { Link, Globe, FileText, Copy, Zap, Check } from '@lucide/svelte';
+  import { Link, Globe, FileText, Copy, Zap } from '@lucide/svelte';
 
   let urlInput = $state('');
   let parsedUrl = $state<{

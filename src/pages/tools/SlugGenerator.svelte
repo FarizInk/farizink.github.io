@@ -1,6 +1,6 @@
 <script lang="ts">
   import ToolLayout from '../../components/ToolLayout.svelte';
-  import { Type, Zap, FileText, Check, Sparkles, Link2 } from '@lucide/svelte';
+  import { Type, Zap, Link2 } from '@lucide/svelte';
 
   let inputText = $state('');
   let generatedSlug = $state('');

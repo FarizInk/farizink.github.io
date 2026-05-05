@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { NoteFileData } from '../lib/notes';
-  import { validateFile, compressImage, createPreviewUrl, revokePreviewUrl } from '../lib/notes';
+  import { validateFile, createPreviewUrl, revokePreviewUrl } from '../lib/notes';
   import { formatFileSize, formatFileName } from '../lib/uiUtils';
   import { Upload, Image as ImageIcon, File, Trash2 } from '@lucide/svelte';
 

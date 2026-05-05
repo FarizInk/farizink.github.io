@@ -48,7 +48,7 @@
       userChoice: Promise<{ outcome: string }>;
     };
     promptEvent.prompt();
-    const { outcome } = await promptEvent.userChoice;
+    void await promptEvent.userChoice;
 
     deferredPrompt = null;
     canInstall = false;

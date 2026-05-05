@@ -1,6 +1,6 @@
 <script lang="ts">
   import ToolLayout from '../../components/ToolLayout.svelte';
-  import { Calendar, Zap, Copy, RefreshCw, Clock, Sparkles, Check } from '@lucide/svelte';
+  import { Calendar, Zap, Copy, RefreshCw, Clock } from '@lucide/svelte';
 
   let unixTimestamp = $state('');
   let formattedDate = $state('');

@@ -7,8 +7,6 @@
     X,
     ExternalLink,
     Calendar,
-    Tag,
-    Star,
     Clock,
     Edit,
     Trash2,
@@ -19,7 +17,6 @@
     Eye,
     AlertTriangle,
     Share2,
-    Globe,
     Paperclip,
     Loader2,
     Sparkles

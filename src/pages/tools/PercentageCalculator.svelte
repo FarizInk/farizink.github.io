@@ -8,7 +8,6 @@
     Tag,
     Copy,
     RotateCcw,
-    Sparkles,
     Zap,
     Check
   } from '@lucide/svelte';

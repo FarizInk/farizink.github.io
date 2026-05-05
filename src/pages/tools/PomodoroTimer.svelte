@@ -207,7 +207,7 @@
 
   function requestNotificationPermission(): void {
     if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission().then(permission => {
+      Notification.requestPermission().then(() => {
         // Update reactive state to trigger UI re-render
         showSettings = !showSettings;
         showSettings = showSettings;

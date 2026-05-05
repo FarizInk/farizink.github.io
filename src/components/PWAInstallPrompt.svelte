@@ -65,7 +65,9 @@
 
 
     if (outcome === 'accepted') {
+      // user accepted install prompt
     } else {
+      // user dismissed install prompt
     }
 
     deferredPrompt = null;

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Palette, Zap, History, Copy, RefreshCw, Sparkles, Check } from '@lucide/svelte';
+  import { Palette, Zap, History, Copy, RefreshCw } from '@lucide/svelte';
   import { toast } from 'svelte-sonner';
   import ToolLayout from '../../components/ToolLayout.svelte';
 

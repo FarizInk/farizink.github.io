@@ -14,7 +14,6 @@
     Plus,
     RefreshCw,
     RotateCw,
-    Settings,
     Tag as TagIcon,
     Trash2,
     Share2,
@@ -50,7 +49,6 @@
     sortBy: 'created_at',
     sortOrder: 'desc'
   });
-  let showFilterPanel = $state(false);
 
   // localStorage key for notes filter
   const NOTES_FILTER_STORAGE_KEY = 'notesFilters';

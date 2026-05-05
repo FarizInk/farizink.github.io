@@ -8,9 +8,6 @@
     RefreshCw,
     History,
     Trash2,
-    Sparkles,
-    Check,
-    Zap
   } from '@lucide/svelte';
   import { toast } from 'svelte-sonner';
 

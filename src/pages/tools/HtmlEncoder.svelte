@@ -29,12 +29,6 @@
     encodeHtml();
   }
 
-  function loadSampleEncoded() {
-    inputText =
-      '&lt;div class=&quot;container&quot;&gt;\n  &lt;h1&gt;Hello World!&lt;/h1&gt;\n  &lt;p&gt;This is a &lt;strong&gt;sample&lt;/strong&gt; text with &lt;em&gt;HTML&lt;/em&gt; tags.&lt;/p&gt;\n&lt;/div&gt;';
-    activeTab = 'decode';
-    decodeHtml();
-  }
 
   function copyToClipboard(text: string, format: string) {
     navigator.clipboard.writeText(text);

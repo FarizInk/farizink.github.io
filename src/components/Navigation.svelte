@@ -21,7 +21,8 @@
     CircleCheck,
     CircleX,
     Info,
-    Heart
+    Heart,
+    Wallet
   } from '@lucide/svelte';
   import CommandPalette from './CommandPalette.svelte';
   import LoginModal from './LoginModal.svelte';
@@ -222,7 +223,7 @@
       userChoice: Promise<{ outcome: string }>;
     };
     promptEvent.prompt();
-    const { outcome } = await promptEvent.userChoice;
+    await promptEvent.userChoice;
 
     deferredPrompt = null;
     canInstall = false;
@@ -310,9 +311,11 @@
     if ('serviceWorker' in navigator && serviceWorkerEnabled) {
       navigator.serviceWorker
         .register('/sw.js')
-        .then(registration => {
+        .then(() => {
+          // registered
         })
-        .catch(error => {
+        .catch(() => {
+          // ignore
         });
     }
   }
@@ -715,6 +718,23 @@
           <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Tools</span>
         </a>
       </div>
+
+        <!-- Finance -->
+        <a
+          href="/finance"
+          class="group flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-2xl hover:bg-emerald-50 dark:hover:bg-emerald-900/20 border border-gray-200 dark:border-gray-700 hover:border-emerald-300 dark:hover:border-emerald-400 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg cursor-pointer"
+          onclick={e => handleNavigation(e, '/finance')}
+        >
+          <div
+            class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 dark:from-emerald-500 dark:to-teal-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md"
+          >
+            <Wallet class="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Finance</span>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Income & expenses</p>
+          </div>
+        </a>
 
       <!-- Settings Section -->
       <div class="pt-6">
