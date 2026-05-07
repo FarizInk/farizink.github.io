@@ -380,10 +380,7 @@
       {#each [{ id: 'basic', label: 'Basic SEO', icon: Search }, { id: 'opengraph', label: 'Open Graph', icon: Globe }, { id: 'twitter', label: 'Twitter Cards', icon: Twitter }, { id: 'additional', label: 'Additional', icon: Code }, { id: 'jsonld', label: 'JSON-LD', icon: FileText }] as tab (tab.id)}
         <button
           onclick={() => (activeTab = tab.id)}
-          class="px-4 py-3 text-sm font-medium border-b-2 transition-colors flex items-center {activeTab ===
-          tab.id
-            ? 'border-warning-500 dark:border-primary-500 text-warning-600 dark:text-primary-400 bg-warning-50 dark:bg-primary-900/20'
-            : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
+          class="tab-btn {activeTab === tab.id ? 'active' : ''}"
         >
           <tab.icon class="w-4 h-4 mr-2" />
           {tab.label}
@@ -398,7 +395,7 @@
           <div>
             <label
               for="title-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Page Title *</label
             >
             <input
@@ -415,7 +412,7 @@
           <div>
             <label
               for="description-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Meta Description *</label
             >
             <textarea
@@ -431,7 +428,7 @@
           <div>
             <label
               for="keywords-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Keywords</label
             >
             <input
@@ -445,7 +442,7 @@
           <div>
             <label
               for="author-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Author</label
+              class="label">Author</label
             >
             <input
               type="text"
@@ -458,7 +455,7 @@
           <div>
             <label
               for="canonical-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Canonical URL</label
             >
             <input
@@ -472,7 +469,7 @@
           <div>
             <label
               for="robots-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Robots</label
+              class="label">Robots</label
             >
             <select
               bind:value={robots}
@@ -493,7 +490,7 @@
           <div>
             <label
               for="og-title-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >OG Title</label
             >
             <input
@@ -507,7 +504,7 @@
           <div>
             <label
               for="og-description-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >OG Description</label
             >
             <textarea
@@ -520,54 +517,54 @@
           <div>
             <label
               for="og-image-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >OG Image URL</label
             >
             <input
               type="url"
               bind:value={ogImage}
               placeholder="https://example.com/image.jpg"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+              class="tool-input"
             />
           </div>
 
           <div>
             <label
               for="og-alt-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >OG Image Alt</label
             >
             <input
               type="text"
               bind:value={ogImageAlt}
               placeholder="Describe the image for accessibility"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+              class="tool-input"
             />
           </div>
 
           <div>
             <label
               for="og-url-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">OG URL</label
+              class="label">OG URL</label
             >
             <input
               type="url"
               bind:value={ogUrl}
               placeholder="https://example.com/page"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+              class="tool-input"
             />
           </div>
 
           <div>
             <label
               for="og-type-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">OG Type</label
-            >
-            <select
-              bind:value={ogType}
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
-            >
-              <option value="website">Website</option>
+              class="label">OG Type</label
+           >
+           <select
+             bind:value={ogType}
+              class="tool-select"
+           >
+             <option value="website">Website</option>
               <option value="article">Article</option>
               <option value="product">Product</option>
               <option value="profile">Profile</option>
@@ -579,28 +576,28 @@
           <div>
             <label
               for="og-site-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >OG Site Name</label
             >
             <input
               type="text"
               bind:value={ogSitename}
               placeholder="Your website name"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+              class="tool-input"
             />
           </div>
 
           <div>
             <label
               for="og-locale-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >OG Locale</label
             >
             <input
               type="text"
               bind:value={ogLocale}
               placeholder="en_US"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+              class="tool-input"
             />
           </div>
         </div>
@@ -615,68 +612,68 @@
               <div>
                 <label
                   for="published-input"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  class="label"
                   >Published Time</label
                 >
                 <input
                   type="datetime-local"
                   bind:value={articlePublishedTime}
-                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+                  class="tool-input"
                 />
               </div>
 
               <div>
                 <label
                   for="modified-input"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  class="label"
                   >Modified Time</label
                 >
                 <input
                   type="datetime-local"
                   bind:value={articleModifiedTime}
-                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+                  class="tool-input"
                 />
               </div>
 
               <div>
                 <label
                   for="article-author-input"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  class="label"
                   >Article Author</label
                 >
                 <input
                   type="text"
                   bind:value={articleAuthor}
                   placeholder="Author name"
-                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+                  class="tool-input"
                 />
               </div>
 
               <div>
                 <label
                   for="section-input"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  class="label"
                   >Article Section</label
                 >
                 <input
                   type="text"
                   bind:value={articleSection}
                   placeholder="Technology, Business, etc."
-                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+                  class="tool-input"
                 />
               </div>
 
               <div class="md:col-span-2">
                 <label
                   for="article-tag-input"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  class="label"
                   >Article Tags</label
                 >
                 <input
                   type="text"
                   bind:value={articleTag}
                   placeholder="tag1, tag2, tag3"
-                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+                  class="tool-input"
                 />
               </div>
             </div>
@@ -690,14 +687,14 @@
           <div>
             <label
               for="twitter-card-type"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Twitter Card Type</label
-            >
-            <select
-              bind:value={twitterCard}
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
-            >
-              <option value="summary">Summary</option>
+           >
+           <select
+             bind:value={twitterCard}
+              class="tool-select"
+           >
+             <option value="summary">Summary</option>
               <option value="summary_large_image">Summary with Large Image</option>
               <option value="app">App</option>
               <option value="player">Player</option>
@@ -707,83 +704,83 @@
           <div>
             <label
               for="twitter-title-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Twitter Title</label
             >
             <input
               type="text"
               bind:value={twitterTitle}
               placeholder="Enter Twitter card title"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+              class="tool-input"
             />
           </div>
 
           <div>
             <label
               for="twitter-desc-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Twitter Description</label
             >
-            <textarea
-              bind:value={twitterDescription}
-              placeholder="Enter Twitter card description"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all resize-none min-h-[80px]"
-            ></textarea>
+          <textarea
+            bind:value={twitterDescription}
+            placeholder="Enter Twitter card description"
+            class="textarea min-h-[80px] resize-none"
+          ></textarea>
           </div>
 
           <div>
             <label
               for="twitter-image-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Twitter Image URL</label
             >
             <input
               type="url"
               bind:value={twitterImage}
               placeholder="https://example.com/twitter-image.jpg"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+              class="tool-input"
             />
           </div>
 
           <div>
             <label
               for="twitter-alt-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Twitter Image Alt</label
             >
             <input
               type="text"
               bind:value={twitterImageAlt}
               placeholder="Describe the Twitter image"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+              class="tool-input"
             />
           </div>
 
           <div>
             <label
               for="twitter-site-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Twitter Site</label
             >
             <input
               type="text"
               bind:value={twitterSite}
               placeholder="@yourwebsite"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+              class="tool-input"
             />
           </div>
 
           <div>
             <label
               for="twitter-creator-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Twitter Creator</label
             >
             <input
               type="text"
               bind:value={twitterCreator}
               placeholder="@author"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+              class="tool-input"
             />
           </div>
         </div>
@@ -795,7 +792,7 @@
           <div>
             <label
               for="theme-color-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Theme Color</label
             >
             <input type="color" bind:value={themeColor} class="w-full h-8 rounded cursor-pointer" />
@@ -804,41 +801,41 @@
           <div>
             <label
               for="language-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Language</label
             >
             <input
               type="text"
               bind:value={language}
               placeholder="en"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+              class="tool-input"
             />
           </div>
 
           <div>
             <label
               for="viewport-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Viewport</label
             >
             <input
               type="text"
               bind:value={viewport}
               placeholder="width=device-width, initial-scale=1.0"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+              class="tool-input"
             />
           </div>
 
           <div>
             <label
               for="favicon-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Favicon</label
+              class="label">Favicon</label
             >
             <input
               type="text"
               bind:value={favicon}
               placeholder="/favicon.ico"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+              class="tool-input"
             />
           </div>
         </div>
@@ -866,14 +863,14 @@
               <div>
                 <label
                   for="jsonld-type"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  class="label"
                   >JSON-LD Type</label
-                >
-                <select
-                  bind:value={jsonLdType}
-                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
-                >
-                  <option value="WebPage">Web Page</option>
+               >
+               <select
+                 bind:value={jsonLdType}
+                  class="tool-select"
+               >
+                 <option value="WebPage">Web Page</option>
                   <option value="Article">Article</option>
                   <option value="Product">Product</option>
                   <option value="Organization">Organization</option>
@@ -886,54 +883,54 @@
               <div>
                 <label
                   for="jsonld-name"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  class="label"
                   >Name</label
                 >
                 <input
                   type="text"
                   bind:value={jsonLdName}
                   placeholder="Enter name/title"
-                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+                  class="tool-input"
                 />
               </div>
 
               <div>
                 <label
                   for="jsonld-description"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  class="label"
                   >Description</label
                 >
-                <textarea
-                  bind:value={jsonLdDescription}
-                  placeholder="Enter description"
-                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all resize-none min-h-[80px]"
-                ></textarea>
+              <textarea
+                bind:value={jsonLdDescription}
+                placeholder="Enter description"
+                class="textarea min-h-[80px] resize-none"
+              ></textarea>
               </div>
 
               <div>
                 <label
                   for="jsonld-url"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">URL</label
+                  class="label">URL</label
                 >
                 <input
                   type="url"
                   bind:value={jsonLdUrl}
                   placeholder="https://example.com"
-                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+                  class="tool-input"
                 />
               </div>
 
               <div>
                 <label
                   for="jsonld-image"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  class="label"
                   >Image</label
                 >
                 <input
                   type="url"
                   bind:value={jsonLdImage}
                   placeholder="https://example.com/image.jpg"
-                  class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+                  class="tool-input"
                 />
               </div>
             </div>
@@ -951,7 +948,7 @@
       <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Generated Meta Tags</h2>
       <div class="flex gap-2">
         <button
-          class="inline-flex items-center justify-center px-3 py-1.5 text-sm bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white rounded-lg transition-all"
+          class="btn-copy"
           onclick={copyToClipboard}
           disabled={!generatedTags}
         >
@@ -959,7 +956,7 @@
           Copy
         </button>
         <button
-          class="inline-flex items-center justify-center px-3 py-1.5 text-sm bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white rounded-lg transition-all"
+          class="btn btn-secondary"
           onclick={downloadAsHtml}
           disabled={!generatedTags}
         >

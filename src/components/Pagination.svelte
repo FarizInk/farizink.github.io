@@ -106,7 +106,7 @@
             {:else}
               <button
                 onclick={() => handlePageClick(page as number)}
-                class="w-8 h-8 rounded-lg {page === currentPage
+              class="preset-btn w-8 h-8 rounded-lg {page === currentPage
                   ? 'bg-primary-600 text-white'
                   : 'border border-secondary-300 dark:border-secondary-600 text-secondary-700 dark:text-secondary-300 hover:bg-secondary-50 dark:hover:bg-secondary-800'} transition-colors"
                 title={`Go to page ${page}`}

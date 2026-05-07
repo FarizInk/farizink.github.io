@@ -346,7 +346,7 @@
       <div class="flex flex-col">
         <label
           for="amount-input"
-          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Amount</label
+          class="label">Amount</label
         >
         <input
           class="tool-input text-sm"
@@ -362,7 +362,7 @@
       <div class="flex flex-col">
         <label
           for="unit-select"
-          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Unit</label
+          class="label">Unit</label
         >
         <select
           id="unit-select"

@@ -87,7 +87,7 @@
   }
 
   // Button base class helper
-  const btnBase = 'p-2 rounded-lg transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed border';
+  const btnBase = 'btn-icon p-2 rounded-lg transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed border';
   const btnInactive = 'border-transparent hover:bg-secondary-100 dark:hover:bg-secondary-700 text-secondary-600 dark:text-secondary-400';
   const btnActive = 'bg-gradient-to-r from-warning-100 to-amber-100 dark:from-primary-900/40 dark:to-primary-800/30 text-warning-700 dark:text-primary-300 border-warning-200 dark:border-primary-700 shadow-sm';
 

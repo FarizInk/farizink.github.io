@@ -154,15 +154,15 @@
       >
         <button
           onclick={() => (activeTab = 'text')}
-          class="px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'text'
+          class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'text'
             ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
             : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
         >
           Text Converter
         </button>
         <button
-          onclick={() => (activeTab = 'file')}
-          class="px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'file'
+         onclick={() => (activeTab = 'file')}
+         class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'file'
             ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
             : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
         >
@@ -359,14 +359,14 @@
                 >
                 <div class="flex gap-2">
                   <button
-                    class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
+                    class="btn btn-copy btn-sm inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
                     onclick={() =>
                       fileResult && copyToClipboard(fileResult.encoded, 'file-encoded')}
                   >
                     {copiedText === 'file-encoded' ? '✓ Copied!' : 'Copy'}
                   </button>
                   <button
-                    class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+                    class="btn btn-secondary btn-sm inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
                     onclick={downloadEncodedFile}
                   >
                     Download

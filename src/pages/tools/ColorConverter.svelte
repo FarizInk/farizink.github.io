@@ -335,7 +335,7 @@
               max="255"
               bind:value={rgbInput[channel as keyof typeof rgbInput]}
               oninput={updateFromRgb}
-              class="flex-1 accent-yellow-500 dark:accent-purple-500"
+              class="slider flex-1"
             />
             <input
               type="number"
@@ -377,7 +377,7 @@
               max={channel === 'h' ? 360 : 100}
               bind:value={hslInput[channel as keyof typeof hslInput]}
               oninput={updateFromHsl}
-              class="flex-1 accent-yellow-500 dark:accent-purple-500"
+              class="slider flex-1"
             />
             <input
               type="number"

@@ -97,7 +97,7 @@
 
   <form onsubmit={handleLogin} class="space-y-5">
     <div>
-      <label for="email" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+      <label for="email" class="label">
         Email Address
       </label>
       <div class="relative">
@@ -119,7 +119,7 @@
     </div>
 
     <div>
-      <label for="password" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+      <label for="password" class="label">
         Password
       </label>
       <div class="relative">
@@ -154,7 +154,7 @@
     <button
       type="submit"
       disabled={isLoading || !email.trim() || !password.trim()}
-      class="w-full flex items-center justify-center gap-2 py-3.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-md"
+      class="btn btn-primaryw-full flex items-center justify-center gap-2 py-3.5   font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-md"
     >
       {#if isLoading}
         <div class="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>

@@ -199,7 +199,7 @@
           <button
             onclick={() => copyToClipboard(hash1, 'hash1')}
             disabled={!hash1.trim()}
-            class="p-2 rounded-lg transition-colors text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="btn-icon"
           >
             {#if copiedText === 'hash1'}
               <Check class="w-4 h-4 text-green-600" />
@@ -229,7 +229,7 @@
           <button
             onclick={() => copyToClipboard(hash2, 'hash2')}
             disabled={!hash2.trim()}
-            class="p-2 rounded-lg transition-colors text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="btn-icon"
           >
             {#if copiedText === 'hash2'}
               <Check class="w-4 h-4 text-green-600" />

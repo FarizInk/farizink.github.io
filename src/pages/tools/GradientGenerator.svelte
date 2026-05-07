@@ -191,7 +191,7 @@
         <div>
           <label
             for="gradient-type-select"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            class="label"
           >
             Gradient Type
           </label>
@@ -205,7 +205,7 @@
         <div>
           <label
             for="gradient-direction"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            class="label"
           >
             {gradientType === 'linear' ? 'Direction' : 'Shape'}
           </label>
@@ -277,7 +277,7 @@
                   )}
                 min="0"
                 max="100"
-                class="w-20 h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-yellow-500 dark:accent-purple-500"
+                class="slider w-20"
               />
               <span class="text-sm text-gray-600 dark:text-gray-400 w-10">{stop.position}%</span>
             </div>
@@ -326,7 +326,7 @@
       {#each presetGradients as preset, i (preset.name + i)}
         <button
           onclick={() => loadPreset(preset)}
-          class="p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-warning-500 dark:hover:border-primary-400 transition-colors"
+          class="preset-btn"
         >
           <div
             class="h-16 w-full rounded mb-2"

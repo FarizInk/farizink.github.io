@@ -55,7 +55,7 @@
     <h2 class="text-lg font-bold text-gray-900 dark:text-white">
       {title}
     </h2>
-    <button onclick={closeModal} class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+    <button onclick={closeModal} class="btn-icon p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
       <X class="w-5 h-5 text-gray-500" />
     </button>
   </div>
@@ -73,14 +73,14 @@
     <button
       type="button"
       onclick={closeModal}
-      class="px-4 py-2.5 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+      class="btn btn-secondary"
     >
       Cancel
     </button>
     <button
       type="button"
       onclick={handleSubmit}
-      class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl text-sm font-medium shadow-md hover:shadow-lg transition-all"
+      class="btn btn-primary flex items-center gap-2 px-5 py-2.5   rounded-xl text-sm font-medium shadow-md hover:shadow-lg transition-all"
     >
       <svelte:component this={icon} class="w-4 h-4" />
       {submitText}

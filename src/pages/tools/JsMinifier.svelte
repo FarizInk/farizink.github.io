@@ -208,7 +208,7 @@ console.log('Total amount:', result.total);`;
     >
       <button
         onclick={() => (minified = false)}
-        class="px-4 py-2 rounded-md text-sm font-medium transition-colors {!minified
+        class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition-colors {!minified
           ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
           : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
       >
@@ -216,7 +216,7 @@ console.log('Total amount:', result.total);`;
       </button>
       <button
         onclick={() => (minified = true)}
-        class="px-4 py-2 rounded-md text-sm font-medium transition-colors {minified
+        class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition-colors {minified
           ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
           : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
       >

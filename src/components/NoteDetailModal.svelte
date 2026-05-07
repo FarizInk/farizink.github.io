@@ -179,7 +179,7 @@
           {#if note.link}
             <button
               onclick={handleLinkClick}
-              class="group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 transition-all duration-200 hover:scale-105 active:scale-95"
+              class="btn-icon group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 transition-all duration-200 hover:scale-105 active:scale-95"
               title="Open link"
             >
               <ExternalLink class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
@@ -188,7 +188,7 @@
 
           <button
             onclick={handleShare}
-            class="group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 transition-all duration-200 hover:scale-105 active:scale-95"
+            class="btn-icon group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 transition-all duration-200 hover:scale-105 active:scale-95"
             title="Share note"
           >
             <Share2 class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
@@ -198,7 +198,7 @@
             {#if hasAuthToken && onPermanentDelete}
               <button
                 onclick={handlePermanentDelete}
-                class="group relative p-2 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 transition-all duration-200 hover:scale-105 active:scale-95"
+                class="btn-icon btn-danger group relative p-2 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 transition-all duration-200 hover:scale-105 active:scale-95"
                 title="Permanently delete note"
               >
                 <Trash2 class="w-5 h-5 text-red-600 dark:text-red-400" />
@@ -208,7 +208,7 @@
             {#if hasAuthToken}
               <button
                 onclick={handleEdit}
-                class="group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 transition-all duration-200 hover:scale-105 active:scale-95"
+                class="btn-icon group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 transition-all duration-200 hover:scale-105 active:scale-95"
                 title="Edit note"
               >
                 <Edit class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
@@ -216,7 +216,7 @@
 
               <button
                 onclick={handleDelete}
-                class="group relative p-2 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 transition-all duration-200 hover:scale-105 active:scale-95"
+                class="btn-icon btn-danger group relative p-2 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 transition-all duration-200 hover:scale-105 active:scale-95"
                 title="Delete note"
               >
                 <Trash2 class="w-5 h-5 text-red-600 dark:text-red-400" />
@@ -230,7 +230,7 @@
         <!-- Close Button (Always visible) -->
         <button
           onclick={onClose}
-          class="group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-secondary-200 dark:hover:bg-secondary-600 border border-secondary-200 dark:border-secondary-600 transition-all duration-200 hover:scale-105 active:scale-95 sm:mx-1"
+          class="btn-icon group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-secondary-200 dark:hover:bg-secondary-600 border border-secondary-200 dark:border-secondary-600 transition-all duration-200 hover:scale-105 active:scale-95 sm:mx-1"
           title="Close modal"
         >
           <X class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" />
@@ -278,7 +278,7 @@
             {#if note.link}
               <button
                 onclick={handleLinkClick}
-                class="flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 rounded-xl transition-all text-sm font-medium"
+                class="btn btn-secondary flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 rounded-xl transition-all text-sm font-medium"
               >
                 <ExternalLink class="w-4 h-4 text-secondary-600 dark:text-secondary-300" />
                 <span class="text-secondary-700 dark:text-secondary-300">Open Link</span>
@@ -287,7 +287,7 @@
 
             <button
               onclick={handleShare}
-              class="flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 rounded-xl transition-all text-sm font-medium"
+              class="btn btn-secondary flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 rounded-xl transition-all text-sm font-medium"
             >
               <Share2 class="w-4 h-4 text-secondary-600 dark:text-secondary-300" />
               <span class="text-secondary-700 dark:text-secondary-300">Share</span>
@@ -297,7 +297,7 @@
               {#if hasAuthToken && onPermanentDelete}
                 <button
                   onclick={handlePermanentDelete}
-                  class="col-span-2 flex items-center justify-center gap-2 px-4 py-2.5 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl transition-all text-sm font-medium"
+                  class="btn btn-danger col-span-2 flex items-center justify-center gap-2 px-4 py-2.5 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl transition-all text-sm font-medium"
                 >
                   <Trash2 class="w-4 h-4 text-red-600 dark:text-red-400" />
                   <span class="text-red-700 dark:text-red-400">Delete Permanently</span>
@@ -307,7 +307,7 @@
               {#if hasAuthToken}
                 <button
                   onclick={handleEdit}
-                  class="flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 rounded-xl transition-all text-sm font-medium"
+                  class="btn btn-secondary flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 rounded-xl transition-all text-sm font-medium"
                 >
                   <Edit class="w-4 h-4 text-secondary-600 dark:text-secondary-300" />
                   <span class="text-secondary-700 dark:text-secondary-300">Edit</span>
@@ -315,7 +315,7 @@
 
                 <button
                   onclick={handleDelete}
-                  class="flex items-center justify-center gap-2 px-4 py-2.5 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl transition-all text-sm font-medium"
+                  class="btn btn-danger flex items-center justify-center gap-2 px-4 py-2.5 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl transition-all text-sm font-medium"
                 >
                   <Trash2 class="w-4 h-4 text-red-600 dark:text-red-400" />
                   <span class="text-red-700 dark:text-red-400">Delete</span>
@@ -344,7 +344,7 @@
             </div>
             <button
               onclick={handleLinkClick}
-              class="px-3 py-2 bg-warning-600 dark:bg-primary-600 hover:bg-warning-700 dark:hover:bg-primary-700 text-white rounded-lg transition-colors text-sm font-medium"
+              class="btn btn-primary px-3 py-2 bg-warning-600 dark:bg-primary-600 hover:bg-warning-700 dark:hover:bg-primary-700 text-white rounded-lg transition-colors text-sm font-medium"
             >
               Visit
             </button>
@@ -361,16 +361,16 @@
                 {#if note.link_summarize && (note.link_summarize.length > 150)}
                   <button
                     onclick={() => (isSummaryFull = !isSummaryFull)}
-                    class="text-xs text-warning-700 dark:text-primary-300 hover:text-warning-800 dark:hover:text-primary-200 font-medium transition-colors"
-                  >
-                    {isSummaryFull ? 'Show less' : 'Show more'}
-                  </button>
+                      class="quick-btn text-xs text-warning-700 dark:text-primary-300 hover:text-warning-800 dark:hover:text-primary-200 font-medium transition-colors"
+                    >
+                      {isSummaryFull ? 'Show less' : 'Show more'}
+                    </button>
                 {/if}
                 {#if hasAuthToken}
                   <button
                     onclick={handleRegenerateSummarize}
                     disabled={isRegenerating}
-                    class="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-gradient-to-r from-warning-500 to-amber-500 dark:from-primary-600 dark:to-primary-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-700 dark:hover:to-primary-600 text-white rounded-lg transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                      class="btn btn-primary flex items-center gap-2 px-3 py-1.5 text-xs font-medium   rounded-lg transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Regenerate AI summary"
                   >
                     {#if isRegenerating}
@@ -456,14 +456,14 @@
                   <div class="flex gap-1">
                     <button
                       onclick={() => viewFile(file)}
-                      class="w-8 h-8 bg-white/90 hover:bg-white dark:bg-black/80 hover:dark:bg-black/90 rounded-lg flex items-center justify-center transition-colors"
+                      class="btn-icon w-8 h-8 bg-white/90 hover:bg-white dark:bg-black/80 hover:dark:bg-black/90 rounded-lg flex items-center justify-center transition-colors"
                       title="View image"
                     >
                       <Eye class="w-4 h-4 text-gray-800 dark:text-gray-200" />
                     </button>
                     <button
                       onclick={() => downloadFile(file)}
-                      class="w-8 h-8 bg-white/90 hover:bg-white dark:bg-black/80 hover:dark:bg-black/90 rounded-lg flex items-center justify-center transition-colors"
+                      class="btn-icon w-8 h-8 bg-white/90 hover:bg-white dark:bg-black/80 hover:dark:bg-black/90 rounded-lg flex items-center justify-center transition-colors"
                       title="Download image"
                     >
                       <Download class="w-4 h-4 text-gray-800 dark:text-gray-200" />
@@ -548,14 +548,14 @@
                 <div class="flex items-center gap-2">
                   <button
                     onclick={() => viewFile(file)}
-                    class="flex items-center gap-1 px-3 py-1.5 text-sm bg-warning-50 dark:bg-primary-900/20 hover:bg-warning-100 dark:hover:bg-primary-900/30 text-warning-700 dark:text-primary-300 rounded transition-colors"
+                    class="btn btn-sm flex items-center gap-1 px-3 py-1.5 text-sm bg-warning-50 dark:bg-primary-900/20 hover:bg-warning-100 dark:hover:bg-primary-900/30 text-warning-700 dark:text-primary-300 rounded transition-colors"
                   >
                     <Eye class="w-3 h-3" />
                     View
                   </button>
                   <button
                     onclick={() => downloadFile(file)}
-                    class="flex items-center gap-1 px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded transition-colors"
+                    class="btn btn-secondary btn-sm flex items-center gap-1 px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded transition-colors"
                   >
                     <Download class="w-3 h-3" />
                     Download

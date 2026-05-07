@@ -2,7 +2,6 @@ import Home from '../pages/Home.svelte';
 import Notes from '../pages/Notes.svelte';
 import NotesCreate from '../pages/NotesCreate.svelte';
 import NotesEdit from '../pages/NotesEdit.svelte';
-import TempUpload from '../pages/TempUpload.svelte';
 import Finance from '../pages/Finance.svelte';
 import Files from '../pages/Files.svelte';
 import { House, FileText, User, Upload, Plus, Edit2, Wallet } from '@lucide/svelte';
@@ -64,17 +63,6 @@ export const mainRoutes = [
     keywords: 'finance, money tracker, income, expense, budget',
     robots: 'noindex, nofollow',
     icon: Wallet
-  },
-  {
-    path: '/temp-upload',
-    component: TempUpload,
-    title: 'Temp File Upload - Fariz',
-    description:
-      'Upload and share files temporarily with auto-delete after 24 hours. Fast, secure, and free temporary file hosting.',
-    keywords:
-      'file upload, temp file, share files, temporary storage, file sharing, upload files, 24 hour storage',
-    robots: 'index, follow',
-    icon: Upload
   },
   {
     path: '/files/:code',

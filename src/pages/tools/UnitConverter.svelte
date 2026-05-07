@@ -329,10 +329,7 @@
           activeCategory = category.id;
           reset();
         }}
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border transition-all border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-warning-300 dark:hover:border-primary-400 {activeCategory ===
-        category.id
-          ? 'border-warning-400 dark:border-primary-500 bg-warning-50 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
-          : ''}"
+        class="preset-btn {activeCategory === category.id ? 'active' : ''}"
       >
         <category.icon class="w-4 h-4" />
         <span class="text-sm font-medium">{category.name}</span>
@@ -357,7 +354,7 @@
           <div>
             <label
               for="from-value-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">From</label
+              class="label">From</label
             >
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <input
@@ -386,7 +383,7 @@
           <div>
             <label
               for="to-value-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">To</label
+              class="label">To</label
             >
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div class="relative">
@@ -534,7 +531,7 @@
             {#each conversionHistory as item (item.timestamp)}
               <button
                 onclick={() => loadHistoryItem(item)}
-                class="w-full text-left p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                class="preset-btn w-full text-left"
               >
                 <div class="text-sm font-medium text-gray-900 dark:text-white">
                   {item.from}

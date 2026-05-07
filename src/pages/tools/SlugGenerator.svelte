@@ -164,7 +164,7 @@
       <div class="flex flex-col">
         <label
           for="separator-select"
-          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Separator</label
+          class="label">Separator</label
         >
         <select id="separator-select" bind:value={separator} class="tool-select">
           <option value="-">Hyphen (-)</option>
@@ -176,7 +176,7 @@
       <div class="flex flex-col">
         <label
           for="max-length-input"
-          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Max Length</label
+          class="label">Max Length</label
         >
         <input
           id="max-length-input"

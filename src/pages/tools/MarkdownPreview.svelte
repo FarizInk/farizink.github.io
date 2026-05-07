@@ -241,7 +241,7 @@ Visit [GitHub](https://github.com) for more resources!`;
         </div>
         <button
           onclick={copyToClipboard}
-          class="p-2 rounded-lg transition-colors text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20"
+          class="btn-icon"
         >
           <Copy class="w-4 h-4" />
         </button>
@@ -269,13 +269,13 @@ Visit [GitHub](https://github.com) for more resources!`;
         <div class="flex gap-2">
           <button
             onclick={copyHtmlToClipboard}
-            class="p-2 rounded-lg transition-colors text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20"
+            class="btn-icon"
           >
             <Copy class="w-4 h-4" />
           </button>
           <button
             onclick={downloadHtml}
-            class="p-2 rounded-lg transition-colors text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20"
+            class="btn-icon"
           >
             <Download class="w-4 h-4" />
           </button>

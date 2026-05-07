@@ -248,7 +248,7 @@
           <div class="flex items-center gap-2">
             <button
               onclick={generateRandomCron}
-              class="p-2 rounded-lg transition-colors text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20"
+              class="btn-icon"
               title="Generate Random"
             >
               <RefreshCw class="w-4 h-4" />
@@ -261,7 +261,7 @@
             {:else}
               <button
                 onclick={copyToClipboard}
-                class="p-2 rounded-lg transition-colors text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20"
+                class="btn-icon"
                 title="Copy to clipboard"
               >
                 <Copy class="w-4 h-4" />
@@ -299,7 +299,7 @@
           <div>
             <label
               for="minute"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Minute (0-59)</label
             >
             <input
@@ -315,7 +315,7 @@
           <div>
             <label
               for="hour"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Hour (0-23)</label
             >
             <input
@@ -331,7 +331,7 @@
           <div>
             <label
               for="day-of-month"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Day of Month (1-31)</label
             >
             <input
@@ -347,7 +347,7 @@
           <div>
             <label
               for="month"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Month (1-12)</label
             >
             <input
@@ -355,7 +355,7 @@
               type="text"
               bind:value={month}
               oninput={updateFromComponents}
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+              class="tool-input"
               placeholder="*"
             />
           </div>
@@ -363,7 +363,7 @@
           <div>
             <label
               for="day-of-week"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Day of Week (0-6, 0=Sunday)</label
             >
             <input
@@ -371,7 +371,7 @@
               type="text"
               bind:value={dayOfWeek}
               oninput={updateFromComponents}
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+              class="tool-input"
               placeholder="*"
             />
           </div>
@@ -429,7 +429,7 @@
           {#each presets as preset (preset.name)}
             <button
               onclick={() => applyPreset(preset.expression)}
-              class="text-left p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-warning-50 dark:hover:bg-primary-900/20 transition-colors"
+              class="preset-btn text-left"
             >
               <div class="font-medium text-gray-900 dark:text-white text-sm">
                 {preset.name}

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ChevronLeft, Home, ArrowRight, Sparkles } from '@lucide/svelte';
+  import { ChevronLeft, Home, ArrowRight } from '@lucide/svelte';
   import { navigate } from '../lib/router';
 
   interface Props {
@@ -81,7 +81,7 @@
     <div class="mb-6">
       <button
         onclick={handleBackToTools}
-        class="back-button inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 transition-all duration-200 hover:shadow-md"
+        class="btn btn-secondary back-button inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 transition-all duration-200 hover:shadow-md"
       >
         <ChevronLeft class="w-4 h-4" />
         <span>Back to Tools</span>
@@ -89,73 +89,34 @@
     </div>
 
     <!-- Hero Section -->
-    <div class="tool-hero text-center relative">
-      <!-- Animated Icon Card -->
-      <div class="relative inline-block mb-6">
-        <!-- Decorative rings (behind) -->
-        <div
-          class="absolute inset-0 rounded-full border-2 border-warning-400/20 dark:border-primary-400/20 animate-ping"
-          style="animation-delay: 0s;"
-        ></div>
-        <div
-          class="absolute inset-0 rounded-full border-2 border-warning-300/20 dark:border-primary-300/20 animate-ping"
-          style="animation-delay: 0.5s;"
-        ></div>
-        <div
-          class="absolute inset-0 rounded-full border-2 border-warning-200/20 dark:border-primary-200/20 animate-ping"
-          style="animation-delay: 1s;"
-        ></div>
-
-        <!-- Icon container -->
-        <div
-          class="relative z-10 w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-2xl sm:rounded-3xl flex items-center justify-center shadow-xl bg-gradient-to-br {color ===
-          'warning'
-            ? 'from-yellow-500 to-amber-500 dark:from-primary-400 dark:to-primary-500'
-            : color === 'primary'
-              ? 'from-purple-500 to-purple-600 dark:from-primary-400 dark:to-primary-500'
-              : color === 'success'
-                ? 'from-green-500 to-green-600 dark:from-green-400 dark:to-green-500'
-                : color === 'danger'
-                  ? 'from-red-500 to-red-600 dark:from-red-400 dark:to-red-500'
-                  : 'from-slate-500 to-slate-600 dark:from-slate-400 dark:to-slate-500'}"
+    <div class="tool-hero text-center relative flex flex-col items-center">
+      <div class="flex items-center gap-3 mb-2">
+        <!-- <div
+          class="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg bg-gradient-to-br {config.gradient} dark:{config.gradientDark}"
         >
-          <Icon class="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 text-white drop-shadow-lg" />
-        </div>
+          <Icon class="w-5 h-5 text-white drop-shadow" />
+        </div> -->
+        <h1 class="tool-title !mb-0">
+          <span
+            class="title-gradient bg-clip-text text-transparent bg-gradient-to-r {config.gradient} dark:{config.gradientDark}"
+          >
+            {title}
+          </span>
+        </h1>
       </div>
 
-      <!-- Title & Description -->
-      <h1 class="tool-title">
-        <span
-          class="title-gradient bg-clip-text text-transparent bg-gradient-to-r from-yellow-500 to-amber-400 dark:from-primary-400 to-purple-500 bg-gradient-to-l"
-        >
-          {title}
-        </span>
-      </h1>
-
-      <p class="tool-description">
+      <p class="tool-description max-w-xl">
         {description}
       </p>
-
-      <!-- Feature Badge (Optional - can show tool stats) -->
-      <div class="flex items-center justify-center gap-2 mt-4">
-        <div
-          class="flex items-center gap-1.5 px-3 py-1 rounded-full {config.lightBg} {config.lightBgDark} border border-gray-200 dark:border-gray-700"
-        >
-          <Sparkles class="w-3.5 h-3.5 {config.lightText} {config.lightTextDark}" />
-          <span class="text-xs font-medium {config.lightText} {config.lightTextDark}"
-            >Free & Fast</span
-          >
-        </div>
-      </div>
     </div>
 
     <!-- Breadcrumb -->
-    <nav class="mt-10 mb-10" aria-label="Breadcrumb">
+    <nav class="mb-6" aria-label="Breadcrumb">
       <ol class="flex items-center justify-center space-x-1 sm:space-x-2 text-xs sm:text-sm">
         <li>
           <button
             onclick={navigateToHome}
-            class="breadcrumb-link inline-flex items-center gap-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors"
+            class="btn-icon breadcrumb-link inline-flex items-center gap-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors"
           >
             <Home class="w-3.5 h-3.5" />
             <span class="hidden sm:inline">Home</span>
@@ -165,7 +126,7 @@
         <li>
           <button
             onclick={navigateToTools}
-            class="breadcrumb-link inline-flex items-center gap-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors"
+            class="btn-icon breadcrumb-link inline-flex items-center gap-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors"
           >
             Tools
           </button>

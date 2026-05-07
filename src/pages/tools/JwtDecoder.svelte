@@ -196,7 +196,7 @@
     <div class="mb-4">
       <label
         for="jwt-token-input"
-        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        class="label"
       >
         JWT Token
       </label>
@@ -210,7 +210,7 @@
         ></textarea>
         <button
           onclick={() => (showToken = !showToken)}
-          class="absolute right-3 top-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+          class="btn-icon absolute right-3 top-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
         >
           {#if showToken}
             <EyeOff class="w-5 h-5" />

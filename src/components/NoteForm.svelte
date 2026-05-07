@@ -285,7 +285,7 @@
             type="button"
             onclick={() =>
               alert('Use the "Manage Tags" button in the Notes page to create new tags.')}
-            class="text-warning-600 hover:text-warning-700 dark:text-primary-400 dark:hover:text-primary-300 underline"
+            class="btn-copy text-warning-600 hover:text-warning-700 dark:text-primary-400 dark:hover:text-primary-300 underline"
           >
             Manage tags
           </button>
@@ -297,7 +297,7 @@
         <button
           type="button"
           onclick={() => localShowFileSection = !localShowFileSection}
-          class="flex items-center gap-2 text-sm font-medium text-secondary-700 dark:text-secondary-300 hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
+          class="btn btn-secondary flex items-center gap-2 text-sm font-medium text-secondary-700 dark:text-secondary-300 hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
         >
           <Paperclip class="w-4 h-4" />
           <span>{mode === 'edit' ? 'Manage Files' : 'Attach Files'}</span>
@@ -361,4 +361,3 @@
       </div>
     </form>
   </div>
-

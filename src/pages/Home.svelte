@@ -56,7 +56,9 @@
     <div class="text-left">
       <!-- Name with gradient effect -->
       <div class="mb-3">
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight bg-gradient-to-r from-black via-yellow-700 to-black bg-clip-text text-transparent dark:from-white dark:via-primary-500 dark:to-white dark:text-transparent bg-[length:200%_auto] animate-gradient">
+        <h1
+          class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight bg-gradient-to-r from-black via-yellow-700 to-black bg-clip-text text-transparent dark:from-white dark:via-primary-500 dark:to-white dark:text-transparent bg-[length:200%_auto] animate-gradient"
+        >
           Nizar Alfarizi Akbar
         </h1>
       </div>
@@ -112,7 +114,7 @@
         <!-- Close button -->
         <button
           onclick={() => (showPhoto = false)}
-          class="absolute hover:cursor-pointer -top-3 -right-3 z-10 w-10 h-10 bg-gray-900 dark:bg-white rounded-full flex items-center justify-center text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-200 transition-all duration-200 shadow-lg hover:scale-110"
+          class="btn-icon absolute hover:cursor-pointer -top-3 -right-3 z-10 w-10 h-10 bg-gray-900 dark:bg-white rounded-full flex items-center justify-center text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-200 transition-all duration-200 shadow-lg hover:scale-110"
           aria-label="Close photo modal"
         >
           <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">

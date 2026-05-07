@@ -290,7 +290,7 @@
       {#each presets as preset (preset.name)}
         <button
           onclick={() => loadPreset(preset)}
-          class="p-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-left"
+          class="preset-btn p-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-left"
         >
           <preset.icon class="w-5 h-5 text-gray-600 dark:text-gray-400 mb-2" />
           <div class="text-sm font-medium text-gray-900 dark:text-white">{preset.name}</div>
@@ -356,7 +356,7 @@
 
             <button
               onclick={() => removeItem(item.id)}
-              class="p-2 text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors"
+              class="btn-icon text-red-500 hover:text-red-700 dark:hover:text-red-400"
               disabled={items.length === 1}
             >
               <X class="w-4 h-4" />
@@ -393,7 +393,7 @@
         <div>
           <label
             for="number-of-picks"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            class="label"
           >
             Number of Picks
           </label>
@@ -410,7 +410,7 @@
         <div>
           <label
             for="animation-speed"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            class="label"
           >
             Animation Speed (ms)
           </label>
@@ -421,7 +421,7 @@
             min="500"
             max="5000"
             step="500"
-            class="w-full"
+            class="slider w-full"
           />
           <div class="text-xs text-gray-500 dark:text-gray-400">
             {animationDuration}ms
@@ -442,7 +442,7 @@
       </div>
 
       <button
-        class="w-full inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        class="btn-copy w-full justify-center py-2.5"
         onclick={spinPicker}
         disabled={isSpinning || items.filter(item => item.text.trim() !== '').length === 0}
       >
@@ -471,14 +471,14 @@
             </h2>
             <div class="flex gap-2">
               <button
-                class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
+                class="btn-copy"
                 onclick={copyResult}
               >
                 <Copy class="w-4 h-4 mr-1" />
                 Copy
               </button>
               <button
-                class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+                class="btn btn-secondary"
                 onclick={resetPicker}
               >
                 <RotateCcw class="w-4 h-4" />
@@ -545,7 +545,7 @@
             {#each history as entry (entry.id)}
               <button
                 onclick={() => loadFromHistory(entry)}
-                class="w-full text-left p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                class="preset-btn w-full text-left"
               >
                 <div class="text-sm font-medium text-gray-900 dark:text-white">
                   {entry.items.slice(0, 2).join(', ')}

@@ -152,7 +152,7 @@
               <code class="text-sm text-gray-900 dark:text-white">{parsedUrl.protocol}</code>
               <button
                 onclick={() => parsedUrl && copyToClipboard(parsedUrl.protocol)}
-                class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+                class="btn-icon inline-flex items-center justify-center w-8 h-8"
               >
                 <Copy class="w-4 h-4" />
               </button>
@@ -165,7 +165,7 @@
               <code class="text-sm text-gray-900 dark:text-white">{parsedUrl.hostname}</code>
               <button
                 onclick={() => parsedUrl && copyToClipboard(parsedUrl.hostname)}
-                class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+                class="btn-icon inline-flex items-center justify-center w-8 h-8"
               >
                 <Copy class="w-4 h-4" />
               </button>
@@ -178,7 +178,7 @@
               <code class="text-sm text-gray-900 dark:text-white">{parsedUrl.port}</code>
               <button
                 onclick={() => parsedUrl && copyToClipboard(parsedUrl.port)}
-                class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+                class="btn-icon inline-flex items-center justify-center w-8 h-8"
               >
                 <Copy class="w-4 h-4" />
               </button>
@@ -193,7 +193,7 @@
               >
               <button
                 onclick={() => parsedUrl && copyToClipboard(parsedUrl.pathname)}
-                class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+                class="btn-icon inline-flex items-center justify-center w-8 h-8"
               >
                 <Copy class="w-4 h-4" />
               </button>
@@ -208,7 +208,7 @@
               >
               <button
                 onclick={() => parsedUrl && copyToClipboard(parsedUrl.hash || '')}
-                class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+                class="btn-icon inline-flex items-center justify-center w-8 h-8"
               >
                 <Copy class="w-4 h-4" />
               </button>
@@ -234,7 +234,7 @@
               >
               <button
                 onclick={() => parsedUrl && copyToClipboard(parsedUrl.origin)}
-                class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+                class="btn-icon inline-flex items-center justify-center w-8 h-8"
               >
                 <Copy class="w-4 h-4" />
               </button>
@@ -249,7 +249,7 @@
               >
               <button
                 onclick={() => parsedUrl && copyToClipboard(parsedUrl.host)}
-                class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+                class="btn-icon inline-flex items-center justify-center w-8 h-8"
               >
                 <Copy class="w-4 h-4" />
               </button>
@@ -264,7 +264,7 @@
               >
               <button
                 onclick={() => parsedUrl && copyToClipboard(parsedUrl.search || '')}
-                class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+                class="btn-icon inline-flex items-center justify-center w-8 h-8"
               >
                 <Copy class="w-4 h-4" />
               </button>
@@ -317,14 +317,14 @@
                     <div class="flex justify-center gap-2">
                       <button
                         onclick={() => copyToClipboard(param.key)}
-                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+                        class="btn-icon inline-flex items-center justify-center w-8 h-8"
                         title="Copy parameter name"
                       >
                         <Copy class="w-4 h-4" />
                       </button>
                       <button
                         onclick={() => copyToClipboard(param.value)}
-                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+                        class="btn-icon inline-flex items-center justify-center w-8 h-8"
                         title="Copy parameter value"
                       >
                         <Copy class="w-4 h-4" />

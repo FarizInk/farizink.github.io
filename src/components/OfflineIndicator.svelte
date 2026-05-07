@@ -71,7 +71,7 @@
       </div>
       <button
         onclick={checkConnection}
-        class="flex items-center gap-1 bg-white/20 hover:bg-white/30 px-2 py-1 rounded text-xs font-medium transition-colors duration-200 flex-shrink-0"
+        class="btn btn-sm flex items-center gap-1 bg-white/20 hover:bg-white/30 px-2 py-1 rounded text-xs font-medium transition-colors duration-200 flex-shrink-0"
         disabled={isCheckingConnection}
         title="Check connection"
       >

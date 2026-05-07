@@ -12,7 +12,8 @@ import {
   Lock,
   RefreshCw,
   Zap,
-  Clock
+  Clock,
+  Upload
 } from '@lucide/svelte';
 
 export interface Tool {
@@ -337,6 +338,19 @@ export const toolsByCategory: Category[] = [
           'Session tracking',
           'Audio notifications',
           'Browser notifications'
+        ],
+        comingSoon: false
+      },
+      {
+        id: 'temp-upload',
+        name: 'Temp File Upload',
+        description: 'Upload and share files temporarily with auto-delete after 24 hours',
+        icon: Upload,
+        features: [
+          'Max 10 files per upload',
+          '100MB per file',
+          'Auto-delete after 24h',
+          'Shareable short links'
         ],
         comingSoon: false
       }

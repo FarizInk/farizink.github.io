@@ -243,15 +243,15 @@
 
   <!-- Controls -->
   <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
-    <button
-      onclick={loadSampleText}
-      class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
-      >Load Sample Text</button
-    >
-    <button
-      onclick={clearAll}
-      class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
-      >Clear All</button
+   <button
+     onclick={loadSampleText}
+      class="btn btn-copy inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
+     >Load Sample Text</button
+   >
+   <button
+     onclick={clearAll}
+      class="btn btn-secondary inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+     >Clear All</button
     >
   </div>
 
@@ -262,9 +262,9 @@
     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Art Style</h3>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       {#each Object.entries(asciiStyles) as [key, style], index (index)}
-        <button
-          onclick={() => (selectedStyle = key)}
-          class="p-4 border-2 rounded-lg transition-all text-left {selectedStyle === key
+       <button
+         onclick={() => (selectedStyle = key)}
+          class="preset-btn p-4 border-2 rounded-lg transition-all text-left {selectedStyle === key
             ? 'border-warning-400 dark:border-primary-500 bg-warning-50 dark:bg-primary-900/20'
             : 'border-gray-200 dark:border-gray-600 hover:border-warning-300 dark:hover:border-primary-400'}"
         >
@@ -297,7 +297,7 @@
       type="text"
       bind:value={inputText}
       placeholder="Enter text to convert to ASCII art..."
-      class="w-full px-4 py-3 font-mono text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+      class="tool-input w-full font-mono text-sm"
       maxlength={10}
     />
     <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
@@ -314,9 +314,9 @@
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-0">ASCII Art Result</h3>
         <div class="flex gap-2">
-          <button
-            onclick={copyToClipboard}
-            class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
+         <button
+           onclick={copyToClipboard}
+            class="btn btn-copy inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
           >
             {#if copiedText === 'ascii'}
               <Check class="w-4 h-4 mr-2" />
@@ -326,9 +326,9 @@
               Copy
             {/if}
           </button>
-          <button
-            onclick={downloadAsciiArt}
-            class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
+         <button
+           onclick={downloadAsciiArt}
+            class="btn btn-copy inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
           >
             <Download class="w-4 h-4 mr-2" />
             Download

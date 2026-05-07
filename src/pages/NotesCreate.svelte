@@ -62,13 +62,13 @@
         <div class="flex flex-col sm:flex-row gap-3 justify-center">
           <button
             onclick={() => navigate('/notes')}
-            class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
+            class="btn btn-secondary px-5 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
           >
             Go Back
           </button>
           <button
             onclick={() => document.dispatchEvent(new CustomEvent('open-login-modal'))}
-            class="px-5 py-2.5 bg-gradient-to-r from-warning-500 to-amber-500 dark:from-primary-600 dark:to-primary-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-700 dark:hover:to-primary-600 text-white rounded-lg font-medium transition-all shadow-md"
+            class="btn btn-primary px-5 py-2.5   rounded-lg font-medium transition-all shadow-md"
           >
             Login
           </button>
@@ -107,14 +107,14 @@
           <button
             type="button"
             onclick={handleCancel}
-            class="px-4 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
+            class="btn btn-secondary px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
           >
             Cancel
           </button>
           <button
             type="button"
             onclick={handleSubmit}
-            class="px-5 py-2.5 bg-gradient-to-r from-warning-500 to-amber-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-600 dark:hover:to-primary-700 dark:from-primary-500 dark:to-primary-600 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2"
+            class="btn btn-primary px-5 py-2.5  dark:hover:from-primary-600 dark:hover:to-primary-700 dark:from-primary-500 dark:to-primary-600  font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>

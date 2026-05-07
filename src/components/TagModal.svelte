@@ -103,21 +103,21 @@
       <button
         onclick={handleRefresh}
         disabled={isAnyLoading}
-        class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+        class="btn-icon p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
         title="Refresh"
       >
         <RotateCw class="w-4 h-4 {isAnyLoading ? 'animate-spin' : ''}" />
       </button>
       <button
         onclick={handleCreateNew}
-        class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+        class="btn-icon p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
         title="New tag"
       >
         <Plus class="w-4 h-4" />
       </button>
       <button
         onclick={handleClose}
-        class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+        class="btn-icon p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
         aria-label="Close"
       >
         <X class="w-5 h-5 text-gray-500" />
@@ -147,7 +147,7 @@
           {searchQuery ? 'No tags found' : 'No tags yet'}
         </p>
         {#if !searchQuery}
-          <button onclick={handleCreateNew} class="mt-2 text-sm text-purple-600 hover:underline">
+          <button onclick={handleCreateNew} class="btn-copy mt-2 text-sm text-purple-600 hover:underline">
             Create your first tag
           </button>
         {/if}
@@ -179,14 +179,14 @@
             <div class="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity ml-1 flex-shrink-0">
               <button
                 onclick={() => handleEdit(tag)}
-                class="w-6 h-6 rounded-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                class="btn-icon w-6 h-6 rounded-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                 title="Edit"
               >
                 <Edit2 class="w-3 h-3" />
               </button>
               <button
                 onclick={() => handleDelete(tag)}
-                class="w-6 h-6 rounded-md flex items-center justify-center hover:bg-red-100 dark:hover:bg-red-900/50 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                class="btn-icon btn-danger w-6 h-6 rounded-md flex items-center justify-center hover:bg-red-100 dark:hover:bg-red-900/50 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                 title="Delete"
               >
                 <Trash2 class="w-3 h-3" />
@@ -204,7 +204,7 @@
     </span>
     <button
       onclick={handleClose}
-      class="px-4 py-2 text-sm bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all"
+      class="btn btn-primary px-4 py-2 text-sm   rounded-xl font-medium shadow-md hover:shadow-lg transition-all"
     >
       Done
     </button>

@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { API_BASE_URL } from '../lib/constants';
+  import ToolLayout from '../../components/ToolLayout.svelte';
+  import { API_BASE_URL } from '../../lib/constants';
   import { toast } from 'svelte-sonner';
   import { onMount } from 'svelte';
   import {
@@ -359,61 +360,49 @@
 
 </script>
 
-<svelte:head>
-  <title>Temp File Upload - Fariz</title>
-  <meta name="description" content="Upload and share files temporarily with auto-delete after 24 hours. Fast, secure, and free." />
-  <meta name="keywords" content="file upload, temp file, share files, temporary storage, file sharing" />
-</svelte:head>
-
-<div class="notes-page">
-  <!-- Hero Section -->
-  <div class="notes-hero-section">
-    <div class="notes-hero-badge">
-      <span class="badge badge-primary">Free Tool</span>
-    </div>
-    <h1 class="notes-hero-title">Temp File Upload</h1>
-    <p class="notes-hero-description">
-      Upload and share files temporarily. Files are automatically deleted after 24 hours.
-      Max 10 files per upload, 100MB per file.
-    </p>
-  </div>
-
+<ToolLayout
+  title="Temp File Upload"
+  description="Upload and share files temporarily. Auto-deleted after 24h. Max 10 files, 100MB each."
+  icon={Upload}
+  color="primary"
+>
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Main Upload Section -->
-    <div class="lg:col-span-2 space-y-6">
-      <!-- Upload Area -->
+    <div class="lg:col-span-2 space-y-5">
       {#if uploadedFiles.length === 0}
+        <!-- Dropzone -->
         <div
-          class="card"
+          class="card relative overflow-hidden transition-all duration-200 {dragActive
+            ? 'border-2 border-dashed !border-primary-400 dark:!border-primary-500 !bg-primary-50/50 dark:!bg-primary-900/10'
+            : ''}"
           ondragenter={handleDragEnter}
           ondragleave={handleDragLeave}
           ondragover={handleDragOver}
           ondrop={handleDrop}
-          class:border-dashed={dragActive}
-          class:border-primary-500={dragActive}
         >
-          <div class="text-center py-12">
+          <div class="text-center py-8">
             <div
-              class="w-20 h-20 mx-auto mb-6 rounded-2xl bg-primary-100 dark:bg-primary-900/20 flex items-center justify-center"
+              class="w-14 h-14 mx-auto mb-4 rounded-2xl {dragActive
+                ? 'bg-primary-200 dark:bg-primary-800/40 scale-110'
+                : 'bg-primary-100 dark:bg-primary-900/20'} flex items-center justify-center transition-transform duration-200"
             >
-              <Upload class="w-10 h-10 text-primary-600 dark:text-primary-400" />
+              <Upload
+                class="w-7 h-7 text-primary-600 dark:text-primary-400 {dragActive ? 'animate-bounce' : ''}"
+              />
             </div>
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              {dragActive ? 'Drop files here' : 'Upload Files'}
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+              {dragActive ? 'Drop files here!' : 'Upload Files'}
             </h2>
-            <p class="text-gray-600 dark:text-gray-400 mb-6">
-              Drag & drop files here, or click to browse
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              {dragActive ? 'Release to add your files' : 'Drag & drop files here, or click to browse'}
             </p>
-            <div class="flex justify-center gap-4 mb-6">
-              <label class="btn btn-primary cursor-pointer">
-                <input type="file" multiple accept="*" onchange={handleFileSelect} class="hidden" />
-                <Upload class="w-4 h-4" />
-                Choose Files
-              </label>
-            </div>
-            <p class="text-sm text-gray-500 dark:text-gray-500">
-              Max {MAX_FILES} files, 100MB per file • Auto-delete after 24 hours
-            </p>
+            <label
+              class="btn btn-primary cursor-pointer inline-flex items-center gap-2 {dragActive ? 'opacity-0 pointer-events-none' : ''} transition-opacity"
+            >
+              <input type="file" multiple accept="*" onchange={handleFileSelect} class="hidden" />
+              <Upload class="w-4 h-4" />
+              Choose Files
+            </label>
           </div>
         </div>
 
@@ -421,40 +410,48 @@
         {#if selectedFiles.length > 0}
           <div class="card">
             <div class="card-header">
-              <h3 class="section-title">Selected Files ({selectedFiles.length}/{MAX_FILES})</h3>
+              <div>
+                <h3 class="section-title !mb-1">Selected Files</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  {selectedFiles.length}/{MAX_FILES} files &middot; {formatFileSize(selectedFiles.reduce((sum, f) => sum + f.size, 0))} total
+                </p>
+              </div>
+              <button
+                class="btn btn-primary btn-sm"
+                onclick={uploadFiles}
+                disabled={isUploading}
+              >
+                {#if isUploading}
+                  <span class="flex items-center gap-2">
+                    <span class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                    Uploading...
+                  </span>
+                {:else}
+                  <Upload class="w-4 h-4" />
+                  Upload
+                {/if}
+              </button>
             </div>
-            <div class="space-y-3">
+            <div class="space-y-2">
               {#each selectedFiles as file, index (file.name + index)}
-                <div class="result-row">
+                <div class="result-row group">
                   <div class="flex items-center gap-3 flex-1 min-w-0">
-                    <File class="w-5 h-5 text-gray-400 flex-shrink-0" />
+                    <div class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-600/50 flex items-center justify-center flex-shrink-0">
+                      <File class="w-4 h-4 text-gray-400" />
+                    </div>
                     <div class="min-w-0 flex-1">
-                      <p class="font-medium text-gray-900 dark:text-white truncate">{file.name}</p>
-                      <p class="text-sm text-gray-500 dark:text-gray-400">{formatFileSize(file.size)}</p>
+                      <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{file.name}</p>
+                      <p class="text-xs text-gray-500 dark:text-gray-400">{formatFileSize(file.size)}</p>
                     </div>
                   </div>
                   <button
                     onclick={() => removeFile(index)}
-                    class="btn-icon text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                    class="btn-icon text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-all"
                   >
                     <X class="w-4 h-4" />
                   </button>
                 </div>
               {/each}
-            </div>
-            <div class="flex justify-end mt-4">
-              <button
-                class="btn btn-primary"
-                onclick={uploadFiles}
-                disabled={isUploading}
-              >
-                {#if isUploading}
-                  Uploading...
-                {:else}
-                  <Upload class="w-4 h-4" />
-                  Upload Files
-                {/if}
-              </button>
             </div>
           </div>
         {/if}
@@ -463,10 +460,10 @@
         <div class="card">
           <div class="card-header">
             <div>
-              <h3 class="section-title">Uploaded Files</h3>
+              <h3 class="section-title !mb-1">Uploaded Files</h3>
               {#if currentExpiresAt}
-                <p class="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-1">
-                  <Clock class="w-3.5 h-3.5" />
+                <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-0.5">
+                  <Clock class="w-3 h-3" />
                   {formatExpiresAt(currentExpiresAt)}
                 </p>
               {/if}
@@ -477,17 +474,19 @@
             </button>
           </div>
 
-          <div class="space-y-3">
+          <div class="space-y-2">
             {#each uploadedFiles as file (file.id)}
-              <div class="result-row">
+              <div class="result-row group">
                 <div class="flex items-center gap-3 flex-1 min-w-0">
-                  <File class="w-5 h-5 text-primary-500 flex-shrink-0" />
+                  <div class="w-8 h-8 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+                    <File class="w-4 h-4 text-primary-500" />
+                  </div>
                   <div class="min-w-0 flex-1">
-                    <p class="font-medium text-gray-900 dark:text-white truncate">{file.original_name}</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{formatFileSize(file.size)}</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{file.original_name}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{formatFileSize(file.size)}</p>
                   </div>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <a
                     href={file.presigned_url}
                     target="_blank"
@@ -511,52 +510,61 @@
 
           <!-- Create Shortlink Section -->
           {#if !currentShortlink}
-            <div class="mt-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-              <h4 class="font-medium text-gray-900 dark:text-white mb-2">Create Share Link</h4>
-              <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                Generate a short link to share all files at once
-              </p>
-              <button
-                class="btn btn-primary w-full"
-                onclick={createShortlink}
-                disabled={isCreatingShortlink}
-              >
-                {#if isCreatingShortlink}
-                  Creating...
-                {:else}
-                  <LinkIcon class="w-4 h-4" />
-                  Create Shortlink
-                {/if}
-              </button>
+            <div class="mt-5 p-4 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700/30 dark:to-gray-700/50 border border-gray-200 dark:border-gray-600/50">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-white dark:bg-gray-600/50 flex items-center justify-center shadow-sm flex-shrink-0">
+                  <LinkIcon class="w-4 h-4 text-primary-500" />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h4 class="text-sm font-medium text-gray-900 dark:text-white">Create Share Link</h4>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">One link for all files</p>
+                </div>
+                <button
+                  class="btn btn-primary btn-sm"
+                  onclick={createShortlink}
+                  disabled={isCreatingShortlink}
+                >
+                  {#if isCreatingShortlink}
+                    <span class="flex items-center gap-2">
+                      <span class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                      Creating...
+                    </span>
+                  {:else}
+                    Generate
+                  {/if}
+                </button>
+              </div>
             </div>
           {:else}
             <!-- Shortlink Result -->
-            <div class="mt-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-              <div class="flex items-center gap-2 mb-2">
-                <Check class="w-5 h-5 text-green-600 dark:text-green-400" />
-                <h4 class="font-medium text-green-900 dark:text-green-100">Shortlink Created!</h4>
+            <div class="mt-5 p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/60">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
+                  <Check class="w-3.5 h-3.5 text-white" />
+                </div>
+                <h4 class="text-sm font-medium text-green-900 dark:text-green-100">Share Link Ready</h4>
               </div>
-              <div class="flex items-center gap-2 mt-3">
+              <div class="flex items-center gap-2">
                 <input
                   readonly
                   value={currentShortlink.shortlink_url}
-                  class="tool-input flex-1 font-mono text-sm"
+                  class="tool-input flex-1 font-mono text-sm !bg-white dark:!bg-gray-800 !border-green-300 dark:!border-green-700"
                 />
-                <button class="btn btn-primary" onclick={copyShortlink}>
+                <button class="btn btn-primary btn-sm" onclick={copyShortlink}>
                   <Copy class="w-4 h-4" />
                 </button>
                 <a
                   href={currentShortlink.shortlink_url}
                   target="_blank"
                   rel="noopener"
-                  class="btn btn-secondary"
+                  class="btn btn-secondary btn-sm"
                   title="Open link"
                 >
                   <ExternalLink class="w-4 h-4" />
                 </a>
               </div>
-              <p class="text-sm text-green-700 dark:text-green-300 mt-2 flex items-center gap-1">
-                <Clock class="w-3.5 h-3.5" />
+              <p class="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center gap-1">
+                <Clock class="w-3 h-3" />
                 {formatExpiresAt(currentShortlink.expires_at)}
               </p>
             </div>
@@ -586,15 +594,15 @@
         </div>
 
         {#if uploadHistory.length === 0}
-          <div class="placeholder">
-            <File class="w-12 h-12 text-gray-300 dark:text-gray-600 mb-3" />
-            <p class="text-sm">No upload history yet</p>
+          <div class="flex flex-col items-center justify-center py-10">
+            <File class="w-10 h-10 text-gray-200 dark:text-gray-700 mb-2" />
+            <p class="text-sm text-gray-400 dark:text-gray-600">No uploads yet</p>
           </div>
         {:else}
-          <div class="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar">
+          <div class="space-y-2 max-h-[500px] overflow-y-auto custom-scrollbar">
             {#each uploadHistory as item (item.uploadId)}
               <div
-                class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+                class="p-3 rounded-xl bg-gray-50 dark:bg-gray-700/40 hover:bg-gray-100 dark:hover:bg-gray-700/70 transition-all cursor-pointer group border border-transparent hover:border-gray-200 dark:hover:border-gray-600/50"
                 onclick={() => loadFromHistory(item)}
               >
                 <div class="flex items-start justify-between gap-2">
@@ -602,17 +610,22 @@
                     <div class="flex items-center gap-2">
                       {#if item.shortlinkUrl}
                         <LinkIcon class="w-3.5 h-3.5 text-primary-500 flex-shrink-0" />
+                      {:else}
+                        <File class="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
                       {/if}
-                      <p class="font-medium text-gray-900 dark:text-white text-sm truncate">
+                      <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
                         {item.files.length} file{item.files.length > 1 ? 's' : ''}
                       </p>
+                      <span class="text-[10px] px-1.5 py-0.5 rounded-md bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300 flex-shrink-0">
+                        {formatFileSize(item.files.reduce((s, f) => s + f.size, 0))}
+                      </span>
                     </div>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {new Date(item.uploadedAt).toLocaleDateString()} {new Date(item.uploadedAt).toLocaleTimeString()}
+                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                      {new Date(item.uploadedAt).toLocaleDateString()} {new Date(item.uploadedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                     </p>
                     {#if item.shortlinkUrl}
-                      <p class="text-xs text-primary-600 dark:text-primary-400 mt-1 truncate">
-                        /files/{item.shortlinkCode}
+                      <p class="text-xs text-primary-600 dark:text-primary-400 mt-0.5 truncate">
+                        /{item.shortlinkCode}
                       </p>
                     {/if}
                   </div>
@@ -621,7 +634,7 @@
                       e.stopPropagation();
                       deleteFromHistory(item.uploadId);
                     }}
-                    class="btn-icon text-red-400 hover:text-red-600 p-1"
+                    class="btn-icon text-gray-400 hover:text-red-500 p-1 opacity-0 group-hover:opacity-100 transition-all"
                   >
                     <Trash2 class="w-3.5 h-3.5" />
                   </button>
@@ -633,4 +646,4 @@
       </div>
     </div>
   </div>
-</div>
+</ToolLayout>

@@ -262,7 +262,7 @@
 
         <div class="mt-4 text-center">
           <a
-            href="/temp-upload"
+            href="/tools/temp-upload"
             class="inline-flex items-center gap-1.5 text-sm text-primary-600 dark:text-primary-400 hover:underline"
           >
             <Upload class="w-4 h-4" />
@@ -302,7 +302,7 @@
               Try Different Code
             </button>
             <a
-              href="/temp-upload"
+              href="/tools/temp-upload"
               class="btn btn-secondary"
             >
               Go to Upload Page
@@ -425,7 +425,7 @@
           Files are hosted temporarily and will be automatically deleted after 24 hours.
         </p>
         <a
-          href="/temp-upload"
+          href="/tools/temp-upload"
           class="inline-flex items-center gap-1.5 mt-2 text-sm text-primary-600 dark:text-primary-400 hover:underline"
         >
           <Package class="w-4 h-4" />

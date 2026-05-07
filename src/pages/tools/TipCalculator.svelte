@@ -129,7 +129,7 @@
         <div>
           <label
             for="bill-amount"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            class="label"
             >Bill Amount ($)</label
           >
           <input
@@ -162,7 +162,7 @@
             min="0"
             max="50"
             step="1"
-            class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-yellow-500 dark:accent-purple-500"
+            class="slider w-full"
           />
           <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
             <span>0%</span>
@@ -175,9 +175,7 @@
             {#each tipPresets as preset (preset)}
               <button
                 onclick={() => (tipPercentage = preset)}
-                class="px-3 py-2 text-sm rounded-xl border transition-all {tipPercentage === preset
-                  ? 'border-warning-400 dark:border-primary-500 bg-warning-50 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
-                  : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-warning-300 dark:hover:border-primary-400'}"
+                class="preset-btn {tipPercentage === preset ? 'active' : ''}"
               >
                 {preset}%
               </button>
@@ -189,13 +187,13 @@
         <div>
           <label
             for="number-people"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            class="label"
             >Number of People</label
           >
           <div class="flex items-center gap-2">
             <button
               onclick={() => (numberOfPeople = Math.max(1, numberOfPeople - 1))}
-              class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+              class="btn btn-secondary btn-sm"
             >
               -
             </button>
@@ -204,11 +202,11 @@
               type="number"
               bind:value={numberOfPeople}
               min="1"
-              class="flex-1 px-4 py-2 text-center border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+              class="inline-input flex-1 text-center"
             />
             <button
               onclick={() => (numberOfPeople = numberOfPeople + 1)}
-              class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+              class="btn btn-secondary btn-sm"
             >
               +
             </button>
@@ -237,7 +235,7 @@
             <div>
               <label
                 for="tax-amount"
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                class="label"
                 >Tax Amount ($)</label
               >
               <input
@@ -248,14 +246,14 @@
                 step="0.01"
                 min="0"
                 oninput={updateTaxRate}
-                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+                class="tool-input"
               />
             </div>
 
             <div>
               <label
                 for="tax-rate"
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                class="label"
                 >Tax Rate (%)</label
               >
               <input
@@ -266,7 +264,7 @@
                 step="0.1"
                 min="0"
                 oninput={updateTaxAmount}
-                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+                class="tool-input"
               />
             </div>
           </div>
@@ -292,7 +290,7 @@
             >
             <button
               onclick={() => copyToClipboard(tipAmount.toFixed(2))}
-              class="p-2 rounded-lg transition-colors text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20"
+              class="btn-icon"
             >
               <Copy class="w-4 h-4" />
             </button>
@@ -310,7 +308,7 @@
             >
             <button
               onclick={() => copyToClipboard(totalAmount.toFixed(2))}
-              class="p-2 rounded-lg transition-colors text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20"
+              class="btn-icon"
             >
               <Copy class="w-4 h-4" />
             </button>
@@ -328,7 +326,7 @@
             >
             <button
               onclick={() => copyToClipboard(amountPerPerson.toFixed(2))}
-              class="p-2 rounded-lg transition-colors text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20"
+              class="btn-icon"
             >
               <Copy class="w-4 h-4" />
             </button>

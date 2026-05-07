@@ -277,7 +277,7 @@
       <div>
         <label
           for="base-color-picker"
-          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Base Color</label
+          class="label">Base Color</label
         >
         <div class="flex gap-2">
           <input
@@ -298,7 +298,7 @@
       <div>
         <label
           for="palette-type-select"
-          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          class="label"
           >Palette Type</label
         >
         <select
@@ -334,7 +334,7 @@
                   <span class="text-gray-600 dark:text-gray-400">HEX:</span>
                   <button
                     onclick={() => copyToClipboard(color.hex)}
-                    class="font-mono text-gray-900 dark:text-white hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
+                    class="quick-btn font-mono text-gray-900 dark:text-white hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
                     title="Copy HEX"
                   >
                     {color.hex}
@@ -344,7 +344,7 @@
                   <span class="text-gray-600 dark:text-gray-400">HSL:</span>
                   <button
                     onclick={() => copyToClipboard(`hsl(${color.hsl})`)}
-                    class="font-mono text-gray-900 dark:text-white hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
+                    class="quick-btn font-mono text-gray-900 dark:text-white hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
                     title="Copy HSL"
                   >
                     {color.hsl}
@@ -354,7 +354,7 @@
                   <span class="text-gray-600 dark:text-gray-400">RGB:</span>
                   <button
                     onclick={() => copyToClipboard(`rgb(${color.rgb})`)}
-                    class="font-mono text-gray-900 dark:text-white hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
+                    class="quick-btn font-mono text-gray-900 dark:text-white hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
                     title="Copy RGB"
                   >
                     {color.rgb}

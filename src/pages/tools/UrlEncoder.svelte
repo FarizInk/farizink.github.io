@@ -127,16 +127,16 @@ https://demo.com/search?query=测试&lang=zh-CN`;
         class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1"
       >
         <button
-          onclick={() => (activeTab = 'single')}
-          class="px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'single'
+         onclick={() => (activeTab = 'single')}
+         class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'single'
             ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
             : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
         >
           Single URL
         </button>
         <button
-          onclick={() => (activeTab = 'batch')}
-          class="px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'batch'
+         onclick={() => (activeTab = 'batch')}
+         class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'batch'
             ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
             : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
         >
@@ -195,7 +195,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
                 inputText = 'https://example.com/search?q=hello world&category=web development';
                 encodeUrl();
               }}
-              class="block w-full text-left text-sm text-warning-600 dark:text-primary-400 hover:underline"
+              class="quick-btn block w-full text-left text-sm text-warning-600 dark:text-primary-400 hover:underline"
             >
               Query parameters with spaces
             </button>
@@ -204,7 +204,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
                 inputText = 'https://test.com/path?name=John Doe&city=New York';
                 encodeUrl();
               }}
-              class="block w-full text-left text-sm text-warning-600 dark:text-primary-400 hover:underline"
+              class="quick-btn block w-full text-left text-sm text-warning-600 dark:text-primary-400 hover:underline"
             >
               Multiple parameters with special characters
             </button>
@@ -213,7 +213,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
                 inputText = 'https://site.com/search?q=测试&lang=zh-CN';
                 encodeUrl();
               }}
-              class="block w-full text-left text-sm text-warning-600 dark:text-primary-400 hover:underline"
+              class="quick-btn block w-full text-left text-sm text-warning-600 dark:text-primary-400 hover:underline"
             >
               International characters (Chinese)
             </button>

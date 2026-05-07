@@ -87,7 +87,7 @@
 
   <form id="tag-form" onsubmit={handleSave} class="space-y-4">
     <div>
-      <label for="tag-identifier" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Tag Identifier</label>
+      <label for="tag-identifier" class="label">Tag Identifier</label>
       <input
         id="tag-identifier"
         type="text"
@@ -101,7 +101,7 @@
     </div>
 
     <div>
-      <label for="tag-name" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Display Name</label>
+      <label for="tag-name" class="label">Display Name</label>
       <input
         id="tag-name"
         type="text"
@@ -114,7 +114,7 @@
     </div>
 
     <div>
-      <label for="tag-color" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Color</label>
+      <label for="tag-color" class="label">Color</label>
       <div class="flex items-center gap-2">
         <input
           id="tag-color"
@@ -139,7 +139,7 @@
     <button
       type="button"
       onclick={handleClose}
-      class="px-4 py-2.5 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+      class="btn btn-secondary"
     >
       Cancel
     </button>
@@ -147,7 +147,7 @@
       type="submit"
       form="tag-form"
       disabled={isLoading}
-      class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl text-sm font-medium shadow-md hover:shadow-lg disabled:opacity-50 transition-all"
+      class="btn btn-primary flex items-center gap-2 px-5 py-2.5   rounded-xl text-sm font-medium shadow-md hover:shadow-lg disabled:opacity-50 transition-all"
     >
       {isLoading ? 'Saving...' : mode === 'create' ? 'Create' : 'Save'}
     </button>

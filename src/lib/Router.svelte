@@ -60,7 +60,7 @@
     <div class="flex flex-col sm:flex-row gap-4 items-center">
       <a
         href="/"
-        class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-xl font-medium transition-all transform hover:scale-105 shadow-lg"
+        class="btn btn-primary btn-lg"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -75,7 +75,7 @@
 
       <button
         onclick={() => history.back()}
-        class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 px-8 py-3 rounded-xl font-medium transition-all"
+        class="btn btn-secondary inline-flex items-center gap-2 px-8 py-3 rounded-xl font-medium transition-all"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path

@@ -106,7 +106,7 @@
     {#each categories as category (category)}
       <button
         onclick={() => (selectedCategory = category)}
-        class="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl font-medium text-sm transition-all {selectedCategory ===
+        class="tab-btn flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm transition-all {selectedCategory ===
         category
           ? 'bg-gradient-to-r from-yellow-500 to-amber-500 dark:from-primary-600 dark:to-primary-500 border-transparent text-white shadow-lg'
           : 'text-gray-600 dark:text-gray-400 hover:bg-warning-50 dark:hover:bg-gray-700 hover:border-warning-500/50 dark:hover:border-primary-500/50 hover:-translate-y-0.5'}"
@@ -190,7 +190,7 @@
       </p>
       <button
         onclick={() => (searchQuery = '')}
-        class="inline-flex items-center gap-2 px-4 py-2 bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white text-sm font-medium rounded-lg transition-all"
+        class="btn btn-primary inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all"
       >
         Clear Search
       </button>

@@ -140,7 +140,7 @@
           <button
             type="button"
             onclick={() => (expertFilterMode = !expertFilterMode)}
-            class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            class="mode-btn p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             title={expertFilterMode ? 'Switch to Simple Mode' : 'Switch to Expert Mode'}
           >
             {#if expertFilterMode}
@@ -153,7 +153,7 @@
           <button
             type="button"
             onclick={onClose}
-            class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            class="btn-icon p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
             aria-label="Close modal"
           >
             <X class="w-5 h-5 text-gray-600 dark:text-gray-400" />
@@ -170,7 +170,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Search - Full Width -->
         <div class="md:col-span-2">
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Search</label>
+          <label class="label">Search</label>
           <div class="relative group">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search
@@ -191,7 +191,7 @@
 
         <!-- Sort Options - Full Width -->
         <div class="md:col-span-2">
-          <span class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Sort By</span>
+          <span class="label">Sort By</span>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {#each sortOptions as sortOption (sortOption.value)}
               {@const Icon = sortOption.icon}
@@ -210,8 +210,8 @@
                         sortBy: sortOption.value,
                         sortOrder: 'desc'
                       })}
-                    class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors flex items-center justify-center gap-1 {tempFilters.sortBy ===
-                      sortOption.value && tempFilters.sortOrder === 'desc'
+                    class="preset-btn flex-1 px-3 py-2 text-sm rounded-md border transition-colors flex items-center justify-center gap-1 {tempFilters.sortBy ===
+                     sortOption.value && tempFilters.sortOrder === 'desc'
                       ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
                       : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
                   >
@@ -225,8 +225,8 @@
                         sortBy: sortOption.value,
                         sortOrder: 'asc'
                       })}
-                    class="flex-1 px-3 py-2 text-sm rounded-md border transition-colors flex items-center justify-center gap-1 {tempFilters.sortBy ===
-                      sortOption.value && tempFilters.sortOrder === 'asc'
+                    class="preset-btn flex-1 px-3 py-2 text-sm rounded-md border transition-colors flex items-center justify-center gap-1 {tempFilters.sortBy ===
+                     sortOption.value && tempFilters.sortOrder === 'asc'
                       ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
                       : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
                   >
@@ -242,11 +242,11 @@
         <!-- Public Status Filter -->
         {#if showPublicFilter}
           <div>
-            <span class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Public Status</span>
+            <span class="label">Public Status</span>
             <div class="flex flex-col gap-2">
               <button
                 onclick={() => (tempFilters = { ...tempFilters, isPublic: true })}
-                class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic ===
+                class="preset-btn px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic ===
                 true
                   ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
                   : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
@@ -255,7 +255,7 @@
               </button>
               <button
                 onclick={() => (tempFilters = { ...tempFilters, isPublic: false })}
-                class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic ===
+                class="preset-btn px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic ===
                 false
                   ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
                   : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
@@ -264,7 +264,7 @@
               </button>
               <button
                 onclick={() => (tempFilters = { ...tempFilters, isPublic: undefined })}
-                class="px-3 py-2 text-sm rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left {tempFilters.isPublic ===
+                class="preset-btn px-3 py-2 text-sm rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left {tempFilters.isPublic ===
                 undefined
                   ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
                   : ''}"
@@ -277,11 +277,11 @@
 
         <!-- Favorite Status Filter -->
         <div>
-          <span class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Favorite Status</span>
+          <span class="label">Favorite Status</span>
           <div class="flex flex-col gap-2">
             <button
               onclick={() => (tempFilters = { ...tempFilters, isFavorite: true })}
-              class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite ===
+              class="preset-btn px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite ===
               true
                 ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
                 : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
@@ -290,7 +290,7 @@
             </button>
             <button
               onclick={() => (tempFilters = { ...tempFilters, isFavorite: false })}
-              class="px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite ===
+              class="preset-btn px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite ===
               false
                 ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
                 : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
@@ -299,7 +299,7 @@
             </button>
             <button
               onclick={() => (tempFilters = { ...tempFilters, isFavorite: undefined })}
-              class="px-3 py-2 text-sm rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left {tempFilters.isFavorite ===
+              class="preset-btn px-3 py-2 text-sm rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left {tempFilters.isFavorite ===
               undefined
                 ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
                 : ''}"
@@ -312,7 +312,7 @@
         <!-- Tag Filters -->
         {#if $tags.length > 0}
           <div>
-            <label for="include-tags" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Include Tags</label>
+            <label for="include-tags" class="label">Include Tags</label>
             <TagsSelector
               id="include-tags"
               options={$tagOptions}
@@ -323,7 +323,7 @@
           </div>
 
           <div>
-            <label for="exclude-tags" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Exclude Tags</label>
+            <label for="exclude-tags" class="label">Exclude Tags</label>
             <TagsSelector
               id="exclude-tags"
               options={$tagOptions}
@@ -387,7 +387,7 @@
                   sortBy: tempFilters.sortBy || defaultSortBy,
                   sortOrder: 'desc'
                 })}
-              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1.5 {tempFilters.sortOrder ===
+              class="preset-btn px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1.5 {tempFilters.sortOrder ===
               'desc'
                 ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
                 : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
@@ -402,7 +402,7 @@
                   sortBy: tempFilters.sortBy || defaultSortBy,
                   sortOrder: 'asc'
                 })}
-              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1.5 {tempFilters.sortOrder ===
+              class="preset-btn px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1.5 {tempFilters.sortOrder ===
               'asc'
                 ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
                 : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
@@ -423,7 +423,7 @@
             <div class="grid grid-cols-3 gap-2">
               <button
                 onclick={() => (tempFilters = { ...tempFilters, isPublic: undefined })}
-                class="px-3 py-2 text-sm rounded-lg border transition-colors {tempFilters.isPublic ===
+                class="preset-btn px-3 py-2 text-sm rounded-lg border transition-colors {tempFilters.isPublic ===
                 undefined
                   ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
                   : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
@@ -432,7 +432,7 @@
               </button>
               <button
                 onclick={() => (tempFilters = { ...tempFilters, isPublic: true })}
-                class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isPublic ===
+                class="preset-btn px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isPublic ===
                 true
                   ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
                   : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
@@ -442,7 +442,7 @@
               </button>
               <button
                 onclick={() => (tempFilters = { ...tempFilters, isPublic: false })}
-                class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isPublic ===
+                class="preset-btn px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isPublic ===
                 false
                   ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
                   : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
@@ -463,7 +463,7 @@
           <div class="grid grid-cols-3 gap-2">
             <button
               onclick={() => (tempFilters = { ...tempFilters, isFavorite: undefined })}
-              class="px-3 py-2 text-sm rounded-lg border transition-colors {tempFilters.isFavorite ===
+              class="preset-btn px-3 py-2 text-sm rounded-lg border transition-colors {tempFilters.isFavorite ===
               undefined
                 ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
                 : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
@@ -472,7 +472,7 @@
             </button>
             <button
               onclick={() => (tempFilters = { ...tempFilters, isFavorite: true })}
-              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isFavorite ===
+              class="preset-btn px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isFavorite ===
               true
                 ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
                 : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
@@ -482,7 +482,7 @@
             </button>
             <button
               onclick={() => (tempFilters = { ...tempFilters, isFavorite: false })}
-              class="px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isFavorite ===
+              class="preset-btn px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isFavorite ===
               false
                 ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
                 : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
@@ -540,14 +540,14 @@
           <button
             type="button"
             onclick={handleClear}
-            class="px-4 py-2.5 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            class="btn btn-secondary"
           >
             Clear
           </button>
           <button
             type="button"
             onclick={handleApply}
-            class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl text-sm font-medium shadow-md hover:shadow-lg transition-all"
+            class="btn btn-primary flex items-center gap-2 px-5 py-2.5   rounded-xl text-sm font-medium shadow-md hover:shadow-lg transition-all"
           >
             <Filter class="w-4 h-4" />
             Apply

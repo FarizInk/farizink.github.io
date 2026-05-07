@@ -378,7 +378,7 @@
       <div>
         <label
           for="birth-date"
-          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Birth Date</label
+          class="label">Birth Date</label
         >
         <input
           id="birth-date"
@@ -391,7 +391,7 @@
       <div>
         <label
           for="current-date"
-          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          class="label"
           >Current Date</label
         >
         <input
@@ -406,7 +406,7 @@
     <!-- Calculation Mode -->
     <div>
       <fieldset>
-        <legend class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        <legend class="label"
           >Calculation Mode</legend
         >
         <div class="flex gap-4">

@@ -256,7 +256,7 @@
         <p class="text-gray-600 dark:text-gray-400 mb-6">You need to be logged in to access finance.</p>
         <button
           onclick={() => document.dispatchEvent(new CustomEvent('open-login-modal'))}
-          class="px-5 py-2.5 bg-gradient-to-r from-warning-500 to-amber-500 dark:from-primary-600 dark:to-primary-500 text-white rounded-lg font-medium shadow-md"
+          class="btn btn-primary"
         >
           Login
         </button>
@@ -267,7 +267,7 @@
       <!-- Header -->
       <div class="flex items-center justify-between mb-8">
         <div class="flex items-center gap-4">
-          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/20">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-warning-500 to-amber-500 dark:from-purple-500 dark:to-purple-600 flex items-center justify-center shadow-lg shadow-amber-500/20 dark:shadow-purple-500/20">
             <Wallet class="w-7 h-7 text-white" />
           </div>
           <div>
@@ -277,7 +277,7 @@
         </div>
         <button
           onclick={openCreateModal}
-          class="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all"
+          class="btn btn-primary"
         >
           <Plus class="w-4 h-4" />
           <span class="hidden sm:inline">Add</span>
@@ -311,12 +311,12 @@
           </div>
           <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
             <div class="flex items-center gap-3 mb-2">
-              <div class="w-9 h-9 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                <DollarSign class="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              <div class="w-9 h-9 rounded-lg bg-warning-100 dark:bg-purple-900/30 flex items-center justify-center">
+                <DollarSign class="w-5 h-5 text-warning-600 dark:text-purple-400" />
               </div>
               <span class="text-sm text-gray-500 dark:text-gray-400">Balance</span>
             </div>
-            <p class="text-xl font-bold {summary.balance >= 0 ? 'text-purple-600 dark:text-purple-400' : 'text-red-600 dark:text-red-400'}">
+            <p class="text-xl font-bold {summary.balance >= 0 ? 'text-warning-600 dark:text-purple-400' : 'text-red-600 dark:text-red-400'}">
               {formatAmount(summary.balance)}
             </p>
           </div>
@@ -328,7 +328,7 @@
         <div class="flex rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
           <button
             onclick={() => handleFilterChange('all')}
-            class="px-4 py-2 text-sm font-medium transition-colors {filterType === 'all'
+            class="tab-btn px-4 py-2 text-sm font-medium transition-colors {filterType === 'all'
               ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900'
               : 'bg-white text-gray-600 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}"
           >
@@ -336,7 +336,7 @@
           </button>
           <button
             onclick={() => handleFilterChange('income')}
-            class="px-4 py-2 text-sm font-medium transition-colors flex items-center gap-1.5 {filterType === 'income'
+            class="tab-btn px-4 py-2 text-sm font-medium transition-colors flex items-center gap-1.5 {filterType === 'income'
               ? 'bg-emerald-600 text-white'
               : 'bg-white text-gray-600 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}"
           >
@@ -345,7 +345,7 @@
           </button>
           <button
             onclick={() => handleFilterChange('expense')}
-            class="px-4 py-2 text-sm font-medium transition-colors flex items-center gap-1.5 {filterType === 'expense'
+            class="tab-btn px-4 py-2 text-sm font-medium transition-colors flex items-center gap-1.5 {filterType === 'expense'
               ? 'bg-red-600 text-white'
               : 'bg-white text-gray-600 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}"
           >
@@ -362,13 +362,13 @@
             placeholder="Search transactions..."
             bind:value={searchQuery}
             onkeydown={(e) => e.key === 'Enter' && handleSearch()}
-            class="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all"
+            class="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-warning-500/20 focus:border-warning-500 dark:focus:ring-purple-500/20 dark:focus:border-purple-500 outline-none transition-all"
           />
         </div>
 
         <button
           onclick={() => loadData()}
-          class="p-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          class="btn-icon p-2 transition-colors"
           title="Refresh"
         >
           <RefreshCw class="w-4 h-4 text-gray-500 dark:text-gray-400" />
@@ -378,7 +378,7 @@
       <!-- Transactions List -->
       {#if isLoading}
         <div class="flex items-center justify-center py-20">
-          <Loader2 class="w-8 h-8 text-purple-500 animate-spin" />
+          <Loader2 class="w-8 h-8 text-warning-500 dark:text-purple-500 animate-spin" />
         </div>
       {:else if transactions.length === 0}
         <div class="text-center py-16 bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-600">
@@ -389,7 +389,7 @@
           <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">Start tracking your finances</p>
           <button
             onclick={openCreateModal}
-            class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg text-sm font-medium shadow-md"
+            class="btn btn-primary"
           >
             <Plus class="w-4 h-4" />
             Add Transaction
@@ -438,14 +438,14 @@
                 <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     onclick={() => openEditModal(transaction)}
-                    class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    class="btn-icon p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     title="Edit"
                   >
                     <Pencil class="w-3.5 h-3.5 text-gray-500" />
                   </button>
                   <button
                     onclick={() => handleDelete(transaction)}
-                    class="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    class="btn-icon p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                     title="Delete"
                   >
                     <Trash2 class="w-3.5 h-3.5 text-red-500" />
@@ -462,7 +462,7 @@
             <button
               onclick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage <= 1}
-              class="p-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              class="btn-icon p-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <ChevronLeft class="w-4 h-4" />
             </button>
@@ -479,7 +479,7 @@
             <button
               onclick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage >= totalPages}
-              class="p-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              class="btn-icon p-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <ChevronRight class="w-4 h-4" />
             </button>
@@ -497,7 +497,7 @@
     <h2 class="text-lg font-bold text-gray-900 dark:text-white">
       {modalMode === 'create' ? 'Add Transaction' : 'Edit Transaction'}
     </h2>
-    <button onclick={closeModal} class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+    <button onclick={closeModal} class="btn-icon p-1 hover:bg-gray-100 dark:hover:bg-gray-700">
       <X class="w-5 h-5 text-gray-500" />
     </button>
   </div>
@@ -505,12 +505,12 @@
   <div class="space-y-5">
           <!-- Type -->
           <div>
-            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Type</label>
+            <label class="label">Type</label>
             <div class="flex gap-3">
               <button
                 type="button"
                 onclick={() => (formType = 'income')}
-                class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border text-sm font-medium transition-all {formType === 'income'
+                class="mode-btn flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border text-sm font-medium transition-all {formType === 'income'
                   ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-500'
                   : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}"
               >
@@ -520,7 +520,7 @@
               <button
                 type="button"
                 onclick={() => (formType = 'expense')}
-                class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border text-sm font-medium transition-all {formType === 'expense'
+                class="mode-btn flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border text-sm font-medium transition-all {formType === 'expense'
                   ? 'border-red-500 bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400 dark:border-red-500'
                   : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}"
               >
@@ -532,7 +532,7 @@
 
           <!-- Amount -->
           <div>
-            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Amount (IDR) *</label>
+            <label class="label">Amount (IDR) *</label>
             <input
               type="number"
               min="1"
@@ -544,7 +544,7 @@
 
           <!-- Description -->
           <div>
-            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Description</label>
+            <label class="label">Description</label>
             <input
               type="text"
               placeholder="e.g. Makan siang"
@@ -555,7 +555,7 @@
 
           <!-- Date -->
           <div>
-            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Date</label>
+            <label class="label">Date</label>
             <input
               type="datetime-local"
               bind:value={formDate}
@@ -566,14 +566,14 @@
           <!-- Tags -->
           {#if tags.length > 0}
             <div>
-              <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Tags</label>
+              <label class="label">Tags</label>
               <div class="flex flex-wrap gap-2">
                 {#each tags as tag}
                   <button
                     type="button"
                     onclick={() => toggleTag(tag.id)}
-                    class="text-xs px-3 py-1.5 rounded-full border font-medium transition-all {formTagIds.includes(tag.id)
-                      ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
+                    class="preset-btn text-xs px-3 py-1.5 rounded-full border font-medium transition-all {formTagIds.includes(tag.id)
+                      ? 'border-warning-500 bg-warning-50 text-warning-700 dark:border-purple-500 dark:bg-purple-900/20 dark:text-purple-400'
                       : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}"
                   >
                     {tag.name || tag.tag}
@@ -587,14 +587,14 @@
           <div class="flex items-center justify-end gap-3 pt-2">
             <button
               onclick={closeModal}
-              class="px-4 py-2.5 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              class="btn btn-secondary"
             >
               Cancel
             </button>
             <button
               onclick={handleSubmit}
               disabled={isSubmitting}
-              class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl text-sm font-medium shadow-md hover:shadow-lg disabled:opacity-50 transition-all"
+              class="btn btn-primary"
             >
               {#if isSubmitting}
                 <Loader2 class="w-4 h-4 animate-spin" />

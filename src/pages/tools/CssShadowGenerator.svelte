@@ -350,7 +350,7 @@
         <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6">
           <button
             onclick={() => (activeTab = 'box')}
-            class="px-4 py-3 text-sm font-medium border-b-2 transition-colors flex-1 {activeTab ===
+            class="tab-btn px-4 py-3 text-sm font-medium border-b-2 transition-colors flex-1 {activeTab ===
             'box'
               ? 'border-warning-500 dark:border-primary-500 text-warning-600 dark:text-primary-400 bg-warning-50 dark:bg-primary-900/20'
               : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
@@ -359,7 +359,7 @@
           </button>
           <button
             onclick={() => (activeTab = 'text')}
-            class="px-4 py-3 text-sm font-medium border-b-2 transition-colors flex-1 {activeTab ===
+            class="tab-btn px-4 py-3 text-sm font-medium border-b-2 transition-colors flex-1 {activeTab ===
             'text'
               ? 'border-warning-500 dark:border-primary-500 text-warning-600 dark:text-primary-400 bg-warning-50 dark:bg-primary-900/20'
               : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
@@ -389,7 +389,7 @@
 
                 <div class="grid grid-cols-2 gap-4">
                   <div>
-                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    <label class="label section-title-sm"
                       >X Offset</label
                     >
                     <input
@@ -397,13 +397,13 @@
                       bind:value={shadow.x}
                       min="-50"
                       max="50"
-                      class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-yellow-500 dark:accent-purple-500"
+                      class="slider w-full"
                     />
                     <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.x}px</span>
                   </div>
 
                   <div>
-                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    <label class="label section-title-sm"
                       >Y Offset</label
                     >
                     <input
@@ -411,13 +411,13 @@
                       bind:value={shadow.y}
                       min="-50"
                       max="50"
-                      class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-yellow-500 dark:accent-purple-500"
+                      class="slider w-full"
                     />
                     <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.y}px</span>
                   </div>
 
                   <div>
-                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    <label class="label section-title-sm"
                       >Blur</label
                     >
                     <input
@@ -425,13 +425,13 @@
                       bind:value={shadow.blur}
                       min="0"
                       max="100"
-                      class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-yellow-500 dark:accent-purple-500"
+                      class="slider w-full"
                     />
                     <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.blur}px</span>
                   </div>
 
                   <div>
-                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    <label class="label section-title-sm"
                       >Spread</label
                     >
                     <input
@@ -439,13 +439,13 @@
                       bind:value={shadow.spread}
                       min="-50"
                       max="50"
-                      class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-yellow-500 dark:accent-purple-500"
+                      class="slider w-full"
                     />
                     <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.spread}px</span>
                   </div>
 
                   <div>
-                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    <label class="label section-title-sm"
                       >Color</label
                     >
                     <div class="flex gap-2">
@@ -457,13 +457,13 @@
                       <input
                         type="text"
                         bind:value={shadow.color}
-                        class="flex-1 px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        class="inline-input flex-1"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    <label class="label section-title-sm"
                       >Opacity</label
                     >
                     <input
@@ -471,7 +471,7 @@
                       bind:value={shadow.opacity}
                       min="0"
                       max="100"
-                      class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-yellow-500 dark:accent-purple-500"
+                      class="slider w-full"
                     />
                     <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.opacity}%</span>
                   </div>
@@ -493,7 +493,7 @@
 
             <button
               onclick={addBoxShadow}
-              class="inline-flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
+              class="btn btn-copy inline-flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
             >
               <Plus class="w-4 h-4 mr-2" />
               Add Shadow Layer
@@ -522,7 +522,7 @@
 
                 <div class="grid grid-cols-3 gap-4">
                   <div>
-                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    <label class="label section-title-sm"
                       >X Offset</label
                     >
                     <input
@@ -530,13 +530,13 @@
                       bind:value={shadow.x}
                       min="-50"
                       max="50"
-                      class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-yellow-500 dark:accent-purple-500"
+                      class="slider w-full"
                     />
                     <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.x}px</span>
                   </div>
 
                   <div>
-                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    <label class="label section-title-sm"
                       >Y Offset</label
                     >
                     <input
@@ -544,13 +544,13 @@
                       bind:value={shadow.y}
                       min="-50"
                       max="50"
-                      class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-yellow-500 dark:accent-purple-500"
+                      class="slider w-full"
                     />
                     <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.y}px</span>
                   </div>
 
                   <div>
-                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    <label class="label section-title-sm"
                       >Blur</label
                     >
                     <input
@@ -558,13 +558,13 @@
                       bind:value={shadow.blur}
                       min="0"
                       max="50"
-                      class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-yellow-500 dark:accent-purple-500"
+                      class="slider w-full"
                     />
                     <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.blur}px</span>
                   </div>
 
                   <div class="col-span-3">
-                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    <label class="label section-title-sm"
                       >Color</label
                     >
                     <div class="flex gap-2">
@@ -576,14 +576,14 @@
                       <input
                         type="text"
                         bind:value={shadow.color}
-                        class="flex-1 px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        class="inline-input flex-1"
                       />
                       <input
                         type="range"
                         bind:value={shadow.opacity}
                         min="0"
                         max="100"
-                        class="w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-yellow-500 dark:accent-purple-500"
+                        class="slider w-24"
                       />
                       <span class="text-xs text-gray-500 dark:text-gray-400 w-12"
                         >{shadow.opacity}%</span
@@ -596,7 +596,7 @@
 
             <button
               onclick={addTextShadow}
-              class="inline-flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
+              class="btn btn-copy inline-flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
             >
               <Plus class="w-4 h-4 mr-2" />
               Add Text Shadow Layer
@@ -615,7 +615,7 @@
             <div>
               <label
                 for="background-color"
-                class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                class="label section-title-sm"
                 >Background</label
               >
               <input
@@ -628,7 +628,7 @@
             <div>
               <label
                 for="text-color"
-                class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+                class="label section-title-sm"
                 >Text Color</label
               >
               <input
@@ -643,7 +643,7 @@
           <div>
             <label
               for="border-radius"
-              class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+              class="label section-title-sm"
               >Border Radius: {borderRadius}px</label
             >
             <input
@@ -651,21 +651,21 @@
               bind:value={borderRadius}
               min="0"
               max="50"
-              class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-yellow-500 dark:accent-purple-500"
+              class="slider w-full"
             />
           </div>
 
           <div>
             <label
               for="preview-text"
-              class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+              class="label section-title-sm"
               >Preview Text</label
             >
             <input
               type="text"
               bind:value={previewText}
               id="preview-text"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+              class="tool-input w-full"
             />
           </div>
 
@@ -738,21 +738,21 @@
           <div class="flex gap-2">
             <button
               onclick={() => copyToClipboard(`box-shadow: ${boxShadowCSS};`)}
-              class="inline-flex items-center justify-center px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
+              class="quick-btn"
             >
               <Copy class="w-4 h-4 mr-1" />
               Copy Box
             </button>
             <button
               onclick={() => copyToClipboard(`text-shadow: ${textShadowCSS};`)}
-              class="inline-flex items-center justify-center px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
+              class="quick-btn"
             >
               <Copy class="w-4 h-4 mr-1" />
               Copy Text
             </button>
             <button
               onclick={downloadCSS}
-              class="inline-flex items-center justify-center px-3 py-1.5 text-sm bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white rounded-lg transition-all"
+              class="btn-copy"
             >
               <Download class="w-4 h-4 mr-1" />
               Download

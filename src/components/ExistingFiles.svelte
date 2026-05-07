@@ -82,7 +82,7 @@
                 });
                 filesToDelete = filesToDelete.filter(id => !imageIdsToDelete.includes(id));
               }}
-              class="text-xs text-warning-600 dark:text-warning-400 hover:text-warning-700 dark:hover:text-warning-300"
+              class="quick-btn text-xs text-warning-600 dark:text-warning-400 hover:text-warning-700 dark:hover:text-warning-300"
             >
               Undo Images ({filesToDelete.filter(id => {
                 const file = files.find(f => f.id === id);
@@ -130,12 +130,12 @@
               {/if}
 
               <!-- Undo Button (always visible when marked for deletion) -->
-              {#if filesToDelete.includes(file.id)}
-                <div class="absolute top-2 right-2 z-30">
-                  <button
-                    type="button"
-                    onclick={() => toggleFileDelete(file.id)}
-                    class="w-10 h-10 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-xl"
+             {#if filesToDelete.includes(file.id)}
+               <div class="absolute top-2 right-2 z-30">
+                 <button
+                   type="button"
+                   onclick={() => toggleFileDelete(file.id)}
+                    class="btn-icon w-10 h-10 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-xl"
                     title="Undo delete"
                   >
                     <Undo class="w-5 h-5" />
@@ -150,7 +150,7 @@
                 <button
                   type="button"
                   onclick={() => downloadFile(file)}
-                  class="w-8 h-8 bg-white/90 hover:bg-white dark:bg-black/80 hover:dark:bg-black/90 rounded-lg flex items-center justify-center transition-colors"
+                  class="btn-icon w-8 h-8 bg-white/90 hover:bg-white dark:bg-black/80 hover:dark:bg-black/90 rounded-lg flex items-center justify-center transition-colors"
                   title="Download image"
                 >
                   <Download class="w-4 h-4 text-gray-800 dark:text-gray-200" />
@@ -160,8 +160,8 @@
                   <button
                     type="button"
                     onclick={() => toggleFileDelete(file.id)}
-                    class="w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-lg flex items-center justify-center transition-colors"
-                    title="Delete file"
+                  class="btn-icon btn-danger w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-lg flex items-center justify-center transition-colors"
+                  title="Delete file"
                   >
                     <Trash2 class="w-4 h-4" />
                   </button>
@@ -205,7 +205,7 @@
                 });
                 filesToDelete = filesToDelete.filter(id => !fileIdsToDelete.includes(id));
               }}
-              class="text-xs text-warning-600 dark:text-warning-400 hover:text-warning-700 dark:hover:text-warning-300"
+              class="quick-btn text-xs text-warning-600 dark:text-warning-400 hover:text-warning-700 dark:hover:text-warning-300"
             >
               Undo Files ({filesToDelete.filter(id => {
                 const file = files.find(f => f.id === id);
@@ -258,7 +258,7 @@
                 <button
                   type="button"
                   onclick={() => downloadFile(file)}
-                  class="w-8 h-8 rounded hover:bg-secondary-100 dark:hover:bg-secondary-700 flex items-center justify-center transition-colors"
+                  class="btn-icon w-8 h-8 rounded hover:bg-secondary-100 dark:hover:bg-secondary-700 flex items-center justify-center transition-colors"
                   title="Download file"
                 >
                   <Download class="w-4 h-4 text-secondary-600 dark:text-secondary-300" />
@@ -268,8 +268,8 @@
                   <button
                     type="button"
                     onclick={() => toggleFileDelete(file.id)}
-                    class="w-8 h-8 rounded bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-600 dark:text-green-400 flex items-center justify-center transition-colors"
-                    title="Undo delete"
+                  class="btn-icon w-8 h-8 rounded bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-600 dark:text-green-400 flex items-center justify-center transition-colors"
+                  title="Undo delete"
                   >
                     <Undo class="w-4 h-4" />
                   </button>
@@ -277,8 +277,8 @@
                   <button
                     type="button"
                     onclick={() => toggleFileDelete(file.id)}
-                    class="w-8 h-8 rounded hover:bg-red-100 dark:hover:bg-red-900/30 flex items-center justify-center transition-colors"
-                    title="Delete file"
+                  class="btn-icon btn-danger w-8 h-8 rounded hover:bg-red-100 dark:hover:bg-red-900/30 flex items-center justify-center transition-colors"
+                  title="Delete file"
                   >
                     <Trash2 class="w-4 h-4 text-secondary-600 dark:text-secondary-300" />
                   </button>

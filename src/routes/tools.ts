@@ -34,6 +34,7 @@ import CronGenerator from '../pages/tools/CronGenerator.svelte';
 import HashComparer from '../pages/tools/HashComparer.svelte';
 import AsciiArtGenerator from '../pages/tools/AsciiArtGenerator.svelte';
 import PomodoroTimer from '../pages/tools/PomodoroTimer.svelte';
+import TempUpload from '../pages/tools/TempUpload.svelte';
 import type { Route } from '../lib/router';
 
 // Helper function to get tool icon by path
@@ -208,5 +209,11 @@ export const toolsRoutes: Route[] = [
     component: PomodoroTimer,
     title: 'Pomodoro Timer',
     icon: getToolIconByPath('/tools/pomodoro-timer')
+  },
+  {
+    path: '/tools/temp-upload',
+    component: TempUpload,
+    title: 'Temp File Upload',
+    icon: getToolIconByPath('/tools/temp-upload')
   }
 ];

@@ -79,7 +79,7 @@
     >
       <button
         onclick={() => (activeTab = 'encode')}
-        class="px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'encode'
+        class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'encode'
           ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
           : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
       >
@@ -87,7 +87,7 @@
       </button>
       <button
         onclick={() => (activeTab = 'decode')}
-        class="px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'decode'
+        class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'decode'
           ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
           : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
       >
@@ -148,7 +148,7 @@
           <button
             onclick={() =>
               copyToClipboard(activeTab === 'encode' ? encodedText : decodedText, 'result')}
-            class="inline-flex items-center justify-center px-3 py-1.5 text-sm bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white rounded-lg transition-all"
+            class="btn btn-copy btn-sm inline-flex items-center justify-center px-3 py-1.5 text-sm bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white rounded-lg transition-all"
           >
             <Copy class="w-4 h-4 mr-1" />
             {copiedText === 'result' ? 'Copied!' : 'Copy'}
@@ -161,7 +161,7 @@
           <textarea
             bind:value={encodedText}
             placeholder="Encoded HTML will appear here..."
-            class="w-full h-64 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none"
+            class="tool-textarea h-64 bg-gray-50 dark:bg-gray-900 resize-none"
             readonly
           ></textarea>
           {#if !encodedText}
@@ -173,7 +173,7 @@
           <textarea
             bind:value={decodedText}
             placeholder="Decoded HTML will appear here..."
-            class="w-full h-64 p-4 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-none"
+            class="tool-textarea h-64 bg-gray-50 dark:bg-gray-900 resize-none"
             readonly
           ></textarea>
           {#if !decodedText}

@@ -198,10 +198,7 @@
         <button
           type="button"
           onclick={() => (activeCase = caseType)}
-          class="relative p-3 rounded-lg border-2 transition-all border-gray-200 dark:border-gray-700 hover:border-warning-300 dark:hover:border-primary-400 hover:shadow-md {activeCase ===
-          caseType
-            ? 'border-warning-400 dark:border-primary-500 bg-warning-50 dark:bg-primary-900/20'
-            : ''}"
+          class="preset-btn {activeCase === caseType ? 'active' : ''}"
         >
           <div
             class="flex items-center justify-center mb-2 {activeCase === caseType

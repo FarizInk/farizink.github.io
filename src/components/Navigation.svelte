@@ -583,7 +583,7 @@
 
           <button
             onclick={checkAPIHealth}
-            class="w-full flex items-center justify-center gap-2 p-3 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-xl font-medium transition-all"
+            class="btn btn-primary w-full flex items-center justify-center gap-2 p-3 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-xl font-medium transition-all"
           >
             <RefreshCw class="w-4 h-4" />
             <span>Retry Connection</span>
@@ -608,7 +608,7 @@
         </div>
         <button
           onclick={checkAPIHealth}
-          class="px-5 py-2.5 bg-gradient-to-r from-warning-500 to-amber-500 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-600 dark:hover:to-primary-700 dark:from-primary-500 dark:to-primary-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 flex items-center gap-2 disabled:opacity-50"
+          class="btn btn-primary px-5 py-2.5  dark:hover:from-primary-600 dark:hover:to-primary-700 dark:from-primary-500 dark:to-primary-600  font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 flex items-center gap-2 disabled:opacity-50"
           disabled={apiHealthStatus === 'checking'}
         >
           {#if apiHealthStatus === 'checking'}
@@ -675,7 +675,7 @@
         </h2>
         <button
           onclick={() => (drawerOpen = false)}
-          class="w-9 h-9 rounded-xl hover:bg-warning-100 dark:hover:bg-primary-900/30 flex items-center justify-center transition-all active:scale-95"
+          class="btn-icon w-9 h-9 rounded-xl hover:bg-warning-100 dark:hover:bg-primary-900/30 flex items-center justify-center transition-all active:scale-95"
           aria-label="Close menu"
         >
           <X class="w-5 h-5 text-gray-500 dark:text-gray-400" />
@@ -723,7 +723,7 @@
         <!-- Settings Toggle -->
         <button
           onclick={() => (isSettingsExpanded = !isSettingsExpanded)}
-          class="w-full flex items-center justify-between p-4 rounded-2xl bg-gradient-to-br from-warning-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 hover:from-warning-100 dark:hover:from-primary-900/30 hover:to-amber-100 dark:hover:to-primary-900/40 border border-warning-200 dark:border-primary-800 hover:border-warning-300 dark:hover:border-primary-400 transition-all duration-200 group"
+          class="btn w-full flex items-center justify-between p-4 rounded-2xl bg-gradient-to-br from-warning-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 hover:from-warning-100 dark:hover:from-primary-900/30 hover:to-amber-100 dark:hover:to-primary-900/40 border border-warning-200 dark:border-primary-800 hover:border-warning-300 dark:hover:border-primary-400 transition-all duration-200 group"
         >
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-amber-400 dark:from-primary-500 dark:to-primary-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
@@ -751,7 +751,7 @@
             <!-- Theme Card (Clickable) -->
             <button
               onclick={toggleTheme}
-              class="flex-1 min-w-[120px] h-12 flex items-center justify-center gap-2 px-3 rounded-xl bg-gradient-to-br from-warning-50 to-amber-50 dark:from-indigo-900/30 dark:to-primary-900/20 border border-warning-200 dark:border-primary-700/50 hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer"
+              class="mode-btn flex-1 min-w-[120px] h-12 flex items-center justify-center gap-2 px-3 rounded-xl bg-gradient-to-br from-warning-50 to-amber-50 dark:from-indigo-900/30 dark:to-primary-900/20 border border-warning-200 dark:border-primary-700/50 hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer"
             >
               {#if isDark}
                 <Moon class="w-4 h-4 text-primary-600 dark:text-primary-400" />
@@ -765,7 +765,7 @@
             <!-- API Status Card (Clickable) -->
             <button
               onclick={openApiHealthModal}
-              class="flex-1 min-w-[120px] h-12 flex items-center justify-center gap-2 px-3 rounded-xl border transition-all cursor-pointer hover:shadow-md hover:-translate-y-0.5 {healthData
+              class="mode-btn flex-1 min-w-[120px] h-12 flex items-center justify-center gap-2 px-3 rounded-xl border transition-all cursor-pointer hover:shadow-md hover:-translate-y-0.5 {healthData
                 ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700/50 hover:border-green-300 dark:hover:border-green-600'
                 : apiHealthStatus === 'checking'
                   ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700/50 hover:border-blue-300 dark:hover:border-blue-600'
@@ -816,7 +816,7 @@
               </div>
               <button
                 onclick={toggleServiceWorker}
-                class="w-12 h-6 rounded-full bg-gradient-to-r {serviceWorkerEnabled
+                class="mode-btn w-12 h-6 rounded-full bg-gradient-to-r {serviceWorkerEnabled
                   ? 'from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700'
                   : 'from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700'} relative transition-all duration-300 shadow-inner {serviceWorkerCanToggle
                   ? 'cursor-pointer hover:scale-105'
@@ -848,7 +848,7 @@
             {#if canInstall && !isIOS}
               <button
                 onclick={installPWA}
-                class="w-full flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/30 border border-green-200 dark:border-green-700/50 hover:from-green-100 dark:hover:from-green-900/40 hover:border-green-300 dark:hover:border-green-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group"
+                class="btn btn-primary w-full flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/30 border border-green-200 dark:border-green-700/50 hover:from-green-100 dark:hover:from-green-900/40 hover:border-green-300 dark:hover:border-green-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group"
               >
                 <div
                   class="w-11 h-11 bg-gradient-to-br from-green-400 to-green-500 dark:from-green-500 dark:to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md"
@@ -882,7 +882,7 @@
             <button
               onclick={refreshServiceWorker}
               disabled={isRefreshing}
-              class="w-full flex items-center justify-between p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="btn btn-secondary w-full flex items-center justify-between p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <div class="flex items-center gap-3">
                 <div

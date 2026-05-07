@@ -228,8 +228,8 @@
       {#if selectedOptions.length > 0}
         <button
           type="button"
-          class="p-1.5 rounded-lg hover:bg-secondary-100 dark:hover:bg-secondary-700 text-secondary-400 hover:text-danger-500 transition-colors"
-          onclick={e => {
+        class="btn-icon p-1.5 rounded-lg hover:bg-secondary-100 dark:hover:bg-secondary-700 text-secondary-400 hover:text-danger-500 transition-colors"
+        onclick={e => {
             e.stopPropagation();
             e.preventDefault();
             clearAll();
@@ -293,7 +293,7 @@
       <button
         type="button"
         onclick={handleModalClose}
-        class="w-7 h-7 rounded-lg hover:bg-secondary-100 dark:hover:bg-secondary-700 flex items-center justify-center"
+        class="btn-icon w-7 h-7 rounded-lg hover:bg-secondary-100 dark:hover:bg-secondary-700 flex items-center justify-center"
         aria-label="Close"
       >
         <X class="w-4 h-4 text-gray-500" />
@@ -327,7 +327,7 @@
             <button
               type="button"
               onclick={() => selectOption(option)}
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 {isSelected
+              class="preset-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 {isSelected
                 ? 'shadow-sm ring-1'
                 : 'hover:shadow-sm'} {hasColor
                 ? (isSelected ? 'border-warning-400 dark:border-primary-500 ring-warning-200 dark:ring-primary-800' : 'border-secondary-200 dark:border-secondary-700 hover:border-warning-300 dark:hover:border-primary-600')
@@ -355,7 +355,7 @@
     <button
       type="button"
       onclick={handleModalClose}
-      class="px-3 py-1.5 text-sm bg-warning-500 hover:bg-warning-600 dark:bg-primary-600 dark:hover:bg-primary-700 text-white rounded-lg"
+      class="btn btn-primary px-3 py-1.5 text-sm bg-warning-500 hover:bg-warning-600 dark:bg-primary-600 dark:hover:bg-primary-700 text-white rounded-lg"
     >
       {selectedOptions.length > 0 ? 'Done' : 'Skip'}
     </button>

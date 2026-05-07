@@ -84,22 +84,43 @@
     }
   }
 
-  function navigateToRoute(route: { path: string; title?: string; description?: string }, event?: Event) {
+  function navigateToRoute(route: { path: string; title?: string; description?: string }, event?: Event, newTab = false) {
     // Stop event propagation to prevent it from reaching the login modal backdrop
     event?.stopPropagation();
 
     // Handle special routes like login
     if (route.path === '/login') {
-      // Dispatch custom event to Navigation component
       const evt = new CustomEvent('open-login-modal');
       document.dispatchEvent(evt);
       closeModal();
     } else if (route.path === '/logout') {
       handleLogout();
       closeModal();
+    } else if (newTab) {
+      window.open(route.path, '_blank');
+      closeModal();
     } else {
       navigate(route.path);
       closeModal();
+    }
+  }
+
+  function handleSearchKeydown(e: KeyboardEvent) {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      selectedIndex = Math.min(selectedIndex + 1, filteredRoutes.length - 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      selectedIndex = Math.max(selectedIndex - 1, 0);
+    } else if (e.key === 'Enter' && filteredRoutes.length > 0) {
+      e.preventDefault();
+      const newTab = e.ctrlKey || e.metaKey;
+      navigateToRoute(filteredRoutes[selectedIndex], undefined, newTab);
+    }
+    // Refocus search input to keep focus there
+    const input = document.getElementById('command-palette-search');
+    if (input && document.activeElement !== input) {
+      (input as HTMLInputElement).focus();
     }
   }
 
@@ -321,12 +342,13 @@
             placeholder="Search anything..."
             class="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-warning-500 dark:focus:border-purple-500 focus:shadow-[0_0_0_4px_rgba(251,191,36,0.1)] dark:focus:shadow-[0_0_0_4px_rgba(139,92,246,0.1)] transition-all"
             bind:value={searchQuery}
+            onkeydown={handleSearchKeydown}
             autocomplete="off"
           />
           {#if searchQuery}
             <button
               onclick={() => (searchQuery = '')}
-              class="absolute right-3 w-6 h-6 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"
+              class="btn-icon absolute right-3 w-6 h-6 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"
               aria-label="Clear search"
             >
               <svg class="w-3 h-3 text-gray-600 dark:text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -344,21 +366,13 @@
             {#each filteredRoutes as route, i (route.path)}
               {@const IconComp = route.icon || DefaultIcon}
               <button
-                class="w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group {i === selectedIndex
+                class="cmd-item w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group {i === selectedIndex
                   ? 'bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-primary-900/30 dark:to-primary-800/20 border-2 border-warning-400 dark:border-primary-400 shadow-md'
                   : 'hover:bg-gray-50 dark:hover:bg-gray-700/50 border-2 border-transparent'}"
-                onclick={(e) => navigateToRoute(route, e)}
-                onkeydown={e => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    navigateToRoute(route, e);
-                  }
-                }}
+                onclick={(e) => navigateToRoute(route, e, e.ctrlKey || e.metaKey)}
                 role="option"
                 aria-selected={i === selectedIndex}
-                data-selected={i === selectedIndex}
-                tabindex={i === 0 ? 0 : -1}
+                tabindex="-1"
               >
                 <!-- Icon -->
                 <div

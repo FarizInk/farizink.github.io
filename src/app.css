@@ -42,6 +42,19 @@ html.dark body {
   background: var(--color-secondary-600);
 }
 
+
+/* Command Palette Item - no focus ring */
+.cmd-item {
+  outline: none !important;
+}
+
+.cmd-item:focus,
+.cmd-item:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+}
+
 /* Animations */
 @keyframes fadeIn {
   from {
@@ -233,34 +246,6 @@ html.dark body {
   }
 }
 
-/* Wave Drift animations - for PixelBackground */
-@keyframes waveDrift1 {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(10%, 15%) scale(1.1);
-  }
-}
-
-@keyframes waveDrift2 {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(-15%, -10%) scale(1.05);
-  }
-}
-
-@keyframes waveDrift3 {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(5%, -5%) scale(1.15);
-  }
-}
-
 /* ============================================================
    UTILITY CLASSES
    ============================================================ */
@@ -438,7 +423,6 @@ html.dark body {
    SHARED COMPONENT STYLES
    ============================================================ */
 
-
 /* Tool Layout Component */
 .tool-layout {
   position: relative;
@@ -518,15 +502,6 @@ html.dark body {
 .tool-hero {
   text-align: center;
   position: relative;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-}
-
-@media (min-width: 640px) {
-  .tool-hero {
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-  }
 }
 
 .tool-title {
@@ -653,102 +628,29 @@ html.dark body {
   }
 }
 
-/* Pixel Background Component */
-.waves-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
-  pointer-events: none;
-  background: linear-gradient(180deg, #fefce8 0%, #fef3c7 100%);
-  overflow: hidden;
-}
-
-.wave {
-  position: absolute;
-  width: 200%;
-  height: 200%;
-  opacity: 0.3;
-  will-change: transform;
-}
-
-.wave-1 {
-  top: -30%;
-  left: -50%;
-  background: radial-gradient(ellipse at center, #fbbf24 0%, transparent 60%);
-  animation: waveDrift1 25s ease-in-out infinite;
-}
-
-.wave-2 {
-  bottom: -40%;
-  right: -50%;
-  background: radial-gradient(ellipse at center, #fcd34d 0%, transparent 60%);
-  animation: waveDrift2 30s ease-in-out infinite;
-}
-
-.wave-3 {
-  top: 30%;
-  left: 30%;
-  background: radial-gradient(ellipse at center, #fde68a 0%, transparent 50%);
-  opacity: 0.2;
-  animation: waveDrift3 35s ease-in-out infinite;
-}
-
-.dark .waves-background {
-  background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%);
-}
-
-.dark .wave-1 {
-  background: radial-gradient(ellipse at center, #7c3aed 0%, transparent 60%);
-  opacity: 0.2;
-}
-
-.dark .wave-2 {
-  background: radial-gradient(ellipse at center, #8b5cf6 0%, transparent 60%);
-  opacity: 0.15;
-}
-
-.dark .wave-3 {
-  background: radial-gradient(ellipse at center, #a78bfa 0%, transparent 50%);
-  opacity: 0.1;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .wave {
-    animation: none !important;
-  }
-}
-
-@media (max-width: 768px) {
-  /* Disable animations on mobile to save CPU */
-  .wave {
-    animation: none !important;
-    display: none;
-  }
-
-  /* Show static gradient background instead */
-  .waves-background {
-    background: linear-gradient(180deg, #fefce8 0%, #fef3c7 100%);
-  }
-
-  .dark .waves-background {
-    background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%);
-  }
-}
-
 /* Tag Components (shared between TagModal and TagsSelector) */
 .tag-card {
   animation: cardIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.tag-card:nth-child(1) { animation-delay: 0ms; }
-.tag-card:nth-child(2) { animation-delay: 25ms; }
-.tag-card:nth-child(3) { animation-delay: 50ms; }
-.tag-card:nth-child(4) { animation-delay: 75ms; }
-.tag-card:nth-child(5) { animation-delay: 100ms; }
-.tag-card:nth-child(n+6) { animation-delay: 125ms; }
+.tag-card:nth-child(1) {
+  animation-delay: 0ms;
+}
+.tag-card:nth-child(2) {
+  animation-delay: 25ms;
+}
+.tag-card:nth-child(3) {
+  animation-delay: 50ms;
+}
+.tag-card:nth-child(4) {
+  animation-delay: 75ms;
+}
+.tag-card:nth-child(5) {
+  animation-delay: 100ms;
+}
+.tag-card:nth-child(n + 6) {
+  animation-delay: 125ms;
+}
 
 .tag-chip {
   animation: chipIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -760,11 +662,16 @@ html.dark body {
 }
 
 @keyframes selectedPulse {
-  0%, 100% {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  0%,
+  100% {
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
   50% {
-    box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.15), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    box-shadow:
+      0 0 0 3px rgba(251, 191, 36, 0.15),
+      0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
 }
 
@@ -773,11 +680,16 @@ html.dark body {
 }
 
 @keyframes selectedPulseDark {
-  0%, 100% {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  0%,
+  100% {
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.3),
+      0 2px 4px -1px rgba(0, 0, 0, 0.2);
   }
   50% {
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15), 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    box-shadow:
+      0 0 0 3px rgba(139, 92, 246, 0.15),
+      0 4px 6px -1px rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -1190,14 +1102,22 @@ html.dark body {
 }
 
 .btn-primary {
-  background-color: var(--color-primary-600);
+  background-color: var(--color-warning-600);
   color: white;
 }
 
+.dark .btn-primary {
+  background-color: var(--color-primary-600);
+}
+
 .btn-primary:hover:not(:disabled) {
-  background-color: var(--color-primary-700);
+  background-color: var(--color-warning-700);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
+}
+
+.dark .btn-primary:hover:not(:disabled) {
+  background-color: var(--color-primary-700);
 }
 
 .btn-primary:active:not(:disabled) {

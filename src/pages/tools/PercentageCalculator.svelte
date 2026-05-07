@@ -296,9 +296,7 @@
             activeMode = mode.id;
             resetCurrentMode();
           }}
-          class="p-4 rounded-xl border-2 transition-all text-left {activeMode === mode.id
-            ? 'border-warning-400 dark:border-primary-500 bg-warning-50 dark:bg-primary-900/20'
-            : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'}"
+          class="mode-btn {activeMode === mode.id ? 'active' : ''}"
         >
           <mode.icon class="w-6 h-6 mb-2 text-warning-600 dark:text-primary-400" />
           <h3 class="font-medium text-gray-900 dark:text-white mb-1">{mode.name}</h3>
@@ -338,16 +336,16 @@
         {#if activeMode === 'basic'}
           <div class="space-y-6">
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label class="label">
                 What is <input
                   type="number"
                   bind:value={percentage}
-                  class="w-20 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded mx-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-center focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+                  class="inline-input w-20 mx-2 text-center"
                 />% of
                 <input
                   type="number"
                   bind:value={number}
-                  class="w-20 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded mx-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-center focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+                  class="inline-input w-20 mx-2 text-center"
                 />?
               </label>
             </div>
@@ -358,7 +356,7 @@
               {#each commonPercentages as percent (percent)}
                 <button
                   onclick={() => setPercentage(percent.toString())}
-                  class="px-2 py-1 text-xs rounded transition-colors bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                  class="quick-btn"
                 >
                   {percent}%
                 </button>
@@ -390,17 +388,17 @@
         {#if activeMode === 'increase'}
           <div class="space-y-6">
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label class="label">
                 Increase <input
                   type="number"
                   bind:value={originalValue}
-                  class="w-20 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded mx-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-center focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+                  class="inline-input w-20 mx-2 text-center"
                 />
                 by
                 <input
                   type="number"
                   bind:value={changePercentage}
-                  class="w-20 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded mx-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-center focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+                  class="inline-input w-20 mx-2 text-center"
                 />%
               </label>
             </div>
@@ -425,7 +423,7 @@
                   </div>
                   <button
                     onclick={() => copyToClipboard(changedResult)}
-                    class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+                    class="btn-icon"
                   >
                     <Copy class="w-5 h-5 text-gray-600 dark:text-gray-400" />
                   </button>
@@ -439,17 +437,17 @@
         {#if activeMode === 'decrease'}
           <div class="space-y-6">
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label class="label">
                 Decrease <input
                   type="number"
                   bind:value={originalValue}
-                  class="w-20 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded mx-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-center focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+                  class="inline-input w-20 mx-2 text-center"
                 />
                 by
                 <input
                   type="number"
                   bind:value={changePercentage}
-                  class="w-20 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded mx-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-center focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400 focus:border-transparent focus:outline-none transition-all"
+                  class="inline-input w-20 mx-2 text-center"
                 />%
               </label>
             </div>
@@ -474,7 +472,7 @@
                   </div>
                   <button
                     onclick={() => copyToClipboard(changedResult)}
-                    class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+                    class="btn-icon"
                   >
                     <Copy class="w-5 h-5 text-gray-600 dark:text-gray-400" />
                   </button>
@@ -491,7 +489,7 @@
               <div>
                 <label
                   for="first-value"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  class="label"
                   >First Value</label
                 >
                 <input
@@ -504,7 +502,7 @@
               <div>
                 <label
                   for="second-value"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  class="label"
                   >Second Value</label
                 >
                 <input
@@ -548,7 +546,7 @@
               <div>
                 <label
                   for="original-price"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  class="label"
                   >Original Price</label
                 >
                 <div class="relative">
@@ -565,7 +563,7 @@
               <div>
                 <label
                   for="discount-percent"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  class="label"
                   >Discount (%)</label
                 >
                 <input
@@ -617,7 +615,7 @@
             <div>
               <label
                 for="bill-amount"
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                class="label"
                 >Bill Amount</label
               >
               <div class="relative">
@@ -635,7 +633,7 @@
               <div>
                 <label
                   for="tip-percentage"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  class="label"
                   >Tip Percentage</label
                 >
                 <input
@@ -649,7 +647,7 @@
                   {#each commonTips as tip (tip)}
                     <button
                       onclick={() => setTipPercentage(tip.toString())}
-                      class="px-2 py-1 text-xs rounded transition-colors bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                      class="quick-btn"
                     >
                       {tip}%
                     </button>
@@ -659,7 +657,7 @@
               <div>
                 <label
                   for="number-of-people"
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  class="label"
                   >Number of People</label
                 >
                 <input

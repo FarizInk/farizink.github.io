@@ -330,7 +330,7 @@
           <div>
             <label
               for="height-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
             >
               Height ({units === 'metric' ? 'cm' : 'inches'})
             </label>
@@ -346,7 +346,7 @@
           <div>
             <label
               for="weight-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
             >
               Weight ({units === 'metric' ? 'kg' : 'lbs'})
             </label>
@@ -362,7 +362,7 @@
           <div>
             <label
               for="age-input"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Age</label
+              class="label">Age</label
             >
             <input
               class="tool-input"
@@ -375,7 +375,7 @@
 
           <div>
             <fieldset>
-              <legend class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              <legend class="label"
                 >Gender</legend
               >
               <div class="flex gap-4">
@@ -414,7 +414,7 @@
         <div class="mt-6">
           <label
             for="activity-level-select"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            class="label"
             >Activity Level</label
           >
           <select

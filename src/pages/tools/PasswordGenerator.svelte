@@ -266,7 +266,7 @@
     {#each ['strong', 'memorable', 'pin', 'passphrase'] as preset (preset)}
       <button
         onclick={() => usePreset(preset as 'strong' | 'memorable' | 'pin' | 'passphrase')}
-        class="px-4 py-2 rounded-xl text-sm font-medium transition-all bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-warning-300 dark:hover:border-primary-400"
+        class="preset-btn"
       >
         {preset}
       </button>
@@ -334,7 +334,7 @@
           <div class="flex justify-between items-center mb-2">
             <label
               for="password-length-slider"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
             >
               Password Length
             </label>
@@ -348,7 +348,7 @@
             min="4"
             max="64"
             bind:value={passwordLength}
-            class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-yellow-500 dark:accent-purple-500"
+            class="slider"
           />
           <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
             <span>4</span>

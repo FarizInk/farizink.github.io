@@ -163,7 +163,7 @@
 
             <button
               onclick={() => copyToClipboard(hash, algorithm)}
-              class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
+              class="btn-copy"
             >
               {copiedText === algorithm ? '✓ Copied!' : 'Copy Hash'}
             </button>

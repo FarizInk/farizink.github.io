@@ -312,7 +312,7 @@
   {#if selectedOptions.length > 0}
     <button
       type="button"
-      class="absolute top-2 right-8 text-xs text-secondary-400 hover:text-danger-500 transition-colors"
+      class="quick-btn absolute top-2 right-8 text-xs text-secondary-400 hover:text-danger-500 transition-colors"
       onclick={e => {
         e.stopPropagation();
         clearAll();

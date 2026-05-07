@@ -260,7 +260,7 @@
               onclick={() => removeFile(index)}
               {disabled}
               title="Remove file"
-              class="w-8 h-8 rounded hover:bg-red-100 dark:hover:bg-red-900/20 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              class="btn-icon btn-danger w-8 h-8 rounded hover:bg-red-100 dark:hover:bg-red-900/20 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Trash2 class="w-4 h-4 text-red-600 dark:text-red-400" />
             </button>

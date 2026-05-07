@@ -194,7 +194,7 @@
         <div>
           <label
             for="unix-timestamp"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            class="label"
             >Unix Timestamp</label
           >
           <input
@@ -210,7 +210,7 @@
           <div>
             <label
               for="iso-string"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >ISO String</label
             >
             <div class="flex gap-2">
@@ -242,7 +242,7 @@
         <div>
           <label
             for="date-iso"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            class="label"
             >Date (ISO format)</label
           >
           <input
@@ -257,7 +257,7 @@
           <div>
             <label
               for="unix-timestamp-result"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              class="label"
               >Unix Timestamp</label
             >
             <div class="flex gap-2">
@@ -289,7 +289,7 @@
         <div>
           <label
             for="date-format"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            class="label"
             >Date Format</label
           >
           <select id="date-format" bind:value={selectedFormat} class="tool-select">

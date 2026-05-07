@@ -128,14 +128,14 @@
         <div class="flex gap-2">
           <button
             onclick={installPWA}
-            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-3 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+            class="btn btn-primary flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-3 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
           >
             <Download class="w-4 h-4" />
             Install
           </button>
           <button
             onclick={dismissPrompt}
-            class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 p-2 rounded-lg transition-colors duration-200"
+            class="btn-icon text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 p-2 rounded-lg transition-colors duration-200"
             aria-label="Dismiss"
           >
             <X class="w-4 h-4" />

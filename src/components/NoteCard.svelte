@@ -288,7 +288,7 @@
                 e.stopPropagation();
                 handleRestore();
               }}
-              class="w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/30 hover:bg-green-100 dark:hover:bg-green-900/50 border border-green-200 dark:border-green-700 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
+              class="btn-icon w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/30 hover:bg-green-100 dark:hover:bg-green-900/50 border border-green-200 dark:border-green-700 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
               title="Restore note"
             >
               <RotateCcw class="w-4 h-4 text-green-600 dark:text-green-400" />
@@ -300,10 +300,10 @@
                 e.stopPropagation();
                 handlePermanentDelete();
               }}
-              class="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 border border-red-200 dark:border-red-700 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
+              class="btn-icon p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
               title="Permanently delete note"
             >
-              <Trash2 class="w-4 h-4 text-red-600 dark:text-red-400" />
+              <Trash2 class="w-3.5 h-3.5 text-red-500" />
             </button>
           {/if}
         {:else}
@@ -313,7 +313,7 @@
               e.stopPropagation();
               handleShare();
             }}
-            class="w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
+            class="btn-icon w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
             title="Share note"
           >
             <Share2
@@ -327,7 +327,7 @@
                 e.stopPropagation();
                 handleEdit();
               }}
-              class="w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
+              class="btn-icon w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
               title="Edit note"
             >
               <Pencil
@@ -340,12 +340,10 @@
                 e.stopPropagation();
                 handleDelete();
               }}
-              class="w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
+              class="btn-icon w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
               title="Delete note"
             >
-              <Trash2
-                class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors"
-              />
+              <Trash2 class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-red-500 dark:group-hover:text-red-400 transition-colors" />
             </button>
           {/if}
         {/if}

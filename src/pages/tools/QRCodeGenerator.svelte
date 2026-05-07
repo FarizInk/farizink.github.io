@@ -132,7 +132,7 @@
       <div>
         <label
           for="text-input"
-          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          class="label"
         >
           Text or URL
         </label>
@@ -173,7 +173,7 @@
             max="500"
             step="50"
             bind:value={size}
-            class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-yellow-500"
+            class="slider"
           />
         </div>
 
@@ -201,7 +201,7 @@
         <div>
           <label
             for="error-correction"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            class="label"
           >
             Error Correction Level
           </label>
@@ -249,7 +249,7 @@
             </div>
 
             <div class="flex flex-wrap gap-3 justify-center w-full">
-              <button onclick={downloadQRCode} class="btn btn-primary btn-block sm:w-auto">
+              <button onclick={downloadQRCode} class="btn btn-copy btn-block sm:w-auto">
                 <Download class="w-4 h-4 mr-2" />
                 Download PNG
               </button>
