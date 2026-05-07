@@ -278,86 +278,81 @@
   onClose={handleModalClose}
   maxW="max-w-md"
 >
-  
-    <div class="flex items-center justify-between px-3 pt-2.5 pb-2 border-b border-secondary-200 dark:border-secondary-700">
-      <div class="flex items-center gap-2">
-        <div class="w-7 h-7 rounded-lg bg-warning-100 dark:bg-primary-900 flex items-center justify-center">
-          <Tags class="w-4 h-4 text-warning-600 dark:text-primary-400" />
-        </div>
-        <div>
-          <h2 id="modal-title" class="text-sm font-semibold text-gray-900 dark:text-white">
-            Select Tags
-          </h2>
-        </div>
+
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-3">
+      <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-amber-400 dark:from-purple-500 dark:to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+        <Tags class="w-6 h-6 text-white" />
       </div>
-      <button
-        type="button"
-        onclick={handleModalClose}
-        class="btn-icon w-7 h-7 rounded-lg hover:bg-secondary-100 dark:hover:bg-secondary-700 flex items-center justify-center"
-        aria-label="Close"
-      >
-        <X class="w-4 h-4 text-gray-500" />
-      </button>
+      <div>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Select Tags</h2>
+        <p class="text-sm text-gray-600 dark:text-gray-400">Choose tags to filter your notes</p>
+      </div>
     </div>
-    {#if searchable}
-      <div class="px-4 py-2 border-b border-secondary-100 dark:border-secondary-800">
-        <input
-          bind:this={searchInputElement}
-          type="text"
-          class="input !py-1.5 text-sm"
-          placeholder="Search..."
-          bind:value={searchQuery}
-          onkeydown={handleKeydown}
-        />
+    <button onclick={handleModalClose} class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+      <X class="w-5 h-5 text-gray-500" />
+    </button>
+  </div>
+
+  {#if searchable}
+    <div class="mb-4">
+      <input
+        bind:this={searchInputElement}
+        type="text"
+        class="input !py-2.5 text-sm"
+        placeholder="Search tags..."
+        bind:value={searchQuery}
+        onkeydown={handleKeydown}
+      />
+    </div>
+  {/if}
+
+  <div class="max-h-[50vh] overflow-y-auto">
+    {#if filteredOptions.length === 0}
+      <div class="text-center py-8 text-sm text-secondary-500">
+        No tags found
+      </div>
+    {:else}
+      <div class="flex flex-wrap gap-2">
+        {#each filteredOptions as option (option.value)}
+          {@const isSelected = selectedValues.includes(option.value)}
+          {@const hasColor = !!option.color}
+          <button
+            type="button"
+            onclick={() => selectOption(option)}
+            class="preset-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 {isSelected
+              ? 'shadow-sm ring-1'
+              : 'hover:shadow-sm'} {hasColor
+              ? (isSelected ? 'border-warning-400 dark:border-primary-500 ring-warning-200 dark:ring-primary-800' : 'border-secondary-200 dark:border-secondary-700 hover:border-warning-300 dark:hover:border-primary-600')
+              : (isSelected ? 'bg-warning-100 text-warning-700 border-warning-400 dark:bg-primary-900/30 dark:text-primary-300 dark:border-primary-500 ring-warning-200 dark:ring-primary-800' : 'bg-warning-50 text-warning-700 border-warning-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700 hover:border-warning-300 dark:hover:border-primary-600')}"
+            style={hasColor ? `background-color: ${option.color}${isSelected ? '20' : '10'}; color: ${option.color}` : ''}
+          >
+            <span
+              class="w-2 h-2 rounded-full flex-shrink-0 {hasColor ? '' : 'bg-warning-500 dark:bg-primary-400'}"
+              style={hasColor ? `background-color: ${option.color}` : ''}
+            ></span>
+            {option.label}
+            {#if isSelected}
+              <Check class="w-3 h-3" />
+            {/if}
+          </button>
+        {/each}
       </div>
     {/if}
-  
+  </div>
 
-
-    <div class="p-3 max-h-[50vh] overflow-y-auto">
-      {#if filteredOptions.length === 0}
-        <div class="text-center py-8 text-sm text-secondary-500">
-          No tags found
-        </div>
-      {:else}
-        <div class="flex flex-wrap gap-2">
-          {#each filteredOptions as option (option.value)}
-            {@const isSelected = selectedValues.includes(option.value)}
-            {@const hasColor = !!option.color}
-            <button
-              type="button"
-              onclick={() => selectOption(option)}
-              class="preset-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 {isSelected
-                ? 'shadow-sm ring-1'
-                : 'hover:shadow-sm'} {hasColor
-                ? (isSelected ? 'border-warning-400 dark:border-primary-500 ring-warning-200 dark:ring-primary-800' : 'border-secondary-200 dark:border-secondary-700 hover:border-warning-300 dark:hover:border-primary-600')
-                : (isSelected ? 'bg-warning-100 text-warning-700 border-warning-400 dark:bg-primary-900/30 dark:text-primary-300 dark:border-primary-500 ring-warning-200 dark:ring-primary-800' : 'bg-warning-50 text-warning-700 border-warning-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700 hover:border-warning-300 dark:hover:border-primary-600')}"
-              style={hasColor ? `background-color: ${option.color}${isSelected ? '20' : '10'}; color: ${option.color}` : ''}
-            >
-              <span
-                class="w-2 h-2 rounded-full flex-shrink-0 {hasColor ? '' : 'bg-warning-500 dark:bg-primary-400'}"
-                style={hasColor ? `background-color: ${option.color}` : ''}
-              ></span>
-              {option.label}
-              {#if isSelected}
-                <Check class="w-3 h-3" />
-              {/if}
-            </button>
-          {/each}
-        </div>
-      {/if}
-    </div>
-  
-  
-    <span class="text-xs text-secondary-500 mr-auto">
+  <div class="flex items-center justify-end gap-3 pt-4 mt-5 border-t border-gray-200 dark:border-gray-700">
+    <span class="text-sm text-gray-500 dark:text-gray-400 mr-auto">
       {selectedOptions.length} selected
     </span>
     <button
       type="button"
       onclick={handleModalClose}
-      class="btn btn-primary px-3 py-1.5 text-sm bg-warning-500 hover:bg-warning-600 dark:bg-primary-600 dark:hover:bg-primary-700 text-white rounded-lg"
+      class="btn btn-primary flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium shadow-md hover:shadow-lg transition-all"
     >
       {selectedOptions.length > 0 ? 'Done' : 'Skip'}
     </button>
+  </div>
+
   
 </Modal>

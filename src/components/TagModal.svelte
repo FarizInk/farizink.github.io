@@ -17,6 +17,7 @@
   let { isOpen = $bindable(false), onclose }: { isOpen: boolean; onclose?: () => void } = $props();
 
   let isLoading = $state(false);
+  let deletingTagId = $state<string | null>(null);
   let searchQuery = $state('');
 
   let showTagFormModal = $state(false);
@@ -64,13 +65,18 @@
   }
 
   async function handleDelete(tag: Tag) {
+    if (deletingTagId === tag.tag) return;
     if (!confirm(`Delete "${tag.name}"?`)) return;
+
+    deletingTagId = tag.tag;
     try {
       await deleteTag(tag.tag);
       tagsStore.removeTag(tag.tag);
       toast.success('Tag deleted');
     } catch {
       toast.error('Failed to delete tag');
+    } finally {
+      deletingTagId = null;
     }
   }
 
@@ -186,10 +192,15 @@
               </button>
               <button
                 onclick={() => handleDelete(tag)}
-                class="btn-icon btn-danger w-6 h-6 rounded-md flex items-center justify-center hover:bg-red-100 dark:hover:bg-red-900/50 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                disabled={deletingTagId === tag.tag}
+                class="btn-icon btn-danger w-6 h-6 rounded-md flex items-center justify-center hover:bg-red-100 dark:hover:bg-red-900/50 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Delete"
               >
-                <Trash2 class="w-3 h-3" />
+                {#if deletingTagId === tag.tag}
+                  <RotateCw class="w-3 h-3 animate-spin" />
+                {:else}
+                  <Trash2 class="w-3 h-3" />
+                {/if}
               </button>
             </div>
           </div>

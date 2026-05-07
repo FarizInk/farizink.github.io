@@ -19,6 +19,8 @@
     onSuccess?: () => void;
   }>();
 
+  let actionLoadingIds = $state(new Set<string>());
+
   $effect(() => {
     if (isOpen) {
       deletedNotesStore.loadDeletedNotes();
@@ -34,11 +36,15 @@
   }
 
   async function handlePermanentDelete(note: Note) {
+    if (actionLoadingIds.has(note.id)) return;
+
     const confirmMessage = `Are you sure you want to permanently delete this note?${note.files && note.files.length > 0 ? `\n\nThis will also delete ${note.files.length} file(s) from storage.` : ''}\n\nThis action cannot be undone.`;
 
     if (!confirm(confirmMessage)) {
       return;
     }
+
+    actionLoadingIds.add(note.id);
 
     try {
       await permanentDeleteNote(note.id);
@@ -48,10 +54,16 @@
     } catch (error) {
       toast.error('Failed to permanently delete note');
       console.error('Permanent delete note error:', error);
+    } finally {
+      actionLoadingIds.delete(note.id);
     }
   }
 
   async function handleRestore(note: Note) {
+    if (actionLoadingIds.has(note.id)) return;
+
+    actionLoadingIds.add(note.id);
+
     try {
       const response = await restoreNote(note.id);
       toast.success('Note restored successfully');
@@ -61,6 +73,8 @@
     } catch (error) {
       toast.error('Failed to restore note');
       console.error('Restore note error:', error);
+    } finally {
+      actionLoadingIds.delete(note.id);
     }
   }
 

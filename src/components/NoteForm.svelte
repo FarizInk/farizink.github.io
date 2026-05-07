@@ -4,11 +4,12 @@
   import type { Tag } from '../lib/tags';
   import { createNote, updateNote } from '../lib/notes';
   import { tags } from '../lib/stores/tags';
-  import { Link2, Paperclip } from '@lucide/svelte';
+  import { Link2, Paperclip, ChevronDown, Settings2 } from '@lucide/svelte';
   import TagsSelector from './TagsSelector.svelte';
   import FileUpload from './FileUpload.svelte';
   import ExistingFiles from './ExistingFiles.svelte';
   import TiptapEditor from './TiptapEditor.svelte';
+  import TagModal from './TagModal.svelte';
   import { onMount } from 'svelte';
 
   interface Props {
@@ -39,6 +40,7 @@
   let localFiles = $state<NoteFileData[]>([]);
   let localFilesToDelete = $state<string[]>([]);
   let localShowFileSection = $state(false);
+  let showTagModal = $state(false);
   let isLoading = $state(false);
 
   // Get available tags from store
@@ -221,7 +223,7 @@
   <form id="note-form" class="space-y-5" onsubmit={handleSubmitInternal}>
       <!-- Name -->
       <div>
-        <label for="name" class="label">Name *</label>
+        <label for="name" class="label">Title <span class="text-red-500">*</span></label>
         <input
           id="name"
           type="text"
@@ -236,7 +238,7 @@
 
       <!-- Link -->
       <div>
-        <label for="link" class="label">Link (Optional)</label>
+        <label for="link" class="label">Link</label>
         <div class="relative">
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Link2 class="w-4 h-4 text-secondary-400" />
@@ -255,7 +257,7 @@
 
       <!-- Description -->
       <div>
-        <label for="description" class="label">Description (Optional)</label>
+        <label for="description" class="label">Description</label>
         <div class="mt-2">
           <TiptapEditor
             bind:content={localDescription}
@@ -267,7 +269,20 @@
 
       <!-- Tags -->
       <div>
-        <label for="tag-select" class="label">Tags (Optional)</label>
+        <div class="flex gap-2 items-center">
+            <label for="tag-select" class="label">Tags</label>
+            <!-- Manage Tags Link -->
+            <div>
+              <button
+                type="button"
+                onclick={() => (showTagModal = true)}
+                class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors group"
+              >
+                <Settings2 class="w-3.5 h-3.5" />
+                <span>Manage tags</span>
+              </button>
+            </div>
+        </div>
         <div class="mt-2">
           <TagsSelector
             id="tag-select"
@@ -277,38 +292,25 @@
             disabled={isLoading}
           />
         </div>
-
-        <!-- Create New Tag Link -->
-        <div class="text-sm mt-3">
-          <span class="text-secondary-600 dark:text-secondary-400">Need a new tag? </span>
-          <button
-            type="button"
-            onclick={() =>
-              alert('Use the "Manage Tags" button in the Notes page to create new tags.')}
-            class="btn-copy text-warning-600 hover:text-warning-700 dark:text-primary-400 dark:hover:text-primary-300 underline"
-          >
-            Manage tags
-          </button>
-        </div>
       </div>
 
-      <!-- Files Section -->
-      <div>
+      <!-- Files Section Toggle -->
+      <div class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
         <button
           type="button"
-          onclick={() => localShowFileSection = !localShowFileSection}
-          class="btn btn-secondary flex items-center gap-2 text-sm font-medium text-secondary-700 dark:text-secondary-300 hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
+          onclick={() => (localShowFileSection = !localShowFileSection)}
+          class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         >
-          <Paperclip class="w-4 h-4" />
-          <span>{mode === 'edit' ? 'Manage Files' : 'Attach Files'}</span>
-          {#if (localFiles && localFiles.length > 0) || (mode === 'edit' && note?.files && note.files.length > 0)}
-            <span
-              class="badge bg-warning-100 text-warning-700 dark:bg-primary-900 dark:text-primary-300 text-xs"
-            >
-              ({(localFiles?.length || 0) +
-                (mode === 'edit' && note?.files ? note.files.length : 0)})
-            </span>
-          {/if}
+          <div class="flex items-center gap-2">
+            <Paperclip class="w-4 h-4 text-gray-400" />
+            <span>{mode === 'edit' ? 'Files' : 'Attach Files'}</span>
+            {#if (localFiles && localFiles.length > 0) || (mode === 'edit' && note?.files && note.files.length > 0)}
+              <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300">
+                {(localFiles?.length || 0) + (mode === 'edit' && note?.files ? note.files.length : 0)}
+              </span>
+            {/if}
+          </div>
+          <ChevronDown class="w-4 h-4 text-gray-400 transition-transform duration-200 {localShowFileSection ? 'rotate-180' : ''}" />
         </button>
       </div>
 
@@ -320,7 +322,7 @@
           {/if}
 
           <!-- New Files Upload -->
-          <div>
+          <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4">
             <div class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2">
               {mode === 'edit' ? 'Add New Files' : 'Upload Files'}
             </div>
@@ -361,3 +363,5 @@
       </div>
     </form>
   </div>
+
+<TagModal bind:isOpen={showTagModal} />

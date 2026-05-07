@@ -49,6 +49,7 @@
   let tags = $state<Tag[]>([]);
   let isLoading = $state(true);
   let isSubmitting = $state(false);
+  let deletingTransactionId = $state<string | null>(null);
   let isRecalculating = $state(false);
 
   // Pagination
@@ -215,14 +216,18 @@
   }
 
   async function handleDelete(transaction: Transaction) {
+    if (deletingTransactionId === transaction.id) return;
     if (!confirm('Delete this transaction?')) return;
 
+    deletingTransactionId = transaction.id;
     try {
       await deleteTransaction(transaction.id);
       toast.success('Transaction deleted');
       loadData();
     } catch {
       toast.error('Failed to delete transaction');
+    } finally {
+      deletingTransactionId = null;
     }
   }
 

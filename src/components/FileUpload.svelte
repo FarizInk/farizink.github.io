@@ -20,6 +20,19 @@
   let dragActive = $state(false);
   let previewUrls = $state(new Map<number, string>());
 
+  // Generate preview URLs for image files
+  function ensurePreviewUrls() {
+    let changed = false;
+    files.forEach((file, index) => {
+      if (file.mimeType?.startsWith('image/') && file.file && !previewUrls.get(index)) {
+        const url = createPreviewUrl(file.file);
+        previewUrls.set(index, url);
+        changed = true;
+      }
+    });
+    return changed;
+  }
+
   // Cleanup preview URLs on unmount
   $effect(() => {
     return () => {
@@ -223,12 +236,6 @@
               {#if previewUrls.get(index)}
                 <img
                   src={previewUrls.get(index)}
-                  alt={file.originalName}
-                  class="w-full h-full object-cover rounded"
-                />
-              {:else if file.file}
-                <img
-                  src={createPreviewUrl(file.file)}
                   alt={file.originalName}
                   class="w-full h-full object-cover rounded"
                 />

@@ -38,6 +38,7 @@
   let viewMode = $state<'list' | 'detail'>('list');
   let singleNote = $state<Note | null>(null);
   let isLoadingSingleNote = $state(false);
+  let deletingNoteId = $state<string | null>(null);
   let isLoadingMore = $state(false);
   let isRegeneratingSummarize = $state(false);
   let isSummaryFull = $state(false);
@@ -137,10 +138,12 @@
   }
 
   async function handleDelete(note: Note) {
+    if (deletingNoteId === note.id) return;
     if (!confirm('Are you sure you want to delete this note?')) {
       return;
     }
 
+    deletingNoteId = note.id;
     try {
       await deleteNote(note.id);
       toast.success('Note deleted successfully');
@@ -152,6 +155,8 @@
         toast.error('An unexpected error occurred');
       }
       console.error('Delete note error:', error);
+    } finally {
+      deletingNoteId = null;
     }
   }
 

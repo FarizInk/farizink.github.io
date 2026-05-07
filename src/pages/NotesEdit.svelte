@@ -74,7 +74,7 @@
   <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="notes-edit-page min-h-screen bg-gray-50 dark:bg-gray-900">
+<div class="notes-edit-page min-h-screen ">
   {#if isCheckingAuth}
     <div class="flex items-center justify-center py-20">
       <div class="w-12 h-12 border-4 border-warning-500 border-t-transparent rounded-full animate-spin"></div>

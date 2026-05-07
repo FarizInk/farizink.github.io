@@ -198,10 +198,10 @@
             {#if hasAuthToken && onPermanentDelete}
               <button
                 onclick={handlePermanentDelete}
-                class="btn-icon btn-danger group relative p-2 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 transition-all duration-200 hover:scale-105 active:scale-95"
+                class="btn-icon group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 transition-all duration-200 hover:scale-105 active:scale-95"
                 title="Permanently delete note"
               >
-                <Trash2 class="w-5 h-5 text-red-600 dark:text-red-400" />
+                <Trash2 class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
               </button>
             {/if}
           {:else}
@@ -216,10 +216,10 @@
 
               <button
                 onclick={handleDelete}
-                class="btn-icon btn-danger group relative p-2 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 transition-all duration-200 hover:scale-105 active:scale-95"
+                class="btn-icon group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 transition-all duration-200 hover:scale-105 active:scale-95"
                 title="Delete note"
               >
-                <Trash2 class="w-5 h-5 text-red-600 dark:text-red-400" />
+                <Trash2 class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
               </button>
             {/if}
           {/if}
@@ -238,7 +238,7 @@
       </div>
     </div>
 
-    <div class="px-4 sm:px-6 py-6">
+    <div class="">
         <!-- Mobile: Title, Meta Info & Action Buttons -->
         <div class="sm:hidden mb-6 space-y-4">
           <!-- Title -->
@@ -297,10 +297,10 @@
               {#if hasAuthToken && onPermanentDelete}
                 <button
                   onclick={handlePermanentDelete}
-                  class="btn btn-danger col-span-2 flex items-center justify-center gap-2 px-4 py-2.5 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl transition-all text-sm font-medium"
+                  class="btn col-span-2 flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 rounded-xl transition-all text-sm font-medium"
                 >
-                  <Trash2 class="w-4 h-4 text-red-600 dark:text-red-400" />
-                  <span class="text-red-700 dark:text-red-400">Delete Permanently</span>
+                  <Trash2 class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
+                  <span class="text-secondary-700 dark:text-secondary-300 group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors">Delete Permanently</span>
                 </button>
               {/if}
             {:else}
@@ -315,10 +315,10 @@
 
                 <button
                   onclick={handleDelete}
-                  class="btn btn-danger flex items-center justify-center gap-2 px-4 py-2.5 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl transition-all text-sm font-medium"
+                  class="btn flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 rounded-xl transition-all text-sm font-medium"
                 >
-                  <Trash2 class="w-4 h-4 text-red-600 dark:text-red-400" />
-                  <span class="text-red-700 dark:text-red-400">Delete</span>
+                  <Trash2 class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
+                  <span class="text-secondary-700 dark:text-secondary-300 group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors">Delete</span>
                 </button>
               {/if}
             {/if}

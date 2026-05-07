@@ -105,10 +105,14 @@
                 src={getFileUrl(file)}
                 alt={file.original_name}
                 class="w-full h-full object-cover"
-                onerror={e => {
+             onerror={e => {
                   const target = e.target as HTMLImageElement;
-                  target.src = `data:${file.mime_type};base64,${file.data}`;
-                }}
+                  if (target.dataset.fallback) return;
+                  target.dataset.fallback = '1';
+                  if (file.data) {
+                    target.src = `data:${file.mime_type};base64,${file.data}`;
+                  }
+              }}
               />
 
               <!-- Delete Overlay -->

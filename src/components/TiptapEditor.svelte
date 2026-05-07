@@ -88,8 +88,8 @@
 
   // Button base class helper
   const btnBase = 'btn-icon p-2 rounded-lg transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed border';
-  const btnInactive = 'border-transparent hover:bg-secondary-100 dark:hover:bg-secondary-700 text-secondary-600 dark:text-secondary-400';
-  const btnActive = 'bg-gradient-to-r from-warning-100 to-amber-100 dark:from-primary-900/40 dark:to-primary-800/30 text-warning-700 dark:text-primary-300 border-warning-200 dark:border-primary-700 shadow-sm';
+  const btnInactive = 'border-transparent hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400';
+  const btnActive = 'bg-amber-50 dark:bg-purple-900/30 text-amber-700 dark:text-purple-300 border-amber-200 dark:border-purple-700 shadow-sm';
 
   // Initialize editor
   onMount(() => {
@@ -106,7 +106,7 @@
         Link.configure({
           openOnClick: false,
           HTMLAttributes: {
-            class: 'text-warning-600 dark:text-primary-400 underline hover:text-warning-800 dark:hover:text-primary-300 transition-colors'
+            class: 'text-amber-600 dark:text-purple-400 underline hover:text-amber-800 dark:hover:text-purple-300 transition-colors'
           }
         }),
         Placeholder.configure({ placeholder })
@@ -115,7 +115,7 @@
       editable: !disabled,
       editorProps: {
         attributes: {
-          class: 'prose prose-sm max-w-none focus:outline-none min-h-[130px] max-h-full overflow-y-auto p-4 text-secondary-800 dark:text-secondary-200'
+          class: 'prose prose-sm max-w-none focus:outline-none min-h-[130px] max-h-full overflow-y-auto p-4 text-gray-800 dark:text-white'
         }
       },
       onUpdate: () => {
@@ -241,11 +241,11 @@
 </script>
 
 <div
-  class="border border-secondary-200 dark:border-secondary-700 rounded-2xl overflow-hidden bg-white dark:bg-secondary-800 shadow-sm hover:shadow-md transition-shadow"
+  class="border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden bg-white dark:bg-gray-900 shadow-sm hover:shadow-md transition-shadow"
 >
   <!-- Toolbar -->
   <div
-    class="rounded-t-2xl border-b border-secondary-200 dark:border-secondary-700 p-2 flex flex-wrap gap-1 bg-secondary-50/50 dark:bg-secondary-900/50 backdrop-blur-sm"
+    class="rounded-t-2xl border-b border-gray-200 dark:border-gray-700 p-2 flex flex-wrap gap-1 bg-gray-50 dark:bg-gray-800/50 backdrop-blur-sm"
   >
     <!-- History -->
     <button
@@ -269,7 +269,7 @@
       <Redo class="w-4 h-4" />
     </button>
 
-    <div class="w-px bg-secondary-200 dark:bg-secondary-700 mx-1"></div>
+    <div class="w-px bg-gray-200 dark:bg-gray-700 mx-1"></div>
 
     <!-- Text Formatting -->
     <button
@@ -317,7 +317,7 @@
       <Code class="w-4 h-4" />
     </button>
 
-    <div class="w-px bg-secondary-200 dark:bg-secondary-700 mx-1"></div>
+    <div class="w-px bg-gray-200 dark:bg-gray-700 mx-1"></div>
 
     <!-- Headings -->
     <button
@@ -354,7 +354,7 @@
       <Heading3 class="w-4 h-4" />
     </button>
 
-    <div class="w-px bg-secondary-200 dark:bg-secondary-700 mx-1"></div>
+    <div class="w-px bg-gray-200 dark:bg-gray-700 mx-1"></div>
 
     <!-- Lists & Quote -->
     <button
@@ -391,7 +391,7 @@
       <Quote class="w-4 h-4" />
     </button>
 
-    <div class="w-px bg-secondary-200 dark:bg-secondary-700 mx-1"></div>
+    <div class="w-px bg-gray-200 dark:bg-gray-700 mx-1"></div>
 
     <!-- Link -->
     <button
@@ -420,7 +420,7 @@
       <button
         type="button"
         aria-label="Drag to resize editor"
-        class="absolute bottom-0 left-0 right-0 h-1.5 cursor-ns-resize hover:bg-gradient-to-r hover:from-warning-400 hover:to-amber-400 dark:hover:from-primary-500 dark:hover:to-primary-400 transition-colors group bg-transparent border-0 p-0"
+        class="absolute bottom-0 left-0 right-0 h-1.5 cursor-ns-resize hover:bg-gradient-to-r hover:from-amber-400 hover:to-amber-500 dark:hover:from-purple-500 dark:hover:to-purple-600 transition-colors group bg-transparent border-0 p-0"
         onmousedown={startResize}
         onkeydown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
@@ -428,7 +428,7 @@
           }
         }}
       >
-        <div class="absolute inset-x-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-8 h-1 bg-secondary-300 dark:bg-secondary-600 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+        <div class="absolute inset-x-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-8 h-1 bg-gray-300 dark:bg-gray-600 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
       </button>
     {/if}
   </div>
@@ -455,12 +455,12 @@
   :global(html.dark .ProseMirror h4),
   :global(html.dark .ProseMirror h5),
   :global(html.dark .ProseMirror h6) {
-    color: #e2e8f0;
+    color: #ffffff;
   }
 
   :global(.ProseMirror code) {
-    background-color: #fef3c7;
-    color: #92400e;
+    background-color: #f1f3f4;
+    color: #334155;
     padding: 0.125rem 0.375rem;
     border-radius: 0.25rem;
     font-size: 0.875rem;
@@ -468,26 +468,27 @@
   }
 
   :global(html.dark .ProseMirror code) {
-    background-color: rgba(88, 28, 135, 0.3);
-    color: #d8b4fe;
+    background-color: #374151;
+    color: #e5e7eb;
   }
 
   :global(.ProseMirror pre) {
-    background-color: #1e293b;
-    color: #f1f5f9;
+    background-color: #f1f3f4;
+    color: #334155;
     padding: 1rem;
     border-radius: 0.5rem;
     overflow-x: auto;
   }
 
   :global(html.dark .ProseMirror pre) {
-    background-color: #000;
+    background-color: #374151;
+    color: #e5e7eb;
   }
 
   :global(.ProseMirror pre code) {
     background-color: transparent;
     padding: 0;
-    color: #f1f5f9;
+    color: inherit;
   }
 
   :global(.ProseMirror a) {
@@ -509,15 +510,15 @@
   }
 
   :global(.ProseMirror blockquote) {
-    border-left: 4px solid #fbbf24;
+    border-left: 4px solid #ddd;
     padding-left: 1rem;
     font-style: italic;
-    color: #475569;
+    color: #666;
   }
 
   :global(html.dark .ProseMirror blockquote) {
-    border-left-color: #8b5cf6;
-    color: #94a3b8;
+    border-left-color: #4b5563;
+    color: #9ca3af;
   }
 
   :global(.ProseMirror ul),
@@ -572,7 +573,7 @@
   }
 
   :global(html.dark .ProseMirror p.is-editor-empty:first-child::before) {
-    color: #64748b;
+    color: #6b7280;
   }
 
   /* Selection */
@@ -581,10 +582,10 @@
   }
 
   :global(.ProseMirror ::selection) {
-    background-color: #fef08a;
+    background-color: rgba(251, 191, 36, 0.2);
   }
 
   :global(html.dark .ProseMirror ::selection) {
-    background-color: rgba(88, 28, 135, 0.5);
+    background-color: rgba(168, 85, 247, 0.3);
   }
 </style>

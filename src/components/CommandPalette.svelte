@@ -16,6 +16,7 @@
   });
   // Track if we're currently validating to prevent race conditions
   let isValidating = $state(false);
+  let isLoggingOut = $state(false);
 
   // Theme state
   let isDark = $state(false);
@@ -94,6 +95,7 @@
       document.dispatchEvent(evt);
       closeModal();
     } else if (route.path === '/logout') {
+      if (isLoggingOut) return;
       handleLogout();
       closeModal();
     } else if (newTab) {
@@ -125,8 +127,14 @@
   }
 
   async function handleLogout() {
-    await logout();
-    await updateAuthState(); // Refresh auth state
+    if (isLoggingOut) return;
+    isLoggingOut = true;
+    try {
+      await logout();
+      await updateAuthState(); // Refresh auth state
+    } finally {
+      isLoggingOut = false;
+    }
   }
 
   // Get category label for route
