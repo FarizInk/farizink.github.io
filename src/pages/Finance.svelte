@@ -37,6 +37,7 @@
     type TransactionFilters,
   } from '../lib/finance';
   import { getTags, type Tag } from '../lib/tags';
+  import Modal from '../components/Modal.svelte';
 
   // Auth
   let hasAuthToken = $state(false);
@@ -491,24 +492,17 @@
 
 <!-- Create/Edit Modal -->
 {#if showModal}
-  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
-    <!-- Backdrop -->
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick={closeModal} onkeydown={() => {}}></div>
+<Modal isOpen={showModal} onClose={closeModal} maxW="max-w-md">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-lg font-bold text-gray-900 dark:text-white">
+      {modalMode === 'create' ? 'Add Transaction' : 'Edit Transaction'}
+    </h2>
+    <button onclick={closeModal} class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+      <X class="w-5 h-5 text-gray-500" />
+    </button>
+  </div>
 
-    <!-- Modal Content -->
-    <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
-      <div class="p-6">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-lg font-bold text-gray-900 dark:text-white">
-            {modalMode === 'create' ? 'Add Transaction' : 'Edit Transaction'}
-          </h2>
-          <button onclick={closeModal} class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-            <X class="w-5 h-5 text-gray-500" />
-          </button>
-        </div>
-
-        <div class="space-y-5">
+  <div class="space-y-5">
           <!-- Type -->
           <div>
             <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Type</label>
@@ -610,8 +604,6 @@
               {isSubmitting ? 'Saving...' : modalMode === 'create' ? 'Add Transaction' : 'Save Changes'}
             </button>
           </div>
-        </div>
-      </div>
-    </div>
   </div>
+</Modal>
 {/if}
