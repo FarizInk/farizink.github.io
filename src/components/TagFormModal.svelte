@@ -72,92 +72,74 @@
     }
   }
 
-  const title = $derived(mode === 'create' ? 'Create Tag' : 'Edit Tag');
+  let title = $derived(mode === 'create' ? 'Create Tag' : 'Edit Tag');
 </script>
 
-<Modal {isOpen} onClose={handleClose} maxW="max-w-sm" showCloseButton={false}>
-  {#snippet header()}
-    <div class="flex items-center justify-between px-3 py-2 border-b border-secondary-200 dark:border-secondary-700">
-      <div class="flex items-center gap-2">
-        <div class="w-6 h-6 rounded-md bg-warning-100 dark:bg-primary-900 flex items-center justify-center">
-          {#if mode === 'create'}
-            <Plus class="w-3.5 h-3.5 text-warning-600 dark:text-primary-400" />
-          {:else}
-            <Edit2 class="w-3.5 h-3.5 text-warning-600 dark:text-primary-400" />
-          {/if}
-        </div>
-        <h2 id="modal-title" class="text-sm font-semibold text-gray-900 dark:text-white">
-          {title}
-        </h2>
-      </div>
-      <button
-        type="button"
-        onclick={handleClose}
-        class="w-7 h-7 rounded-md hover:bg-secondary-100 dark:hover:bg-secondary-700 flex items-center justify-center"
-        aria-label="Close modal"
-      >
-        <X class="w-3.5 h-3.5 text-gray-500" />
-      </button>
+<Modal {isOpen} onClose={handleClose} maxW="max-w-sm">
+  <div class="flex items-center justify-between mb-5">
+    <h2 class="text-lg font-bold text-gray-900 dark:text-white">
+      {title}
+    </h2>
+    <button onclick={handleClose} class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+      <X class="w-5 h-5 text-gray-500" />
+    </button>
+  </div>
+
+  <form id="tag-form" onsubmit={handleSave} class="space-y-4">
+    <div>
+      <label for="tag-identifier" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Tag Identifier</label>
+      <input
+        id="tag-identifier"
+        type="text"
+        placeholder="e.g., programming"
+        class="input"
+        bind:value={formData.tag}
+        disabled={isLoading}
+        autocomplete="off"
+      />
+      <p class="text-xs text-gray-400 mt-1">Lowercase, no spaces</p>
     </div>
-  {/snippet}
 
-  {#snippet body()}
-    <form id="tag-form" onsubmit={handleSave} class="px-3 py-3 space-y-3">
-      <div>
-        <label for="tag-identifier" class="label !text-xs !mb-1">Tag Identifier</label>
+    <div>
+      <label for="tag-name" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Display Name</label>
+      <input
+        id="tag-name"
+        type="text"
+        placeholder="e.g., Programming"
+        class="input"
+        bind:value={formData.name}
+        disabled={isLoading}
+        autocomplete="off"
+      />
+    </div>
+
+    <div>
+      <label for="tag-color" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Color</label>
+      <div class="flex items-center gap-2">
         <input
-          id="tag-identifier"
-          type="text"
-          placeholder="e.g., programming"
-          class="input !py-1.5 text-sm"
-          bind:value={formData.tag}
+          id="tag-color"
+          type="color"
+          class="w-8 h-8 rounded-md cursor-pointer border border-gray-200 dark:border-gray-700 p-0.5"
+          bind:value={formData.color}
           disabled={isLoading}
-          autocomplete="off"
         />
-        <p class="text-[11px] text-secondary-400 mt-0.5">Lowercase, no spaces</p>
-      </div>
-
-      <div>
-        <label for="tag-name" class="label !text-xs !mb-1">Display Name</label>
         <input
-          id="tag-name"
+          id="tag-color-hex"
           type="text"
-          placeholder="e.g., Programming"
-          class="input !py-1.5 text-sm"
-          bind:value={formData.name}
+          placeholder="#hex (optional)"
+          class="input flex-1"
+          bind:value={formData.color}
           disabled={isLoading}
-          autocomplete="off"
         />
       </div>
+    </div>
+  </form>
 
-      <div>
-        <label for="tag-color" class="label !text-xs !mb-1">Color</label>
-        <div class="flex items-center gap-2">
-          <input
-            id="tag-color"
-            type="color"
-            class="w-8 h-8 rounded-md cursor-pointer border border-secondary-200 dark:border-secondary-600 p-0.5"
-            bind:value={formData.color}
-            disabled={isLoading}
-          />
-          <input
-            id="tag-color-hex"
-            type="text"
-            placeholder="#hex (optional)"
-            class="input !py-1.5 !text-sm flex-1"
-            bind:value={formData.color}
-            disabled={isLoading}
-          />
-        </div>
-      </div>
-    </form>
-  {/snippet}
-
-  {#snippet footer()}
+  <div class="flex items-center justify-end gap-3 pt-5">
     <button
       type="button"
       onclick={handleClose}
-      class="px-3 py-1 text-sm text-secondary-600 dark:text-secondary-400 hover:bg-secondary-100 dark:hover:bg-secondary-700 rounded-md transition-colors"
+      class="px-4 py-2.5 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
     >
       Cancel
     </button>
@@ -165,9 +147,9 @@
       type="submit"
       form="tag-form"
       disabled={isLoading}
-      class="px-3 py-1 text-sm bg-warning-500 hover:bg-warning-600 dark:bg-primary-600 dark:hover:bg-primary-700 text-white font-medium rounded-md transition-colors disabled:opacity-50"
+      class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl text-sm font-medium shadow-md hover:shadow-lg disabled:opacity-50 transition-all"
     >
       {isLoading ? 'Saving...' : mode === 'create' ? 'Create' : 'Save'}
     </button>
-  {/snippet}
+  </div>
 </Modal>

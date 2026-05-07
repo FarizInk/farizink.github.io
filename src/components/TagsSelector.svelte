@@ -277,9 +277,8 @@
   bind:isOpen
   onClose={handleModalClose}
   maxW="max-w-md"
-  showCloseButton={false}
 >
-  {#snippet header()}
+  
     <div class="flex items-center justify-between px-3 pt-2.5 pb-2 border-b border-secondary-200 dark:border-secondary-700">
       <div class="flex items-center gap-2">
         <div class="w-7 h-7 rounded-lg bg-warning-100 dark:bg-primary-900 flex items-center justify-center">
@@ -312,9 +311,9 @@
         />
       </div>
     {/if}
-  {/snippet}
+  
 
-{#snippet body()}
+
     <div class="p-3 max-h-[50vh] overflow-y-auto">
       {#if filteredOptions.length === 0}
         <div class="text-center py-8 text-sm text-secondary-500">
@@ -348,8 +347,8 @@
         </div>
       {/if}
     </div>
-  {/snippet}
-  {#snippet footer()}
+  
+  
     <span class="text-xs text-secondary-500 mr-auto">
       {selectedOptions.length} selected
     </span>
@@ -360,5 +359,5 @@
     >
       {selectedOptions.length > 0 ? 'Done' : 'Skip'}
     </button>
-  {/snippet}
+  
 </Modal>

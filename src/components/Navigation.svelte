@@ -22,7 +22,6 @@
     CircleX,
     Info,
     Heart,
-    Wallet
   } from '@lucide/svelte';
   import CommandPalette from './CommandPalette.svelte';
   import LoginModal from './LoginModal.svelte';
@@ -452,10 +451,8 @@
   isOpen={isApiHealthModalOpen}
   onClose={() => (isApiHealthModalOpen = false)}
   maxW="max-w-md"
-  title="API Server Status"
-  showCloseButton={true}
 >
-  {#snippet header()}
+  
     <div class="py-6 bg-gradient-to-br from-warning-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20">
       <div class="flex items-center justify-between px-6">
         <div class="flex items-center gap-3">
@@ -485,9 +482,9 @@
         </div>
       </div>
     </div>
-  {/snippet}
+  
 
-  {#snippet body()}
+  
     <div class="py-6">
       <div class="px-6">
       {#if apiHealthStatus === 'checking'}
@@ -595,9 +592,9 @@
       {/if}
       </div>
     </div>
-  {/snippet}
+  
 
-  {#snippet footer()}
+  
     <div class="py-4 bg-secondary-50 dark:bg-secondary-900/30">
       <div class="flex items-center justify-between px-6 gap-6">
         <div class="text-sm text-secondary-600 dark:text-secondary-400">
@@ -624,7 +621,7 @@
         </button>
       </div>
     </div>
-  {/snippet}
+  
 </Modal>
 
 <!-- Floating Menu Button with Ping Effect (Matches Tools.svelte style) -->
@@ -719,22 +716,7 @@
         </a>
       </div>
 
-        <!-- Finance -->
-        <a
-          href="/finance"
-          class="group flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-2xl hover:bg-emerald-50 dark:hover:bg-emerald-900/20 border border-gray-200 dark:border-gray-700 hover:border-emerald-300 dark:hover:border-emerald-400 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg cursor-pointer"
-          onclick={e => handleNavigation(e, '/finance')}
-        >
-          <div
-            class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 dark:from-emerald-500 dark:to-teal-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md"
-          >
-            <Wallet class="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Finance</span>
-            <p class="text-xs text-gray-500 dark:text-gray-400">Income & expenses</p>
-          </div>
-        </a>
+
 
       <!-- Settings Section -->
       <div class="pt-6">

@@ -158,6 +158,16 @@ export async function restoreTransaction(id: string): Promise<Transaction> {
   return response.data.data;
 }
 
+
+/**
+ * Recalculate finance summary from all transactions
+ * POST /api/finance/recalculate
+ */
+export async function recalculateFinanceSummary(): Promise<FinanceSummary> {
+  const response = await apiClient.post('/api/finance/recalculate');
+  return response.data.data;
+}
+
 /**
  * Format amount to IDR currency
  */

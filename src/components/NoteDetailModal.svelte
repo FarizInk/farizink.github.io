@@ -121,10 +121,8 @@
   }
 </script>
 
-<Modal isOpen={shouldShowModal} {onClose} maxW="max-w-6xl" showCloseButton={false}>
-  {#snippet header()}
-    <!-- Enhanced Header with Glass Morphism -->
-    <div class="py-4 px-4 sm:px-6 bg-gradient-to-b from-white/80 to-white/50 dark:from-gray-900/80 dark:to-gray-900/50 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
+<Modal isOpen={shouldShowModal} {onClose} maxW="max-w-6xl">
+<div class="mb-5">
       <div class="flex items-center justify-between">
         <!-- Mobile: "Detail" title, Desktop: Title & Meta Info -->
         <div class="hidden sm:block flex-1 min-w-0">
@@ -239,9 +237,7 @@
         </button>
       </div>
     </div>
-  {/snippet}
 
-  {#snippet body()}
     <div class="px-4 sm:px-6 py-6">
         <!-- Mobile: Title, Meta Info & Action Buttons -->
         <div class="sm:hidden mb-6 space-y-4">
@@ -611,5 +607,4 @@
         </div>
       {/if}
     </div>
-  {/snippet}
 </Modal>

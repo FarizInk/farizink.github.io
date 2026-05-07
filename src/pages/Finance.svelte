@@ -12,6 +12,7 @@
     Search,
     Filter,
     RefreshCw,
+    Calculator,
     Trash2,
     Pencil,
     X,
@@ -30,6 +31,7 @@
     deleteTransaction,
     formatAmount,
     formatDate,
+    recalculateFinanceSummary,
     type Transaction,
     type FinanceSummary,
     type TransactionFilters,
@@ -46,6 +48,7 @@
   let tags = $state<Tag[]>([]);
   let isLoading = $state(true);
   let isSubmitting = $state(false);
+  let isRecalculating = $state(false);
 
   // Pagination
   let currentPage = $state(1);
@@ -123,6 +126,21 @@
   function handleSearch() {
     currentPage = 1;
     loadData();
+  }
+
+  async function handleRecalculate() {
+    isRecalculating = true;
+    try {
+      await recalculateFinanceSummary();
+      toast.success('Recalculate queued. Refreshing summary...');
+      await new Promise(r => setTimeout(r, 2000));
+      await loadData();
+    } catch (error) {
+      console.error('Recalculate error:', error);
+      toast.error('Failed to recalculate summary');
+    } finally {
+      isRecalculating = false;
+    }
   }
 
   function handlePageChange(page: number) {
@@ -526,7 +544,7 @@
               min="1"
               placeholder="e.g. 50000"
               bind:value={formAmount}
-              class="w-full px-4 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all"
+              class="input"
             />
           </div>
 
@@ -537,7 +555,7 @@
               type="text"
               placeholder="e.g. Makan siang"
               bind:value={formDescription}
-              class="w-full px-4 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all"
+              class="input"
             />
           </div>
 
@@ -547,7 +565,7 @@
             <input
               type="datetime-local"
               bind:value={formDate}
-              class="w-full px-4 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all"
+              class="input"
             />
           </div>
 

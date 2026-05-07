@@ -114,8 +114,8 @@
   }
 </script>
 
-<Modal {isOpen} {onClose} maxW={expertFilterMode ? 'max-w-3xl' : 'max-w-lg'} showCloseButton={false}>
-  {#snippet header()}
+<Modal {isOpen} {onClose} maxW={expertFilterMode ? 'max-w-3xl' : 'max-w-lg'}>
+  
     <div class="py-5 px-6 bg-gradient-to-br from-warning-50 to-amber-50 dark:from-primary-900/30 dark:to-primary-800/20 border-b border-warning-200 dark:border-primary-700">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -161,9 +161,9 @@
         </div>
       </div>
     </div>
-  {/snippet}
+  
 
-  {#snippet body()}
+  
     <div class="px-4 sm:px-6 py-6">
     {#if expertFilterMode}
       <!-- Expert Mode -->
@@ -525,9 +525,9 @@
       </div>
     {/if}
     </div>
-  {/snippet}
+  
 
-  {#snippet footer()}
+  
     <div class="py-4 bg-secondary-50 dark:bg-secondary-900/30">
       <div class="flex items-center justify-between px-6 gap-6">
         <div class="text-sm text-secondary-600 dark:text-secondary-400">
@@ -556,5 +556,5 @@
         </div>
       </div>
     </div>
-  {/snippet}
+  
 </Modal>
