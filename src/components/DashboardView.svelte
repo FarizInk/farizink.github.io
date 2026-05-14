@@ -5,6 +5,7 @@
   import { getFinanceSummary, formatAmount, type FinanceSummary } from '../lib/finance';
   import { formatDate } from '../lib/notes';
   import { truncateText } from '../lib/uiUtils';
+  import { stripHtml } from '../lib/uiUtils';
   import NoteDetailModal from './NoteDetailModal.svelte';
   import {
     FileText,
@@ -290,10 +291,10 @@
                     {note.name || 'Untitled Note'}
                   </h3>
                   {#if note.description}
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
-                      {truncateText(note.description, 120)}
-                    </p>
-                  {/if}
+                   <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                      {truncateText(stripHtml(note.description), 120)}
+                   </p>
+                 {/if}
                   <div
                     class="flex items-center gap-3 mt-2 text-xs text-gray-400 dark:text-gray-500"
                   >

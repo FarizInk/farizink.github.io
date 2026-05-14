@@ -1,5 +1,13 @@
 import { addRefreshParam, isPresignedUrl } from './notes';
 import { Image as ImageIcon, File } from '@lucide/svelte';
+ 
+/**
+ * Strip HTML tags from a string, returning plain text
+ */
+export function stripHtml(html: string | null): string {
+  if (!html) return '';
+  return html.replace(/<[^>]*>/g, '');
+}
 
 /**
  * Truncate text to specified max length with ellipsis
