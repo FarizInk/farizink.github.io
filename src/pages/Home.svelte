@@ -1,102 +1,175 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import photoOne from '../assets/me/1.jpg';
   import photoTwo from '../assets/me/2.jpg';
   import SpotifyActivity from '../components/SpotifyActivity.svelte';
   import ConnectWithMe from '../components/ConnectWithMe.svelte';
+  import DashboardView from '../components/DashboardView.svelte';
+  import { LayoutDashboard, User } from '@lucide/svelte';
 
   let showPhoto = $state(false);
   let randPhoto = $state<string | null>(null);
   let imageLoading = $state(false);
 
+  // Dashboard toggle state
+  let showDashboard = $state(false);
+  let isLoggedIn = $state(false);
+
+  const DASHBOARD_STORAGE_KEY = 'homeShowDashboard';
+
+  function loadDashboardPreference(): boolean {
+    if (typeof localStorage === 'undefined') return false;
+    const stored = localStorage.getItem(DASHBOARD_STORAGE_KEY);
+    return stored === 'true';
+  }
+
+  function saveDashboardPreference() {
+    if (typeof localStorage === 'undefined') return;
+    localStorage.setItem(DASHBOARD_STORAGE_KEY, JSON.stringify(showDashboard));
+  }
+
+  function toggleDashboard() {
+    showDashboard = !showDashboard;
+    saveDashboardPreference();
+  }
+
   const togglePhoto = () => {
     const photos = [photoOne, photoTwo];
     if (!showPhoto) {
-      // Open modal with loading state first
       showPhoto = true;
       imageLoading = true;
-      randPhoto = null; // Reset previous photo so skeleton shows properly
+      randPhoto = null;
 
-      // Preload image to track actual network loading
       const randomPhoto = photos[Math.floor(Math.random() * photos.length)];
       const img = new Image();
 
       img.onload = () => {
-        // Image loaded successfully
         randPhoto = randomPhoto;
         imageLoading = false;
       };
 
       img.onerror = () => {
-        // Image failed to load
         console.error('Failed to load image');
-        randPhoto = randomPhoto; // Still show it even if failed
+        randPhoto = randomPhoto;
         imageLoading = false;
       };
 
-      // Start loading the image
       img.src = randomPhoto;
 
-      // Check if image is already cached
       if (img.complete) {
         randPhoto = randomPhoto;
         imageLoading = false;
       }
     } else {
-      // Close modal
       showPhoto = false;
       randPhoto = null;
       imageLoading = false;
     }
   };
+
+  onMount(() => {
+    isLoggedIn = !!localStorage.getItem('authToken');
+    if (isLoggedIn) {
+      showDashboard = loadDashboardPreference();
+    }
+
+    const handleAuthChange = () => {
+      const wasLoggedIn = isLoggedIn;
+      isLoggedIn = !!localStorage.getItem('authToken');
+
+      if (isLoggedIn && !wasLoggedIn) {
+        showDashboard = loadDashboardPreference();
+      }
+
+      if (!isLoggedIn) {
+        showDashboard = false;
+      }
+    };
+
+    document.addEventListener('logout-success', handleAuthChange);
+    window.addEventListener('storage', handleAuthChange);
+
+    return () => {
+      document.removeEventListener('logout-success', handleAuthChange);
+      window.removeEventListener('storage', handleAuthChange);
+    };
+  });
 </script>
 
 <main class="min-h-screen flex items-center justify-center px-4 py-8 relative">
-  <!-- Main Content -->
   <div class="max-w-4xl w-full">
-    <div class="text-left">
-      <!-- Name with gradient effect -->
-      <div class="mb-3">
-        <h1
-          class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight bg-gradient-to-r from-black via-yellow-700 to-black bg-clip-text text-transparent dark:from-white dark:via-primary-500 dark:to-white dark:text-transparent bg-[length:200%_auto] animate-gradient"
+    <!-- Toggle Switch (only when logged in) -->
+    {#if isLoggedIn}
+      <div class="flex justify-end mb-6">
+        <button
+          type="button"
+          onclick={toggleDashboard}
+          class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-xl transition-all duration-200 {showDashboard
+            ? 'bg-warning-100 dark:bg-primary-900/30 text-warning-700 dark:text-primary-300 border border-warning-200 dark:border-primary-700'
+            : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700'}"
+          title={showDashboard ? 'Show profile' : 'Show dashboard'}
         >
-          Nizar Alfarizi Akbar
-        </h1>
+          {#if showDashboard}
+            <User class="w-4 h-4" />
+            <span class="hidden sm:inline">Profile</span>
+          {:else}
+            <LayoutDashboard class="w-4 h-4" />
+            <span class="hidden sm:inline">Dashboard</span>
+          {/if}
+        </button>
       </div>
+    {/if}
 
-      <!-- Nickname -->
-      <div class="mb-6">
-        <p class="text-lg md:text-xl text-black dark:text-gray-400">
-          known as
-          <button
-            type="button"
-            onclick={() => togglePhoto()}
-            class="font-bold text-warning-600 dark:text-primary-400 italic"
+    {#if showDashboard && isLoggedIn}
+      <!-- Dashboard View -->
+      <DashboardView />
+    {:else}
+      <!-- Default Content (Profile) -->
+      <div class="text-left">
+        <!-- Name with gradient effect -->
+        <div class="mb-3">
+          <h1
+            class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight bg-gradient-to-r from-black via-yellow-700 to-black bg-clip-text text-transparent dark:from-white dark:via-primary-500 dark:to-white dark:text-transparent bg-[length:200%_auto] animate-gradient"
           >
-            Fariz
-          </button>
-        </p>
-      </div>
+            Nizar Alfarizi Akbar
+          </h1>
+        </div>
 
-      <!-- Description -->
-      <div class="mb-8">
-        <p class="text-black dark:text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl">
-          Software engineer based in Sidoarjo, Indonesia. Specializing in backend development and
-          high-quality web applications. Currently building <span
-            class="italic text-warning-600 dark:text-primary-400">"gabut"</span
-          > projects and crushing work tasks 🙂
-        </p>
-      </div>
+        <!-- Nickname -->
+        <div class="mb-6">
+          <p class="text-lg md:text-xl text-black dark:text-gray-400">
+            known as
+            <button
+              type="button"
+              onclick={() => togglePhoto()}
+              class="font-bold text-warning-600 dark:text-primary-400 italic"
+            >
+              Fariz
+            </button>
+          </p>
+        </div>
 
-      <!-- Connect Section -->
-      <div class="mb-12">
-        <ConnectWithMe />
-      </div>
+        <!-- Description -->
+        <div class="mb-8">
+          <p class="text-black dark:text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl">
+            Software engineer based in Sidoarjo, Indonesia. Specializing in backend development and
+            high-quality web applications. Currently building <span
+              class="italic text-warning-600 dark:text-primary-400">"gabut"</span
+            > projects and crushing work tasks 🙂
+          </p>
+        </div>
 
-      <!-- Spotify Widget -->
-      <div>
-        <SpotifyActivity />
+        <!-- Connect Section -->
+        <div class="mb-12">
+          <ConnectWithMe />
+        </div>
+
+        <!-- Spotify Widget -->
+        <div>
+          <SpotifyActivity />
+        </div>
       </div>
-    </div>
+    {/if}
   </div>
 
   <!-- Floating Photo Card -->
