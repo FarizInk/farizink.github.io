@@ -452,176 +452,167 @@
   onClose={() => (isApiHealthModalOpen = false)}
   maxW="max-w-md"
 >
-  
-    <div class="py-6 bg-gradient-to-br from-warning-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20">
-      <div class="flex items-center justify-between px-6">
-        <div class="flex items-center gap-3">
-          <div
-            class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-amber-400 dark:from-primary-500 dark:to-primary-600 rounded-xl flex items-center justify-center shadow-md"
-          >
-            {#if apiHealthStatus === 'checking'}
-              <Activity class="w-6 h-6 text-white animate-pulse" />
-            {:else if apiHealthStatus === 'ok'}
-              <CircleCheck class="w-6 h-6 text-white" />
-            {:else}
-              <CircleX class="w-6 h-6 text-white" />
-            {/if}
-          </div>
-          <div>
-            <h2 class="text-lg font-bold text-gray-900 dark:text-white">API Server Status</h2>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-              {#if apiHealthStatus === 'checking'}
-                Checking connection...
-              {:else if apiHealthStatus === 'ok'}
-                Connected & healthy
-              {:else}
-                Connection failed
-              {/if}
-            </p>
-          </div>
-        </div>
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-3">
+      <div
+        class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-amber-400 dark:from-purple-500 dark:to-purple-600 rounded-xl flex items-center justify-center shadow-lg"
+      >
+        {#if apiHealthStatus === 'checking'}
+          <Activity class="w-6 h-6 text-white animate-pulse" />
+        {:else if apiHealthStatus === 'ok'}
+          <CircleCheck class="w-6 h-6 text-white" />
+        {:else}
+          <CircleX class="w-6 h-6 text-white" />
+        {/if}
+      </div>
+      <div>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">API Server Status</h2>
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          {#if apiHealthStatus === 'checking'}
+            Checking connection...
+          {:else if apiHealthStatus === 'ok'}
+            Connected & healthy
+          {:else}
+            Connection failed
+          {/if}
+        </p>
       </div>
     </div>
-  
+    <button
+      onclick={() => (isApiHealthModalOpen = false)}
+      class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+    >
+      <X class="w-5 h-5 text-gray-500" />
+    </button>
+  </div>
 
-  
-    <div class="py-6">
-      <div class="px-6">
-      {#if apiHealthStatus === 'checking'}
-        <div class="flex flex-col items-center justify-center py-8">
-          <div class="w-12 h-12 border-4 border-warning-200 dark:border-primary-800 border-t-yellow-500 dark:border-t-primary-500 rounded-full animate-spin mb-4"></div>
-          <p class="text-gray-600 dark:text-gray-400">Checking API health...</p>
+  {#if apiHealthStatus === 'checking'}
+    <div class="flex flex-col items-center justify-center py-8">
+      <div
+        class="w-12 h-12 border-4 border-yellow-200 dark:border-purple-800 border-t-yellow-500 dark:border-t-purple-500 rounded-full animate-spin mb-4"
+      ></div>
+      <p class="text-gray-600 dark:text-gray-400">Checking API health...</p>
+    </div>
+  {:else if healthData}
+    <div class="space-y-4">
+      <!-- Status Badge -->
+      <div
+        class="flex items-center justify-center gap-2 p-3 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-700/50"
+      >
+        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+        <span class="text-sm font-semibold text-green-900 dark:text-green-300">API is Online</span>
+      </div>
+
+      <!-- Info Grid -->
+      <div class="grid grid-cols-2 gap-3">
+        <!-- Service Name -->
+        <div
+          class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-700"
+        >
+          <div class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 text-xs mb-1">
+            <Info class="w-3 h-3" />
+            <span>Service</span>
+          </div>
+          <p class="text-sm font-semibold text-gray-900 dark:text-white">{healthData.service}</p>
         </div>
-      {:else if healthData}
-        <div class="space-y-4">
-          <!-- Status Badge -->
-          <div class="flex items-center justify-center gap-2 p-3 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-700/50">
-            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span class="text-sm font-semibold text-green-900 dark:text-green-300">API is Online</span>
+
+        <!-- Version -->
+        <div
+          class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-700"
+        >
+          <div class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 text-xs mb-1">
+            <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+            <span>Version</span>
           </div>
-
-          <!-- Info Grid -->
-          <div class="grid grid-cols-2 gap-3">
-            <!-- Service Name -->
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-700">
-              <div class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 text-xs mb-1">
-                <Info class="w-3 h-3" />
-                <span>Service</span>
-              </div>
-              <p class="text-sm font-semibold text-gray-900 dark:text-white">{healthData.service}</p>
-            </div>
-
-            <!-- Version -->
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-700">
-              <div class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 text-xs mb-1">
-                <div class="w-3 h-3 bg-primary-500 rounded-full"></div>
-                <span>Version</span>
-              </div>
-              <p class="text-sm font-semibold text-gray-900 dark:text-white">{healthData.version}</p>
-            </div>
-
-            <!-- Status -->
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-700">
-              <div class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 text-xs mb-1">
-                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span>Status</span>
-              </div>
-              <p class="text-sm font-semibold text-gray-900 dark:text-white capitalize">{healthData.status}</p>
-            </div>
-
-            <!-- Response Time -->
-            <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-700">
-              <div class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 text-xs mb-1">
-                <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-                <span>Last Check</span>
-              </div>
-              <p class="text-sm font-semibold text-gray-900 dark:text-white">
-                {lastChecked
-                  ? new Date(lastChecked).toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      second: '2-digit'
-                    })
-                  : '-'}
-              </p>
-            </div>
-          </div>
-
-          <!-- Timestamp -->
-          <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-700">
-            <div class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 text-xs mb-1">
-              <div class="w-3 h-3 bg-orange-500 rounded-full"></div>
-              <span>Server Timestamp</span>
-            </div>
-            <p class="text-sm font-semibold text-gray-900 dark:text-white">
-              {healthData.timestamp ? new Date(healthData.timestamp).toLocaleString() : '-'}
-            </p>
-          </div>
+          <p class="text-sm font-semibold text-gray-900 dark:text-white">{healthData.version}</p>
         </div>
-      {:else}
-        <!-- Error State -->
-        <div class="space-y-4">
-          <div class="flex flex-col items-center justify-center py-4">
-            <div class="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-4">
-              <WifiOff class="w-8 h-8 text-red-500" />
-            </div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-              Connection Error
-            </h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 text-center">
-              Unable to connect to the API server
-            </p>
+
+        <!-- Status -->
+        <div
+          class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-700"
+        >
+          <div class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 text-xs mb-1">
+            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+            <span>Status</span>
           </div>
+          <p class="text-sm font-semibold text-gray-900 dark:text-white capitalize">
+            {healthData.status}
+          </p>
+        </div>
 
-          {#if apiHealthError}
-            <div class="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-700/50">
-              <p class="text-xs text-red-600 dark:text-red-400 font-mono break-all">
-                {apiHealthError}
-              </p>
-            </div>
-          {/if}
+        <!-- Last Check -->
+        <div
+          class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-700"
+        >
+          <div class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 text-xs mb-1">
+            <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+            <span>Last Check</span>
+          </div>
+          <p class="text-sm font-semibold text-gray-900 dark:text-white">
+            {lastChecked
+              ? new Date(lastChecked).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit'
+                })
+              : '-'}
+          </p>
+        </div>
+      </div>
 
-          <button
-            onclick={checkAPIHealth}
-            class="btn btn-primary w-full flex items-center justify-center gap-2 p-3 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-xl font-medium transition-all"
-          >
-            <RefreshCw class="w-4 h-4" />
-            <span>Retry Connection</span>
-          </button>
+      <!-- Server Timestamp -->
+      <div
+        class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-700"
+      >
+        <div class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 text-xs mb-1">
+          <div class="w-3 h-3 bg-orange-500 rounded-full"></div>
+          <span>Server Timestamp</span>
+        </div>
+        <p class="text-sm font-semibold text-gray-900 dark:text-white">
+          {healthData.timestamp ? new Date(healthData.timestamp).toLocaleString() : '-'}
+        </p>
+      </div>
+    </div>
+  {:else}
+    <!-- Error State -->
+    <div class="space-y-4">
+      <div class="flex flex-col items-center justify-center py-4">
+        <div
+          class="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-4"
+        >
+          <WifiOff class="w-8 h-8 text-red-500" />
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Connection Error</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 text-center">
+          Unable to connect to the API server
+        </p>
+      </div>
+
+      {#if apiHealthError}
+        <div
+          class="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-700/50"
+        >
+          <p class="text-xs text-red-600 dark:text-red-400 font-mono break-all">
+            {apiHealthError}
+          </p>
         </div>
       {/if}
-      </div>
     </div>
-  
+  {/if}
 
-  
-    <div class="py-4 bg-secondary-50 dark:bg-secondary-900/30">
-      <div class="flex items-center justify-between px-6 gap-6">
-        <div class="text-sm text-secondary-600 dark:text-secondary-400">
-          {#if apiHealthStatus === 'checking'}
-            <span>Checking API connection...</span>
-          {:else if healthData}
-            <span>API is online and healthy</span>
-          {:else}
-            <span>Unable to connect to API</span>
-          {/if}
-        </div>
-        <button
-          onclick={checkAPIHealth}
-          class="btn btn-primary px-5 py-2.5  dark:hover:from-primary-600 dark:hover:to-primary-700 dark:from-primary-500 dark:to-primary-600  font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 flex items-center gap-2 disabled:opacity-50"
-          disabled={apiHealthStatus === 'checking'}
-        >
-          {#if apiHealthStatus === 'checking'}
-            <RefreshCw class="w-4 h-4 animate-spin" />
-            Checking...
-          {:else}
-            <RefreshCw class="w-4 h-4" />
-            Refresh
-          {/if}
-        </button>
-      </div>
-    </div>
-  
+  <button
+    onclick={checkAPIHealth}
+    disabled={apiHealthStatus === 'checking'}
+    class="btn btn-primary w-full flex items-center justify-center gap-2 py-3.5 font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-md mt-6"
+  >
+    {#if apiHealthStatus === 'checking'}
+      <RefreshCw class="w-4 h-4 animate-spin" />
+      <span>Checking...</span>
+    {:else}
+      <RefreshCw class="w-4 h-4" />
+      <span>Refresh</span>
+    {/if}
+  </button>
 </Modal>
 
 <!-- Floating Menu Button with Ping Effect (Matches Tools.svelte style) -->
@@ -665,23 +656,6 @@
     transition:fly={{ x: 320, duration: 300, opacity: 0 }}
     class="fixed top-0 right-0 h-full w-80 max-w-[90vw] bg-white dark:bg-gray-900 z-50 flex flex-col shadow-2xl"
   >
-    <!-- Header -->
-    <div class="py-6 bg-gradient-to-br from-warning-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20">
-      <div class="flex items-center justify-between px-6">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white">
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-warning-600 to-amber-500 dark:from-primary-400 dark:to-primary-500">
-            Menu
-          </span>
-        </h2>
-        <button
-          onclick={() => (drawerOpen = false)}
-          class="btn-icon w-9 h-9 rounded-xl hover:bg-warning-100 dark:hover:bg-primary-900/30 flex items-center justify-center transition-all active:scale-95"
-          aria-label="Close menu"
-        >
-          <X class="w-5 h-5 text-gray-500 dark:text-gray-400" />
-        </button>
-      </div>
-    </div>
 
     <!-- Menu Items -->
     <div class="flex-1 overflow-y-auto p-6 space-y-6">
@@ -723,7 +697,7 @@
         <!-- Settings Toggle -->
         <button
           onclick={() => (isSettingsExpanded = !isSettingsExpanded)}
-          class="btn w-full flex items-center justify-between p-4 rounded-2xl bg-gradient-to-br from-warning-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 hover:from-warning-100 dark:hover:from-primary-900/30 hover:to-amber-100 dark:hover:to-primary-900/40 border border-warning-200 dark:border-primary-800 hover:border-warning-300 dark:hover:border-primary-400 transition-all duration-200 group"
+          class="w-full flex items-center justify-between p-4 rounded-2xl bg-gradient-to-br from-warning-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 hover:from-warning-100 dark:hover:from-primary-900/30 hover:to-amber-100 dark:hover:to-primary-900/40 border border-warning-200 dark:border-primary-800 hover:border-warning-300 dark:hover:border-primary-400 transition-all duration-200 group"
         >
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-amber-400 dark:from-primary-500 dark:to-primary-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
@@ -848,7 +822,7 @@
             {#if canInstall && !isIOS}
               <button
                 onclick={installPWA}
-                class="btn btn-primary w-full flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/30 border border-green-200 dark:border-green-700/50 hover:from-green-100 dark:hover:from-green-900/40 hover:border-green-300 dark:hover:border-green-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group"
+                class="w-full flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/30 border border-green-200 dark:border-green-700/50 hover:from-green-100 dark:hover:from-green-900/40 hover:border-green-300 dark:hover:border-green-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group"
               >
                 <div
                   class="w-11 h-11 bg-gradient-to-br from-green-400 to-green-500 dark:from-green-500 dark:to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md"
@@ -882,7 +856,7 @@
             <button
               onclick={refreshServiceWorker}
               disabled={isRefreshing}
-              class="btn btn-secondary w-full flex items-center justify-between p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="w-full flex items-center justify-between p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <div class="flex items-center gap-3">
                 <div
