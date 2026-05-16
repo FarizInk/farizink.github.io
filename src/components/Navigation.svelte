@@ -767,10 +767,10 @@
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-3">
                 <div
-                  class="w-11 h-11 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/50 rounded-xl flex items-center justify-center"
+                  class="w-11 h-11 bg-gradient-to-br from-warning-100 to-amber-200 dark:from-primary-900/30 dark:to-primary-800/50 rounded-xl flex items-center justify-center"
                 >
                   {#if serviceWorkerEnabled}
-                    <Wifi class="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    <Wifi class="w-5 h-5 text-warning-600 dark:text-primary-400" />
                   {:else}
                     <WifiOff class="w-5 h-5 text-gray-400 dark:text-gray-600" />
                   {/if}
@@ -791,7 +791,7 @@
               <button
                 onclick={toggleServiceWorker}
                 class="mode-btn w-12 h-6 rounded-full bg-gradient-to-r {serviceWorkerEnabled
-                  ? 'from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700'
+                  ? 'from-warning-500 to-amber-500 dark:from-primary-500 dark:to-primary-600'
                   : 'from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700'} relative transition-all duration-300 shadow-inner {serviceWorkerCanToggle
                   ? 'cursor-pointer hover:scale-105'
                   : 'cursor-not-allowed opacity-60'}"
