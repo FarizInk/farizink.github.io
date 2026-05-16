@@ -83,6 +83,17 @@
     navigator.clipboard.writeText(text);
   }
 
+  function getLimitColor(current: number, limit: number): string {
+    const percent = (current / limit) * 100;
+    if (percent >= 100) return 'bg-red-500';
+    if (percent >= 80) return 'bg-warning-500';
+    return 'bg-green-500';
+  }
+
+  function getLimitPercent(current: number, limit: number): number {
+    return Math.min((current / limit) * 100, 100);
+  }
+
   function clearAll() {
     inputText = '';
   }
@@ -166,7 +177,7 @@ ${inputText}
 >
   <!-- Hero Section -->
   <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
   >
     <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3">
@@ -202,7 +213,7 @@ ${inputText}
     <!-- Text Input Area -->
     <div class="lg:col-span-2">
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
       >
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input Text</h2>
@@ -250,7 +261,7 @@ ${inputText}
     <div class="space-y-4">
       <!-- Quick Stats -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
       >
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Stats</h2>
 
@@ -313,7 +324,7 @@ ${inputText}
 
       <!-- Action Buttons -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
       >
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Actions</h2>
 
@@ -345,7 +356,7 @@ ${inputText}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
       <!-- Character Breakdown -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
       >
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Character Breakdown
@@ -376,7 +387,7 @@ ${inputText}
 
       <!-- Reading Time -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
       >
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Reading Time</h3>
         <div class="space-y-3">
@@ -411,7 +422,7 @@ ${inputText}
 
       <!-- Structure Analysis -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
       >
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Structure Analysis</h3>
         <div class="space-y-2">
@@ -466,10 +477,10 @@ ${inputText}
   <!-- Features Section -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
     <div
-      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
         <Sparkles class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
@@ -482,10 +493,10 @@ ${inputText}
     </div>
 
     <div
-      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
         <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
@@ -496,10 +507,10 @@ ${inputText}
     </div>
 
     <div
-      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
         <Check class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>

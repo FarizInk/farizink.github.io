@@ -267,7 +267,7 @@
 >
   <!-- Hero Section -->
   <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
   >
     <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3">
@@ -311,7 +311,7 @@
     <!-- Main Calculator -->
     <div class="lg:col-span-2 space-y-4">
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
       >
         <div class="flex items-center justify-between mb-6">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -338,12 +338,12 @@
             <div>
               <label class="label">
                 What is <input
-                  type="number"
+                  type="number" inputmode="decimal"
                   bind:value={percentage}
                   class="inline-input w-20 mx-2 text-center"
                 />% of
                 <input
-                  type="number"
+                  type="number" inputmode="decimal"
                   bind:value={number}
                   class="inline-input w-20 mx-2 text-center"
                 />?
@@ -390,13 +390,13 @@
             <div>
               <label class="label">
                 Increase <input
-                  type="number"
+                  type="number" inputmode="decimal"
                   bind:value={originalValue}
                   class="inline-input w-20 mx-2 text-center"
                 />
                 by
                 <input
-                  type="number"
+                  type="number" inputmode="decimal"
                   bind:value={changePercentage}
                   class="inline-input w-20 mx-2 text-center"
                 />%
@@ -439,13 +439,13 @@
             <div>
               <label class="label">
                 Decrease <input
-                  type="number"
+                  type="number" inputmode="decimal"
                   bind:value={originalValue}
                   class="inline-input w-20 mx-2 text-center"
                 />
                 by
                 <input
-                  type="number"
+                  type="number" inputmode="decimal"
                   bind:value={changePercentage}
                   class="inline-input w-20 mx-2 text-center"
                 />%
@@ -494,7 +494,7 @@
                 >
                 <input
                   id="first-value"
-                  type="number"
+                  type="number" inputmode="decimal"
                   bind:value={value1}
                   class="tool-input"
                 />
@@ -507,7 +507,7 @@
                 >
                 <input
                   id="second-value"
-                  type="number"
+                  type="number" inputmode="decimal"
                   bind:value={value2}
                   class="tool-input"
                 />
@@ -553,7 +553,7 @@
                   <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
                   <input
                     id="original-price"
-                    type="number"
+                    type="number" inputmode="decimal"
                     bind:value={originalPrice}
                     class="tool-input pl-8"
                   />
@@ -568,7 +568,7 @@
                 >
                 <input
                   id="discount-percent"
-                  type="number"
+                  type="number" inputmode="decimal"
                   bind:value={discountPercent}
                   class="tool-input"
                 />
@@ -622,7 +622,7 @@
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
                 <input
                   id="bill-amount"
-                  type="number"
+                  type="number" inputmode="decimal"
                   bind:value={billAmount}
                   class="tool-input pl-8"
                 />
@@ -638,7 +638,7 @@
                 >
                 <input
                   id="tip-percentage"
-                  type="number"
+                  type="number" inputmode="decimal"
                   bind:value={tipPercentage}
                   class="tool-input"
                 />
@@ -662,7 +662,7 @@
                 >
                 <input
                   id="number-of-people"
-                  type="number"
+                  type="number" inputmode="decimal"
                   bind:value={numberOfPeople}
                   min="1"
                   class="tool-input"
@@ -722,7 +722,7 @@
     <div class="space-y-4">
       <!-- Formulas -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
       >
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
           <Calculator class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
@@ -773,7 +773,7 @@
 
       <!-- Tips -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
       >
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Tips</h3>
         <div class="space-y-3 text-sm text-gray-600 dark:text-gray-400">
@@ -809,10 +809,10 @@
   <!-- Features Section -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
     <div
-      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
         <Percent class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
@@ -823,10 +823,10 @@
     </div>
 
     <div
-      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
         <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
@@ -837,10 +837,10 @@
     </div>
 
     <div
-      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
         <Check class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>

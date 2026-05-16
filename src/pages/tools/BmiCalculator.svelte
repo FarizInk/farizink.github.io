@@ -260,7 +260,7 @@
 >
   <!-- Hero Section -->
   <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
   >
     <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3">
@@ -305,7 +305,7 @@
     <div class="lg:col-span-2 space-y-4">
       <!-- Basic Information -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
       >
         <div class="flex items-center justify-between mb-6">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -337,7 +337,7 @@
             <input
               class="tool-input"
               id="height-input"
-              type="number"
+              type="number" inputmode="decimal"
               bind:value={height}
               placeholder={units === 'metric' ? '170' : '67'}
             />
@@ -353,7 +353,7 @@
             <input
               class="tool-input"
               id="weight-input"
-              type="number"
+              type="number" inputmode="decimal"
               bind:value={weight}
               placeholder={units === 'metric' ? '70' : '154'}
             />
@@ -367,7 +367,7 @@
             <input
               class="tool-input"
               id="age-input"
-              type="number"
+              type="number" inputmode="decimal"
               bind:value={age}
               placeholder="30"
             />
@@ -432,7 +432,7 @@
       <!-- BMI Result -->
       {#if bmi > 0}
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
         >
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
             <Activity class="w-6 h-6 mr-2 text-warning-600 dark:text-primary-400" />
@@ -482,7 +482,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Ideal Weight -->
           <div
-            class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+            class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
           >
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
               <Target class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
@@ -514,7 +514,7 @@
           <!-- Metabolic Information -->
           {#if bmr > 0}
             <div
-              class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+              class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
             >
               <h3
                 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center"
@@ -554,7 +554,7 @@
     <div class="space-y-4">
       <!-- BMI Categories -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
       >
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">BMI Categories</h3>
         <div class="space-y-3">
@@ -596,7 +596,7 @@
       <!-- Health Tips -->
       {#if bmi > 0 && getHealthTips().length > 0}
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
         >
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Health Tips</h3>
           <div class="space-y-3">
@@ -636,10 +636,10 @@
   <!-- Features Section -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
     <div
-      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
         <Activity class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
@@ -650,10 +650,10 @@
     </div>
 
     <div
-      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
         <Heart class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
@@ -664,10 +664,10 @@
     </div>
 
     <div
-      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
         <Target class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>

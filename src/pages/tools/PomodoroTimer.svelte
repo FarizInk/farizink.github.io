@@ -171,6 +171,15 @@
     timeLeft = sessionDuration;
   }
 
+  // Update page title with timer
+  $effect(() => {
+    if (isRunning) {
+      document.title = formattedTime + ' - ' + (currentSession === 'work' ? '🍅 Work' : '☕ Break') + ' | Pomodoro';
+    } else {
+      document.title = 'Pomodoro Timer - Developer Tools';
+    }
+  });
+
   function playNotificationSound(): void {
     // Create a simple beep sound using Web Audio API
     const audioContext = new (window.AudioContext ||
@@ -242,7 +251,7 @@
 >
   <!-- Hero Section -->
   <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
   >
     <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3">
@@ -279,7 +288,7 @@
                 <label for="edit-work-duration" class="label"> Work Duration (minutes) </label>
                 <input
                   id="edit-work-duration"
-                  type="number"
+                  type="number" inputmode="decimal"
                   bind:value={editingWorkMinutes}
                   min="1"
                   max="60"
@@ -293,7 +302,7 @@
                 <label for="edit-short-break" class="label"> Short Break (minutes) </label>
                 <input
                   id="edit-short-break"
-                  type="number"
+                  type="number" inputmode="decimal"
                   bind:value={editingShortBreakMinutes}
                   min="1"
                   max="30"
@@ -307,7 +316,7 @@
                 <label for="edit-long-break" class="label"> Long Break (minutes) </label>
                 <input
                   id="edit-long-break"
-                  type="number"
+                  type="number" inputmode="decimal"
                   bind:value={editingLongBreakMinutes}
                   min="1"
                   max="60"
@@ -321,7 +330,7 @@
                 <label for="edit-session-count" class="label"> Sessions Completed </label>
                 <input
                   id="edit-session-count"
-                  type="number"
+                  type="number" inputmode="decimal"
                   bind:value={sessionCount}
                   min="0"
                   max="999"

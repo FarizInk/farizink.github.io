@@ -266,7 +266,7 @@
 >
   <!-- Hero Section -->
   <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
   >
     <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3">
@@ -345,7 +345,7 @@
                 >
                 <input
                   id="weight-{item.id}"
-                  type="number"
+                  type="number" inputmode="decimal"
                   bind:value={item.weight}
                   min="0.1"
                   step="0.1"
@@ -399,7 +399,7 @@
           </label>
           <input
             id="number-of-picks"
-            type="number"
+            type="number" inputmode="decimal"
             bind:value={numberOfPicks}
             min="1"
             max={items.filter(item => item.text.trim() !== '').length}

@@ -32,7 +32,8 @@
     hasAuthToken,
     isDeleted = false,
     onPermanentDelete,
-    onShare
+    onShare,
+    hideActions = false
   } = $props<{
     note: Note | null;
     isOpen: boolean;
@@ -43,6 +44,7 @@
     isDeleted?: boolean;
     onPermanentDelete?: (note: Note) => void;
     onShare?: (note: Note) => void;
+    hideActions?: boolean;
   }>();
 
   // Modal is only open when both isOpen is true AND note exists
@@ -75,7 +77,21 @@
   }
 
   function handleShare() {
-    if (note) onShare?.(note);
+    if (!note) return;
+    if (onShare) {
+      onShare(note);
+      return;
+    }
+    // Fallback: copy share URL to clipboard
+    const shareUrl = `${window.location.origin}/notes?id=${note.id}`;
+    navigator.clipboard
+      .writeText(shareUrl)
+      .then(() => {
+        toast.success('Link copied to clipboard!');
+      })
+      .catch(() => {
+        toast.error('Failed to copy link');
+      });
   }
 
   function handleEdit() {
@@ -194,33 +210,35 @@
             <Share2 class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
           </button>
 
-          {#if isDeleted}
-            {#if hasAuthToken && onPermanentDelete}
-              <button
-                onclick={handlePermanentDelete}
-                class="btn-icon group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 transition-all duration-200 hover:scale-105 active:scale-95"
-                title="Permanently delete note"
-              >
-                <Trash2 class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
-              </button>
-            {/if}
-          {:else}
-            {#if hasAuthToken}
-              <button
-                onclick={handleEdit}
-                class="btn-icon group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 transition-all duration-200 hover:scale-105 active:scale-95"
-                title="Edit note"
-              >
-                <Edit class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
-              </button>
+          {#if !hideActions}
+            {#if isDeleted}
+              {#if hasAuthToken && onPermanentDelete}
+                <button
+                  onclick={handlePermanentDelete}
+                  class="btn-icon group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 transition-all duration-200 hover:scale-105 active:scale-95"
+                  title="Permanently delete note"
+                >
+                  <Trash2 class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
+                </button>
+              {/if}
+            {:else}
+              {#if hasAuthToken}
+                <button
+                  onclick={handleEdit}
+                  class="btn-icon group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 transition-all duration-200 hover:scale-105 active:scale-95"
+                  title="Edit note"
+                >
+                  <Edit class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
+                </button>
 
-              <button
-                onclick={handleDelete}
-                class="btn-icon group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 transition-all duration-200 hover:scale-105 active:scale-95"
-                title="Delete note"
-              >
-                <Trash2 class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
-              </button>
+                <button
+                  onclick={handleDelete}
+                  class="btn-icon group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 transition-all duration-200 hover:scale-105 active:scale-95"
+                  title="Delete note"
+                >
+                  <Trash2 class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
+                </button>
+              {/if}
             {/if}
           {/if}
 
@@ -293,33 +311,35 @@
               <span class="text-secondary-700 dark:text-secondary-300">Share</span>
             </button>
 
-            {#if isDeleted}
-              {#if hasAuthToken && onPermanentDelete}
-                <button
-                  onclick={handlePermanentDelete}
-                  class="btn col-span-2 flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 rounded-xl transition-all text-sm font-medium"
-                >
-                  <Trash2 class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
-                  <span class="text-secondary-700 dark:text-secondary-300 group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors">Delete Permanently</span>
-                </button>
-              {/if}
-            {:else}
-              {#if hasAuthToken}
-                <button
-                  onclick={handleEdit}
-                  class="btn btn-secondary flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 rounded-xl transition-all text-sm font-medium"
-                >
-                  <Edit class="w-4 h-4 text-secondary-600 dark:text-secondary-300" />
-                  <span class="text-secondary-700 dark:text-secondary-300">Edit</span>
-                </button>
+            {#if !hideActions}
+              {#if isDeleted}
+                {#if hasAuthToken && onPermanentDelete}
+                  <button
+                    onclick={handlePermanentDelete}
+                    class="btn col-span-2 flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 rounded-xl transition-all text-sm font-medium"
+                  >
+                    <Trash2 class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
+                    <span class="text-secondary-700 dark:text-secondary-300 group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors">Delete Permanently</span>
+                  </button>
+                {/if}
+              {:else}
+                {#if hasAuthToken}
+                  <button
+                    onclick={handleEdit}
+                    class="btn btn-secondary flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 rounded-xl transition-all text-sm font-medium"
+                  >
+                    <Edit class="w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                    <span class="text-secondary-700 dark:text-secondary-300">Edit</span>
+                  </button>
 
-                <button
-                  onclick={handleDelete}
-                  class="btn flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 rounded-xl transition-all text-sm font-medium"
-                >
-                  <Trash2 class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
-                  <span class="text-secondary-700 dark:text-secondary-300 group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors">Delete</span>
-                </button>
+                  <button
+                    onclick={handleDelete}
+                    class="btn flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 rounded-xl transition-all text-sm font-medium"
+                  >
+                    <Trash2 class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
+                    <span class="text-secondary-700 dark:text-secondary-300 group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors">Delete</span>
+                  </button>
+                {/if}
               {/if}
             {/if}
           </div>

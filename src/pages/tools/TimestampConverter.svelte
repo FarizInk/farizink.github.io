@@ -1,6 +1,7 @@
 <script lang="ts">
   import ToolLayout from '../../components/ToolLayout.svelte';
   import { Calendar, Zap, Copy, RefreshCw, Clock } from '@lucide/svelte';
+  import { toast } from 'svelte-sonner';
 
   let unixTimestamp = $state('');
   let formattedDate = $state('');
@@ -116,6 +117,19 @@
     convertFromTimestamp();
   }
 
+  function copyISO() {
+    const iso = new Date(parseInt(unixTimestamp) * 1000 || Date.now()).toISOString();
+    navigator.clipboard.writeText(iso);
+    toast.success('ISO string copied!');
+  }
+
+  function setNow() {
+    const now = Math.floor(Date.now() / 1000);
+    unixTimestamp = now.toString();
+    convertFromTimestamp();
+    toast.success('Set to current time');
+  }
+
   function clearAll() {
     unixTimestamp = '';
     formattedDate = '';
@@ -184,7 +198,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Unix Timestamp to Date -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
     >
       <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
         Unix Timestamp → Date
@@ -232,7 +246,7 @@
 
     <!-- Date to Unix Timestamp -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
     >
       <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
         Date → Unix Timestamp
@@ -281,7 +295,7 @@
   <!-- Formatted Results -->
   {#if formattedDate}
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
     >
       <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Formatted Results</h2>
 
@@ -320,7 +334,7 @@
 
   <!-- Timestamp Information -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
   >
     <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">About Unix Timestamps</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -345,10 +359,10 @@
   <!-- Features Section -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
     <div
-      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
         <Calendar class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
@@ -359,10 +373,10 @@
     </div>
 
     <div
-      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
         <Copy class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
@@ -373,10 +387,10 @@
     </div>
 
     <div
-      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
         <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>

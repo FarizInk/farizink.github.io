@@ -336,4 +336,5 @@
   bind:isOpen={isDetailModalOpen}
   onClose={closeNoteDetail}
   {hasAuthToken}
+  hideActions={true}
 />

@@ -125,6 +125,36 @@
     toast.success('HTML downloaded');
   }
 
+  function insertMarkdown(type: string) {
+    const textarea = document.getElementById('md-input') as HTMLTextAreaElement;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selected = markdownText.slice(start, end);
+    
+    const inserts: Record<string, [string, string]> = {
+      'bold': ['**', '**'],
+      'italic': ['*', '*'],
+      'heading': ['## ', ''],
+      'link': ['[', '](url)'],
+      'code': ['`', '`'],
+      'codeblock': ['```\n', '\n```'],
+      'list': ['- ', ''],
+      'quote': ['> ', ''],
+    };
+    
+    const [before, after] = inserts[type] || ['', ''];
+    const newMarkdown = markdownText.slice(0, start) + before + selected + after + markdownText.slice(end);
+    markdownText = newMarkdown;
+    
+    // Set cursor position
+    setTimeout(() => {
+      textarea.focus();
+      textarea.selectionStart = start + before.length;
+      textarea.selectionEnd = start + before.length + selected.length;
+    }, 0);
+  }
+
   function loadSample() {
     markdownText = `# Sample Markdown Document
 
@@ -193,7 +223,7 @@ Visit [GitHub](https://github.com) for more resources!`;
 >
   <!-- Hero Section -->
   <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-6 mb-6"
+    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
   >
     <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3">
@@ -250,7 +280,7 @@ Visit [GitHub](https://github.com) for more resources!`;
         <textarea
           bind:value={markdownText}
           placeholder="Enter your markdown text here..."
-          class="w-full h-96 p-4 font-mono text-sm border-0 resize-none focus:ring-0 bg-white dark:bg-gray-800 text-gray-900 dark:text-white code-editor"
+          class="w-full h-48 sm:h-64 lg:h-96 p-4 font-mono text-sm border-0 resize-none focus:ring-0 bg-white dark:bg-gray-800 text-gray-900 dark:text-white code-editor"
         ></textarea>
       </div>
     </div>
@@ -281,7 +311,7 @@ Visit [GitHub](https://github.com) for more resources!`;
           </button>
         </div>
       </div>
-      <div class="h-96 overflow-y-auto p-6 prose prose-sm dark:prose-invert max-w-none">
+      <div class="h-48 sm:h-64 lg:h-96 overflow-y-auto p-3 sm:p-6 prose prose-sm dark:prose-invert max-w-none">
         {#if htmlContent}
           <!-- eslint-disable-next-line svelte/no-at-html-tags -->
           {@html htmlContent}
@@ -303,10 +333,10 @@ Visit [GitHub](https://github.com) for more resources!`;
   <!-- Features Section -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
     <div
-      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
         <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
@@ -317,10 +347,10 @@ Visit [GitHub](https://github.com) for more resources!`;
     </div>
 
     <div
-      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
         <Code class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
@@ -331,10 +361,10 @@ Visit [GitHub](https://github.com) for more resources!`;
     </div>
 
     <div
-      class="group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
+      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
     >
       <div
-        class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
+        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
       >
         <Download class="w-6 h-6 text-warning-600 dark:text-primary-400" />
       </div>
