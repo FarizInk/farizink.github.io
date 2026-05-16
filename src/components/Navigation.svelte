@@ -789,24 +789,27 @@
                 </div>
               </div>
               <button
+                type="button"
+                role="switch"
+                aria-checked={serviceWorkerEnabled}
                 onclick={toggleServiceWorker}
-                class="mode-btn w-12 h-6 rounded-full bg-gradient-to-r {serviceWorkerEnabled
-                  ? 'from-warning-500 to-amber-500 dark:from-primary-500 dark:to-primary-600'
-                  : 'from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700'} relative transition-all duration-300 shadow-inner {serviceWorkerCanToggle
-                  ? 'cursor-pointer hover:scale-105'
-                  : 'cursor-not-allowed opacity-60'}"
                 disabled={!serviceWorkerCanToggle}
+                class="group relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-warning-500 dark:focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 {serviceWorkerEnabled
+                  ? 'bg-warning-500 dark:bg-primary-600'
+                  : 'bg-gray-200 dark:bg-gray-600'} {serviceWorkerCanToggle
+                  ? ''
+                  : 'opacity-60 cursor-not-allowed'}"
                 aria-label={serviceWorkerCanToggle
                   ? serviceWorkerEnabled
                     ? 'Disable Offline Mode'
                     : 'Enable Offline Mode'
                   : 'Offline Mode cannot be changed (PWA Installed)'}
               >
-                <div
-                  class="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300 {serviceWorkerEnabled
-                    ? 'translate-x-6'
-                    : 'translate-x-0.5'}"
-                ></div>
+                <span
+                  class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out {serviceWorkerEnabled
+                    ? 'translate-x-5'
+                    : 'translate-x-0'}"
+                ></span>
               </button>
             </div>
             {#if isPWAInstalled && !serviceWorkerCanToggle}
