@@ -64,7 +64,7 @@
   let currentYear = $state(new Date().getFullYear());
 
   // Performance Mode
-  let perfMode = $state(true);
+  let perfMode = $state(false);
 
   function togglePerfMode() {
     perfMode = !perfMode;
@@ -384,7 +384,7 @@
 
     // Initialize performance mode
     const storedPerf = localStorage.getItem("perf-mode");
-    perfMode = storedPerf !== "fancy";
+    perfMode = storedPerf === "performance";
     if (perfMode) document.documentElement.classList.add("perf-mode");
 
     if (isDark) {
