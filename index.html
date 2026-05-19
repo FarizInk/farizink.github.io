@@ -151,6 +151,11 @@
       } else {
         document.documentElement.classList.remove('dark');
       }
+
+      // Performance mode - default ON
+      if (localStorage.getItem('perf-mode') !== 'fancy') {
+        document.documentElement.classList.add('perf-mode');
+      }
     })();
   </script>
 </html>

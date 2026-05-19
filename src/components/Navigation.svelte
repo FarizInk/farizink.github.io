@@ -22,6 +22,7 @@
     CircleX,
     Info,
     Heart,
+    Gauge,
   } from '@lucide/svelte';
   import CommandPalette from './CommandPalette.svelte';
   import LoginModal from './LoginModal.svelte';
@@ -61,6 +62,15 @@
 
   // Current year for footer
   let currentYear = $state(new Date().getFullYear());
+
+  // Performance Mode
+  let perfMode = $state(true);
+
+  function togglePerfMode() {
+    perfMode = !perfMode;
+    localStorage.setItem("perf-mode", perfMode ? "performance" : "fancy");
+    document.documentElement.classList.toggle("perf-mode", perfMode);
+  }
 
   // Double click state for menu button
   let lastClickTime = 0;
@@ -371,6 +381,11 @@
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
     isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+
+    // Initialize performance mode
+    const storedPerf = localStorage.getItem("perf-mode");
+    perfMode = storedPerf !== "fancy";
+    if (perfMode) document.documentElement.classList.add("perf-mode");
 
     if (isDark) {
       document.documentElement.classList.add('dark');
@@ -758,6 +773,32 @@
             </button>
           </div>
 
+          <!-- Performance Mode Toggle -->
+          <button
+            onclick={togglePerfMode}
+            class="w-full flex items-center justify-between p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-warning-50 dark:hover:bg-primary-900/20 hover:border-warning-300 dark:hover:border-primary-400 transition-all duration-200"
+          >
+            <div class="flex items-center gap-3">
+              <div
+                class="w-11 h-11 bg-gradient-to-br from-amber-100 to-yellow-200 dark:from-amber-900/30 dark:to-amber-800/50 rounded-xl flex items-center justify-center"
+              >
+                <Gauge class="w-5 h-5 text-amber-600 dark:text-amber-400" />
+              </div>
+              <div class="text-left">
+                <p class="text-sm font-semibold text-gray-900 dark:text-white">Performance Mode</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  {perfMode ? "Animations disabled" : "Full visual effects"}
+                </p>
+              </div>
+            </div>
+            <span
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium {perfMode
+                ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300"
+                : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"}"
+            >
+              {perfMode ? "ON" : "OFF"}
+            </span>
+          </button>
           <!-- Service Worker Toggle -->
           <div
             class="w-full p-4 rounded-xl {serviceWorkerCanToggle
