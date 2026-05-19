@@ -134,12 +134,12 @@
         }
       }
     </script>
-    <script type="module" crossorigin src="/assets/index-R08yvb42.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/vendor-CbW5Ti-5.js">
-    <link rel="modulepreload" crossorigin href="/assets/router-dN9Otb0s.js">
-    <link rel="modulepreload" crossorigin href="/assets/notifications-DrW8jtmQ.js">
+    <script type="module" crossorigin src="/assets/index-AwRSrYLB.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/vendor-DQGgpKGs.js">
+    <link rel="modulepreload" crossorigin href="/assets/router-Bb-w11_9.js">
+    <link rel="modulepreload" crossorigin href="/assets/notifications-CSY11Y2H.js">
     <link rel="stylesheet" crossorigin href="/assets/notifications-DmSEAI_T.css">
-    <link rel="stylesheet" crossorigin href="/assets/index-Bea_De-M.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-C2vjCoeO.css">
   </head>
 
   <body>
@@ -155,6 +155,11 @@
         document.documentElement.classList.add('dark');
       } else {
         document.documentElement.classList.remove('dark');
+      }
+
+      // Performance mode - default ON
+      if (localStorage.getItem('perf-mode') !== 'fancy') {
+        document.documentElement.classList.add('perf-mode');
       }
     })();
   </script>
