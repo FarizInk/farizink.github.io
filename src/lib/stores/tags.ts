@@ -43,10 +43,19 @@ class TagsStore {
     tagsError.set(null);
 
     try {
-      // getTags now returns TagsResponse with pagination
-      const response = await getTags(1, 100);
-      // Extract data array from response
-      tags.set(response.data);
+      // Fetch all pages from the paginated API
+      const allTags: Tag[] = [];
+      let page = 1;
+      let hasMore = true;
+
+      while (hasMore) {
+        const response = await getTags(page, 100);
+        allTags.push(...response.data);
+        hasMore = page < response.last_page;
+        page++;
+      }
+
+      tags.set(allTags);
     } catch (error) {
       tagsError.set(error instanceof Error ? error.message : String(error));
       tags.set([]);

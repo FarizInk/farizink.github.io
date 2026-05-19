@@ -327,14 +327,15 @@
               : (isSelected ? 'bg-warning-100 text-warning-700 border-warning-400 dark:bg-primary-900/30 dark:text-primary-300 dark:border-primary-500 ring-warning-200 dark:ring-primary-800' : 'bg-warning-50 text-warning-700 border-warning-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700 hover:border-warning-300 dark:hover:border-primary-600')}"
             style={hasColor ? `background-color: ${option.color}${isSelected ? '20' : '10'}; color: ${option.color}` : ''}
           >
-            <span
-              class="w-2 h-2 rounded-full flex-shrink-0 {hasColor ? '' : 'bg-warning-500 dark:bg-primary-400'}"
-              style={hasColor ? `background-color: ${option.color}` : ''}
-            ></span>
-            {option.label}
             {#if isSelected}
-              <Check class="w-3 h-3" />
+              <Check class="w-3.5 h-3.5 flex-shrink-0" />
+            {:else}
+              <span
+                class="w-2 h-2 rounded-full flex-shrink-0 {hasColor ? '' : 'bg-warning-500 dark:bg-primary-400'}"
+                style={hasColor ? `background-color: ${option.color}` : ''}
+              ></span>
             {/if}
+            {option.label}
           </button>
         {/each}
       </div>
