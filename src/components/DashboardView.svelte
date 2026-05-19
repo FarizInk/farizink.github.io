@@ -6,6 +6,7 @@
   import { formatDate } from '../lib/notes';
   import { truncateText } from '../lib/uiUtils';
   import { stripHtml } from '../lib/uiUtils';
+  import { getCached, setCache } from '../lib/cache';
   import NoteDetailModal from './NoteDetailModal.svelte';
   import {
     FileText,
@@ -22,18 +23,24 @@
     Wifi,
     HardDrive,
     Image,
-    Activity
+    Activity,
+    RefreshCw
   } from '@lucide/svelte';
 
   let latestNotes = $state<Note[]>([]);
   let financeSummary = $state<FinanceSummary | null>(null);
   let isLoading = $state(true);
+  let isRefreshing = $state(false);
   let showAmounts = $state(true);
   let hasAuthToken = $state(false);
 
   // Note detail modal
   let isDetailModalOpen = $state(false);
   let selectedDetailNote = $state<Note | null>(null);
+
+  // Cache keys
+  const CACHE_KEY_NOTES = 'dashboard:latestNotes';
+  const CACHE_KEY_FINANCE = 'dashboard:financeSummary';
 
   // Self-hosted apps
   const myApps = [
@@ -102,7 +109,7 @@
   }
 
   function maskedAmount(): string {
-    return '•'.repeat(8);
+    return '\u2022'.repeat(8);
   }
 
   function displayAmount(amount: number): string {
@@ -114,19 +121,50 @@
     if (!hasAuthToken) return;
 
     showAmounts = loadShowAmountsPreference();
-    isLoading = true;
 
-    try {
-      const [notesResponse, summary] = await Promise.all([
-        getNotes(1, 3, { sortBy: 'created_at', sortOrder: 'desc' }),
-        getFinanceSummary()
-      ]);
-      latestNotes = notesResponse.notes;
-      financeSummary = summary;
-    } catch (error) {
-      console.error('Failed to load dashboard data:', error);
-    } finally {
+    // Try to load from cache first
+    const cachedNotes = getCached<Note[]>(CACHE_KEY_NOTES);
+    const cachedFinance = getCached<FinanceSummary>(CACHE_KEY_FINANCE);
+
+    if (cachedNotes || cachedFinance) {
+      // Show cached data immediately
+      latestNotes = cachedNotes?.data ?? [];
+      financeSummary = cachedFinance?.data ?? null;
       isLoading = false;
+
+      // Background refresh
+      isRefreshing = true;
+      try {
+        const [notesResponse, summary] = await Promise.all([
+          getNotes(1, 3, { sortBy: 'created_at', sortOrder: 'desc' }),
+          getFinanceSummary()
+        ]);
+        latestNotes = notesResponse.notes;
+        financeSummary = summary;
+        setCache(CACHE_KEY_NOTES, notesResponse.notes);
+        setCache(CACHE_KEY_FINANCE, summary);
+      } catch (error) {
+        console.error('Background refresh failed:', error);
+      } finally {
+        isRefreshing = false;
+      }
+    } else {
+      // No cache — fetch from network
+      isLoading = true;
+      try {
+        const [notesResponse, summary] = await Promise.all([
+          getNotes(1, 3, { sortBy: 'created_at', sortOrder: 'desc' }),
+          getFinanceSummary()
+        ]);
+        latestNotes = notesResponse.notes;
+        financeSummary = summary;
+        setCache(CACHE_KEY_NOTES, notesResponse.notes);
+        setCache(CACHE_KEY_FINANCE, summary);
+      } catch (error) {
+        console.error('Failed to load dashboard data:', error);
+      } finally {
+        isLoading = false;
+      }
     }
   });
 </script>
@@ -137,6 +175,14 @@
   </div>
 {:else}
   <div class="space-y-8">
+    <!-- Refreshing indicator -->
+    {#if isRefreshing}
+      <div class="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
+        <RefreshCw class="w-3.5 h-3.5 animate-spin" />
+        <span>Updating...</span>
+      </div>
+    {/if}
+
     <!-- Finance Summary -->
     {#if financeSummary}
       <div>
@@ -165,66 +211,55 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <!-- Balance -->
-          <div
-            class="relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 border border-blue-200/60 dark:border-blue-700/40 p-4"
-          >
-            <div class="flex items-center gap-2 mb-2">
-              <DollarSign class="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              <span class="text-sm font-medium text-blue-700 dark:text-blue-300">Balance</span>
+          <div class="bg-white dark:bg-gray-800/60 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
+            <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 mb-1">
+              <TrendingUp class="w-4 h-4" />
+              <span class="text-xs font-medium uppercase tracking-wide">Income</span>
             </div>
-            <p class="text-xl font-bold text-blue-900 dark:text-blue-100 tracking-tight">
-              {displayAmount(financeSummary.balance)}
-            </p>
-          </div>
-
-          <!-- Income -->
-          <div
-            class="relative overflow-hidden rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 border border-green-200/60 dark:border-green-700/40 p-4"
-          >
-            <div class="flex items-center gap-2 mb-2">
-              <TrendingUp class="w-4 h-4 text-green-600 dark:text-green-400" />
-              <span class="text-sm font-medium text-green-700 dark:text-green-300">Income</span>
-            </div>
-            <p class="text-xl font-bold text-green-900 dark:text-green-100 tracking-tight">
+            <p class="text-xl font-bold text-gray-900 dark:text-white">
               {displayAmount(financeSummary.total_income)}
             </p>
           </div>
-
-          <!-- Expense -->
-          <div
-            class="relative overflow-hidden rounded-xl bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-900/30 dark:to-rose-900/30 border border-red-200/60 dark:border-red-700/40 p-4"
-          >
-            <div class="flex items-center gap-2 mb-2">
-              <TrendingDown class="w-4 h-4 text-red-600 dark:text-red-400" />
-              <span class="text-sm font-medium text-red-700 dark:text-red-300">Expense</span>
+          <div class="bg-white dark:bg-gray-800/60 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
+            <div class="flex items-center gap-2 text-red-500 dark:text-red-400 mb-1">
+              <TrendingDown class="w-4 h-4" />
+              <span class="text-xs font-medium uppercase tracking-wide">Expense</span>
             </div>
-            <p class="text-xl font-bold text-red-900 dark:text-red-100 tracking-tight">
+            <p class="text-xl font-bold text-gray-900 dark:text-white">
               {displayAmount(financeSummary.total_expense)}
+            </p>
+          </div>
+          <div class="bg-white dark:bg-gray-800/60 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
+            <div class="flex items-center gap-2 text-primary-500 dark:text-primary-400 mb-1">
+              <DollarSign class="w-4 h-4" />
+              <span class="text-xs font-medium uppercase tracking-wide">Balance</span>
+            </div>
+            <p class="text-xl font-bold text-gray-900 dark:text-white">
+              {displayAmount(financeSummary.balance)}
             </p>
           </div>
         </div>
       </div>
     {/if}
 
-    <!-- My Apps -->
+    <!-- Self-hosted Apps -->
     <div>
       <div class="flex items-center gap-2 mb-4">
         <div
-          class="w-9 h-9 bg-gradient-to-br from-indigo-400 to-blue-500 dark:from-indigo-500 dark:to-blue-600 rounded-xl flex items-center justify-center shadow-sm"
+          class="w-9 h-9 bg-gradient-to-br from-blue-400 to-indigo-500 dark:from-blue-500 dark:to-indigo-600 rounded-xl flex items-center justify-center shadow-sm"
         >
           <Globe class="w-4.5 h-4.5 text-white" />
         </div>
-        <h2 class="text-lg font-bold text-gray-900 dark:text-white">My Apps</h2>
+        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Self-Hosted Apps</h2>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {#each myApps as app}
           <a
             href={app.url}
             target="_blank"
             rel="noopener noreferrer"
-            class="group flex items-center gap-3 rounded-xl bg-white dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 p-4 hover:border-indigo-300 dark:hover:border-indigo-600 hover:shadow-md transition-all duration-200"
+            class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800/60 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-md transition-all duration-200"
           >
             <div
               class="w-10 h-10 bg-gradient-to-br {app.color} rounded-xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 flex-shrink-0"
