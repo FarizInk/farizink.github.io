@@ -19,6 +19,7 @@
     onSuccess?: (note: Note) => void;
     onError?: (error: string) => void;
     onSubmitReady?: (submitFn: () => void) => void;
+    onHasChangesChange?: (hasChanges: boolean) => void;
   }
 
   let {
@@ -27,7 +28,8 @@
     disabled = false,
     onSuccess,
     onError,
-    onSubmitReady
+    onSubmitReady,
+    onHasChangesChange,
   }: Props = $props();
 
   // Simple local form state
@@ -43,6 +45,45 @@
   let showTagModal = $state(false);
   let isLoading = $state(false);
 
+
+  // Track initial values for change detection
+  let initialName = $state('');
+  let initialLink = $state('');
+  let initialDescription = $state('');
+  let initialIsPublic = $state(true);
+  let initialIsFavorite = $state(false);
+  let initialSelectedTagIds = $state<string[]>([]);
+  let formPopulated = $state(false);
+
+  // Detect if form has unsaved changes
+  let hasChanges = $derived.by(() => {
+    if (!formPopulated) return false;
+    if (mode === 'create') {
+      if (localName.trim()) return true;
+      if (localLink.trim()) return true;
+      if (localDescription.trim()) return true;
+      if (!localIsPublic) return true;
+      if (localIsFavorite) return true;
+      if (localSelectedTagIds.length > 0) return true;
+      if (localFiles.length > 0) return true;
+      return false;
+    } else {
+      if (localName !== initialName) return true;
+      if (localLink !== initialLink) return true;
+      if (localDescription !== initialDescription) return true;
+      if (localIsPublic !== initialIsPublic) return true;
+      if (localIsFavorite !== initialIsFavorite) return true;
+      if (JSON.stringify(localSelectedTagIds) !== JSON.stringify(initialSelectedTagIds)) return true;
+      if (localFiles.length > 0) return true;
+      if (localFilesToDelete.length > 0) return true;
+      return false;
+    }
+  });
+
+  // Expose hasChanges to parent via callback
+  $effect(() => {
+    onHasChangesChange?.(hasChanges);
+  });
   // Get available tags from store
   let availableTags = $state<Tag[]>([]);
   let tagOptions = $derived(availableTags.map(tag => ({
@@ -69,7 +110,17 @@
       localIsFavorite = note.is_favorite ?? false;
       localSelectedTagIds = note.tags?.map(t => t.id).filter(id => id) || [];
       localFiles = [];
+
     }
+
+    // Snapshot initial values after population
+    initialName = localName;
+    initialLink = localLink;
+    initialDescription = localDescription;
+    initialIsPublic = localIsPublic;
+    initialIsFavorite = localIsFavorite;
+    initialSelectedTagIds = [...localSelectedTagIds];
+    formPopulated = true;
 
     // Notify parent that form is ready with submit function
     if (onSubmitReady) {
