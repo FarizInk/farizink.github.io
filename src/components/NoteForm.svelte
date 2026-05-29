@@ -327,7 +327,7 @@
               <button
                 type="button"
                 onclick={() => (showTagModal = true)}
-                class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors group"
+                class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-purple-400 transition-colors group"
               >
                 <Settings2 class="w-3.5 h-3.5" />
                 <span>Manage tags</span>
@@ -356,7 +356,7 @@
             <Paperclip class="w-4 h-4 text-gray-400" />
             <span>{mode === 'edit' ? 'Files' : 'Attach Files'}</span>
             {#if (localFiles && localFiles.length > 0) || (mode === 'edit' && note?.files && note.files.length > 0)}
-              <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300">
+              <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700 dark:bg-purple-900/40 dark:text-purple-300">
                 {(localFiles?.length || 0) + (mode === 'edit' && note?.files ? note.files.length : 0)}
               </span>
             {/if}

@@ -33,13 +33,17 @@
   let {
     isOpen = $bindable(false),
     maxW = 'max-w-md',
+    locked = false,
     onClose = () => {},
-    children
+    children,
+    overlay
   } = $props<{
     isOpen?: boolean;
     maxW?: string;
+    locked?: boolean;
     onClose?: () => void;
     children?: Snippet;
+    overlay?: Snippet;
   }>();
 
   let currentModalId = $state<string>('');
@@ -96,7 +100,7 @@
     ></div>
 
     <div
-      class="relative w-full {maxW} bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto"
+      class="relative w-full {maxW} bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-h-[90vh] {locked ? 'overflow-hidden' : 'overflow-y-auto'}"
       transition:modernScale
     >
       <div class="p-6">
@@ -104,6 +108,9 @@
           {@render children()}
         {/if}
       </div>
+      {#if overlay}
+        {@render overlay()}
+      {/if}
     </div>
   </div>
 {/if}
