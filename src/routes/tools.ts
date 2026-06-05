@@ -1,14 +1,6 @@
-import Tools from '../pages/Tools.svelte';
 import { Wrench } from '@lucide/svelte';
+import type { Route } from '../lib/router';
 import { getAllTools } from '../lib/toolsConfig';
-import JsonParser from '../pages/tools/JsonParser.svelte';
-import ColorConverter from '../pages/tools/ColorConverter.svelte';
-import UrlEncoder from '../pages/tools/UrlEncoder.svelte';
-import MarkdownPreview from '../pages/tools/MarkdownPreview.svelte';
-import Base64Converter from '../pages/tools/Base64Converter.svelte';
-import PasswordGenerator from '../pages/tools/PasswordGenerator.svelte';
-import QRCodeGenerator from '../pages/tools/QRCodeGenerator.svelte';
-import TextCaseConverter from '../pages/tools/TextCaseConverter.svelte';
 import LoremIpsumGenerator from '../pages/tools/LoremIpsumGenerator.svelte';
 import CharacterCounter from '../pages/tools/CharacterCounter.svelte';
 import TextDiff from '../pages/tools/TextDiff.svelte';
@@ -33,9 +25,17 @@ import RandomPicker from '../pages/tools/RandomPicker.svelte';
 import CronGenerator from '../pages/tools/CronGenerator.svelte';
 import HashComparer from '../pages/tools/HashComparer.svelte';
 import AsciiArtGenerator from '../pages/tools/AsciiArtGenerator.svelte';
+import Base64Converter from '../pages/tools/Base64Converter.svelte';
+import ColorConverter from '../pages/tools/ColorConverter.svelte';
+import JsonParser from '../pages/tools/JsonParser.svelte';
+import MarkdownPreview from '../pages/tools/MarkdownPreview.svelte';
+import PasswordGenerator from '../pages/tools/PasswordGenerator.svelte';
 import PomodoroTimer from '../pages/tools/PomodoroTimer.svelte';
+import QRCodeGenerator from '../pages/tools/QRCodeGenerator.svelte';
 import TempUpload from '../pages/tools/TempUpload.svelte';
-import type { Route } from '../lib/router';
+import TextCaseConverter from '../pages/tools/TextCaseConverter.svelte';
+import UrlEncoder from '../pages/tools/UrlEncoder.svelte';
+import Tools from '../pages/Tools.svelte';
 
 // Helper function to get tool icon by path
 function getToolIconByPath(path: string) {

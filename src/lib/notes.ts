@@ -1,6 +1,6 @@
+import axios from 'axios';
 import { apiClient, isAxiosError } from './axios';
 import { API_BASE_URL } from './constants';
-import axios from 'axios';
 import type { Tag } from './tags';
 
 export interface NoteFile {

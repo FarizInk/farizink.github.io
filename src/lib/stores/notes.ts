@@ -1,4 +1,5 @@
 import { writable, get } from 'svelte/store';
+import { toast } from 'svelte-sonner';
 import {
   getNotes,
   getDeletedNotes,
@@ -7,7 +8,6 @@ import {
   type Note,
   type NoteFilters
 } from '../notes';
-import { toast } from 'svelte-sonner';
 import { PaginatedStore } from './PaginatedStore';
 import type { PaginatedResponse } from './PaginatedStore';
 

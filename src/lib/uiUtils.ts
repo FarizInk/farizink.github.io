@@ -1,5 +1,5 @@
-import { addRefreshParam, isPresignedUrl } from './notes';
 import { Image as ImageIcon, File } from '@lucide/svelte';
+import { addRefreshParam, isPresignedUrl } from './notes';
  
 /**
  * Strip HTML tags from a string, returning plain text

@@ -1,5 +1,5 @@
-import type { Tag } from './tags';
 import { tagsStore, tags, isLoadingTags, tagsError } from './stores/tags';
+import type { Tag } from './tags';
 
 /**
  * Custom hook for managing tags

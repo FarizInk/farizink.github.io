@@ -1,5 +1,5 @@
-import { writable } from 'svelte/store';
 import type { Component } from 'svelte';
+import { writable } from 'svelte/store';
 
 export interface Route {
   path: string;

@@ -20,7 +20,7 @@ export interface Tool {
   id: string;
   name: string;
   description: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   icon: any;
   features: string[];
   comingSoon: boolean;

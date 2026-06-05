@@ -1,10 +1,10 @@
+import { House, FileText, User, Upload, Plus, Edit2, Wallet } from '@lucide/svelte';
+import Files from '../pages/Files.svelte';
+import Finance from '../pages/Finance.svelte';
 import Home from '../pages/Home.svelte';
 import Notes from '../pages/Notes.svelte';
 import NotesCreate from '../pages/NotesCreate.svelte';
 import NotesEdit from '../pages/NotesEdit.svelte';
-import Finance from '../pages/Finance.svelte';
-import Files from '../pages/Files.svelte';
-import { House, FileText, User, Upload, Plus, Edit2, Wallet } from '@lucide/svelte';
 
 export const mainRoutes = [
   {
