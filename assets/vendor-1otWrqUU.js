@@ -1160,7 +1160,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m16 18 6-6-6-6"}],["path",{d:"m8 6-6 6 6 6"}]];m(t,p({name:"code"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function dl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"}]];m(t,p({name:"cloud"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function dl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1203,7 +1203,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M10 2v2"}],["path",{d:"M14 2v2"}],["path",{d:"M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"}],["path",{d:"M6 2v2"}]];m(t,p({name:"coffee"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function vl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m16 18 6-6-6-6"}],["path",{d:"m8 6-6 6 6 6"}]];m(t,p({name:"code"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function vl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1246,7 +1246,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"}]];m(t,p({name:"command"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function hl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M10 2v2"}],["path",{d:"M14 2v2"}],["path",{d:"M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"}],["path",{d:"M6 2v2"}]];m(t,p({name:"coffee"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function hl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1289,7 +1289,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{width:"14",height:"14",x:"8",y:"8",rx:"2",ry:"2"}],["path",{d:"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"}]];m(t,p({name:"copy"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function $l(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"}]];m(t,p({name:"command"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function $l(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1332,7 +1332,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{width:"20",height:"14",x:"2",y:"5",rx:"2"}],["line",{x1:"2",x2:"22",y1:"10",y2:"10"}]];m(t,p({name:"credit-card"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function _l(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{width:"14",height:"14",x:"8",y:"8",rx:"2",ry:"2"}],["path",{d:"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"}]];m(t,p({name:"copy"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function _l(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1375,7 +1375,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{width:"12",height:"12",x:"2",y:"10",rx:"2",ry:"2"}],["path",{d:"m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6"}],["path",{d:"M6 18h.01"}],["path",{d:"M10 14h.01"}],["path",{d:"M15 6h.01"}],["path",{d:"M18 9h.01"}]];m(t,p({name:"dices"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function gl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{width:"20",height:"14",x:"2",y:"5",rx:"2"}],["line",{x1:"2",x2:"22",y1:"10",y2:"10"}]];m(t,p({name:"credit-card"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function gl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1418,7 +1418,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["line",{x1:"12",x2:"12",y1:"2",y2:"22"}],["path",{d:"M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"}]];m(t,p({name:"dollar-sign"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function pl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{width:"12",height:"12",x:"2",y:"10",rx:"2",ry:"2"}],["path",{d:"m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6"}],["path",{d:"M6 18h.01"}],["path",{d:"M10 14h.01"}],["path",{d:"M15 6h.01"}],["path",{d:"M18 9h.01"}]];m(t,p({name:"dices"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function pl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1461,7 +1461,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 15V3"}],["path",{d:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}],["path",{d:"m7 10 5 5 5-5"}]];m(t,p({name:"download"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ml(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["line",{x1:"12",x2:"12",y1:"2",y2:"22"}],["path",{d:"M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"}]];m(t,p({name:"dollar-sign"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ml(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1504,7 +1504,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"}],["path",{d:"M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"}]];m(t,p({name:"droplets"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function yl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 15V3"}],["path",{d:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}],["path",{d:"m7 10 5 5 5-5"}]];m(t,p({name:"download"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function yl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1547,7 +1547,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M15 3h6v6"}],["path",{d:"M10 14 21 3"}],["path",{d:"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"}]];m(t,p({name:"external-link"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Nl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"}],["path",{d:"M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"}]];m(t,p({name:"droplets"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Nl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1590,7 +1590,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"}],["path",{d:"M14.084 14.158a3 3 0 0 1-4.242-4.242"}],["path",{d:"M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"}],["path",{d:"m2 2 20 20"}]];m(t,p({name:"eye-off"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function bl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M15 3h6v6"}],["path",{d:"M10 14 21 3"}],["path",{d:"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"}]];m(t,p({name:"external-link"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function bl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1633,7 +1633,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"}],["circle",{cx:"12",cy:"12",r:"3"}]];m(t,p({name:"eye"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ml(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"}],["path",{d:"M14.084 14.158a3 3 0 0 1-4.242-4.242"}],["path",{d:"M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"}],["path",{d:"m2 2 20 20"}]];m(t,p({name:"eye-off"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ml(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1676,7 +1676,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4"}],["path",{d:"M10 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 0 1 1"}],["path",{d:"M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1"}]];m(t,p({name:"file-json"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function wl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"}],["circle",{cx:"12",cy:"12",r:"3"}]];m(t,p({name:"eye"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function wl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1719,7 +1719,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4"}],["path",{d:"M10 9H8"}],["path",{d:"M16 13H8"}],["path",{d:"M16 17H8"}]];m(t,p({name:"file-text"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Pl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4"}],["path",{d:"M10 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 0 1 1"}],["path",{d:"M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1"}]];m(t,p({name:"file-json"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Pl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1762,7 +1762,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4"}]];m(t,p({name:"file"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function xl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4"}],["path",{d:"M10 9H8"}],["path",{d:"M16 13H8"}],["path",{d:"M16 17H8"}]];m(t,p({name:"file-text"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function xl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1805,7 +1805,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"}]];m(t,p({name:"funnel"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function El(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4"}]];m(t,p({name:"file"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function El(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1848,7 +1848,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m12 14 4-4"}],["path",{d:"M3.34 19a10 10 0 1 1 17.32 0"}]];m(t,p({name:"gauge"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Al(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"}]];m(t,p({name:"funnel"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Al(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1891,7 +1891,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{x:"3",y:"8",width:"18",height:"4",rx:"1"}],["path",{d:"M12 8v13"}],["path",{d:"M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"}],["path",{d:"M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"}]];m(t,p({name:"gift"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function kl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m12 14 4-4"}],["path",{d:"M3.34 19a10 10 0 1 1 17.32 0"}]];m(t,p({name:"gauge"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function kl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1934,7 +1934,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"18",cy:"18",r:"3"}],["circle",{cx:"6",cy:"6",r:"3"}],["path",{d:"M13 6h3a2 2 0 0 1 2 2v7"}],["path",{d:"M11 18H8a2 2 0 0 1-2-2V9"}]];m(t,p({name:"git-compare"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Sl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{x:"3",y:"8",width:"18",height:"4",rx:"1"}],["path",{d:"M12 8v13"}],["path",{d:"M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"}],["path",{d:"M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"}]];m(t,p({name:"gift"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Sl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -1977,7 +1977,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"12",cy:"12",r:"10"}],["path",{d:"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"}],["path",{d:"M2 12h20"}]];m(t,p({name:"globe"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Cl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"18",cy:"18",r:"3"}],["circle",{cx:"6",cy:"6",r:"3"}],["path",{d:"M13 6h3a2 2 0 0 1 2 2v7"}],["path",{d:"M11 18H8a2 2 0 0 1-2-2V9"}]];m(t,p({name:"git-compare"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Cl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2020,7 +2020,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["line",{x1:"22",x2:"2",y1:"12",y2:"12"}],["path",{d:"M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"}],["line",{x1:"6",x2:"6.01",y1:"16",y2:"16"}],["line",{x1:"10",x2:"10.01",y1:"16",y2:"16"}]];m(t,p({name:"hard-drive"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Tl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"12",cy:"12",r:"10"}],["path",{d:"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"}],["path",{d:"M2 12h20"}]];m(t,p({name:"globe"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Tl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2063,7 +2063,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["line",{x1:"4",x2:"20",y1:"9",y2:"9"}],["line",{x1:"4",x2:"20",y1:"15",y2:"15"}],["line",{x1:"10",x2:"8",y1:"3",y2:"21"}],["line",{x1:"16",x2:"14",y1:"3",y2:"21"}]];m(t,p({name:"hash"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ll(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["line",{x1:"22",x2:"2",y1:"12",y2:"12"}],["path",{d:"M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"}],["line",{x1:"6",x2:"6.01",y1:"16",y2:"16"}],["line",{x1:"10",x2:"10.01",y1:"16",y2:"16"}]];m(t,p({name:"hard-drive"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ll(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2106,7 +2106,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M4 12h8"}],["path",{d:"M4 18V6"}],["path",{d:"M12 18V6"}],["path",{d:"m17 12 3-2v8"}]];m(t,p({name:"heading-1"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Hl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["line",{x1:"4",x2:"20",y1:"9",y2:"9"}],["line",{x1:"4",x2:"20",y1:"15",y2:"15"}],["line",{x1:"10",x2:"8",y1:"3",y2:"21"}],["line",{x1:"16",x2:"14",y1:"3",y2:"21"}]];m(t,p({name:"hash"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Hl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2149,7 +2149,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M4 12h8"}],["path",{d:"M4 18V6"}],["path",{d:"M12 18V6"}],["path",{d:"M21 18h-4c0-4 4-3 4-6 0-1.5-2-2.5-4-1"}]];m(t,p({name:"heading-2"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ol(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M4 12h8"}],["path",{d:"M4 18V6"}],["path",{d:"M12 18V6"}],["path",{d:"m17 12 3-2v8"}]];m(t,p({name:"heading-1"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ol(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2192,7 +2192,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M4 12h8"}],["path",{d:"M4 18V6"}],["path",{d:"M12 18V6"}],["path",{d:"M17.5 10.5c1.7-1 3.5 0 3.5 1.5a2 2 0 0 1-2 2"}],["path",{d:"M17 17.5c2 1.5 4 .3 4-1.5a2 2 0 0 0-2-2"}]];m(t,p({name:"heading-3"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Vl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M4 12h8"}],["path",{d:"M4 18V6"}],["path",{d:"M12 18V6"}],["path",{d:"M21 18h-4c0-4 4-3 4-6 0-1.5-2-2.5-4-1"}]];m(t,p({name:"heading-2"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Vl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2235,7 +2235,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"}]];m(t,p({name:"heart"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Il(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M4 12h8"}],["path",{d:"M4 18V6"}],["path",{d:"M12 18V6"}],["path",{d:"M17.5 10.5c1.7-1 3.5 0 3.5 1.5a2 2 0 0 1-2 2"}],["path",{d:"M17 17.5c2 1.5 4 .3 4-1.5a2 2 0 0 0-2-2"}]];m(t,p({name:"heading-3"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Il(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2278,7 +2278,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"}],["path",{d:"M3 3v5h5"}],["path",{d:"M12 7v5l4 2"}]];m(t,p({name:"history"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Rl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"}]];m(t,p({name:"heart"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Rl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2321,7 +2321,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"}],["path",{d:"M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"}]];m(t,p({name:"house"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Dl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"}],["path",{d:"M3 3v5h5"}],["path",{d:"M12 7v5l4 2"}]];m(t,p({name:"history"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Dl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2364,7 +2364,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{width:"18",height:"18",x:"3",y:"3",rx:"2",ry:"2"}],["circle",{cx:"9",cy:"9",r:"2"}],["path",{d:"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"}]];m(t,p({name:"image"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Fl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"}],["path",{d:"M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"}]];m(t,p({name:"house"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Fl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2407,7 +2407,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"12",cy:"12",r:"10"}],["path",{d:"M12 16v-4"}],["path",{d:"M12 8h.01"}]];m(t,p({name:"info"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function zl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{width:"18",height:"18",x:"3",y:"3",rx:"2",ry:"2"}],["circle",{cx:"9",cy:"9",r:"2"}],["path",{d:"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"}]];m(t,p({name:"image"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function zl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2450,7 +2450,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["line",{x1:"19",x2:"10",y1:"4",y2:"4"}],["line",{x1:"14",x2:"5",y1:"20",y2:"20"}],["line",{x1:"15",x2:"9",y1:"4",y2:"20"}]];m(t,p({name:"italic"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ql(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"12",cy:"12",r:"10"}],["path",{d:"M12 16v-4"}],["path",{d:"M12 8h.01"}]];m(t,p({name:"info"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ql(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2493,7 +2493,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{width:"7",height:"9",x:"3",y:"3",rx:"1"}],["rect",{width:"7",height:"5",x:"14",y:"3",rx:"1"}],["rect",{width:"7",height:"9",x:"14",y:"12",rx:"1"}],["rect",{width:"7",height:"5",x:"3",y:"16",rx:"1"}]];m(t,p({name:"layout-dashboard"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function jl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["line",{x1:"19",x2:"10",y1:"4",y2:"4"}],["line",{x1:"14",x2:"5",y1:"20",y2:"20"}],["line",{x1:"15",x2:"9",y1:"4",y2:"20"}]];m(t,p({name:"italic"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function jl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2536,7 +2536,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M9 17H7A5 5 0 0 1 7 7h2"}],["path",{d:"M15 7h2a5 5 0 1 1 0 10h-2"}],["line",{x1:"8",x2:"16",y1:"12",y2:"12"}]];m(t,p({name:"link-2"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ul(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{width:"7",height:"9",x:"3",y:"3",rx:"1"}],["rect",{width:"7",height:"5",x:"14",y:"3",rx:"1"}],["rect",{width:"7",height:"9",x:"14",y:"12",rx:"1"}],["rect",{width:"7",height:"5",x:"3",y:"16",rx:"1"}]];m(t,p({name:"layout-dashboard"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ul(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2579,7 +2579,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"}],["path",{d:"M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"}]];m(t,p({name:"link"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Bl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M9 17H7A5 5 0 0 1 7 7h2"}],["path",{d:"M15 7h2a5 5 0 1 1 0 10h-2"}],["line",{x1:"8",x2:"16",y1:"12",y2:"12"}]];m(t,p({name:"link-2"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Bl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2622,7 +2622,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M11 5h10"}],["path",{d:"M11 12h10"}],["path",{d:"M11 19h10"}],["path",{d:"M4 4h1v5"}],["path",{d:"M4 9h2"}],["path",{d:"M6.5 20H3.4c0-1 2.6-1.925 2.6-3.5a1.5 1.5 0 0 0-2.6-1.02"}]];m(t,p({name:"list-ordered"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Wl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"}],["path",{d:"M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"}]];m(t,p({name:"link"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Wl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2665,7 +2665,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 5h.01"}],["path",{d:"M3 12h.01"}],["path",{d:"M3 19h.01"}],["path",{d:"M8 5h13"}],["path",{d:"M8 12h13"}],["path",{d:"M8 19h13"}]];m(t,p({name:"list"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Yl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M11 5h10"}],["path",{d:"M11 12h10"}],["path",{d:"M11 19h10"}],["path",{d:"M4 4h1v5"}],["path",{d:"M4 9h2"}],["path",{d:"M6.5 20H3.4c0-1 2.6-1.925 2.6-3.5a1.5 1.5 0 0 0-2.6-1.02"}]];m(t,p({name:"list-ordered"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Yl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2708,7 +2708,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21 12a9 9 0 1 1-6.219-8.56"}]];m(t,p({name:"loader-circle"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Gl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 5h.01"}],["path",{d:"M3 12h.01"}],["path",{d:"M3 19h.01"}],["path",{d:"M8 5h13"}],["path",{d:"M8 12h13"}],["path",{d:"M8 19h13"}]];m(t,p({name:"list"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Gl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2751,7 +2751,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{width:"18",height:"11",x:"3",y:"11",rx:"2",ry:"2"}],["path",{d:"M7 11V7a5 5 0 0 1 10 0v4"}]];m(t,p({name:"lock"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Zl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21 12a9 9 0 1 1-6.219-8.56"}]];m(t,p({name:"loader-circle"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Zl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2794,7 +2794,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m16 17 5-5-5-5"}],["path",{d:"M21 12H9"}],["path",{d:"M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"}]];m(t,p({name:"log-out"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Kl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{width:"18",height:"11",x:"3",y:"11",rx:"2",ry:"2"}],["path",{d:"M7 11V7a5 5 0 0 1 10 0v4"}]];m(t,p({name:"lock"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Kl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2837,7 +2837,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"}],["rect",{x:"2",y:"4",width:"20",height:"16",rx:"2"}]];m(t,p({name:"mail"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ql(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m16 17 5-5-5-5"}],["path",{d:"M21 12H9"}],["path",{d:"M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"}]];m(t,p({name:"log-out"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ql(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2880,7 +2880,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M4 5h16"}],["path",{d:"M4 12h16"}],["path",{d:"M4 19h16"}]];m(t,p({name:"menu"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Xl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"}],["rect",{x:"2",y:"4",width:"20",height:"16",rx:"2"}]];m(t,p({name:"mail"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Xl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2923,7 +2923,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M18 8V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8"}],["path",{d:"M10 19v-3.96 3.15"}],["path",{d:"M7 19h5"}],["rect",{width:"6",height:"10",x:"16",y:"12",rx:"2"}]];m(t,p({name:"monitor-smartphone"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Jl(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M4 5h16"}],["path",{d:"M4 12h16"}],["path",{d:"M4 19h16"}]];m(t,p({name:"menu"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Jl(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -2966,7 +2966,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"}]];m(t,p({name:"moon"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function es(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M18 8V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8"}],["path",{d:"M10 19v-3.96 3.15"}],["path",{d:"M7 19h5"}],["rect",{width:"6",height:"10",x:"16",y:"12",rx:"2"}]];m(t,p({name:"monitor-smartphone"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function es(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3009,7 +3009,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"}],["path",{d:"M12 22V12"}],["polyline",{points:"3.29 7 12 12 20.71 7"}],["path",{d:"m7.5 4.27 9 5.15"}]];m(t,p({name:"package"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ts(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"}]];m(t,p({name:"moon"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ts(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3052,7 +3052,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"}],["circle",{cx:"13.5",cy:"6.5",r:".5",fill:"currentColor"}],["circle",{cx:"17.5",cy:"10.5",r:".5",fill:"currentColor"}],["circle",{cx:"6.5",cy:"12.5",r:".5",fill:"currentColor"}],["circle",{cx:"8.5",cy:"7.5",r:".5",fill:"currentColor"}]];m(t,p({name:"palette"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ns(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"}],["path",{d:"M12 22V12"}],["polyline",{points:"3.29 7 12 12 20.71 7"}],["path",{d:"m7.5 4.27 9 5.15"}]];m(t,p({name:"package"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ns(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3095,7 +3095,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m16 6-8.414 8.586a2 2 0 0 0 2.829 2.829l8.414-8.586a4 4 0 1 0-5.657-5.657l-8.379 8.551a6 6 0 1 0 8.485 8.485l8.379-8.551"}]];m(t,p({name:"paperclip"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function rs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"}],["circle",{cx:"13.5",cy:"6.5",r:".5",fill:"currentColor"}],["circle",{cx:"17.5",cy:"10.5",r:".5",fill:"currentColor"}],["circle",{cx:"6.5",cy:"12.5",r:".5",fill:"currentColor"}],["circle",{cx:"8.5",cy:"7.5",r:".5",fill:"currentColor"}]];m(t,p({name:"palette"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function rs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3138,7 +3138,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{x:"14",y:"3",width:"5",height:"18",rx:"1"}],["rect",{x:"5",y:"3",width:"5",height:"18",rx:"1"}]];m(t,p({name:"pause"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function as(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m16 6-8.414 8.586a2 2 0 0 0 2.829 2.829l8.414-8.586a4 4 0 1 0-5.657-5.657l-8.379 8.551a6 6 0 1 0 8.485 8.485l8.379-8.551"}]];m(t,p({name:"paperclip"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function as(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3181,7 +3181,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"}]];m(t,p({name:"pen"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function os(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{x:"14",y:"3",width:"5",height:"18",rx:"1"}],["rect",{x:"5",y:"3",width:"5",height:"18",rx:"1"}]];m(t,p({name:"pause"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function os(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3224,7 +3224,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"}],["path",{d:"m15 5 4 4"}]];m(t,p({name:"pencil"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ls(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"}]];m(t,p({name:"pen"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ls(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3267,7 +3267,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["line",{x1:"19",x2:"5",y1:"5",y2:"19"}],["circle",{cx:"6.5",cy:"6.5",r:"2.5"}],["circle",{cx:"17.5",cy:"17.5",r:"2.5"}]];m(t,p({name:"percent"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ss(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"}],["path",{d:"m15 5 4 4"}]];m(t,p({name:"pencil"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ss(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3310,7 +3310,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"}]];m(t,p({name:"play"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function is(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["line",{x1:"19",x2:"5",y1:"5",y2:"19"}],["circle",{cx:"6.5",cy:"6.5",r:"2.5"}],["circle",{cx:"17.5",cy:"17.5",r:"2.5"}]];m(t,p({name:"percent"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function is(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3353,7 +3353,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M5 12h14"}],["path",{d:"M12 5v14"}]];m(t,p({name:"plus"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function cs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"}]];m(t,p({name:"play"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function cs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3396,7 +3396,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{width:"5",height:"5",x:"3",y:"3",rx:"1"}],["rect",{width:"5",height:"5",x:"16",y:"3",rx:"1"}],["rect",{width:"5",height:"5",x:"3",y:"16",rx:"1"}],["path",{d:"M21 16h-3a2 2 0 0 0-2 2v3"}],["path",{d:"M21 21v.01"}],["path",{d:"M12 7v3a2 2 0 0 1-2 2H7"}],["path",{d:"M3 12h.01"}],["path",{d:"M12 3h.01"}],["path",{d:"M12 16v.01"}],["path",{d:"M16 12h1"}],["path",{d:"M21 12v.01"}],["path",{d:"M12 21v-1"}]];m(t,p({name:"qr-code"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function us(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M5 12h14"}],["path",{d:"M12 5v14"}]];m(t,p({name:"plus"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function us(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3439,7 +3439,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"}],["path",{d:"M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"}]];m(t,p({name:"quote"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function fs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{width:"5",height:"5",x:"3",y:"3",rx:"1"}],["rect",{width:"5",height:"5",x:"16",y:"3",rx:"1"}],["rect",{width:"5",height:"5",x:"3",y:"16",rx:"1"}],["path",{d:"M21 16h-3a2 2 0 0 0-2 2v3"}],["path",{d:"M21 21v.01"}],["path",{d:"M12 7v3a2 2 0 0 1-2 2H7"}],["path",{d:"M3 12h.01"}],["path",{d:"M12 3h.01"}],["path",{d:"M12 16v.01"}],["path",{d:"M16 12h1"}],["path",{d:"M21 12v.01"}],["path",{d:"M12 21v-1"}]];m(t,p({name:"qr-code"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function fs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3482,7 +3482,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21 7v6h-6"}],["path",{d:"M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"}]];m(t,p({name:"redo"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ds(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"}],["path",{d:"M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"}]];m(t,p({name:"quote"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ds(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3525,7 +3525,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"}],["path",{d:"M21 3v5h-5"}],["path",{d:"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"}],["path",{d:"M8 16H3v5"}]];m(t,p({name:"refresh-cw"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function vs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21 7v6h-6"}],["path",{d:"M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"}]];m(t,p({name:"redo"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function vs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3568,7 +3568,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"}],["path",{d:"M3 3v5h5"}]];m(t,p({name:"rotate-ccw"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function hs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"}],["path",{d:"M21 3v5h-5"}],["path",{d:"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"}],["path",{d:"M8 16H3v5"}]];m(t,p({name:"refresh-cw"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function hs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3611,7 +3611,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"}],["path",{d:"M21 3v5h-5"}]];m(t,p({name:"rotate-cw"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function $s(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"}],["path",{d:"M3 3v5h5"}]];m(t,p({name:"rotate-ccw"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function $s(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3654,7 +3654,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"}],["path",{d:"m14.5 12.5 2-2"}],["path",{d:"m11.5 9.5 2-2"}],["path",{d:"m8.5 6.5 2-2"}],["path",{d:"m17.5 15.5 2-2"}]];m(t,p({name:"ruler"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function _s(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"}],["path",{d:"M21 3v5h-5"}]];m(t,p({name:"rotate-cw"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function _s(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3697,7 +3697,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"}],["path",{d:"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"}],["path",{d:"M7 3v4a1 1 0 0 0 1 1h7"}]];m(t,p({name:"save"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function gs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"}],["path",{d:"m14.5 12.5 2-2"}],["path",{d:"m11.5 9.5 2-2"}],["path",{d:"m8.5 6.5 2-2"}],["path",{d:"m17.5 15.5 2-2"}]];m(t,p({name:"ruler"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function gs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3740,7 +3740,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m21 21-4.34-4.34"}],["circle",{cx:"11",cy:"11",r:"8"}]];m(t,p({name:"search"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ps(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"}],["path",{d:"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"}],["path",{d:"M7 3v4a1 1 0 0 0 1 1h7"}]];m(t,p({name:"save"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ps(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3783,7 +3783,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{width:"20",height:"8",x:"2",y:"2",rx:"2",ry:"2"}],["rect",{width:"20",height:"8",x:"2",y:"14",rx:"2",ry:"2"}],["line",{x1:"6",x2:"6.01",y1:"6",y2:"6"}],["line",{x1:"6",x2:"6.01",y1:"18",y2:"18"}]];m(t,p({name:"server"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ms(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m21 21-4.34-4.34"}],["circle",{cx:"11",cy:"11",r:"8"}]];m(t,p({name:"search"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ms(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3826,7 +3826,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M14 17H5"}],["path",{d:"M19 7h-9"}],["circle",{cx:"17",cy:"17",r:"3"}],["circle",{cx:"7",cy:"7",r:"3"}]];m(t,p({name:"settings-2"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ys(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["rect",{width:"20",height:"8",x:"2",y:"2",rx:"2",ry:"2"}],["rect",{width:"20",height:"8",x:"2",y:"14",rx:"2",ry:"2"}],["line",{x1:"6",x2:"6.01",y1:"6",y2:"6"}],["line",{x1:"6",x2:"6.01",y1:"18",y2:"18"}]];m(t,p({name:"server"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ys(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3869,7 +3869,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"}],["circle",{cx:"12",cy:"12",r:"3"}]];m(t,p({name:"settings"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ns(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M14 17H5"}],["path",{d:"M19 7h-9"}],["circle",{cx:"17",cy:"17",r:"3"}],["circle",{cx:"7",cy:"7",r:"3"}]];m(t,p({name:"settings-2"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ns(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3912,7 +3912,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"18",cy:"5",r:"3"}],["circle",{cx:"6",cy:"12",r:"3"}],["circle",{cx:"18",cy:"19",r:"3"}],["line",{x1:"8.59",x2:"15.42",y1:"13.51",y2:"17.49"}],["line",{x1:"15.41",x2:"8.59",y1:"6.51",y2:"10.49"}]];m(t,p({name:"share-2"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function bs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"}],["circle",{cx:"12",cy:"12",r:"3"}]];m(t,p({name:"settings"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function bs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3955,7 +3955,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"}]];m(t,p({name:"shield"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ms(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"18",cy:"5",r:"3"}],["circle",{cx:"6",cy:"12",r:"3"}],["circle",{cx:"18",cy:"19",r:"3"}],["line",{x1:"8.59",x2:"15.42",y1:"13.51",y2:"17.49"}],["line",{x1:"15.41",x2:"8.59",y1:"6.51",y2:"10.49"}]];m(t,p({name:"share-2"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ms(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -3998,7 +3998,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m18 14 4 4-4 4"}],["path",{d:"m18 2 4 4-4 4"}],["path",{d:"M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22"}],["path",{d:"M2 6h1.972a4 4 0 0 1 3.6 2.2"}],["path",{d:"M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45"}]];m(t,p({name:"shuffle"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ws(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"}]];m(t,p({name:"shield"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ws(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4041,7 +4041,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M10 5H3"}],["path",{d:"M12 19H3"}],["path",{d:"M14 3v4"}],["path",{d:"M16 17v4"}],["path",{d:"M21 12h-9"}],["path",{d:"M21 19h-5"}],["path",{d:"M21 5h-7"}],["path",{d:"M8 10v4"}],["path",{d:"M8 12H3"}]];m(t,p({name:"sliders-horizontal"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ps(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m18 14 4 4-4 4"}],["path",{d:"m18 2 4 4-4 4"}],["path",{d:"M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22"}],["path",{d:"M2 6h1.972a4 4 0 0 1 3.6 2.2"}],["path",{d:"M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45"}]];m(t,p({name:"shuffle"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ps(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4084,7 +4084,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"}],["path",{d:"M20 2v4"}],["path",{d:"M22 4h-4"}],["circle",{cx:"4",cy:"20",r:"2"}]];m(t,p({name:"sparkles"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function xs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M10 5H3"}],["path",{d:"M12 19H3"}],["path",{d:"M14 3v4"}],["path",{d:"M16 17v4"}],["path",{d:"M21 12h-9"}],["path",{d:"M21 19h-5"}],["path",{d:"M21 5h-7"}],["path",{d:"M8 10v4"}],["path",{d:"M8 12H3"}]];m(t,p({name:"sliders-horizontal"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function xs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4127,7 +4127,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"}],["path",{d:"M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"}]];m(t,p({name:"square-pen"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Es(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"}],["path",{d:"M20 2v4"}],["path",{d:"M22 4h-4"}],["circle",{cx:"4",cy:"20",r:"2"}]];m(t,p({name:"sparkles"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Es(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4170,7 +4170,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"}]];m(t,p({name:"star"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function As(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"}],["path",{d:"M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"}]];m(t,p({name:"square-pen"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function As(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4213,7 +4213,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 4H9a3 3 0 0 0-2.83 4"}],["path",{d:"M14 12a4 4 0 0 1 0 8H6"}],["line",{x1:"4",x2:"20",y1:"12",y2:"12"}]];m(t,p({name:"strikethrough"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ks(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"}]];m(t,p({name:"star"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ks(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4256,7 +4256,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"12",cy:"12",r:"4"}],["path",{d:"M12 2v2"}],["path",{d:"M12 20v2"}],["path",{d:"m4.93 4.93 1.41 1.41"}],["path",{d:"m17.66 17.66 1.41 1.41"}],["path",{d:"M2 12h2"}],["path",{d:"M20 12h2"}],["path",{d:"m6.34 17.66-1.41 1.41"}],["path",{d:"m19.07 4.93-1.41 1.41"}]];m(t,p({name:"sun"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ss(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 4H9a3 3 0 0 0-2.83 4"}],["path",{d:"M14 12a4 4 0 0 1 0 8H6"}],["line",{x1:"4",x2:"20",y1:"12",y2:"12"}]];m(t,p({name:"strikethrough"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ss(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4299,7 +4299,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"}],["circle",{cx:"7.5",cy:"7.5",r:".5",fill:"currentColor"}]];m(t,p({name:"tag"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Cs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"12",cy:"12",r:"4"}],["path",{d:"M12 2v2"}],["path",{d:"M12 20v2"}],["path",{d:"m4.93 4.93 1.41 1.41"}],["path",{d:"m17.66 17.66 1.41 1.41"}],["path",{d:"M2 12h2"}],["path",{d:"M20 12h2"}],["path",{d:"m6.34 17.66-1.41 1.41"}],["path",{d:"m19.07 4.93-1.41 1.41"}]];m(t,p({name:"sun"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Cs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4342,7 +4342,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M13.172 2a2 2 0 0 1 1.414.586l6.71 6.71a2.4 2.4 0 0 1 0 3.408l-4.592 4.592a2.4 2.4 0 0 1-3.408 0l-6.71-6.71A2 2 0 0 1 6 9.172V3a1 1 0 0 1 1-1z"}],["path",{d:"M2 7v6.172a2 2 0 0 0 .586 1.414l6.71 6.71a2.4 2.4 0 0 0 3.191.193"}],["circle",{cx:"10.5",cy:"6.5",r:".5",fill:"currentColor"}]];m(t,p({name:"tags"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ts(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"}],["circle",{cx:"7.5",cy:"7.5",r:".5",fill:"currentColor"}]];m(t,p({name:"tag"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ts(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4385,7 +4385,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"12",cy:"12",r:"10"}],["circle",{cx:"12",cy:"12",r:"6"}],["circle",{cx:"12",cy:"12",r:"2"}]];m(t,p({name:"target"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ls(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M13.172 2a2 2 0 0 1 1.414.586l6.71 6.71a2.4 2.4 0 0 1 0 3.408l-4.592 4.592a2.4 2.4 0 0 1-3.408 0l-6.71-6.71A2 2 0 0 1 6 9.172V3a1 1 0 0 1 1-1z"}],["path",{d:"M2 7v6.172a2 2 0 0 0 .586 1.414l6.71 6.71a2.4 2.4 0 0 0 3.191.193"}],["circle",{cx:"10.5",cy:"6.5",r:".5",fill:"currentColor"}]];m(t,p({name:"tags"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ls(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4428,7 +4428,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"}]];m(t,p({name:"thermometer"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Hs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"12",cy:"12",r:"10"}],["circle",{cx:"12",cy:"12",r:"6"}],["circle",{cx:"12",cy:"12",r:"2"}]];m(t,p({name:"target"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Hs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4471,7 +4471,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["line",{x1:"10",x2:"14",y1:"2",y2:"2"}],["line",{x1:"12",x2:"15",y1:"14",y2:"11"}],["circle",{cx:"12",cy:"14",r:"8"}]];m(t,p({name:"timer"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Os(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"}]];m(t,p({name:"thermometer"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Os(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4514,7 +4514,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M10 11v6"}],["path",{d:"M14 11v6"}],["path",{d:"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"}],["path",{d:"M3 6h18"}],["path",{d:"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"}]];m(t,p({name:"trash-2"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Vs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["line",{x1:"10",x2:"14",y1:"2",y2:"2"}],["line",{x1:"12",x2:"15",y1:"14",y2:"11"}],["circle",{cx:"12",cy:"14",r:"8"}]];m(t,p({name:"timer"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Vs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4557,7 +4557,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 17h6v-6"}],["path",{d:"m22 17-8.5-8.5-5 5L2 7"}]];m(t,p({name:"trending-down"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Is(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M10 11v6"}],["path",{d:"M14 11v6"}],["path",{d:"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"}],["path",{d:"M3 6h18"}],["path",{d:"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"}]];m(t,p({name:"trash-2"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Is(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4600,7 +4600,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 7h6v6"}],["path",{d:"m22 7-8.5 8.5-5-5L2 17"}]];m(t,p({name:"trending-up"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Rs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 17h6v-6"}],["path",{d:"m22 17-8.5-8.5-5 5L2 7"}]];m(t,p({name:"trending-down"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Rs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4643,7 +4643,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"}],["path",{d:"M12 9v4"}],["path",{d:"M12 17h.01"}]];m(t,p({name:"triangle-alert"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ds(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 7h6v6"}],["path",{d:"m22 7-8.5 8.5-5-5L2 17"}]];m(t,p({name:"trending-up"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ds(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4686,7 +4686,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"}]];m(t,p({name:"twitter"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Fs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"}],["path",{d:"M12 9v4"}],["path",{d:"M12 17h.01"}]];m(t,p({name:"triangle-alert"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Fs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4729,7 +4729,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 4v16"}],["path",{d:"M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2"}],["path",{d:"M9 20h6"}]];m(t,p({name:"type"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function zs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"}]];m(t,p({name:"twitter"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function zs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4772,7 +4772,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 7v6h6"}],["path",{d:"M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"}]];m(t,p({name:"undo"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function qs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 4v16"}],["path",{d:"M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2"}],["path",{d:"M9 20h6"}]];m(t,p({name:"type"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function qs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4815,7 +4815,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 3v12"}],["path",{d:"m17 8-5-5-5 5"}],["path",{d:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}]];m(t,p({name:"upload"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function js(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 7v6h6"}],["path",{d:"M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"}]];m(t,p({name:"undo"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function js(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4858,7 +4858,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"}],["circle",{cx:"12",cy:"7",r:"4"}]];m(t,p({name:"user"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Us(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 3v12"}],["path",{d:"m17 8-5-5-5 5"}],["path",{d:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}]];m(t,p({name:"upload"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Us(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4901,7 +4901,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"}],["path",{d:"M16 3.128a4 4 0 0 1 0 7.744"}],["path",{d:"M22 21v-2a4 4 0 0 0-3-3.87"}],["circle",{cx:"9",cy:"7",r:"4"}]];m(t,p({name:"users"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Bs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"}],["circle",{cx:"12",cy:"7",r:"4"}]];m(t,p({name:"user"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Bs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4944,7 +4944,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"}],["path",{d:"M7 2v20"}],["path",{d:"M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"}]];m(t,p({name:"utensils"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ws(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"}],["path",{d:"M16 3.128a4 4 0 0 1 0 7.744"}],["path",{d:"M22 21v-2a4 4 0 0 0-3-3.87"}],["circle",{cx:"9",cy:"7",r:"4"}]];m(t,p({name:"users"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ws(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -4987,7 +4987,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"}]];m(t,p({name:"volume"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ys(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"}],["path",{d:"M7 2v20"}],["path",{d:"M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"}]];m(t,p({name:"utensils"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ys(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -5030,7 +5030,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"}],["path",{d:"M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"}]];m(t,p({name:"wallet"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Gs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"}]];m(t,p({name:"volume"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Gs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -5073,7 +5073,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"}],["path",{d:"m14 7 3 3"}],["path",{d:"M5 6v4"}],["path",{d:"M19 14v4"}],["path",{d:"M10 2v2"}],["path",{d:"M7 8H3"}],["path",{d:"M21 16h-4"}],["path",{d:"M11 3H9"}]];m(t,p({name:"wand-sparkles"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Zs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"}],["path",{d:"M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"}]];m(t,p({name:"wallet"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Zs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -5116,7 +5116,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"12",cy:"5",r:"3"}],["path",{d:"M6.5 8a2 2 0 0 0-1.905 1.46L2.1 18.5A2 2 0 0 0 4 21h16a2 2 0 0 0 1.925-2.54L19.4 9.5A2 2 0 0 0 17.48 8Z"}]];m(t,p({name:"weight"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ks(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"}],["path",{d:"m14 7 3 3"}],["path",{d:"M5 6v4"}],["path",{d:"M19 14v4"}],["path",{d:"M10 2v2"}],["path",{d:"M7 8H3"}],["path",{d:"M21 16h-4"}],["path",{d:"M11 3H9"}]];m(t,p({name:"wand-sparkles"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Ks(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -5159,7 +5159,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 20h.01"}],["path",{d:"M8.5 16.429a5 5 0 0 1 7 0"}],["path",{d:"M5 12.859a10 10 0 0 1 5.17-2.69"}],["path",{d:"M19 12.859a10 10 0 0 0-2.007-1.523"}],["path",{d:"M2 8.82a15 15 0 0 1 4.177-2.643"}],["path",{d:"M22 8.82a15 15 0 0 0-11.288-3.764"}],["path",{d:"m2 2 20 20"}]];m(t,p({name:"wifi-off"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Qs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["circle",{cx:"12",cy:"5",r:"3"}],["path",{d:"M6.5 8a2 2 0 0 0-1.905 1.46L2.1 18.5A2 2 0 0 0 4 21h16a2 2 0 0 0 1.925-2.54L19.4 9.5A2 2 0 0 0 17.48 8Z"}]];m(t,p({name:"weight"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Qs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -5202,7 +5202,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 20h.01"}],["path",{d:"M2 8.82a15 15 0 0 1 20 0"}],["path",{d:"M5 12.859a10 10 0 0 1 14 0"}],["path",{d:"M8.5 16.429a5 5 0 0 1 7 0"}]];m(t,p({name:"wifi"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Xs(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 20h.01"}],["path",{d:"M8.5 16.429a5 5 0 0 1 7 0"}],["path",{d:"M5 12.859a10 10 0 0 1 5.17-2.69"}],["path",{d:"M19 12.859a10 10 0 0 0-2.007-1.523"}],["path",{d:"M2 8.82a15 15 0 0 1 4.177-2.643"}],["path",{d:"M22 8.82a15 15 0 0 0-11.288-3.764"}],["path",{d:"m2 2 20 20"}]];m(t,p({name:"wifi-off"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Xs(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -5245,7 +5245,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"}]];m(t,p({name:"wrench"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Js(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M12 20h.01"}],["path",{d:"M2 8.82a15 15 0 0 1 20 0"}],["path",{d:"M5 12.859a10 10 0 0 1 14 0"}],["path",{d:"M8.5 16.429a5 5 0 0 1 7 0"}]];m(t,p({name:"wifi"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function Js(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -5288,7 +5288,7 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M18 6 6 18"}],["path",{d:"m6 6 12 12"}]];m(t,p({name:"x"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ei(t,e){d(e,!0);/**
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"}]];m(t,p({name:"wrench"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ei(t,e){d(e,!0);/**
  * @license @lucide/svelte v0.544.0 - ISC
  *
  * ISC License
@@ -5331,4 +5331,47 @@ var dt=Array.isArray,hr=Array.prototype.indexOf,Rt=Array.from,ot=Object.definePr
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"}]];m(t,p({name:"zap"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}export{oa as $,po as A,$o as B,vo as C,ho as D,ae as E,Be as F,so as G,Oo as H,Ya as I,mo as J,_ as K,u as L,p as M,bo as N,Mo as O,La as P,gn as Q,g as R,Ue as S,Do as T,yo as U,es as V,ua as W,jo as X,qs as Y,To as Z,Yl as _,He as a,us as a$,ll as a0,hl as a1,pl as a2,ul as a3,Pl as a4,Ao as a5,Co as a6,Js as a7,Bo as a8,zo as a9,bl as aA,Sl as aB,Qs as aC,Cl as aD,ps as aE,Fo as aF,wl as aG,Nl as aH,js as aI,ql as aJ,Vo as aK,ro as aL,vs as aM,Cs as aN,cl as aO,tl as aP,zs as aQ,fs as aR,Ko as aS,zl as aT,As as aU,fl as aV,Ll as aW,Hl as aX,Ol as aY,Wl as aZ,Bl as a_,Va as aa,_s as ab,Ys as ac,is as ad,Is as ae,Vs as af,gs as ag,ds as ah,gl as ai,Jo as aj,os as ak,Os as al,rl as am,al as an,rs as ao,ss as ap,Xl as aq,Ns as ar,Rs as as,ns as at,yl as au,jl as av,Ps as aw,Dl as ax,xo as ay,xs as az,ee as b,ln as b$,Ul as b0,hs as b1,Io as b2,Ro as b3,Ss as b4,as as b5,ms as b6,nl as b7,Ho as b8,xl as b9,Ls as bA,Ws as bB,ls as bC,Vl as bD,Ts as bE,Lo as bF,Al as bG,Ms as bH,_l as bI,Bs as bJ,Hs as bK,bs as bL,So as bM,Gs as bN,dl as bO,ys as bP,Zo as bQ,go as bR,Go as bS,Yo as bT,$l as bU,Xs as bV,Zl as bW,vl as bX,ks as bY,Jl as bZ,Kl as b_,ws as ba,qo as bb,Wo as bc,Es as bd,Gl as be,Qo as bf,Rl as bg,Ml as bh,Fs as bi,Xo as bj,kl as bk,Tl as bl,cs as bm,ts as bn,ei as bo,ko as bp,el as bq,mr as br,ml as bs,Fl as bt,Us as bu,Ds as bv,Uo as bw,Il as bx,$s as by,Zs as bz,$ as c,Ql as c0,il as c1,Ks as c2,ol as c3,El as c4,sl as c5,wo as c6,Ca as d,f as e,h as f,R as g,v as h,Po as i,Eo as j,ea as k,No as l,ia as m,sa as n,Ra as o,d as p,ja as q,Wa as r,de as s,pa as t,$a as u,_n as v,no as w,O as x,re as y,_o as z};
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M18 6 6 18"}],["path",{d:"m6 6 12 12"}]];m(t,p({name:"x"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}function ti(t,e){d(e,!0);/**
+ * @license @lucide/svelte v0.544.0 - ISC
+ *
+ * ISC License
+ *
+ * Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2023 as part of Feather (MIT). All other copyright (c) for Lucide are held by Lucide Contributors 2025.
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *
+ * ---
+ *
+ * The MIT License (MIT) (for portions derived from Feather)
+ *
+ * Copyright (c) 2013-2023 Cole Bemis
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */let n=g(e,["$$slots","$$events","$$legacy"]);const r=[["path",{d:"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"}]];m(t,p({name:"zap"},()=>n,{get iconNode(){return r},children:(o,s)=>{var a=$(),l=h(a);_(l,()=>e.children??u),f(o,a)},$$slots:{default:!0}})),v()}export{oa as $,po as A,$o as B,vo as C,ho as D,ae as E,Be as F,so as G,Oo as H,Ya as I,mo as J,_ as K,u as L,p as M,bo as N,Mo as O,La as P,gn as Q,g as R,Ue as S,Do as T,yo as U,ts as V,ua as W,jo as X,js as Y,To as Z,Gl as _,He as a,Wl as a$,ll as a0,$l as a1,ml as a2,ul as a3,xl as a4,Ao as a5,Co as a6,ei as a7,Bo as a8,zo as a9,Ml as aA,Cl as aB,Xs as aC,Tl as aD,ms as aE,Fo as aF,fl as aG,Pl as aH,bl as aI,Us as aJ,jl as aK,Vo as aL,ro as aM,hs as aN,Ts as aO,cl as aP,tl as aQ,qs as aR,ds as aS,Ko as aT,ql as aU,ks as aV,dl as aW,Hl as aX,Ol as aY,Vl as aZ,Yl as a_,Va as aa,gs as ab,Gs as ac,cs as ad,Rs as ae,Is as af,ps as ag,vs as ah,pl as ai,Jo as aj,ls as ak,Vs as al,rl as am,al as an,as as ao,is as ap,Jl as aq,bs as ar,Ds as as,rs as at,Nl as au,Ul as av,xs as aw,Fl as ax,xo as ay,Es as az,ee as b,Ql as b$,fs as b0,Bl as b1,$s as b2,Io as b3,Ro as b4,Cs as b5,os as b6,ys as b7,nl as b8,Ho as b9,Ks as bA,Hs as bB,Ys as bC,ss as bD,Il as bE,Ls as bF,Lo as bG,kl as bH,ws as bI,gl as bJ,Ws as bK,Os as bL,Ms as bM,So as bN,Zs as bO,vl as bP,Ns as bQ,Zo as bR,go as bS,Go as bT,Yo as bU,_l as bV,Js as bW,Kl as bX,hl as bY,Ss as bZ,es as b_,El as ba,Ps as bb,qo as bc,Wo as bd,As as be,Zl as bf,Qo as bg,Dl as bh,wl as bi,zs as bj,Xo as bk,Sl as bl,Ll as bm,us as bn,ns as bo,ti as bp,ko as bq,el as br,mr as bs,yl as bt,zl as bu,Bs as bv,Fs as bw,Uo as bx,Rl as by,_s as bz,$ as c,ln as c0,Xl as c1,il as c2,Qs as c3,ol as c4,Al as c5,sl as c6,wo as c7,Ca as d,f as e,h as f,R as g,v as h,Po as i,Eo as j,ea as k,No as l,ia as m,sa as n,Ra as o,d as p,ja as q,Wa as r,de as s,pa as t,$a as u,_n as v,no as w,O as x,re as y,_o as z};
