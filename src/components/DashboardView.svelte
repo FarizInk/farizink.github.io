@@ -23,6 +23,7 @@
     Wifi,
     HardDrive,
     Image,
+    Cloud,
     Activity,
     RefreshCw
   } from '@lucide/svelte';
@@ -78,6 +79,13 @@
       description: 'Service status monitor',
       icon: Activity,
       color: 'from-green-400 to-emerald-500 dark:from-green-500 dark:to-emerald-600'
+    },
+    {
+      name: 'Cloud',
+      url: 'https://cloud.fariz.dev',
+      description: 'Cloud services',
+      icon: Cloud,
+      color: 'from-sky-400 to-blue-500 dark:from-sky-500 dark:to-blue-600'
     }
   ];
 
