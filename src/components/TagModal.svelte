@@ -109,21 +109,21 @@
       <button
         onclick={handleRefresh}
         disabled={isAnyLoading}
-        class="btn-icon p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+        class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
         title="Refresh"
       >
         <RotateCw class="w-4 h-4 {isAnyLoading ? 'animate-spin' : ''}" />
       </button>
       <button
         onclick={handleCreateNew}
-        class="btn-icon p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+        class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700"
         title="New tag"
       >
         <Plus class="w-4 h-4" />
       </button>
       <button
         onclick={handleClose}
-        class="btn-icon p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+        class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700"
         aria-label="Close"
       >
         <X class="w-5 h-5 text-gray-500" />
@@ -153,7 +153,7 @@
           {searchQuery ? 'No tags found' : 'No tags yet'}
         </p>
         {#if !searchQuery}
-          <button onclick={handleCreateNew} class="btn-copy mt-2 text-sm text-purple-600 hover:underline">
+          <button onclick={handleCreateNew} class="mt-2 text-sm text-purple-600 hover:text-purple-700 dark:text-purple-400 hover:underline">
             Create your first tag
           </button>
         {/if}
@@ -215,7 +215,7 @@
     </span>
     <button
       onclick={handleClose}
-      class="btn btn-primary px-4 py-2 text-sm   rounded-xl font-medium shadow-md hover:shadow-lg transition-all"
+      class="btn btn-primary shadow-md hover:shadow-lg"
     >
       Done
     </button>

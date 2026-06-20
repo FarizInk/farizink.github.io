@@ -189,9 +189,9 @@ console.log('Result:', result);`;
 
   <!-- Options -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+    class="tool-card mb-6"
   >
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Diff Options</h3>
+    <h3 class="section-title">Diff Options</h3>
     <div class="flex flex-wrap gap-4">
       <label class="relative flex items-center cursor-pointer">
         <input
@@ -270,7 +270,7 @@ console.log('Result:', result);`;
   <!-- Input Text Areas -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+      class="tool-card mb-6"
     >
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-0">Original Text</h3>
@@ -287,7 +287,7 @@ console.log('Result:', result);`;
     </div>
 
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+      class="tool-card mb-6"
     >
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-0">Modified Text</h3>
@@ -307,7 +307,7 @@ console.log('Result:', result);`;
   <!-- Diff Result -->
   {#if diffResult}
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+      class="tool-card mb-6"
     >
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-0">Diff Result</h3>

@@ -198,9 +198,9 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Unix Timestamp to Date -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <h2 class="section-title">
         Unix Timestamp → Date
       </h2>
 
@@ -246,9 +246,9 @@
 
     <!-- Date to Unix Timestamp -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <h2 class="section-title">
         Date → Unix Timestamp
       </h2>
 
@@ -295,9 +295,9 @@
   <!-- Formatted Results -->
   {#if formattedDate}
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Formatted Results</h2>
+      <h2 class="section-title">Formatted Results</h2>
 
       <div class="space-y-4">
         <div>
@@ -334,9 +334,9 @@
 
   <!-- Timestamp Information -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+    class="tool-card"
   >
-    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">About Unix Timestamps</h2>
+    <h2 class="section-title">About Unix Timestamps</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
         <h3 class="font-medium text-gray-900 dark:text-white mb-2">What is a Unix Timestamp?</h3>

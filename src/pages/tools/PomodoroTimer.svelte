@@ -272,7 +272,7 @@
     <!-- Main Timer Section -->
     <div class="xl:col-span-2 lg:col-span-1">
       <!-- Timer Display -->
-      <div class="card card-elevated mb-4 sm:mb-6 lg:mb-8">
+      <div class="tool-card card-elevated mb-4 sm:mb-6 lg:mb-8">
         {#if isEditingSettings}
           <!-- Settings Editor -->
           <div class="max-w-md mx-auto w-full">
@@ -510,7 +510,7 @@
     <!-- Info Sidebar -->
     <div class="xl:col-span-1 lg:col-span-1">
       <!-- Current Settings Info -->
-      <div class="card card-elevated mb-4 sm:mb-6">
+      <div class="tool-card card-elevated mb-4 sm:mb-6">
         <div class="flex items-center mb-4 sm:mb-6">
           <h3
             class="font-semibold text-gray-900 dark:text-white flex items-center gap-2 text-base sm:text-lg"
@@ -548,7 +548,7 @@
       </div>
 
       <!-- Pomodoro Info -->
-      <div class="card card-elevated">
+      <div class="tool-card card-elevated">
         <h3
           class="font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center gap-2 text-base sm:text-lg"
         >
@@ -581,7 +581,7 @@
 
   <!-- How to Use Section -->
   <div class="mt-6 sm:mt-8 grid md:grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-    <div class="card">
+    <div class="tool-card">
       <h3
         class="font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center gap-2 text-base sm:text-lg"
       >
@@ -600,7 +600,7 @@
       </ol>
     </div>
 
-    <div class="card">
+    <div class="tool-card">
       <h3 class="font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 text-base sm:text-lg">
         💡 Pro Tips
       </h3>

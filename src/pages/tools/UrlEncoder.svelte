@@ -188,7 +188,7 @@ https://demo.com/search?query=测试&lang=zh-CN`;
 
         <!-- Quick Examples -->
         <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-          <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Quick Examples:</p>
+          <p class="control-label">Quick Examples:</p>
           <div class="space-y-1">
             <button
               onclick={() => {

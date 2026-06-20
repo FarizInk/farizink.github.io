@@ -90,7 +90,7 @@
         <p class="text-sm text-gray-600 dark:text-gray-400">Sign in to your account</p>
       </div>
     </div>
-    <button onclick={closeModal} class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+    <button onclick={closeModal} class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700">
       <X class="w-5 h-5 text-gray-500" />
     </button>
   </div>
@@ -154,7 +154,7 @@
     <button
       type="submit"
       disabled={isLoading || !email.trim() || !password.trim()}
-      class="btn btn-primary w-full flex items-center justify-center gap-2 py-3.5   font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-md"
+      class="btn btn-primary w-full flex items-center justify-center gap-2 py-3.5   font-semibold rounded-xl transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-md"
     >
       {#if isLoading}
         <div class="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>

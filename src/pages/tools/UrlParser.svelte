@@ -100,9 +100,9 @@
 
   <!-- Input Section -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+    class="tool-card mb-6"
   >
-    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Enter URL</h2>
+    <h2 class="section-title">Enter URL</h2>
 
     <div class="flex gap-4 mb-4">
       <input
@@ -141,9 +141,9 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
       <!-- Basic Components -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Basic Components</h3>
+        <h3 class="section-title">Basic Components</h3>
 
         <div class="space-y-3">
           <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
@@ -219,9 +219,9 @@
 
       <!-- Complete Components -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h3 class="section-title">
           Complete Components
         </h3>
 
@@ -277,7 +277,7 @@
     <!-- Query Parameters -->
     {#if parsedUrl.searchParams.length > 0}
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+        class="tool-card mb-6"
       >
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Query Parameters</h3>

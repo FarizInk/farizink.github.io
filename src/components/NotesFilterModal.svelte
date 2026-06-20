@@ -153,7 +153,7 @@
           <button
             type="button"
             onclick={onClose}
-            class="btn-icon p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700"
             aria-label="Close modal"
           >
             <X class="w-5 h-5 text-gray-600 dark:text-gray-400" />
@@ -547,7 +547,7 @@
           <button
             type="button"
             onclick={handleApply}
-            class="btn btn-primary flex items-center gap-2 px-5 py-2.5   rounded-xl text-sm font-medium shadow-md hover:shadow-lg transition-all"
+            class="btn btn-primary flex items-center gap-2 shadow-md hover:shadow-lg"
           >
             <Filter class="w-4 h-4" />
             Apply

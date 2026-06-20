@@ -241,7 +241,7 @@
     <div class="space-y-4">
       <!-- Current Expression -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Cron Expression</h3>
@@ -292,9 +292,9 @@
 
       <!-- Manual Builder -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Manual Builder</h3>
+        <h3 class="section-title">Manual Builder</h3>
         <div class="space-y-4">
           <div>
             <label
@@ -384,10 +384,10 @@
       <!-- Description -->
       {#if isValidCron}
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+          class="tool-card"
         >
           <h3
-            class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2"
+            class="section-title flex items-center gap-2"
           >
             <Info class="w-5 h-5" />
             Description
@@ -401,10 +401,10 @@
       <!-- Next Run Times -->
       {#if isValidCron && nextRunTimes.length > 0}
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+          class="tool-card"
         >
           <h3
-            class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2"
+            class="section-title flex items-center gap-2"
           >
             <Calendar class="w-5 h-5" />
             Next Run Times
@@ -422,9 +422,9 @@
 
       <!-- Presets -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Common Presets</h3>
+        <h3 class="section-title">Common Presets</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {#each presets as preset (preset.name)}
             <button

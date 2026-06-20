@@ -342,9 +342,9 @@
     <div class="lg:col-span-2 space-y-4">
       <!-- Converter Card -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+        <h2 class="section-title flex items-center">
           <Calculator class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
           Convert {categories.find(c => c.id === activeCategory)?.name}
         </h2>
@@ -432,9 +432,9 @@
 
       <!-- Quick Reference -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Reference</h3>
+        <h3 class="section-title">Quick Reference</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
           {#if activeCategory === 'length'}
             <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
@@ -510,7 +510,7 @@
     <div class="space-y-4">
       <!-- Conversion History -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm sticky"
+        class="tool-card sticky"
       >
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">History</h3>

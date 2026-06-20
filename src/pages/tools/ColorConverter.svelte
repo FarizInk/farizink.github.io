@@ -232,9 +232,9 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Color Preview -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Color Preview</h2>
+      <h2 class="section-title">Color Preview</h2>
       <div
         class="w-full h-48 rounded-xl shadow-inner mb-4 transition-colors duration-300"
         style="background-color: {hexInput}"
@@ -255,9 +255,9 @@
 
     <!-- Color History -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Colors</h2>
+      <h2 class="section-title">Recent Colors</h2>
       {#if history.length === 0}
         <div
           class="flex flex-col items-center justify-center h-48 text-gray-500 dark:text-gray-400"
@@ -295,9 +295,9 @@
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
     <!-- HEX Format -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">HEX</h3>
+      <h3 class="section-title">HEX</h3>
       <div class="flex gap-2">
         <input
           bind:value={hexInput}
@@ -316,9 +316,9 @@
 
     <!-- RGB Format -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">RGB</h3>
+      <h3 class="section-title">RGB</h3>
       <div class="space-y-3">
         {#each ['r', 'g', 'b'] as channel (channel)}
           <div class="flex items-center gap-2">
@@ -358,9 +358,9 @@
 
     <!-- HSL Format -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">HSL</h3>
+      <h3 class="section-title">HSL</h3>
       <div class="space-y-3">
         {#each ['h', 's', 'l'] as channel (channel)}
           <div class="flex items-center gap-2">
@@ -401,9 +401,9 @@
 
     <!-- HSV Format -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">HSV</h3>
+      <h3 class="section-title">HSV</h3>
       <div class="space-y-2">
         <div class="flex justify-between text-sm">
           <span class="text-gray-600 dark:text-gray-400">Hue:</span>
@@ -429,9 +429,9 @@
 
     <!-- CMYK Format -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">CMYK</h3>
+      <h3 class="section-title">CMYK</h3>
       <div class="space-y-2">
         {#each ['c', 'm', 'y', 'k'] as channel (channel)}
           <div class="flex justify-between text-sm">

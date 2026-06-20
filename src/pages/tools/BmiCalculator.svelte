@@ -279,7 +279,7 @@
 
   <!-- Unit Selection -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+    class="tool-card mb-6"
   >
     <div class="flex items-center justify-between">
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Measurement Units</h3>
@@ -305,7 +305,7 @@
     <div class="lg:col-span-2 space-y-4">
       <!-- Basic Information -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
         <div class="flex items-center justify-between mb-6">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -432,9 +432,9 @@
       <!-- BMI Result -->
       {#if bmi > 0}
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+          class="tool-card"
         >
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+          <h3 class="section-title flex items-center">
             <Activity class="w-6 h-6 mr-2 text-warning-600 dark:text-primary-400" />
             Your BMI Results
           </h3>
@@ -482,9 +482,9 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Ideal Weight -->
           <div
-            class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+            class="tool-card"
           >
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+            <h3 class="section-title flex items-center">
               <Target class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
               Ideal Weight Range
             </h3>
@@ -514,10 +514,10 @@
           <!-- Metabolic Information -->
           {#if bmr > 0}
             <div
-              class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+              class="tool-card"
             >
               <h3
-                class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center"
+                class="section-title flex items-center"
               >
                 <Heart class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
                 Metabolic Information
@@ -554,9 +554,9 @@
     <div class="space-y-4">
       <!-- BMI Categories -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">BMI Categories</h3>
+        <h3 class="section-title">BMI Categories</h3>
         <div class="space-y-3">
           <div class="flex items-center justify-between p-2 rounded bg-blue-50 dark:bg-blue-900/20">
             <div class="flex items-center">
@@ -596,9 +596,9 @@
       <!-- Health Tips -->
       {#if bmi > 0 && getHealthTips().length > 0}
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+          class="tool-card"
         >
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Health Tips</h3>
+          <h3 class="section-title">Health Tips</h3>
           <div class="space-y-3">
             {#each getHealthTips() as tip (tip)}
               <div class="flex items-start">

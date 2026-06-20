@@ -87,7 +87,7 @@
   <Navigation />
   <ScrollToTop />
   <div class="flex-1">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="container mx-auto px-px sm:px-6 lg:px-8">
       <Router />
     </div>
   </div>
@@ -99,7 +99,7 @@
       Made with <button
         type="button"
         onclick={openThanksModal}
-        class="btn-icon hover:cursor-pointer hover:scale-110 transition-transform duration-200"
+        class="btn-icon hover:scale-110"
       >
         <LoveIcon class="w-5 h-5 mx-1 text-rose-600" />
       </button> at Sidoarjo.

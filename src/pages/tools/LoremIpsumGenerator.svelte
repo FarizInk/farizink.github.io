@@ -339,7 +339,7 @@
 
   <!-- Controls -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-4 shadow-sm"
+    class="tool-card mb-4"
   >
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       <!-- Amount Input -->
@@ -427,7 +427,7 @@
 
   <!-- Generated Text -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+    class="tool-card"
   >
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Generated Text</h2>

@@ -502,7 +502,7 @@
     <h2 class="text-lg font-bold text-gray-900 dark:text-white">
       {modalMode === 'create' ? 'Add Transaction' : 'Edit Transaction'}
     </h2>
-    <button onclick={closeModal} class="btn-icon p-1 hover:bg-gray-100 dark:hover:bg-gray-700">
+    <button onclick={closeModal} class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700">
       <X class="w-5 h-5 text-gray-500" />
     </button>
   </div>

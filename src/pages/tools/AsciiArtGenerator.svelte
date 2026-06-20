@@ -245,21 +245,21 @@
   <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
    <button
      onclick={loadSampleText}
-      class="btn btn-copy inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
+      class="btn btn-copy bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white"
      >Load Sample Text</button
    >
    <button
      onclick={clearAll}
-      class="btn btn-secondary inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+      class="btn btn-secondary bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300"
      >Clear All</button
     >
   </div>
 
   <!-- Style Selector -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+    class="tool-card mb-6"
   >
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Art Style</h3>
+    <h3 class="section-title">Art Style</h3>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       {#each Object.entries(asciiStyles) as [key, style], index (index)}
        <button
@@ -285,7 +285,7 @@
 
   <!-- Input Section -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+    class="tool-card mb-6"
   >
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-0">Input Text</h3>
@@ -309,14 +309,14 @@
   <!-- ASCII Art Result -->
   {#if asciiArt}
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+      class="tool-card mb-6"
     >
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-0">ASCII Art Result</h3>
         <div class="flex gap-2">
          <button
            onclick={copyToClipboard}
-            class="btn btn-copy inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
+            class="btn btn-copy bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white"
           >
             {#if copiedText === 'ascii'}
               <Check class="w-4 h-4 mr-2" />
@@ -328,7 +328,7 @@
           </button>
          <button
            onclick={downloadAsciiArt}
-            class="btn btn-copy inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
+            class="btn btn-copy bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white"
           >
             <Download class="w-4 h-4 mr-2" />
             Download
@@ -344,9 +344,9 @@
 
   <!-- Character Set Reference -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+    class="tool-card mb-6"
   >
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Supported Characters</h3>
+    <h3 class="section-title">Supported Characters</h3>
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       <div class="text-sm">
         <span class="font-medium text-gray-900 dark:text-white">Letters:</span>
@@ -369,9 +369,9 @@
 
   <!-- Usage Tips -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6"
+    class="tool-card mb-6"
   >
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Usage Tips</h3>
+    <h3 class="section-title">Usage Tips</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
         <h4 class="font-medium text-gray-900 dark:text-white mb-2">Best Practices</h4>

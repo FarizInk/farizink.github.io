@@ -195,7 +195,7 @@
           {#if note.link}
             <button
               onclick={handleLinkClick}
-              class="btn-icon group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 transition-all duration-200 hover:scale-105 active:scale-95"
+              class="btn-icon group relative bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 hover:scale-105 active:scale-95"
               title="Open link"
             >
               <ExternalLink class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
@@ -204,7 +204,7 @@
 
           <button
             onclick={handleShare}
-            class="btn-icon group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 transition-all duration-200 hover:scale-105 active:scale-95"
+            class="btn-icon group relative bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 hover:scale-105 active:scale-95"
             title="Share note"
           >
             <Share2 class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
@@ -215,7 +215,7 @@
               {#if hasAuthToken && onPermanentDelete}
                 <button
                   onclick={handlePermanentDelete}
-                  class="btn-icon group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 transition-all duration-200 hover:scale-105 active:scale-95"
+                  class="btn-icon group relative bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 hover:scale-105 active:scale-95"
                   title="Permanently delete note"
                 >
                   <Trash2 class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
@@ -225,7 +225,7 @@
               {#if hasAuthToken}
                 <button
                   onclick={handleEdit}
-                  class="btn-icon group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 transition-all duration-200 hover:scale-105 active:scale-95"
+                  class="btn-icon group relative bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 hover:scale-105 active:scale-95"
                   title="Edit note"
                 >
                   <Edit class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
@@ -233,7 +233,7 @@
 
                 <button
                   onclick={handleDelete}
-                  class="btn-icon group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 transition-all duration-200 hover:scale-105 active:scale-95"
+                  class="btn-icon group relative bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 hover:scale-105 active:scale-95"
                   title="Delete note"
                 >
                   <Trash2 class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
@@ -248,7 +248,7 @@
         <!-- Close Button (Always visible) -->
         <button
           onclick={onClose}
-          class="btn-icon group relative p-2 rounded-xl bg-secondary-100 dark:bg-secondary-700 hover:bg-secondary-200 dark:hover:bg-secondary-600 border border-secondary-200 dark:border-secondary-600 transition-all duration-200 hover:scale-105 active:scale-95 sm:mx-1"
+          class="btn-icon group relative bg-secondary-100 dark:bg-secondary-700 hover:bg-secondary-200 dark:hover:bg-secondary-600 border border-secondary-200 dark:border-secondary-600 hover:scale-105 active:scale-95 sm:mx-1"
           title="Close modal"
         >
           <X class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" />
@@ -364,7 +364,7 @@
             </div>
             <button
               onclick={handleLinkClick}
-              class="btn btn-primary px-3 py-2 bg-warning-600 dark:bg-primary-600 hover:bg-warning-700 dark:hover:bg-primary-700 text-white rounded-lg transition-colors text-sm font-medium"
+              class="btn btn-primary px-3 py-2 bg-warning-600 dark:bg-primary-600 hover:bg-warning-700 dark:hover:bg-primary-700 text-white"
             >
               Visit
             </button>
@@ -390,7 +390,7 @@
                   <button
                     onclick={handleRegenerateSummarize}
                     disabled={isRegenerating}
-                      class="btn btn-primary flex items-center gap-2 px-3 py-1.5 text-xs font-medium   rounded-lg transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                      class="btn btn-primary btn-sm flex items-center gap-2 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Regenerate AI summary"
                   >
                     {#if isRegenerating}

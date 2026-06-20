@@ -306,9 +306,9 @@
 
   <!-- Presets -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+    class="tool-card mb-6"
   >
-    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Presets</h2>
+    <h2 class="section-title">Quick Presets</h2>
     <div class="flex flex-wrap gap-2">
       <button
         onclick={() => loadPreset('card')}
@@ -345,7 +345,7 @@
     <div class="space-y-4">
       <!-- Tab Navigation -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
         <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6">
           <button
@@ -493,7 +493,7 @@
 
             <button
               onclick={addBoxShadow}
-              class="btn btn-copy inline-flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
+              class="btn btn-copy w-full bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white"
             >
               <Plus class="w-4 h-4 mr-2" />
               Add Shadow Layer
@@ -596,7 +596,7 @@
 
             <button
               onclick={addTextShadow}
-              class="btn btn-copy inline-flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
+              class="btn btn-copy w-full bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white"
             >
               <Plus class="w-4 h-4 mr-2" />
               Add Text Shadow Layer
@@ -607,9 +607,9 @@
 
       <!-- Preview Settings -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Preview Settings</h2>
+        <h2 class="section-title">Preview Settings</h2>
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
@@ -697,9 +697,9 @@
     <div class="space-y-4">
       <!-- Live Preview -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Live Preview</h2>
+        <h2 class="section-title">Live Preview</h2>
         <div
           class="p-8 rounded-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center min-h-[200px] transition-all duration-200"
           style="background-color: {backgroundColor};"
@@ -731,7 +731,7 @@
 
       <!-- CSS Output -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">CSS Code</h2>
@@ -752,7 +752,7 @@
             </button>
             <button
               onclick={downloadCSS}
-              class="btn-copy"
+              class="btn btn-copy"
             >
               <Download class="w-4 h-4 mr-1" />
               Download

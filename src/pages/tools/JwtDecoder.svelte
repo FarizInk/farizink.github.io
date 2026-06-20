@@ -191,7 +191,7 @@
 
   <!-- Input Section -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+    class="tool-card mb-6"
   >
     <div class="mb-4">
       <label
@@ -257,9 +257,9 @@
   {#if isValid && getPayloadInfo()}
     {@const payload = getPayloadInfo()}
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+      class="tool-card mb-6"
     >
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+      <h2 class="section-title flex items-center">
         <Info class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
         Token Information
       </h2>

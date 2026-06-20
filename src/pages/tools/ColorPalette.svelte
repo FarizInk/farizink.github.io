@@ -271,7 +271,7 @@
 
   <!-- Base Color & Type Selection -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+    class="tool-card mb-6"
   >
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
@@ -318,9 +318,9 @@
   <!-- Color Palette -->
   {#if palette.length > 0}
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+      class="tool-card mb-6"
     >
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Generated Palette</h3>
+      <h3 class="section-title">Generated Palette</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         {#each palette as color, i (color.hex + i)}
           <div
@@ -370,9 +370,9 @@
 
   <!-- Palette Types Information -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+    class="tool-card mb-6"
   >
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Palette Types</h3>
+    <h3 class="section-title">Palette Types</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
         <h4 class="font-medium text-gray-900 dark:text-white mb-2">Complementary</h4>

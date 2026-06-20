@@ -120,9 +120,9 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Input Section -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Bill Details</h3>
+      <h3 class="section-title">Bill Details</h3>
 
       <div class="space-y-4">
         <!-- Bill Amount -->
@@ -274,9 +274,9 @@
 
     <!-- Results Section -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Calculation Results</h3>
+      <h3 class="section-title">Calculation Results</h3>
 
       <div class="space-y-4">
         <!-- Tip Amount -->

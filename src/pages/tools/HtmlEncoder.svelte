@@ -72,7 +72,7 @@
 
   <!-- Tab Navigation -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 mb-6 shadow-sm"
+    class="tool-card mb-6"
   >
     <div
       class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1"
@@ -118,7 +118,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
     <!-- Input Section -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input</h2>
@@ -138,7 +138,7 @@
 
     <!-- Results Section -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -190,9 +190,9 @@
 
   <!-- Common HTML Entities Reference -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+    class="tool-card mb-6"
   >
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Common HTML Entities</h3>
+    <h3 class="section-title">Common HTML Entities</h3>
     <div class="overflow-x-auto">
       <table class="w-full text-sm">
         <thead>

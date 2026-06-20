@@ -372,7 +372,7 @@
       {#if uploadedFiles.length === 0}
         <!-- Dropzone -->
         <div
-          class="card relative overflow-hidden transition-all duration-200 {dragActive
+          class="tool-card relative overflow-hidden transition-all duration-200 {dragActive
             ? 'border-2 border-dashed !border-primary-400 dark:!border-primary-500 !bg-primary-50/50 dark:!bg-primary-900/10'
             : ''}"
           ondragenter={handleDragEnter}
@@ -408,7 +408,7 @@
 
         <!-- Selected Files -->
         {#if selectedFiles.length > 0}
-          <div class="card">
+          <div class="tool-card">
             <div class="card-header">
               <div>
                 <h3 class="section-title !mb-1">Selected Files</h3>
@@ -457,7 +457,7 @@
         {/if}
       {:else}
         <!-- Uploaded Files Section -->
-        <div class="card">
+        <div class="tool-card">
           <div class="card-header">
             <div>
               <h3 class="section-title !mb-1">Uploaded Files</h3>
@@ -575,7 +575,7 @@
 
     <!-- History Sidebar -->
     <div>
-      <div class="card">
+      <div class="tool-card">
         <div class="card-header">
           <h3 class="section-title">Recent Uploads</h3>
           {#if uploadHistory.length > 0}

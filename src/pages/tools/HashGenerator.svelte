@@ -122,7 +122,7 @@
 
   <!-- Input Section -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+    class="tool-card mb-6"
   >
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input Text</h2>
@@ -142,7 +142,7 @@
     <div class="space-y-4 mb-6">
       {#each Object.entries(hashes) as [algorithm, hash] (algorithm)}
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+          class="tool-card"
         >
           <div class="flex justify-between items-center mb-3">
             <div class="flex items-center gap-3">
@@ -163,7 +163,7 @@
 
             <button
               onclick={() => copyToClipboard(hash, algorithm)}
-              class="btn-copy"
+              class="btn btn-copy"
             >
               {copiedText === algorithm ? '✓ Copied!' : 'Copy Hash'}
             </button>
@@ -182,9 +182,9 @@
 
   <!-- Hash Information -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+    class="tool-card mb-6"
   >
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">About Hash Algorithms</h3>
+    <h3 class="section-title">About Hash Algorithms</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
         <h4 class="font-medium text-gray-900 dark:text-white mb-2">MD5</h4>

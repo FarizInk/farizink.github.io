@@ -176,9 +176,9 @@
 
   <!-- Case Selection -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-4 shadow-sm"
+    class="tool-card mb-4"
   >
-    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Select Case Type</h2>
+    <h2 class="section-title">Select Case Type</h2>
 
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
       {#each Object.entries(caseConversions) as [caseType] (caseType)}
@@ -230,7 +230,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Input Section -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input Text</h2>
@@ -275,7 +275,7 @@
 
     <!-- Output Section -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Converted Text</h2>
@@ -319,9 +319,9 @@
 
   <!-- Quick Actions -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-4 shadow-sm"
+    class="tool-card mb-4"
   >
-    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h2>
+    <h2 class="section-title">Quick Actions</h2>
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
       <button

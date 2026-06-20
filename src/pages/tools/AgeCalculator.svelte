@@ -370,9 +370,9 @@
 
   <!-- Input Section -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+    class="tool-card mb-6"
   >
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Enter Dates</h3>
+    <h3 class="section-title">Enter Dates</h3>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
       <div>
@@ -449,9 +449,9 @@
       <div class="lg:col-span-2 space-y-4">
         <!-- Age Result -->
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+          class="tool-card"
         >
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+          <h3 class="section-title flex items-center">
             <Clock class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
             Your Age
           </h3>
@@ -521,9 +521,9 @@
 
         <!-- Next Birthday -->
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+          class="tool-card"
         >
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+          <h3 class="section-title flex items-center">
             <Gift class="w-6 h-6 mr-2 text-warning-600 dark:text-primary-400" />
             Next Birthday
           </h3>
@@ -608,9 +608,9 @@
       <div class="space-y-4">
         <!-- Birth Details -->
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+          class="tool-card"
         >
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+          <h3 class="section-title flex items-center">
             <Calendar class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
             Birth Details
           </h3>
@@ -636,9 +636,9 @@
 
         <!-- Zodiac Signs -->
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+          class="tool-card"
         >
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+          <h3 class="section-title flex items-center">
             <Star class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
             Zodiac Signs
           </h3>
@@ -702,9 +702,9 @@
 
         <!-- Copy Results -->
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+          class="tool-card"
         >
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Copy</h3>
+          <h3 class="section-title">Quick Copy</h3>
           <div class="space-y-2">
             <button
               class="btn btn-copy w-full"

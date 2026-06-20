@@ -228,7 +228,7 @@
       {#if selectedOptions.length > 0}
         <button
           type="button"
-        class="btn-icon p-1.5 rounded-lg hover:bg-secondary-100 dark:hover:bg-secondary-700 text-secondary-400 hover:text-danger-500 transition-colors"
+        class="btn-icon hover:bg-secondary-100 dark:hover:bg-secondary-700 text-secondary-400 hover:text-danger-500"
         onclick={e => {
             e.stopPropagation();
             e.preventDefault();
@@ -289,7 +289,7 @@
         <p class="text-sm text-gray-600 dark:text-gray-400">Choose tags to filter your notes</p>
       </div>
     </div>
-    <button onclick={handleModalClose} class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+    <button onclick={handleModalClose} class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700">
       <X class="w-5 h-5 text-gray-500" />
     </button>
   </div>
@@ -349,7 +349,7 @@
     <button
       type="button"
       onclick={handleModalClose}
-      class="btn btn-primary flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium shadow-md hover:shadow-lg transition-all"
+      class="btn btn-primary flex items-center gap-2 shadow-md hover:shadow-lg"
     >
       {selectedOptions.length > 0 ? 'Done' : 'Skip'}
     </button>

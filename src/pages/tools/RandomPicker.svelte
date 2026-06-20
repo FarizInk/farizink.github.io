@@ -283,9 +283,9 @@
 
   <!-- Presets -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6 p-6"
+    class="tool-card mb-6"
   >
-    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Presets</h2>
+    <h2 class="section-title">Quick Presets</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
       {#each presets as preset (preset.name)}
         <button
@@ -305,7 +305,7 @@
     <div class="lg:col-span-2 space-y-6">
       <!-- Items Input -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+        class="tool-card"
       >
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -385,9 +385,9 @@
 
     <!-- Picker Controls -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+      class="tool-card"
     >
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Picker Settings</h2>
+      <h2 class="section-title">Picker Settings</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div>
@@ -442,7 +442,7 @@
       </div>
 
       <button
-        class="btn-copy w-full justify-center py-2.5"
+        class="btn btn-copy w-full"
         onclick={spinPicker}
         disabled={isSpinning || items.filter(item => item.text.trim() !== '').length === 0}
       >
@@ -462,7 +462,7 @@
       <!-- Result Display -->
       {#if selectedItem}
         <div
-          class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mt-6"
+          class="tool-card mt-6"
         >
           <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -471,7 +471,7 @@
             </h2>
             <div class="flex gap-2">
               <button
-                class="btn-copy"
+                class="btn btn-copy"
                 onclick={copyResult}
               >
                 <Copy class="w-4 h-4 mr-1" />
@@ -534,9 +534,9 @@
     <div class="space-y-6">
       <!-- History -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
+        class="tool-card"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">History</h3>
+        <h3 class="section-title">History</h3>
 
         {#if history.length === 0}
           <p class="text-gray-500 dark:text-gray-400 text-sm">No picks yet</p>

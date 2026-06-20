@@ -278,7 +278,7 @@
     <div class="lg:col-span-2 space-y-4">
       <!-- Main Password Display -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Generated Password</h2>
@@ -325,9 +325,9 @@
 
       <!-- Settings -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Password Settings</h2>
+        <h2 class="section-title">Password Settings</h2>
 
         <!-- Length Slider -->
         <div class="mb-6">
@@ -484,7 +484,7 @@
     <!-- Password History -->
     <div>
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">History</h2>

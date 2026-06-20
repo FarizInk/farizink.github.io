@@ -112,7 +112,7 @@
         type="button"
         onclick={handleRefresh}
         disabled={$isLoadingDeletedNotes}
-       class="btn-icon p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+       class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
        title="Refresh"
       >
         <RefreshCw class="w-4 h-4 { $isLoadingDeletedNotes ? 'animate-spin' : ''}" />
@@ -120,7 +120,7 @@
       <button
         type="button"
         onclick={closeModal}
-       class="btn-icon p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+       class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700"
        aria-label="Close modal"
       >
         <X class="w-5 h-5 text-gray-500" />
@@ -165,7 +165,7 @@
           <button
             onclick={handleLoadMore}
             disabled={$isLoadingDeletedNotes}
-              class="btn btn-secondary flex items-center gap-2 px-6 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              class="btn btn-secondary flex items-center gap-2 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {#if $isLoadingDeletedNotes}
               <RotateCw class="w-4 h-4 animate-spin" />

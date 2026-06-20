@@ -618,7 +618,7 @@
   <button
     onclick={checkAPIHealth}
     disabled={apiHealthStatus === 'checking'}
-    class="btn btn-primary w-full flex items-center justify-center gap-2 py-3.5 font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-md mt-6"
+    class="btn btn-primary w-full flex items-center justify-center gap-2 py-3.5 font-semibold rounded-xl transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-md mt-6"
   >
     {#if apiHealthStatus === 'checking'}
       <RefreshCw class="w-4 h-4 animate-spin" />
@@ -740,7 +740,7 @@
             <!-- Theme Card (Clickable) -->
             <button
               onclick={toggleTheme}
-              class="mode-btn flex-1 min-w-[120px] h-12 flex items-center justify-center gap-2 px-3 rounded-xl bg-gradient-to-br from-warning-50 to-amber-50 dark:from-indigo-900/30 dark:to-primary-900/20 border border-warning-200 dark:border-primary-700/50 hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer"
+              class="mode-btn flex-1 min-w-[120px] h-12 flex items-center justify-center gap-2 px-3 rounded-xl bg-gradient-to-br from-warning-50 to-amber-50 dark:from-indigo-900/30 dark:to-primary-900/20 border border-warning-200 dark:border-primary-700/50 hover:shadow-md transition-all cursor-pointer"
             >
               {#if isDark}
                 <Moon class="w-4 h-4 text-primary-600 dark:text-primary-400" />
@@ -754,7 +754,7 @@
             <!-- API Status Card (Clickable) -->
             <button
               onclick={openApiHealthModal}
-              class="mode-btn flex-1 min-w-[120px] h-12 flex items-center justify-center gap-2 px-3 rounded-xl border transition-all cursor-pointer hover:shadow-md hover:-translate-y-0.5 {healthData
+              class="mode-btn flex-1 min-w-[120px] h-12 flex items-center justify-center gap-2 px-3 rounded-xl border transition-all cursor-pointer hover:shadow-md {healthData
                 ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700/50 hover:border-green-300 dark:hover:border-green-600'
                 : apiHealthStatus === 'checking'
                   ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700/50 hover:border-blue-300 dark:hover:border-blue-600'
@@ -866,7 +866,7 @@
             {#if canInstall && !isIOS}
               <button
                 onclick={installPWA}
-                class="w-full flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/30 border border-green-200 dark:border-green-700/50 hover:from-green-100 dark:hover:from-green-900/40 hover:border-green-300 dark:hover:border-green-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group"
+                class="w-full flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/30 border border-green-200 dark:border-green-700/50 hover:from-green-100 dark:hover:from-green-900/40 hover:border-green-300 dark:hover:border-green-600 hover:shadow-lg transition-all duration-200 group"
               >
                 <div
                   class="w-11 h-11 bg-gradient-to-br from-green-400 to-green-500 dark:from-green-500 dark:to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md"
@@ -900,7 +900,7 @@
             <button
               onclick={refreshServiceWorker}
               disabled={isRefreshing}
-              class="w-full flex items-center justify-between p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="w-full flex items-center justify-between p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-600 hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <div class="flex items-center gap-3">
                 <div

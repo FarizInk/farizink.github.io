@@ -80,7 +80,7 @@
     <h2 class="text-lg font-bold text-gray-900 dark:text-white">
       {title}
     </h2>
-    <button onclick={handleClose} class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+    <button onclick={handleClose} class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700">
       <X class="w-5 h-5 text-gray-500" />
     </button>
   </div>
@@ -147,7 +147,7 @@
       type="submit"
       form="tag-form"
       disabled={isLoading}
-      class="btn btn-primary flex items-center gap-2 px-5 py-2.5   rounded-xl text-sm font-medium shadow-md hover:shadow-lg disabled:opacity-50 transition-all"
+      class="btn btn-primary flex items-center gap-2 shadow-md hover:shadow-lg disabled:opacity-50"
     >
       {isLoading ? 'Saving...' : mode === 'create' ? 'Create' : 'Save'}
     </button>

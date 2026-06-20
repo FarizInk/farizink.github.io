@@ -100,10 +100,10 @@
     ></div>
 
     <div
-      class="relative w-full {maxW} bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-h-[90vh] {locked ? 'overflow-hidden' : 'overflow-y-auto'}"
+      class="relative w-full {maxW} bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-h-[90vh] overflow-hidden flex flex-col"
       transition:modernScale
     >
-      <div class="p-6">
+      <div class="p-6 flex-1 min-h-0 {locked ? 'overflow-hidden' : 'overflow-y-auto'}">
         {#if children}
           {@render children()}
         {/if}

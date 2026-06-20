@@ -213,7 +213,7 @@ ${inputText}
     <!-- Text Input Area -->
     <div class="lg:col-span-2">
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input Text</h2>
@@ -261,9 +261,9 @@ ${inputText}
     <div class="space-y-4">
       <!-- Quick Stats -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Stats</h2>
+        <h2 class="section-title">Quick Stats</h2>
 
         {#if stats}
           <div class="space-y-3">
@@ -324,9 +324,9 @@ ${inputText}
 
       <!-- Action Buttons -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Actions</h2>
+        <h2 class="section-title">Actions</h2>
 
         <div class="space-y-3">
           <button
@@ -356,9 +356,9 @@ ${inputText}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
       <!-- Character Breakdown -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h3 class="section-title">
           Character Breakdown
         </h3>
         <div class="space-y-2">
@@ -387,9 +387,9 @@ ${inputText}
 
       <!-- Reading Time -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Reading Time</h3>
+        <h3 class="section-title">Reading Time</h3>
         <div class="space-y-3">
           <div class="flex items-center justify-between">
             <div class="flex items-center">
@@ -422,9 +422,9 @@ ${inputText}
 
       <!-- Structure Analysis -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Structure Analysis</h3>
+        <h3 class="section-title">Structure Analysis</h3>
         <div class="space-y-2">
           <div class="flex justify-between text-sm">
             <span class="text-gray-600 dark:text-gray-400">Paragraphs</span>
@@ -451,7 +451,7 @@ ${inputText}
     <!-- Word Frequency -->
     {#if Object.keys(stats.wordFrequency).length > 0}
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mt-4 shadow-sm"
+        class="tool-card mt-4 shadow-sm"
       >
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Most Frequent Words</h3>

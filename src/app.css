@@ -482,6 +482,7 @@ html.dark body {
   font-weight: 500;
   color: rgb(55 65 81);
   transition: all 0.2s;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500 dark:focus-visible:ring-purple-400;
 }
 
 .dark .back-button {
@@ -950,7 +951,7 @@ html.dark body {
   }
 
   .notes-page {
-    padding: 1rem;
+    padding: 1rem 0;
   }
 }
 
@@ -1094,6 +1095,7 @@ html.dark body {
   cursor: pointer;
   border: none;
   outline: none;
+  @apply focus-visible:ring-2 focus-visible:ring-yellow-500 dark:focus-visible:ring-purple-400;
 }
 
 .btn:disabled {
@@ -1112,16 +1114,11 @@ html.dark body {
 
 .btn-primary:hover:not(:disabled) {
   background-color: var(--color-warning-700);
-  transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
 
 .dark .btn-primary:hover:not(:disabled) {
   background-color: var(--color-primary-700);
-}
-
-.btn-primary:active:not(:disabled) {
-  transform: translateY(0);
 }
 
 .btn-secondary {
@@ -1136,7 +1133,6 @@ html.dark body {
 
 .btn-secondary:hover:not(:disabled) {
   background-color: var(--color-secondary-200);
-  transform: translateY(-1px);
 }
 
 .dark .btn-secondary:hover:not(:disabled) {
@@ -1173,7 +1169,6 @@ html.dark body {
 
 .btn-danger:hover:not(:disabled) {
   background-color: var(--color-danger-700);
-  transform: translateY(-1px);
 }
 
 .btn-sm {
@@ -1637,14 +1632,10 @@ html.dark body {
   @apply max-w-6xl mx-auto;
 }
 
-/* Tool Card - Reusable card component */
+/* Tool Card - static content panel */
 .tool-card {
-  @apply bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6;
+  @apply bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6;
   @apply shadow-sm transition-all duration-200;
-}
-
-.tool-card:hover {
-  @apply shadow-md;
 }
 
 /* Section Title */
@@ -1704,10 +1695,10 @@ html.dark body {
 
 /* Button Icon */
 .btn-icon {
-  @apply p-2 rounded-lg transition-colors;
+  @apply p-2 rounded-lg transition-all duration-200;
   @apply text-gray-600 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-purple-400;
   @apply hover:bg-yellow-50 dark:hover:bg-purple-900/20;
-  @apply focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:focus:ring-purple-400;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500 dark:focus-visible:ring-purple-400;
 }
 
 .btn-icon:disabled {
@@ -1826,15 +1817,17 @@ html.dark body {
   @apply overflow-x-auto;
 }
 
-.tab-btn {
-  @apply px-4 py-2 text-sm font-medium transition-colors;
-  @apply text-gray-600 dark:text-gray-400 border-b-2 border-transparent;
-  @apply hover:text-gray-900 dark:hover:text-white;
-}
+@layer components {
+  .tab-btn {
+    @apply px-4 py-2 text-sm font-medium transition-colors;
+    @apply text-gray-600 dark:text-gray-400 border-b-2 border-transparent;
+    @apply hover:text-gray-900 dark:hover:text-white;
+  }
 
-.tab-btn.active {
-  @apply text-yellow-600 dark:text-purple-400;
-  @apply border-yellow-400 dark:border-purple-400;
+  .tab-btn.active {
+    @apply text-yellow-600 dark:text-purple-400;
+    @apply border-yellow-400 dark:border-purple-400;
+  }
 }
 
 /* Preset Button */
@@ -1896,11 +1889,10 @@ html.dark body {
   @apply text-lg font-semibold text-gray-900 dark:text-white;
 }
 
-/* Copy Button with Icon */
+/* Copy Button — color/spacing only. Shape (radius, padding, transition, focus ring) comes from
+   .btn, so `btn btn-copy` lines up with btn-secondary/btn-primary and `btn btn-sm btn-copy` stays small. */
 .btn-copy {
-  @apply inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg;
-  @apply transition-all duration-200;
-  @apply bg-yellow-500 text-white hover:bg-yellow-600;
+  @apply gap-2 bg-yellow-500 text-white hover:bg-yellow-600;
   @apply dark:bg-purple-500 dark:hover:bg-purple-600;
 }
 

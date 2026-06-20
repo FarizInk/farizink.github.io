@@ -605,7 +605,7 @@
         <!-- Article specific fields -->
         {#if ogType === 'article'}
           <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <h3 class="section-title">
               Article Specific Tags
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -942,13 +942,13 @@
 
   <!-- Generated Output -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+    class="tool-card mb-6"
   >
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Generated Meta Tags</h2>
       <div class="flex gap-2">
         <button
-          class="btn-copy"
+          class="btn btn-copy"
           onclick={copyToClipboard}
           disabled={!generatedTags}
         >

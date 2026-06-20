@@ -188,7 +188,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Hash 1 -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Hash 1</h3>
@@ -218,7 +218,7 @@
 
     <!-- Hash 2 -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Hash 2</h3>
@@ -250,9 +250,9 @@
   <!-- Detailed Comparison Results -->
   {#if comparisonResult && comparisonResult !== 'empty'}
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+      class="tool-card mb-6"
     >
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Comparison Details</h3>
+      <h3 class="section-title">Comparison Details</h3>
       <div class="space-y-4">
         <div class="flex items-center justify-between">
           <span class="text-gray-600 dark:text-gray-400">Match Status:</span>
@@ -292,9 +292,9 @@
 
   <!-- Use Cases -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+    class="tool-card mb-6"
   >
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Common Use Cases</h3>
+    <h3 class="section-title">Common Use Cases</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
         <h4 class="font-medium text-gray-900 dark:text-white mb-2">File Integrity Check</h4>

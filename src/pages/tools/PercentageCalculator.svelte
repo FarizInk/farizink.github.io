@@ -286,9 +286,9 @@
 
   <!-- Mode Selection -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+    class="tool-card mb-6"
   >
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Choose Calculator</h3>
+    <h3 class="section-title">Choose Calculator</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {#each modes as mode (mode.id)}
         <button
@@ -311,7 +311,7 @@
     <!-- Main Calculator -->
     <div class="lg:col-span-2 space-y-4">
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
         <div class="flex items-center justify-between mb-6">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -722,9 +722,9 @@
     <div class="space-y-4">
       <!-- Formulas -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+        <h3 class="section-title flex items-center">
           <Calculator class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
           Formulas
         </h3>
@@ -773,9 +773,9 @@
 
       <!-- Tips -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+        class="tool-card"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Tips</h3>
+        <h3 class="section-title">Quick Tips</h3>
         <div class="space-y-3 text-sm text-gray-600 dark:text-gray-400">
           <div class="flex items-start">
             <div

@@ -152,7 +152,7 @@
 
       <!-- Customization Options -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 space-y-6"
+        class="tool-card space-y-6"
       >
         <div class="flex items-center gap-2 mb-2 text-gray-900 dark:text-white">
           <Settings2 class="w-5 h-5" />
@@ -233,11 +233,11 @@
     <!-- Output Section -->
     <div class="space-y-6">
       <div>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Generated QR Code</h3>
+        <h3 class="section-title">Generated QR Code</h3>
 
         {#if qrDataUrl}
           <div
-            class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 flex flex-col items-center"
+            class="tool-card flex flex-col items-center"
           >
             <div class="mb-6 p-4 bg-white rounded-lg shadow-sm">
               <img

@@ -179,7 +179,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
     <!-- Input Section -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-2">
@@ -246,7 +246,7 @@
 
     <!-- Output Section -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-2">

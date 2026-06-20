@@ -173,9 +173,9 @@
 
   <!-- Gradient Preview -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+    class="tool-card mb-6"
   >
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Preview</h3>
+    <h3 class="section-title">Preview</h3>
     <div class="h-48 w-full rounded-lg shadow-inner" style="background: {gradientStyle()}"></div>
   </div>
 
@@ -183,9 +183,9 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
     <!-- Gradient Settings -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Gradient Settings</h3>
+      <h3 class="section-title">Gradient Settings</h3>
 
       <div class="space-y-4">
         <div>
@@ -239,7 +239,7 @@
 
     <!-- Color Stops -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+      class="tool-card"
     >
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Color Stops</h3>
@@ -297,7 +297,7 @@
 
   <!-- CSS Output -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+    class="tool-card mb-6"
   >
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white">CSS Code</h3>
@@ -319,9 +319,9 @@
 
   <!-- Preset Gradients -->
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+    class="tool-card mb-6"
   >
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Preset Gradients</h3>
+    <h3 class="section-title">Preset Gradients</h3>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       {#each presetGradients as preset, i (preset.name + i)}
         <button

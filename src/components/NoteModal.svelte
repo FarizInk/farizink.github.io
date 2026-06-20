@@ -71,7 +71,7 @@
     </h2>
     <button
       onclick={requestClose}
-      class="btn-icon p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+      class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700"
     >
       <X class="w-5 h-5 text-gray-500" />
     </button>
@@ -94,7 +94,7 @@
     <button
       type="button"
       onclick={handleSubmit}
-      class="btn btn-primary flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium shadow-md hover:shadow-lg transition-all"
+      class="btn btn-primary flex items-center gap-2 shadow-md hover:shadow-lg"
     >
       <svelte:component this={icon} class="w-4 h-4" />
       {submitText}
@@ -127,14 +127,14 @@
             <button
               type="button"
               onclick={cancelDiscard}
-              class="btn btn-secondary px-4 py-2 text-sm"
+              class="btn btn-secondary"
             >
               Keep Editing
             </button>
             <button
               type="button"
               onclick={confirmDiscard}
-              class="px-4 py-2 text-sm font-medium rounded-xl bg-red-500 text-white hover:bg-red-600 transition-colors"
+              class="btn bg-red-500 hover:bg-red-600 text-white"
             >
               Discard
             </button>

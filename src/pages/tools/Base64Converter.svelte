@@ -270,9 +270,9 @@
     <div class="max-w-2xl mx-auto">
       <!-- File Upload -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm"
+        class="tool-card mb-6"
       >
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h2 class="section-title">
           Upload File for Base64 Conversion
         </h2>
 
@@ -326,9 +326,9 @@
       <!-- File Result -->
       {#if fileResult}
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 shadow-sm"
+          class="tool-card"
         >
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <h3 class="section-title">
             Conversion Result
           </h3>
 
@@ -359,14 +359,14 @@
                 >
                 <div class="flex gap-2">
                   <button
-                    class="btn btn-copy btn-sm inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white transition-all"
+                    class="btn btn-copy btn-sm bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white"
                     onclick={() =>
                       fileResult && copyToClipboard(fileResult.encoded, 'file-encoded')}
                   >
                     {copiedText === 'file-encoded' ? '✓ Copied!' : 'Copy'}
                   </button>
                   <button
-                    class="btn btn-secondary btn-sm inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 transition-all"
+                    class="btn btn-secondary btn-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300"
                     onclick={downloadEncodedFile}
                   >
                     Download
