@@ -1,5 +1,7 @@
 import type { Component } from 'svelte';
 import { writable } from 'svelte/store';
+import { getLenis } from './lenis';
+import { withViewTransition } from './motion';
 
 export interface Route {
   path: string;
@@ -65,17 +67,32 @@ export function createRouter(routeList: Route[]) {
   handleLocationChange();
 
   // Listen for browser navigation
-  window.addEventListener('popstate', handleLocationChange);
+  window.addEventListener('popstate', handlePopState);
 
   return router;
 }
 
+// Reset scroll to the top of the new page (immediate — no animation).
+function resetScroll(): void {
+  const lenis = getLenis();
+  if (lenis) {
+    lenis.scrollTo(0, { immediate: true });
+  } else {
+    window.scrollTo(0, 0);
+  }
+}
+
 // Navigate to a new path
 export function navigate(path: string) {
-  if (path !== getCurrentPath()) {
+  if (path === getCurrentPath()) return;
+
+  const swap = () => {
     window.history.pushState({}, '', path);
     handleLocationChange();
-  }
+    resetScroll();
+  };
+
+  withViewTransition(swap);
 }
 
 // Get current path
@@ -129,6 +146,11 @@ function updateMetaTags(route: Route) {
   if (ogUrl) {
     ogUrl.setAttribute('content', `https://farizink.github.io${route.path}`);
   }
+}
+
+// Back/forward navigation — also wrapped in a view transition
+function handlePopState() {
+  withViewTransition(handleLocationChange);
 }
 
 // Handle location changes
@@ -194,5 +216,5 @@ function extractParams(path: string, route: Route | null): Record<string, string
 
 // Clean up function
 export function destroyRouter() {
-  window.removeEventListener('popstate', handleLocationChange);
+  window.removeEventListener('popstate', handlePopState);
 }

@@ -1,7 +1,9 @@
 <script lang="ts">
   import { navigate } from '../lib/router';
   import { onMount } from 'svelte';
-  import { fly, fade } from 'svelte/transition';
+  import { fade } from 'svelte/transition';
+  import { tvPanel } from '../lib/motion';
+  import { stopLenis, startLenis } from '../lib/lenis';
   import {
     Sun,
     Moon,
@@ -375,6 +377,12 @@
     }
   }
 
+  $effect(() => {
+    if (!drawerOpen) return;
+    stopLenis();
+    return () => startLenis();
+  });
+
   onMount(() => {
     // Check for saved theme preference or default to light mode
     const savedTheme = localStorage.getItem('theme');
@@ -668,7 +676,7 @@
 <!-- Sidebar -->
 {#if drawerOpen}
   <div
-    transition:fly={{ x: 320, duration: 300, opacity: 0 }}
+    transition:tvPanel
     class="fixed top-0 right-0 h-full w-80 max-w-[90vw] bg-white dark:bg-gray-900 z-50 flex flex-col shadow-2xl"
   >
 

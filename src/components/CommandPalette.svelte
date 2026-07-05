@@ -4,6 +4,7 @@
   import { Search, Command, LogOut, User, ArrowUpDown, ArrowRight, Sparkles, Sun, Moon } from '@lucide/svelte';
   import { getValidatedAuthState, logout } from '../lib/auth';
   import { onMount } from 'svelte';
+  import { stopLenis, startLenis } from '../lib/lenis';
 
   let { isOpen = $bindable(false) } = $props();
 
@@ -201,6 +202,12 @@
       });
     }
     selectedIndex = 0;
+  });
+
+  $effect(() => {
+    if (!isOpen) return;
+    stopLenis();
+    return () => startLenis();
   });
 
   // Update auth state when component mounts and listen for auth changes

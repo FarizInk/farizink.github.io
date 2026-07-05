@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { createRouter } from './lib/router';
+  import { initLenis, destroyLenis } from './lib/lenis';
   import Router from './lib/Router.svelte';
   import Navigation from './components/Navigation.svelte';
   import ScrollToTop from './components/ScrollToTop.svelte';
@@ -66,6 +67,7 @@
   };
 
   onMount(() => {
+    initLenis();
     createRouter(routes);
 
     // Subscribe to router changes to track current path
@@ -75,6 +77,7 @@
 
     return () => {
       unsubscribe();
+      destroyLenis();
     };
   });
 </script>

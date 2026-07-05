@@ -1,0 +1,50 @@
+/* transitions.dev vocabulary for farizink. Imported after app.css. */
+
+/* Page content snapshot target (View Transitions API) */
+.tv-page {
+  view-transition-name: page;
+}
+
+/* Page transition: old view exits up/fade, new view enters from below/fade */
+::view-transition-old(page) {
+  animation: tv-page-out 0.18s ease-in both;
+}
+::view-transition-new(page) {
+  animation: tv-page-in 0.26s ease-out both;
+}
+@keyframes tv-page-out {
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+@keyframes tv-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* Card: snappy hover lift + shadow */
+.tv-card {
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tv-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Decision A: reduced-motion users get no motion at all */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(page),
+  ::view-transition-new(page) {
+    animation: none;
+  }
+  .tv-card {
+    transition: none;
+  }
+  .tv-card:hover {
+    transform: none;
+  }
+}

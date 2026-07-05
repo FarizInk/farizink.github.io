@@ -68,7 +68,7 @@
 </script>
 
 <div
-  class="card card-hover !p-6 group relative overflow-hidden cursor-pointer {!note.is_public
+  class="card card-hover tv-card !p-6 group relative overflow-hidden cursor-pointer {!note.is_public
     ? 'bg-gradient-to-br from-warning-50 to-warning-50 dark:from-primary-900/30 dark:to-primary-900/20 border-2 border-warning-300 dark:border-primary-500 shadow-lg'
     : ''}"
   role="button"

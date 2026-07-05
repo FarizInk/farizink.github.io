@@ -3,21 +3,8 @@
   import { X } from '@lucide/svelte';
   import type { Snippet } from 'svelte';
   import { preventBodyScroll, restoreBodyScroll, isTopmostModal, getModalZIndex, getOpenModalCount } from '../lib/modalScroll';
-
-  function modernScale(_node: HTMLElement, { duration = 200 }: { duration?: number } = {}) {
-    return {
-      duration,
-      easing: (t: number) => t * (2 - t),
-      css: (t: number) => {
-        const scale = 0.92 + t * 0.08;
-        const opacity = t;
-        return `
-          opacity: ${opacity};
-          transform: scale(${scale}) translateY(${10 * (1 - t)}px);
-        `;
-      }
-    };
-  }
+  import { stopLenis, startLenis } from '../lib/lenis';
+  import { tvModal } from '../lib/motion';
 
   function portal(node: HTMLElement) {
     document.body.appendChild(node);
@@ -69,10 +56,12 @@
     if (isOpen) {
       modalOpenedAt = Date.now();
       currentModalId = preventBodyScroll();
+      stopLenis();
       window.addEventListener('keydown', handleKeydown);
       return () => {
         window.removeEventListener('keydown', handleKeydown);
         restoreBodyScroll(currentModalId);
+        startLenis();
         currentModalId = '';
       };
     }
@@ -101,7 +90,7 @@
 
     <div
       class="relative w-full {maxW} bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-h-[90vh] overflow-hidden flex flex-col"
-      transition:modernScale
+      transition:tvModal
     >
       <div class="p-6 flex-1 min-h-0 {locked ? 'overflow-hidden' : 'overflow-y-auto'}">
         {#if children}
