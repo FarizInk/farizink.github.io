@@ -19,7 +19,7 @@ export function prefersReducedMotion(): boolean {
   return reducedMotion;
 }
 
-/** True when Lenis + View Transitions should run. */
+/** True when View Transitions should run. */
 export function motionAllowed(): boolean {
   return !reducedMotion;
 }

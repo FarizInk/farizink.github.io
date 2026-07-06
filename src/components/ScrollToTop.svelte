@@ -1,38 +1,21 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { ChevronUp } from '@lucide/svelte';
-  import { getLenis } from '../lib/lenis';
 
   let showScrollTop = $state(false);
 
   function scrollToTop() {
-    const lenis = getLenis();
-    if (lenis) {
-      lenis.scrollTo(0, { duration: 0.8 });
-    } else {
-      // reduced-motion fallback (no Lenis instance)
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function onScroll(scrollTop: number) {
-    showScrollTop = scrollTop > 300;
+  function onScroll() {
+    showScrollTop = (window.pageYOffset || document.documentElement.scrollTop) > 300;
   }
 
   onMount(() => {
-    const lenis = getLenis();
-    if (lenis) {
-      // Lenis drives window scroll, so read its position from its 'scroll' event.
-      const off = lenis.on('scroll', (e: { scroll: number }) => onScroll(e.scroll));
-      onScroll(lenis.scroll);
-      return off;
-    } else {
-      const handler = () =>
-        onScroll(window.pageYOffset || document.documentElement.scrollTop);
-      window.addEventListener('scroll', handler, { passive: true });
-      handler();
-      return () => window.removeEventListener('scroll', handler);
-    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
   });
 </script>
 

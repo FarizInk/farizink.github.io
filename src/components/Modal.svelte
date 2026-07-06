@@ -3,7 +3,6 @@
   import { X } from '@lucide/svelte';
   import type { Snippet } from 'svelte';
   import { preventBodyScroll, restoreBodyScroll, isTopmostModal, getModalZIndex, getOpenModalCount } from '../lib/modalScroll';
-  import { stopLenis, startLenis } from '../lib/lenis';
   import { tvModal } from '../lib/motion';
 
   function portal(node: HTMLElement) {
@@ -56,12 +55,10 @@
     if (isOpen) {
       modalOpenedAt = Date.now();
       currentModalId = preventBodyScroll();
-      stopLenis();
       window.addEventListener('keydown', handleKeydown);
       return () => {
         window.removeEventListener('keydown', handleKeydown);
         restoreBodyScroll(currentModalId);
-        startLenis();
         currentModalId = '';
       };
     }

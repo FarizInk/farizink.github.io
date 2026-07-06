@@ -4,7 +4,7 @@
   import { Search, Command, LogOut, User, ArrowUpDown, ArrowRight, Sparkles, Sun, Moon } from '@lucide/svelte';
   import { getValidatedAuthState, logout } from '../lib/auth';
   import { onMount } from 'svelte';
-  import { stopLenis, startLenis } from '../lib/lenis';
+  import { preventBodyScroll, restoreBodyScroll } from '../lib/modalScroll';
 
   let { isOpen = $bindable(false) } = $props();
 
@@ -206,8 +206,8 @@
 
   $effect(() => {
     if (!isOpen) return;
-    stopLenis();
-    return () => startLenis();
+    const scrollId = preventBodyScroll();
+    return () => restoreBodyScroll(scrollId);
   });
 
   // Update auth state when component mounts and listen for auth changes

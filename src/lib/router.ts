@@ -1,6 +1,5 @@
 import type { Component } from 'svelte';
 import { writable } from 'svelte/store';
-import { getLenis } from './lenis';
 import { withViewTransition } from './motion';
 
 export interface Route {
@@ -74,12 +73,7 @@ export function createRouter(routeList: Route[]) {
 
 // Reset scroll to the top of the new page (immediate — no animation).
 function resetScroll(): void {
-  const lenis = getLenis();
-  if (lenis) {
-    lenis.scrollTo(0, { immediate: true });
-  } else {
-    window.scrollTo(0, 0);
-  }
+  window.scrollTo(0, 0);
 }
 
 // Navigate to a new path

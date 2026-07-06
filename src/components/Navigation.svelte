@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { fade } from 'svelte/transition';
   import { tvPanel } from '../lib/motion';
-  import { stopLenis, startLenis } from '../lib/lenis';
+  import { preventBodyScroll, restoreBodyScroll } from '../lib/modalScroll';
   import {
     Sun,
     Moon,
@@ -379,8 +379,8 @@
 
   $effect(() => {
     if (!drawerOpen) return;
-    stopLenis();
-    return () => startLenis();
+    const scrollId = preventBodyScroll();
+    return () => restoreBodyScroll(scrollId);
   });
 
   onMount(() => {
