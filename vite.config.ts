@@ -27,6 +27,9 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    host: true
+    host: true,
+    // Allow access via Tailscale MagicDNS hostnames (e.g. http://mayo:3000).
+    // Dev-only: has no effect on the static production build.
+    allowedHosts: true
   }
 });

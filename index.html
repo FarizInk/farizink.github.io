@@ -7,7 +7,21 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+    <!-- CSP: only enforce upgrade-insecure-requests in production (HTTPS hosts).
+         In dev we serve over plain HTTP (e.g. http://mayo:3000 over Tailscale),
+         where this directive would force-upgrade every subresource to https and
+         break loading against the HTTP-only Vite dev server. -->
+    <script>
+      (function () {
+        var host = window.location.hostname;
+        if (host === 'farizink.github.io' || host === 'fariz.dev') {
+          var meta = document.createElement('meta');
+          meta.httpEquiv = 'Content-Security-Policy';
+          meta.content = 'upgrade-insecure-requests';
+          document.head.appendChild(meta);
+        }
+      })();
+    </script>
     <script>
       // Only load analytics in production
       (function () {
