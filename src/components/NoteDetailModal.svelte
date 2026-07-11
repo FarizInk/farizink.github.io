@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { Note } from '../lib/notes';
-  import { formatDate, getFileUrl, regenerateSummarize } from '../lib/notes';
+  import { formatDate, getFileUrl } from '../lib/notes';
+  import { createSummarizePoller } from '../lib/summarize.svelte';
+  import { onDestroy } from 'svelte';
   import { handleImageError, formatFileSize } from '../lib/uiUtils';
   import { toast } from 'svelte-sonner';
   import {
@@ -19,6 +21,7 @@
     Share2,
     Paperclip,
     Loader2,
+    RefreshCw,
     Sparkles
   } from '@lucide/svelte';
   import Modal from './Modal.svelte';
@@ -50,31 +53,27 @@
   // Modal is only open when both isOpen is true AND note exists
   let shouldShowModal = $derived(isOpen && note !== null);
 
-  // Loading state for regenerate summarize
-  let isRegenerating = $state(false);
+  // Summarize poller: owns status/summary reactive state, polling, and retry.
+  const poller = createSummarizePoller();
 
   // Toggle state for summary view (short/full)
   let isSummaryFull = $state(false);
 
-  async function handleRegenerateSummarize() {
-    if (!note || !note.link) return;
-
-    isRegenerating = true;
-    try {
-      const response = await regenerateSummarize(note.id);
-      // Update the note with new link_summarize
-      if (response.data && response.data.link_summarize) {
-        note.link_summarize = response.data.link_summarize;
-      }
-      toast.success('Link summary regenerated successfully!');
-    } catch (error) {
-      console.error('Regenerate summarize error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to regenerate summary';
-      toast.error(errorMessage);
-    } finally {
-      isRegenerating = false;
+  // Drive the poller from the modal lifecycle: activate when a linked note is
+  // shown, stop when the modal closes or the note has no link. Reads only
+  // shouldShowModal / note / note.link so poll updates don't retrigger it.
+  $effect(() => {
+    if (shouldShowModal && note && note.link) {
+      isSummaryFull = false;
+      void poller.activate(note);
+    } else {
+      poller.stop();
     }
-  }
+  });
+
+  onDestroy(() => {
+    poller.stop();
+  });
 
   function handleShare() {
     if (!note) return;
@@ -377,44 +376,54 @@
                 <Sparkles class="w-4 h-4" />
                 AI Summary
               </p>
-              <div class="flex items-center gap-2">
-                {#if note.link_summarize && (note.link_summarize.length > 150)}
-                  <button
-                    onclick={() => (isSummaryFull = !isSummaryFull)}
-                      class="quick-btn text-xs text-warning-700 dark:text-primary-300 hover:text-warning-800 dark:hover:text-primary-200 font-medium transition-colors"
-                    >
-                      {isSummaryFull ? 'Show less' : 'Show more'}
-                    </button>
-                {/if}
-                {#if hasAuthToken}
-                  <button
-                    onclick={handleRegenerateSummarize}
-                    disabled={isRegenerating}
-                      class="btn btn-primary btn-sm flex items-center gap-2 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                    title="Regenerate AI summary"
-                  >
-                    {#if isRegenerating}
-                      <Loader2 class="w-3.5 h-3.5 animate-spin" />
-                      <span>Regenerating...</span>
-                    {:else}
-                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                      </svg>
-                      <span>Regenerate</span>
-                    {/if}
-                  </button>
-                {/if}
-              </div>
+              {#if poller.status === 'idle' && !poller.summary && hasAuthToken}
+                <button
+                  onclick={() => poller.retry()}
+                  disabled={poller.isRegenerating}
+                  class="btn btn-primary btn-sm flex items-center gap-2 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Regenerate AI summary (may take a few minutes)"
+                >
+                  {#if poller.isRegenerating}
+                    <Loader2 class="w-3.5 h-3.5 animate-spin" />
+                    <span>Regenerating...</span>
+                  {:else}
+                    <RefreshCw class="w-3.5 h-3.5" />
+                    <span>Retry</span>
+                  {/if}
+                </button>
+              {/if}
             </div>
-            {#if note.link_summarize}
-              <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                {isSummaryFull || note.link_summarize.length <= 150
-                  ? note.link_summarize
-                  : note.link_summarize.slice(0, 150) + '...'}
+
+            {#if poller.status === 'pending' || (!poller.summary && poller.status === null)}
+              <!-- pending, or first fetch in flight -->
+              <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                <Loader2 class="w-4 h-4 animate-spin text-warning-600 dark:text-primary-400" />
+                <span>Summarizing…</span>
+              </div>
+            {:else if poller.summary}
+              <!-- done (or have a summary) — preserve bullets/newlines -->
+              <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap break-words">
+                {isSummaryFull || poller.summary.length <= 150
+                  ? poller.summary
+                  : poller.summary.slice(0, 150) + '...'}
+              </p>
+              {#if poller.summary.length > 150}
+                <button
+                  onclick={() => (isSummaryFull = !isSummaryFull)}
+                  class="quick-btn text-xs text-warning-700 dark:text-primary-300 hover:text-warning-800 dark:hover:text-primary-200 font-medium transition-colors mt-1"
+                >
+                  {isSummaryFull ? 'Show less' : 'Show more'}
+                </button>
+              {/if}
+            {:else if poller.status === 'idle'}
+              <!-- not ready; retry button (if any) is in the header above -->
+              <p class="text-sm text-gray-500 dark:text-gray-400 italic">
+                Summary not ready yet. It will retry automatically.
               </p>
             {:else}
+              <!-- done but empty -->
               <p class="text-sm text-gray-500 dark:text-gray-400 italic">
-                No summary available yet.{#if hasAuthToken} Click regenerate to generate AI summary.{/if}
+                No summary available.
               </p>
             {/if}
           </div>

@@ -30,11 +30,20 @@ export interface NoteFile {
   upload_source: string;
 }
 
+/**
+ * Status of the async link-summarize job (show endpoint only).
+ * - 'pending' — job queued/running
+ * - 'idle'    — has link, no summary, no active job (failed after retries / waiting)
+ * - 'done'    — summary available in link_summarize
+ */
+export type SummarizeStatus = 'pending' | 'idle' | 'done';
+
 export interface Note {
   id: string;
   name: string | null;
   link: string | null;
   link_summarize: string | null;
+  summarize_status?: SummarizeStatus | null;
   description: string | null;
   is_public: boolean;
   is_favorite: boolean;
@@ -722,7 +731,9 @@ export async function regenerateSummarize(id: string): Promise<RegenerateSummari
     `/api/notes/${id}/regenerate-summarize`,
     {},
     {
-      timeout: 30000 // Longer timeout for AI summarization
+      // Sync endpoint: fetches the link + summarizes in-request. Can take up
+      // to ~10 min (see docs/superpowers/specs/2026-07-11-note-summarize-design.md).
+      timeout: 600000
     }
   );
 
