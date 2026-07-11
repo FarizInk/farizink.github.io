@@ -197,6 +197,15 @@
       notes.update(currentNotes =>
         currentNotes.map(n => n.id === savedNote.id ? savedNote : n)
       );
+      // Refresh any open detail view showing this note so it doesn't display
+      // stale content after the edit — selectedDetailNote/singleNote hold their
+      // own references, which the store update above does not touch.
+      if (selectedDetailNote && selectedDetailNote.id === savedNote.id) {
+        selectedDetailNote = savedNote;
+      }
+      if (singleNote && singleNote.id === savedNote.id) {
+        singleNote = savedNote;
+      }
     }
     selectedNote = null;
   }
