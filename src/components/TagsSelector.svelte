@@ -188,6 +188,8 @@
       {:else}
         {#each selectedOptions.slice(0, 5) as option (option.value)}
           <span
+            role="button"
+            tabindex="-1"
             class="tag-chip text-xs flex items-center gap-1.5 px-2.5 py-1 rounded-full border transition-all duration-200 hover:shadow-sm hover:scale-105 {!option.color
               ? 'bg-warning-50 text-warning-700 border-warning-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700'
               : ''}"
@@ -196,12 +198,6 @@
               : undefined}; color: {option.color || undefined}; border-color: {option.color
               ? option.color + '40'
               : undefined}"
-            onkeydown={e => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                e.stopPropagation();
-              }
-            }}
           >
             <div
               class="w-1.5 h-1.5 rounded-full {!option.color
@@ -226,8 +222,9 @@
     <div class="flex items-center gap-2 flex-shrink-0">
       <!-- Clear All Button (when items selected) -->
       {#if selectedOptions.length > 0}
-        <button
-          type="button"
+        <span
+          role="button"
+          tabindex="0"
         class="btn-icon hover:bg-secondary-100 dark:hover:bg-secondary-700 text-secondary-400 hover:text-danger-500"
         onclick={e => {
             e.stopPropagation();
@@ -245,7 +242,7 @@
           aria-label="Clear all selections"
         >
           <CircleX class="w-4 h-4" />
-        </button>
+        </span>
       {/if}
 
       <!-- Chevron -->

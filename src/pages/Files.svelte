@@ -250,7 +250,6 @@
             onkeypress={handleKeyPress}
             placeholder="e.g., lf64h4vm"
             class="tool-input flex-1 font-mono"
-            autofocus
           />
           <button
             onclick={handleSubmitCode}

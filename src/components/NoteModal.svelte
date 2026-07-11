@@ -96,7 +96,11 @@
       onclick={handleSubmit}
       class="btn btn-primary flex items-center gap-2 shadow-md hover:shadow-lg"
     >
-      <svelte:component this={icon} class="w-4 h-4" />
+      {#if mode === 'create'}
+        <Plus class="w-4 h-4" />
+      {:else}
+        <Edit2 class="w-4 h-4" />
+      {/if}
       {submitText}
     </button>
   </div>

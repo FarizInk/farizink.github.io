@@ -71,8 +71,16 @@
   let tempFilters = $state<NoteFilters>({ ...initialFilters });
   let tempSelectedIncludeTags = $state<string[]>([...initialIncludeTags]);
   let tempSelectedExcludeTags = $state<string[]>([...initialExcludeTags]);
-  let simpleSearchInput: HTMLInputElement | undefined = undefined;
-  let expertSearchInput: HTMLInputElement | undefined = undefined;
+  let simpleSearchInput = $state<HTMLInputElement | undefined>(undefined);
+  let expertSearchInput = $state<HTMLInputElement | undefined>(undefined);
+
+  function focusInput(input: HTMLInputElement | undefined) {
+    if (!input) return;
+    setTimeout(() => {
+      input?.focus();
+      input?.select();
+    }, 50);
+  }
 
   const SortIcon = $derived(getSortIcon(tempFilters.sortBy || defaultSortBy));
 
@@ -83,11 +91,16 @@
       // searchQuery is bound to parent, no need to reset
       tempSelectedIncludeTags = [...initialIncludeTags];
       tempSelectedExcludeTags = [...initialExcludeTags];
-      // Focus search input based on mode
-      if (expertFilterMode && expertSearchInput) {
-        setTimeout(() => expertSearchInput.focus(), 50);
-      } else if (!expertFilterMode && simpleSearchInput) {
-        setTimeout(() => simpleSearchInput.focus(), 50);
+    }
+  });
+
+  // Focus search input based on mode when modal opens
+  $effect(() => {
+    if (isOpen) {
+      if (expertFilterMode) {
+        focusInput(expertSearchInput);
+      } else {
+        focusInput(simpleSearchInput);
       }
     }
   });
@@ -170,7 +183,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Search - Full Width -->
         <div class="md:col-span-2">
-          <label class="label">Search</label>
+          <span class="label">Search</span>
           <div class="relative group">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { apiClient, isAxiosError } from './axios';
 import { API_BASE_URL } from './constants';
-import type { Tag } from './tags';
+import { getTags, type Tag } from './tags';
 
 export interface NoteFile {
   id: string;
@@ -678,9 +678,7 @@ export function isRecentlyUpdated(updatedAt: string): boolean {
 // Tag-related helper functions
 export async function getAvailableTags(): Promise<Tag[]> {
   try {
-    // Dynamic import to avoid circular dependency
-    const { getTags: fetchTags } = await import('./tags');
-    const response = await fetchTags(1, 100);
+    const response = await getTags(1, 100);
     return response.data; // Extract data array from paginated response
   } catch (error) {
     console.error('Failed to fetch tags:', error);

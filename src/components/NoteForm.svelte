@@ -3,6 +3,8 @@
   import type { NoteFileData } from '../lib/notes';
   import type { Tag } from '../lib/tags';
   import { createNote, updateNote } from '../lib/notes';
+  import axios from 'axios';
+  import { API_BASE_URL } from '../lib/constants';
   import { tags } from '../lib/stores/tags';
   import { Link2, Paperclip, ChevronDown, Settings2 } from '@lucide/svelte';
   import TagsSelector from './TagsSelector.svelte';
@@ -187,8 +189,6 @@
         }
 
         // Send request directly
-        const axios = (await import('axios')).default;
-        const { API_BASE_URL } = await import('../lib/constants');
 
         if (mode === 'create') {
           const axiosResponse = await axios.post(`${API_BASE_URL}/api/notes`, formData, {

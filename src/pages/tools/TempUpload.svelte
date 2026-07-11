@@ -372,6 +372,8 @@
       {#if uploadedFiles.length === 0}
         <!-- Dropzone -->
         <div
+          role="button"
+          tabindex="-1"
           class="tool-card relative overflow-hidden transition-all duration-200 {dragActive
             ? 'border-2 border-dashed !border-primary-400 dark:!border-primary-500 !bg-primary-50/50 dark:!bg-primary-900/10'
             : ''}"
@@ -602,8 +604,16 @@
           <div class="space-y-2 max-h-[500px] overflow-y-auto custom-scrollbar">
             {#each uploadHistory as item (item.uploadId)}
               <div
+                role="button"
+                tabindex="0"
                 class="p-3 rounded-xl bg-gray-50 dark:bg-gray-700/40 hover:bg-gray-100 dark:hover:bg-gray-700/70 transition-all cursor-pointer group border border-transparent hover:border-gray-200 dark:hover:border-gray-600/50"
                 onclick={() => loadFromHistory(item)}
+                onkeydown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    loadFromHistory(item);
+                  }
+                }}
               >
                 <div class="flex items-start justify-between gap-2">
                   <div class="flex-1 min-w-0">

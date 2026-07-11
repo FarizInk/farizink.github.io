@@ -389,9 +389,7 @@
 
                 <div class="grid grid-cols-2 gap-4">
                   <div>
-                    <label class="label section-title-sm"
-                      >X Offset</label
-                    >
+                    <span class="label section-title-sm">X Offset</span>
                     <input
                       type="range"
                       bind:value={shadow.x}
@@ -403,9 +401,7 @@
                   </div>
 
                   <div>
-                    <label class="label section-title-sm"
-                      >Y Offset</label
-                    >
+                    <span class="label section-title-sm">Y Offset</span>
                     <input
                       type="range"
                       bind:value={shadow.y}
@@ -417,9 +413,7 @@
                   </div>
 
                   <div>
-                    <label class="label section-title-sm"
-                      >Blur</label
-                    >
+                    <span class="label section-title-sm">Blur</span>
                     <input
                       type="range"
                       bind:value={shadow.blur}
@@ -431,9 +425,7 @@
                   </div>
 
                   <div>
-                    <label class="label section-title-sm"
-                      >Spread</label
-                    >
+                    <span class="label section-title-sm">Spread</span>
                     <input
                       type="range"
                       bind:value={shadow.spread}
@@ -445,9 +437,7 @@
                   </div>
 
                   <div>
-                    <label class="label section-title-sm"
-                      >Color</label
-                    >
+                    <span class="label section-title-sm">Color</span>
                     <div class="flex gap-2">
                       <input
                         type="color"
@@ -463,9 +453,7 @@
                   </div>
 
                   <div>
-                    <label class="label section-title-sm"
-                      >Opacity</label
-                    >
+                    <span class="label section-title-sm">Opacity</span>
                     <input
                       type="range"
                       bind:value={shadow.opacity}
@@ -522,9 +510,7 @@
 
                 <div class="grid grid-cols-3 gap-4">
                   <div>
-                    <label class="label section-title-sm"
-                      >X Offset</label
-                    >
+                    <span class="label section-title-sm">X Offset</span>
                     <input
                       type="range"
                       bind:value={shadow.x}
@@ -536,9 +522,7 @@
                   </div>
 
                   <div>
-                    <label class="label section-title-sm"
-                      >Y Offset</label
-                    >
+                    <span class="label section-title-sm">Y Offset</span>
                     <input
                       type="range"
                       bind:value={shadow.y}
@@ -550,9 +534,7 @@
                   </div>
 
                   <div>
-                    <label class="label section-title-sm"
-                      >Blur</label
-                    >
+                    <span class="label section-title-sm">Blur</span>
                     <input
                       type="range"
                       bind:value={shadow.blur}
@@ -564,9 +546,7 @@
                   </div>
 
                   <div class="col-span-3">
-                    <label class="label section-title-sm"
-                      >Color</label
-                    >
+                    <span class="label section-title-sm">Color</span>
                     <div class="flex gap-2">
                       <input
                         type="color"

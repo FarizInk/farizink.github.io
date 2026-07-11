@@ -1,6 +1,7 @@
 <script lang="ts">
   import NoteForm from '../components/NoteForm.svelte';
   import { navigate } from '../lib/router';
+  import { tagsStore } from '../lib/stores/tags';
   import { Lock } from '@lucide/svelte';
   import { onMount } from 'svelte';
 
@@ -14,9 +15,7 @@
 
     if (hasAuthToken) {
       // Load tags
-      import('../lib/stores/tags').then(({ tagsStore }) => {
-        tagsStore.loadTags();
-      });
+      tagsStore.loadTags();
     }
   });
 

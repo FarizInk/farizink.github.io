@@ -510,8 +510,8 @@
   <div class="space-y-5">
           <!-- Type -->
           <div>
-            <label class="label">Type</label>
-            <div class="flex gap-3">
+            <span class="label">Type</span>
+            <div class="flex gap-3" role="group" aria-label="Transaction type">
               <button
                 type="button"
                 onclick={() => (formType = 'income')}
@@ -537,8 +537,9 @@
 
           <!-- Amount -->
           <div>
-            <label class="label">Amount (IDR) *</label>
+            <label for="amount-input" class="label">Amount (IDR) *</label>
             <input
+              id="amount-input"
               type="number"
               min="1"
               placeholder="e.g. 50000"
@@ -549,8 +550,9 @@
 
           <!-- Description -->
           <div>
-            <label class="label">Description</label>
+            <label for="description-input" class="label">Description</label>
             <input
+              id="description-input"
               type="text"
               placeholder="e.g. Makan siang"
               bind:value={formDescription}
@@ -560,8 +562,9 @@
 
           <!-- Date -->
           <div>
-            <label class="label">Date</label>
+            <label for="date-input" class="label">Date</label>
             <input
+              id="date-input"
               type="datetime-local"
               bind:value={formDate}
               class="input"
@@ -571,8 +574,8 @@
           <!-- Tags -->
           {#if tags.length > 0}
             <div>
-              <label class="label">Tags</label>
-              <div class="flex flex-wrap gap-2">
+              <span class="label">Tags</span>
+              <div class="flex flex-wrap gap-2" role="group" aria-label="Select tags">
                 {#each tags as tag}
                   <button
                     type="button"

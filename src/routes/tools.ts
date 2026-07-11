@@ -1,41 +1,6 @@
 import { Wrench } from '@lucide/svelte';
 import type { Route } from '../lib/router';
 import { getAllTools } from '../lib/toolsConfig';
-import AgeCalculator from '../pages/tools/AgeCalculator.svelte';
-import AsciiArtGenerator from '../pages/tools/AsciiArtGenerator.svelte';
-import Base64Converter from '../pages/tools/Base64Converter.svelte';
-import BmiCalculator from '../pages/tools/BmiCalculator.svelte';
-import CharacterCounter from '../pages/tools/CharacterCounter.svelte';
-import ColorConverter from '../pages/tools/ColorConverter.svelte';
-import ColorPalette from '../pages/tools/ColorPalette.svelte';
-import CronGenerator from '../pages/tools/CronGenerator.svelte';
-import CssMinifier from '../pages/tools/CssMinifier.svelte';
-import CssShadowGenerator from '../pages/tools/CssShadowGenerator.svelte';
-import GradientGenerator from '../pages/tools/GradientGenerator.svelte';
-import HashComparer from '../pages/tools/HashComparer.svelte';
-import HashGenerator from '../pages/tools/HashGenerator.svelte';
-import HtmlEncoder from '../pages/tools/HtmlEncoder.svelte';
-import JsMinifier from '../pages/tools/JsMinifier.svelte';
-import JsonParser from '../pages/tools/JsonParser.svelte';
-import JwtDecoder from '../pages/tools/JwtDecoder.svelte';
-import LoremIpsumGenerator from '../pages/tools/LoremIpsumGenerator.svelte';
-import MarkdownPreview from '../pages/tools/MarkdownPreview.svelte';
-import MetaTagGenerator from '../pages/tools/MetaTagGenerator.svelte';
-import PasswordGenerator from '../pages/tools/PasswordGenerator.svelte';
-import PercentageCalculator from '../pages/tools/PercentageCalculator.svelte';
-import PomodoroTimer from '../pages/tools/PomodoroTimer.svelte';
-import QRCodeGenerator from '../pages/tools/QRCodeGenerator.svelte';
-import RandomPicker from '../pages/tools/RandomPicker.svelte';
-import SlugGenerator from '../pages/tools/SlugGenerator.svelte';
-import TempUpload from '../pages/tools/TempUpload.svelte';
-import TextCaseConverter from '../pages/tools/TextCaseConverter.svelte';
-import TextDiff from '../pages/tools/TextDiff.svelte';
-import TimestampConverter from '../pages/tools/TimestampConverter.svelte';
-import TipCalculator from '../pages/tools/TipCalculator.svelte';
-import UnitConverter from '../pages/tools/UnitConverter.svelte';
-import UrlEncoder from '../pages/tools/UrlEncoder.svelte';
-import UrlParser from '../pages/tools/UrlParser.svelte';
-import Tools from '../pages/Tools.svelte';
 
 // Helper function to get tool icon by path
 function getToolIconByPath(path: string) {
@@ -48,7 +13,7 @@ function getToolIconByPath(path: string) {
 export const toolsRoutes: Route[] = [
   {
     path: '/tools',
-    component: Tools,
+    load: () => import('../pages/Tools.svelte'),
     title: 'Developer Tools',
     description:
       'Free online developer tools and utilities. JSON parser, color converter, URL encoder, and more productivity tools for developers.',
@@ -57,162 +22,162 @@ export const toolsRoutes: Route[] = [
     robots: 'index, follow',
     icon: Wrench
   },
-  { path: '/tools/json-parser', component: JsonParser, title: 'JSON Parser', icon: getToolIconByPath('/tools/json-parser') },
-  { path: '/tools/color-converter', component: ColorConverter, title: 'Color Converter', icon: getToolIconByPath('/tools/color-converter') },
-  { path: '/tools/url-encoder', component: UrlEncoder, title: 'URL Encoder/Decoder', icon: getToolIconByPath('/tools/url-encoder') },
+  { path: '/tools/json-parser', load: () => import('../pages/tools/JsonParser.svelte'), title: 'JSON Parser', icon: getToolIconByPath('/tools/json-parser') },
+  { path: '/tools/color-converter', load: () => import('../pages/tools/ColorConverter.svelte'), title: 'Color Converter', icon: getToolIconByPath('/tools/color-converter') },
+  { path: '/tools/url-encoder', load: () => import('../pages/tools/UrlEncoder.svelte'), title: 'URL Encoder/Decoder', icon: getToolIconByPath('/tools/url-encoder') },
   {
     path: '/tools/markdown-preview',
-    component: MarkdownPreview,
+    load: () => import('../pages/tools/MarkdownPreview.svelte'),
     title: 'Markdown Preview',
     icon: getToolIconByPath('/tools/markdown-preview')
   },
   {
     path: '/tools/base64-converter',
-    component: Base64Converter,
+    load: () => import('../pages/tools/Base64Converter.svelte'),
     title: 'Base64 Converter',
     icon: getToolIconByPath('/tools/base64-converter')
   },
   {
     path: '/tools/password-generator',
-    component: PasswordGenerator,
+    load: () => import('../pages/tools/PasswordGenerator.svelte'),
     title: 'Password Generator',
     icon: getToolIconByPath('/tools/password-generator')
   },
   {
     path: '/tools/qr-code-generator',
-    component: QRCodeGenerator,
+    load: () => import('../pages/tools/QRCodeGenerator.svelte'),
     title: 'QR Code Generator',
     icon: getToolIconByPath('/tools/qr-code-generator')
   },
   {
     path: '/tools/text-case-converter',
-    component: TextCaseConverter,
+    load: () => import('../pages/tools/TextCaseConverter.svelte'),
     title: 'Text Case Converter',
     icon: getToolIconByPath('/tools/text-case-converter')
   },
   {
     path: '/tools/lorem-ipsum-generator',
-    component: LoremIpsumGenerator,
+    load: () => import('../pages/tools/LoremIpsumGenerator.svelte'),
     title: 'Lorem Ipsum Generator',
     icon: getToolIconByPath('/tools/lorem-ipsum-generator')
   },
   {
     path: '/tools/character-counter',
-    component: CharacterCounter,
+    load: () => import('../pages/tools/CharacterCounter.svelte'),
     title: 'Character Counter',
     icon: getToolIconByPath('/tools/character-counter')
   },
-  { path: '/tools/text-diff', component: TextDiff, title: 'Text Diff Tool', icon: getToolIconByPath('/tools/text-diff') },
-  { path: '/tools/url-parser', component: UrlParser, title: 'URL Parser/Analyzer', icon: getToolIconByPath('/tools/url-parser') },
+  { path: '/tools/text-diff', load: () => import('../pages/tools/TextDiff.svelte'), title: 'Text Diff Tool', icon: getToolIconByPath('/tools/text-diff') },
+  { path: '/tools/url-parser', load: () => import('../pages/tools/UrlParser.svelte'), title: 'URL Parser/Analyzer', icon: getToolIconByPath('/tools/url-parser') },
   {
     path: '/tools/css-minifier',
-    component: CssMinifier,
+    load: () => import('../pages/tools/CssMinifier.svelte'),
     title: 'CSS Minifier/Beautifier',
     icon: getToolIconByPath('/tools/css-minifier')
   },
   {
     path: '/tools/js-minifier',
-    component: JsMinifier,
+    load: () => import('../pages/tools/JsMinifier.svelte'),
     title: 'JavaScript Minifier/Beautifier',
     icon: getToolIconByPath('/tools/js-minifier')
   },
   {
     path: '/tools/html-encoder',
-    component: HtmlEncoder,
+    load: () => import('../pages/tools/HtmlEncoder.svelte'),
     title: 'HTML Entity Encoder/Decoder',
     icon: getToolIconByPath('/tools/html-encoder')
   },
   {
     path: '/tools/slug-generator',
-    component: SlugGenerator,
+    load: () => import('../pages/tools/SlugGenerator.svelte'),
     title: 'URL Slug Generator',
     icon: getToolIconByPath('/tools/slug-generator')
   },
   {
     path: '/tools/color-palette',
-    component: ColorPalette,
+    load: () => import('../pages/tools/ColorPalette.svelte'),
     title: 'Color Palette Generator',
     icon: getToolIconByPath('/tools/color-palette')
   },
   {
     path: '/tools/gradient-generator',
-    component: GradientGenerator,
+    load: () => import('../pages/tools/GradientGenerator.svelte'),
     title: 'CSS Gradient Generator',
     icon: getToolIconByPath('/tools/gradient-generator')
   },
-  { path: '/tools/hash-generator', component: HashGenerator, title: 'Hash Generator', icon: getToolIconByPath('/tools/hash-generator') },
-  { path: '/tools/jwt-decoder', component: JwtDecoder, title: 'JWT Decoder', icon: getToolIconByPath('/tools/jwt-decoder') },
-  { path: '/tools/tip-calculator', component: TipCalculator, title: 'Tip Calculator', icon: getToolIconByPath('/tools/tip-calculator') },
+  { path: '/tools/hash-generator', load: () => import('../pages/tools/HashGenerator.svelte'), title: 'Hash Generator', icon: getToolIconByPath('/tools/hash-generator') },
+  { path: '/tools/jwt-decoder', load: () => import('../pages/tools/JwtDecoder.svelte'), title: 'JWT Decoder', icon: getToolIconByPath('/tools/jwt-decoder') },
+  { path: '/tools/tip-calculator', load: () => import('../pages/tools/TipCalculator.svelte'), title: 'Tip Calculator', icon: getToolIconByPath('/tools/tip-calculator') },
   {
     path: '/tools/timestamp-converter',
-    component: TimestampConverter,
+    load: () => import('../pages/tools/TimestampConverter.svelte'),
     title: 'Unix Timestamp Converter',
     icon: getToolIconByPath('/tools/timestamp-converter')
   },
   {
     path: '/tools/meta-tag-generator',
-    component: MetaTagGenerator,
+    load: () => import('../pages/tools/MetaTagGenerator.svelte'),
     title: 'Meta Tag Generator',
     icon: getToolIconByPath('/tools/meta-tag-generator')
   },
   {
     path: '/tools/css-shadow-generator',
-    component: CssShadowGenerator,
+    load: () => import('../pages/tools/CssShadowGenerator.svelte'),
     title: 'CSS Shadow Generator',
     icon: getToolIconByPath('/tools/css-shadow-generator')
   },
-  { path: '/tools/unit-converter', component: UnitConverter, title: 'Unit Converter', icon: getToolIconByPath('/tools/unit-converter') },
+  { path: '/tools/unit-converter', load: () => import('../pages/tools/UnitConverter.svelte'), title: 'Unit Converter', icon: getToolIconByPath('/tools/unit-converter') },
   {
     path: '/tools/percentage-calculator',
-    component: PercentageCalculator,
+    load: () => import('../pages/tools/PercentageCalculator.svelte'),
     title: 'Percentage Calculator',
     icon: getToolIconByPath('/tools/percentage-calculator')
   },
   {
     path: '/tools/bmi-calculator',
-    component: BmiCalculator,
+    load: () => import('../pages/tools/BmiCalculator.svelte'),
     title: 'BMI Calculator',
     icon: getToolIconByPath('/tools/bmi-calculator')
   },
   {
     path: '/tools/age-calculator',
-    component: AgeCalculator,
+    load: () => import('../pages/tools/AgeCalculator.svelte'),
     title: 'Age Calculator',
     icon: getToolIconByPath('/tools/age-calculator')
   },
   {
     path: '/tools/random-picker',
-    component: RandomPicker,
+    load: () => import('../pages/tools/RandomPicker.svelte'),
     title: 'Random Picker',
     icon: getToolIconByPath('/tools/random-picker')
   },
   {
     path: '/tools/cron-generator',
-    component: CronGenerator,
+    load: () => import('../pages/tools/CronGenerator.svelte'),
     title: 'Cron Expression Generator',
     icon: getToolIconByPath('/tools/cron-generator')
   },
   {
     path: '/tools/hash-comparer',
-    component: HashComparer,
+    load: () => import('../pages/tools/HashComparer.svelte'),
     title: 'Hash Comparer',
     icon: getToolIconByPath('/tools/hash-comparer')
   },
   {
     path: '/tools/ascii-art-generator',
-    component: AsciiArtGenerator,
+    load: () => import('../pages/tools/AsciiArtGenerator.svelte'),
     title: 'ASCII Art Generator',
     icon: getToolIconByPath('/tools/ascii-art-generator')
   },
   {
     path: '/tools/pomodoro-timer',
-    component: PomodoroTimer,
+    load: () => import('../pages/tools/PomodoroTimer.svelte'),
     title: 'Pomodoro Timer',
     icon: getToolIconByPath('/tools/pomodoro-timer')
   },
   {
     path: '/tools/temp-upload',
-    component: TempUpload,
+    load: () => import('../pages/tools/TempUpload.svelte'),
     title: 'Temp File Upload',
     icon: getToolIconByPath('/tools/temp-upload')
   }

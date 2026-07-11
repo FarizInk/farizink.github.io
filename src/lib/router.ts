@@ -4,7 +4,9 @@ import { withViewTransition } from './motion';
 
 export interface Route {
   path: string;
-  component: Component<any> | null;
+  component?: Component<any> | null;
+  // Optional lazy loader for code-splitting; resolved on first navigation.
+  load?: () => Promise<{ default: Component<any> }>;
   title?: string;
   description?: string;
   keywords?: string;

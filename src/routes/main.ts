@@ -1,12 +1,8 @@
-import { House, FileText, User, Upload, Plus, Edit2, Wallet } from '@lucide/svelte';
-import Files from '../pages/Files.svelte';
-import Finance from '../pages/Finance.svelte';
+import { House, FileText, User, Plus, Edit2, Wallet } from '@lucide/svelte';
 import Home from '../pages/Home.svelte';
-import Notes from '../pages/Notes.svelte';
-import NotesCreate from '../pages/NotesCreate.svelte';
-import NotesEdit from '../pages/NotesEdit.svelte';
+import type { Route } from '../lib/router';
 
-export const mainRoutes = [
+export const mainRoutes: Route[] = [
   {
     path: '/',
     component: Home,
@@ -20,7 +16,7 @@ export const mainRoutes = [
   },
   {
     path: '/notes',
-    component: Notes,
+    load: () => import('../pages/Notes.svelte'),
     title: 'Notes - Fariz',
     description:
       'Manage your personal notes, thoughts, and ideas with our intuitive note-taking application.',
@@ -30,7 +26,7 @@ export const mainRoutes = [
   },
   {
     path: '/notes/create',
-    component: NotesCreate,
+    load: () => import('../pages/NotesCreate.svelte'),
     title: 'Create Note - Fariz',
     description: 'Create a new note to save your thoughts, ideas, and resources.',
     keywords: 'create note, new note, write note, save thoughts',
@@ -39,7 +35,7 @@ export const mainRoutes = [
   },
   {
     path: '/notes/edit/:id',
-    component: NotesEdit,
+    load: () => import('../pages/NotesEdit.svelte'),
     title: 'Edit Note - Fariz',
     description: 'Edit your note to update your thoughts, ideas, and resources.',
     keywords: 'edit note, update note, modify note',
@@ -57,7 +53,7 @@ export const mainRoutes = [
   },
   {
     path: '/finance',
-    component: Finance,
+    load: () => import('../pages/Finance.svelte'),
     title: 'Finance - Fariz',
     description: 'Track your personal income and expenses.',
     keywords: 'finance, money tracker, income, expense, budget',
@@ -66,7 +62,7 @@ export const mainRoutes = [
   },
   {
     path: '/files/:code',
-    component: Files,
+    load: () => import('../pages/Files.svelte'),
     title: 'Shared Files - Fariz',
     description: 'Download shared temporary files',
     keywords: 'download, shared files, temp files',

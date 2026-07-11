@@ -73,6 +73,7 @@
     role="dialog"
     aria-modal="true"
   >
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
     <div
       class="fixed inset-0 {isNestedModal ? 'bg-black/60' : 'bg-black/50'} backdrop-blur-sm"
       transition:fade
@@ -80,6 +81,12 @@
       tabindex="0"
       onclick={() => {
         if (isTopmostModal(currentModalId)) {
+          close();
+        }
+      }}
+      onkeydown={(e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && isTopmostModal(currentModalId)) {
+          e.preventDefault();
           close();
         }
       }}
