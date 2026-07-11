@@ -96,13 +96,16 @@
     <footer
       class="flex justify-center items-center text-secondary-600 dark:text-secondary-400 py-8 mt-12 border-t border-secondary-200 dark:border-secondary-800 bg-white/50 dark:bg-black/20 backdrop-blur-sm"
     >
-      Made with <button
+      Made with
+      <button
         type="button"
         onclick={openThanksModal}
-        class="btn-icon hover:scale-110"
+        aria-label="View credits"
+        class="inline-flex items-center align-middle mx-1 text-rose-500 dark:text-rose-400 transition-transform duration-200 ease-out hover:scale-125 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/60 rounded-full"
       >
-        <LoveIcon class="w-5 h-5 mx-1 text-rose-600" />
-      </button> at Sidoarjo.
+        <LoveIcon class="w-4 h-4" />
+      </button>
+      at Sidoarjo.
     </footer>
   {/if}
 </div>
