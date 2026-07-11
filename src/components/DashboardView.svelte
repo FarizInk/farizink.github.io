@@ -47,7 +47,7 @@
   const myApps = [
     {
       name: '9Router',
-      url: 'https://9router.fariz.dev',
+      url: 'https://router.fariz.dev',
       description: 'Network router management',
       icon: Wifi,
       color: 'from-cyan-400 to-blue-500 dark:from-cyan-500 dark:to-blue-600'
