@@ -1,8 +1,9 @@
 <script lang="ts">
   import MailIcon from './icons/MailIcon.svelte';
   import GithubIcon from './icons/GithubIcon.svelte';
-  import DiscordIcon from './icons/DiscordIcon.svelte';
+  // import DiscordIcon from './icons/DiscordIcon.svelte';
   import SpotifyIcon from './icons/SpotifyIcon.svelte';
+  import UnsplashIcon from './icons/UnsplashIcon.svelte';
   import { toast } from 'svelte-sonner';
 
   const copyEmail = () => {
@@ -60,7 +61,7 @@
       </div>
     </a>
 
-    <!-- Discord -->
+    <!-- Discord (hidden)
     <a
       href="https://discord.com/users/383164336450830336"
       target="_blank"
@@ -78,6 +79,28 @@
         class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs px-2 py-1 rounded opacity-0 group-hover/social:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none"
       >
         Discord
+      </div>
+    </a>
+    -->
+
+    <!-- Unsplash -->
+    <a
+      href="https://unsplash.com/@tungaumayo"
+      target="_blank"
+      rel="noreferrer"
+      class="group/social relative"
+    >
+      <div
+        class="flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-110 hover:border-gray-900 hover:bg-gray-900"
+      >
+        <UnsplashIcon
+          class="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover/social:text-white transition-colors duration-300"
+        />
+      </div>
+      <div
+        class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs px-2 py-1 rounded opacity-0 group-hover/social:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none"
+      >
+        Unsplash
       </div>
     </a>
 
