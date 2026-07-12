@@ -47,6 +47,7 @@ export interface Note {
   description: string | null;
   is_public: boolean;
   is_favorite: boolean;
+  is_pinned: boolean;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
@@ -734,6 +735,24 @@ export async function regenerateSummarize(id: string): Promise<RegenerateSummari
       timeout: 600000
     }
   );
+
+  return response.data;
+}
+
+/**
+ * Toggle a note's pinned state (pinned <-> unpinned).
+ * Requires authentication. Returns the updated note (attributes only, no
+ * tags/files rels). Read `data.is_pinned` for the new state.
+ */
+export async function togglePin(id: string): Promise<NoteResponse> {
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
+  if (!token) {
+    throw new Error('Authentication required');
+  }
+
+  const response = await apiClient.patch(`/api/notes/${id}/toggle-pin`, {}, {
+    timeout: 5000
+  });
 
   return response.data;
 }

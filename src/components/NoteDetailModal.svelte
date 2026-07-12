@@ -22,6 +22,8 @@
     Paperclip,
     Loader2,
     RefreshCw,
+    Pin,
+    PinOff,
     Sparkles
   } from '@lucide/svelte';
   import Modal from './Modal.svelte';
@@ -36,6 +38,7 @@
     isDeleted = false,
     onPermanentDelete,
     onShare,
+    onTogglePin,
     hideActions = false
   } = $props<{
     note: Note | null;
@@ -47,6 +50,7 @@
     isDeleted?: boolean;
     onPermanentDelete?: (note: Note) => void;
     onShare?: (note: Note) => void;
+    onTogglePin?: (note: Note) => void;
     hideActions?: boolean;
   }>();
 
@@ -95,6 +99,10 @@
 
   function handleEdit() {
     if (note) onEdit?.(note);
+  }
+
+  function handleTogglePin() {
+    if (note) onTogglePin?.(note);
   }
 
   function handleDelete() {
@@ -222,6 +230,19 @@
               {/if}
             {:else}
               {#if hasAuthToken}
+                {#if onTogglePin}
+                  <button
+                    onclick={handleTogglePin}
+                    class="btn-icon group relative bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 hover:scale-105 active:scale-95"
+                    title={note.is_pinned ? 'Unpin note' : 'Pin note'}
+                  >
+                    {#if note.is_pinned}
+                      <PinOff class="w-5 h-5 text-warning-600 dark:text-primary-400" />
+                    {:else}
+                      <Pin class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
+                    {/if}
+                  </button>
+                {/if}
                 <button
                   onclick={handleEdit}
                   class="btn-icon group relative bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 hover:scale-105 active:scale-95"
@@ -323,6 +344,20 @@
                 {/if}
               {:else}
                 {#if hasAuthToken}
+                  {#if onTogglePin}
+                    <button
+                      onclick={handleTogglePin}
+                      class="btn btn-secondary flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 rounded-xl transition-all text-sm font-medium"
+                    >
+                      {#if note.is_pinned}
+                        <PinOff class="w-4 h-4 text-warning-600 dark:text-primary-400" />
+                        <span class="text-warning-700 dark:text-primary-300">Unpin</span>
+                      {:else}
+                        <Pin class="w-4 h-4 text-secondary-600 dark:text-secondary-300" />
+                        <span class="text-secondary-700 dark:text-secondary-300">Pin</span>
+                      {/if}
+                    </button>
+                  {/if}
                   <button
                     onclick={handleEdit}
                     class="btn btn-secondary flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 rounded-xl transition-all text-sm font-medium"

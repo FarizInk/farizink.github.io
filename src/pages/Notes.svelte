@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Note } from '../lib/notes';
-  import { deleteNote, getNote, regenerateSummarize, type NoteFilters } from '../lib/notes';
+  import { deleteNote, getNote, regenerateSummarize, togglePin, type NoteFilters } from '../lib/notes';
   import { toast } from 'svelte-sonner';
   import { tagsStore } from '../lib/stores/tags';
   import { notesStore, notes, isLoadingNotes, hasMore, totalCount } from '../lib/stores/notes';
@@ -12,6 +12,7 @@
   import DeletedNotesModal from '../components/DeletedNotesModal.svelte';
   import {
     Plus,
+    Pin,
     RefreshCw,
     RotateCw,
     Tag as TagIcon,
@@ -86,6 +87,12 @@
   // Detail modal state
   let isDetailModalOpen = $state(false);
   let selectedDetailNote = $state<Note | null>(null);
+
+  // Pinned-first partition of the loaded notes. The API already returns notes
+  // pinned-first, so this just splits the cached array to drive a separate
+  // "Pinned" list section.
+  let pinnedNotes = $derived($notes.filter(n => n && n.is_pinned));
+  let otherNotes = $derived($notes.filter(n => n && !n.is_pinned));
 
   // Tag modal state
   let isTagModalOpen = $state(false);
@@ -171,6 +178,38 @@
       modalMode = 'edit';
       selectedNote = note;
       isModalOpen = true;
+    }
+  }
+
+  // Apply a pin state to the store + any open detail view, re-sorting the list
+  // pinned-first (stable, so within-group order from the server is preserved).
+  function applyPinState(noteId: string, pinned: boolean) {
+    notes.update(arr => {
+      const updated = arr.map(n => (n.id === noteId ? { ...n, is_pinned: pinned } : n));
+      return [...updated].sort((a, b) => Number(b.is_pinned) - Number(a.is_pinned));
+    });
+    if (selectedDetailNote && selectedDetailNote.id === noteId) {
+      selectedDetailNote = { ...selectedDetailNote, is_pinned: pinned };
+    }
+    if (singleNote && singleNote.id === noteId) {
+      singleNote = { ...singleNote, is_pinned: pinned };
+    }
+  }
+
+  async function handleTogglePin(note: Note) {
+    const newPinned = !note.is_pinned;
+    applyPinState(note.id, newPinned); // optimistic
+    try {
+      const res = await togglePin(note.id);
+      const serverPinned = res.data.is_pinned;
+      if (serverPinned !== newPinned) {
+        applyPinState(note.id, serverPinned); // reconcile if server differs
+      }
+      toast.success(serverPinned ? 'Note pinned' : 'Note unpinned');
+    } catch (error) {
+      console.error('Toggle pin error:', error);
+      applyPinState(note.id, note.is_pinned); // revert to original
+      toast.error('Failed to toggle pin');
     }
   }
 
@@ -595,9 +634,35 @@
           {/if}
         </div>
       {:else}
-        <!-- Notes List -->
+        <!-- Pinned Section (only when there are pinned notes) -->
+        {#if pinnedNotes.length > 0}
+          <div class="mb-6">
+            <div class="flex items-center gap-2 mb-4">
+              <Pin class="w-5 h-5 text-warning-600 dark:text-primary-400" />
+              <h2 class="text-lg font-semibold text-secondary-900 dark:text-white">Pinned</h2>
+              <span class="text-sm text-secondary-500 dark:text-secondary-400">({pinnedNotes.length})</span>
+            </div>
+            <div class="flex flex-col gap-4">
+              {#each pinnedNotes as note, index (note.id)}
+                <div style="animation-delay: {index * 30}ms">
+                  <NoteCard
+                    {note}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    {hasAuthToken}
+                    onShowDetail={handleShowDetail}
+                    onShare={handleShare}
+                    onTogglePin={handleTogglePin}
+                  />
+                </div>
+              {/each}
+            </div>
+          </div>
+        {/if}
+
+        <!-- Other Notes -->
         <div class="flex flex-col gap-4">
-          {#each $notes.filter(n => n) as note, index (note.id)}
+          {#each otherNotes as note, index (note.id)}
             <div style="animation-delay: {index * 30}ms">
               <NoteCard
                 {note}
@@ -606,6 +671,7 @@
                 {hasAuthToken}
                 onShowDetail={handleShowDetail}
                 onShare={handleShare}
+                onTogglePin={handleTogglePin}
               />
             </div>
           {/each}
@@ -1022,6 +1088,7 @@
   onDelete={handleDelete}
   {hasAuthToken}
   onShare={handleShare}
+  onTogglePin={handleTogglePin}
 />
 
 <!-- Tag Management Modal -->

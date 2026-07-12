@@ -17,7 +17,9 @@
     File,
     Paperclip,
     RotateCcw,
-    Share2
+    Share2,
+    Pin,
+    PinOff
   } from '@lucide/svelte';
 
   let {
@@ -29,7 +31,8 @@
     isDeleted = false,
     onPermanentDelete,
     onRestore,
-    onShare
+    onShare,
+    onTogglePin
   } = $props<{
     note: Note;
     onEdit?: (note: Note) => void;
@@ -40,6 +43,7 @@
     onPermanentDelete?: (note: Note) => void;
     onRestore?: (note: Note) => void;
     onShare?: (note: Note) => void;
+    onTogglePin?: (note: Note) => void;
   }>();
 
   function handleEdit() {
@@ -60,6 +64,10 @@
 
   function handleShare() {
     onShare?.(note);
+  }
+
+  function handleTogglePin() {
+    onTogglePin?.(note);
   }
 
   function handleShowDetail() {
@@ -94,6 +102,12 @@
     <!-- Header Section -->
     <div class="flex items-start justify-between mb-4">
       <div class="flex-1 min-w-0 pr-4">
+        {#if note.is_pinned}
+          <div class="inline-flex items-center gap-1 mb-2 px-2 py-0.5 rounded-full bg-warning-100 dark:bg-primary-900/30 text-warning-700 dark:text-primary-300 text-xs font-medium w-fit">
+            <Pin class="w-3 h-3" />
+            Pinned
+          </div>
+        {/if}
         {#if note.name}
           <h3
             class="text-xl font-bold text-secondary-900 dark:text-white group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-all duration-200 mb-2"
@@ -322,6 +336,22 @@
           </button>
           <!-- Edit and Delete buttons - Only show when authenticated -->
           {#if hasAuthToken}
+            {#if onTogglePin}
+              <button
+                onclick={e => {
+                  e.stopPropagation();
+                  handleTogglePin();
+                }}
+                class="btn-icon w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
+                title={note.is_pinned ? 'Unpin note' : 'Pin note'}
+              >
+                {#if note.is_pinned}
+                  <PinOff class="w-4 h-4 text-warning-600 dark:text-primary-400" />
+                {:else}
+                  <Pin class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
+                {/if}
+              </button>
+            {/if}
             <button
               onclick={e => {
                 e.stopPropagation();
