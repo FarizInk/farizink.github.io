@@ -32,7 +32,8 @@
     onPermanentDelete,
     onRestore,
     onShare,
-    onTogglePin
+    onTogglePin,
+    isFocused = false
   } = $props<{
     note: Note;
     onEdit?: (note: Note) => void;
@@ -44,6 +45,7 @@
     onRestore?: (note: Note) => void;
     onShare?: (note: Note) => void;
     onTogglePin?: (note: Note) => void;
+    isFocused?: boolean;
   }>();
 
   function handleEdit() {
@@ -78,6 +80,8 @@
 <div
   class="card card-hover tv-card !p-6 group relative overflow-hidden cursor-pointer {!note.is_public
     ? 'bg-gradient-to-br from-warning-50 to-warning-50 dark:from-primary-900/30 dark:to-primary-900/20 border-2 border-warning-300 dark:border-primary-500 shadow-lg'
+    : ''} {isFocused
+    ? 'ring-2 ring-warning-500 dark:ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-gray-900'
     : ''}"
   role="button"
   tabindex="0"

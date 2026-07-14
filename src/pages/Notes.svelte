@@ -10,6 +10,7 @@
   import TagModal from '../components/TagModal.svelte';
   import NotesFilterModal from '../components/NotesFilterModal.svelte';
   import DeletedNotesModal from '../components/DeletedNotesModal.svelte';
+  import NotesShortcutsModal from '../components/NotesShortcutsModal.svelte';
   import {
     Plus,
     Pin,
@@ -31,6 +32,7 @@
     Filter,
     X,
     BookOpen,
+    Keyboard,
     Loader2
   } from '@lucide/svelte';
   import { onMount } from 'svelte';
@@ -88,11 +90,23 @@
   let isDetailModalOpen = $state(false);
   let selectedDetailNote = $state<Note | null>(null);
 
+  // Keyboard navigation state: id of the focused note card, helper-modal flag,
+  // and a ref of the search input (focused by the `/` shortcut).
+  let focusedNoteId = $state<string | null>(null);
+  let showShortcutsModal = $state(false);
+  let searchInput = $state<HTMLInputElement | null>(null);
+
   // Pinned-first partition of the loaded notes. The API already returns notes
   // pinned-first, so this just splits the cached array to drive a separate
   // "Pinned" list section.
   let pinnedNotes = $derived($notes.filter(n => n && n.is_pinned));
   let otherNotes = $derived($notes.filter(n => n && !n.is_pinned));
+
+  // Combined visual order for keyboard navigation (pinned first, then others)
+  let orderedNotes = $derived([...pinnedNotes, ...otherNotes]);
+  let focusedIndex = $derived(
+    focusedNoteId ? orderedNotes.findIndex(n => n.id === focusedNoteId) : -1
+  );
 
   // Tag modal state
   let isTagModalOpen = $state(false);
@@ -150,11 +164,16 @@
       return;
     }
 
+    const replaceIndex = focusedIndex; // captured before the note leaves the list
     deletingNoteId = note.id;
     try {
       await deleteNote(note.id);
       toast.success('Note deleted successfully');
       notesStore.removeNote(note.id);
+      // Move focus to the card now occupying the same position (the one that
+      // shifts up), so keyboard users keep their place in the list.
+      const replacement = orderedNotes[replaceIndex] ?? orderedNotes[replaceIndex - 1] ?? null;
+      focusedNoteId = replacement ? replacement.id : null;
     } catch (error) {
       if (error instanceof Error) {
         toast.error('Failed to delete note');
@@ -247,6 +266,18 @@
       }
     }
     selectedNote = null;
+  }
+
+  // Move keyboard focus by delta (+1 = next/down, -1 = previous/up), clamped to
+  // the list bounds. With no current focus, only "next" starts at the first card.
+  function moveFocus(delta: number) {
+    if (orderedNotes.length === 0) return;
+    if (focusedIndex < 0) {
+      if (delta > 0) focusedNoteId = orderedNotes[0].id;
+      return;
+    }
+    const next = Math.max(0, Math.min(focusedIndex + delta, orderedNotes.length - 1));
+    focusedNoteId = orderedNotes[next].id;
   }
 
   function handleShowDetail(note: Note) {
@@ -448,10 +479,10 @@
     };
   });
 
-  // Keyboard shortcut for Ctrl+F / Command+F to open filter modal
+  // Keyboard shortcut for Ctrl+Shift+F / Command+Shift+F to open filter modal
   $effect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if ((event.ctrlKey || event.metaKey) && event.key === 'f') {
+      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'f') {
         event.preventDefault();
         openFilterModal();
       }
@@ -462,6 +493,113 @@
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
+  });
+
+  // Keep the focused card scrolled into view while navigating with j/k.
+  $effect(() => {
+    if (!focusedNoteId) return;
+    const el = document.querySelector(`[data-note-card="${CSS.escape(focusedNoteId)}"]`);
+    el?.scrollIntoView({ block: 'nearest' });
+  });
+
+  // Single-key shortcuts for list navigation and per-note actions.
+  // Guarded: inactive while typing in a field/editor or while any modal is open.
+  // Esc is handled first; modals self-close on Esc (Modal.svelte), so here we
+  // only act on Esc when NO modal is open.
+  $effect(() => {
+    const anyModalOpen = () =>
+      isModalOpen ||
+      isDetailModalOpen ||
+      showFilterModal ||
+      isTagModalOpen ||
+      showDeletedNotesModal ||
+      showShortcutsModal;
+
+    const isTyping = (el: EventTarget | null): boolean =>
+      el instanceof HTMLElement &&
+      (el.tagName === 'INPUT' ||
+        el.tagName === 'TEXTAREA' ||
+        el.tagName === 'SELECT' ||
+        el.isContentEditable);
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+
+      // Esc: defer modal-closing to Modal.svelte; only act when no modal is open.
+      if (key === 'Escape') {
+        if (anyModalOpen()) return;
+        const active = document.activeElement;
+        if (active instanceof HTMLElement && active.tagName === 'INPUT') {
+          active.blur();
+        } else if (viewMode === 'detail') {
+          backToList();
+        }
+        return;
+      }
+
+      // Skip all other single-keys shortcuts while typing or while a modal is open.
+      if (isTyping(event.target) || anyModalOpen()) return;
+
+      const focusedNote = focusedIndex >= 0 ? orderedNotes[focusedIndex] ?? null : null;
+
+      switch (key) {
+        case '/':
+          if (viewMode === 'list') {
+            event.preventDefault();
+            searchInput?.focus();
+          }
+          break;
+        case 'j':
+        case 'ArrowDown':
+          if (viewMode === 'list') {
+            event.preventDefault();
+            moveFocus(1);
+          }
+          break;
+        case 'k':
+        case 'ArrowUp':
+          if (viewMode === 'list') {
+            event.preventDefault();
+            moveFocus(-1);
+          }
+          break;
+        case 'Enter':
+          if (viewMode === 'list' && focusedNote) {
+            event.preventDefault();
+            handleShowDetail(focusedNote);
+          }
+          break;
+        case 'n':
+          event.preventDefault();
+          handleCreate();
+          break;
+        case '?':
+          event.preventDefault();
+          showShortcutsModal = true;
+          break;
+        case 'p':
+          if (viewMode === 'list' && focusedNote) {
+            event.preventDefault();
+            handleTogglePin(focusedNote);
+          }
+          break;
+        case 'e':
+          if (viewMode === 'list' && focusedNote) {
+            event.preventDefault();
+            handleEdit(focusedNote);
+          }
+          break;
+        case 'x':
+          if (viewMode === 'list' && focusedNote) {
+            event.preventDefault();
+            handleDelete(focusedNote);
+          }
+          break;
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   });
 </script>
 
@@ -503,13 +641,14 @@
           <input
             type="text"
             bind:value={searchQuery}
+            bind:this={searchInput}
             onkeydown={e => {
               if (e.key === 'Enter') {
                 // Apply current filters and search, like in the modal
                 applyFilters(activeFilters, searchQuery, selectedIncludeTags, selectedExcludeTags);
               }
             }}
-            placeholder="Search notes... (Ctrl+F)"
+            placeholder="Search notes... (Ctrl+Shift+F)"
             class="flex-1 border-none bg-transparent text-base text-gray-900 dark:text-gray-100 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
           />
           {#if searchQuery}
@@ -555,6 +694,16 @@
             <RefreshCw
               class={`w-4 h-4 text-gray-600 dark:text-gray-400 hover:text-warning-500 dark:hover:text-primary-400 transition-colors ${$isLoadingNotes ? 'animate-spin' : ''}`}
             />
+          </button>
+
+          <!-- Keyboard shortcuts -->
+          <button
+            onclick={() => (showShortcutsModal = true)}
+            class="btn-icon w-10 h-10 rounded-xl flex items-center justify-center transition-all hover:bg-warning-50 dark:hover:bg-gray-700"
+            title="Keyboard shortcuts (?)"
+            aria-label="Keyboard shortcuts"
+          >
+            <Keyboard class="w-4 h-4 text-gray-600 dark:text-gray-400 hover:text-warning-500 dark:hover:text-primary-400 transition-colors" />
           </button>
 
           <!-- Authenticated Actions -->
@@ -644,9 +793,10 @@
             </div>
             <div class="flex flex-col gap-4">
               {#each pinnedNotes as note, index (note.id)}
-                <div style="animation-delay: {index * 30}ms">
+                <div data-note-card={note.id} style="animation-delay: {index * 30}ms">
                   <NoteCard
                     {note}
+                    isFocused={note.id === focusedNoteId}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     {hasAuthToken}
@@ -663,9 +813,10 @@
         <!-- Other Notes -->
         <div class="flex flex-col gap-4">
           {#each otherNotes as note, index (note.id)}
-            <div style="animation-delay: {index * 30}ms">
+            <div data-note-card={note.id} style="animation-delay: {index * 30}ms">
               <NoteCard
                 {note}
+                isFocused={note.id === focusedNoteId}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 {hasAuthToken}
@@ -1118,3 +1269,6 @@
 
 <!-- Deleted Notes Modal -->
 <DeletedNotesModal bind:isOpen={showDeletedNotesModal} onClose={handleDeletedNotesModalClose} />
+
+<!-- Keyboard Shortcuts Helper Modal -->
+<NotesShortcutsModal bind:isOpen={showShortcutsModal} />

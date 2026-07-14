@@ -268,6 +268,25 @@
     e.preventDefault();
     submit();
   }
+
+  // Keyboard shortcut for Ctrl+Shift+S / Command+Shift+S to save the note.
+  // Lives here because this form is shared by the create/edit modal (desktop)
+  // and the dedicated create/edit pages (mobile), so the shortcut works in
+  // every context where the form is mounted.
+  $effect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 's') {
+        event.preventDefault();
+        submit();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  });
 </script>
 
 <div class="note-form space-y-5">
