@@ -281,6 +281,13 @@ html.dark body {
    PROSE / EDITOR STYLES (shared across NoteDetailModal, TiptapEditor, Notes)
    ============================================================ */
 
+.prose {
+  /* Break long unbroken tokens (e.g. URLs inside links) so the note body wraps
+     instead of overflowing its width — mobile, tablet, and desktop. This
+     property is inherited, so <p>, <a>, <code>, etc. all wrap long links. */
+  overflow-wrap: anywhere;
+}
+
 .prose p {
   line-height: 1.7;
   margin: 0 0 1em 0;
