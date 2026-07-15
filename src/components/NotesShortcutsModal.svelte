@@ -13,7 +13,7 @@
   </kbd>
 {/snippet}
 
-<Modal bind:isOpen maxW="max-w-lg">
+<Modal bind:isOpen maxW="max-w-lg" onClose={() => (isOpen = false)}>
   <div class="space-y-6">
     <!-- Header -->
     <div class="flex items-center gap-3">
@@ -49,6 +49,10 @@
         <div class="flex items-center justify-between py-2">
           <span class="text-sm text-gray-700 dark:text-gray-300">Open note</span>
           <div class="flex items-center gap-1">{@render Key('Enter')}</div>
+        </div>
+        <div class="flex items-center justify-between py-2">
+          <span class="text-sm text-gray-700 dark:text-gray-300">Load more notes</span>
+          <div class="flex items-center gap-1">{@render Key('l')}</div>
         </div>
         <div class="flex items-center justify-between py-2">
           <span class="text-sm text-gray-700 dark:text-gray-300">Close / back</span>

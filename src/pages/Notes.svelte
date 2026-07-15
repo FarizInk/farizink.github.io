@@ -569,6 +569,12 @@
             handleShowDetail(focusedNote);
           }
           break;
+        case 'l':
+          if (viewMode === 'list' && $hasMore) {
+            event.preventDefault();
+            loadMoreNotes();
+          }
+          break;
         case 'n':
           event.preventDefault();
           handleCreate();
