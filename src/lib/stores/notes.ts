@@ -79,7 +79,11 @@ class NotesStore extends PaginatedStore<Note> {
   /**
    * Load initial notes (page 1) - uses cache first, then fetch in background
    */
-  async loadNotes(filters?: NoteFilters, useCache: boolean = true): Promise<void> {
+  async loadNotes(
+    filters?: NoteFilters,
+    useCache: boolean = true,
+    showErrorToast: boolean = true
+  ): Promise<void> {
     const loading = get(isLoadingNotes);
     if (loading) return;
 
@@ -114,7 +118,9 @@ class NotesStore extends PaginatedStore<Note> {
       if (get(notes).length === 0) {
         notes.set([]);
       }
-      toast.error('Failed to load notes');
+      if (showErrorToast) {
+        toast.error('Failed to load notes');
+      }
     } finally {
       isLoadingNotes.set(false);
     }

@@ -45,14 +45,21 @@
     }
 
     actionLoadingIds.add(note.id);
-
-    try {
+    const deletePromise = (async () => {
       await permanentDeleteNote(note.id);
-      toast.success('Note permanently deleted');
       deletedNotesStore.removeDeletedNote(note.id);
       onSuccess?.();
+    })();
+
+    toast.promise(deletePromise, {
+      loading: 'Permanently deleting note...',
+      success: 'Note permanently deleted',
+      error: error => (error instanceof Error ? error.message : 'Failed to permanently delete note')
+    });
+
+    try {
+      await deletePromise;
     } catch (error) {
-      toast.error('Failed to permanently delete note');
       console.error('Permanent delete note error:', error);
     } finally {
       actionLoadingIds.delete(note.id);
@@ -63,15 +70,23 @@
     if (actionLoadingIds.has(note.id)) return;
 
     actionLoadingIds.add(note.id);
-
-    try {
+    const restorePromise = (async () => {
       const response = await restoreNote(note.id);
-      toast.success('Note restored successfully');
       deletedNotesStore.removeDeletedNote(note.id);
       notesStore.prependNote(response.data);
       onSuccess?.();
+      return response;
+    })();
+
+    toast.promise(restorePromise, {
+      loading: 'Restoring note...',
+      success: 'Note restored successfully',
+      error: error => (error instanceof Error ? error.message : 'Failed to restore note')
+    });
+
+    try {
+      await restorePromise;
     } catch (error) {
-      toast.error('Failed to restore note');
       console.error('Restore note error:', error);
     } finally {
       actionLoadingIds.delete(note.id);

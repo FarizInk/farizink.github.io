@@ -2,8 +2,7 @@
   import type { Note } from '../lib/notes';
   import NoteForm from './NoteForm.svelte';
   import Modal from './Modal.svelte';
-  import { Plus, Edit2, X, AlertTriangle } from '@lucide/svelte';
-  import { toast } from 'svelte-sonner';
+  import { Plus, Edit2, X, AlertTriangle, Loader2 } from '@lucide/svelte';
 
   interface Props {
     isOpen: boolean;
@@ -16,9 +15,11 @@
 
   let formSubmitFn: (() => void) | null = null;
   let formHasChanges = $state(false);
+  let isSubmitting = $state(false);
   let showConfirm = $state(false);
 
   function requestClose() {
+    if (isSubmitting) return;
     if (formHasChanges) {
       showConfirm = true;
     } else {
@@ -42,11 +43,6 @@
   }
 
   function handleFormSuccess(savedNote: Note) {
-    if (mode === 'create') {
-      toast.success('Note created successfully!');
-    } else {
-      toast.success('Note updated successfully!');
-    }
     onSuccess?.(savedNote);
     isOpen = false;
   }
@@ -71,6 +67,7 @@
     </h2>
     <button
       onclick={requestClose}
+      disabled={isSubmitting}
       class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700"
     >
       <X class="w-5 h-5 text-gray-500" />
@@ -84,24 +81,30 @@
       onSuccess={handleFormSuccess}
       onSubmitReady={handleFormReady}
       onHasChangesChange={handleHasChangesChange}
+      onLoadingChange={(loading) => (isSubmitting = loading)}
     />
   </div>
 
   <div
     class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700"
   >
-    <button type="button" onclick={requestClose} class="btn btn-secondary"> Cancel </button>
+    <button type="button" onclick={requestClose} disabled={isSubmitting} class="btn btn-secondary"> Cancel </button>
     <button
       type="button"
       onclick={handleSubmit}
-      class="btn btn-primary flex items-center gap-2 shadow-md hover:shadow-lg"
+      disabled={isSubmitting}
+      class="btn btn-primary flex items-center gap-2 shadow-md hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
     >
-      {#if mode === 'create'}
+      {#if isSubmitting}
+        <Loader2 class="w-4 h-4 animate-spin" />
+        Saving...
+      {:else if mode === 'create'}
         <Plus class="w-4 h-4" />
+        {submitText}
       {:else}
         <Edit2 class="w-4 h-4" />
+        {submitText}
       {/if}
-      {submitText}
     </button>
   </div>
 

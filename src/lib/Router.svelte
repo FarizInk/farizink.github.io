@@ -2,6 +2,7 @@
   import type { Component } from 'svelte';
   import { router } from './router';
   import type { RouterState } from './router';
+  import { toast } from 'svelte-sonner';
 
   // Subscribe to router state changes with proper Svelte 5 runes
   let routerState: RouterState = $state({
@@ -21,8 +22,30 @@
   });
 
   // Cache of already-loaded lazy route components keyed by path, so revisiting
-  // a route renders synchronously instead of flashing the loading spinner.
+  // a route renders synchronously instead of flashing the loading toast.
   const componentCache = new Map<string, Component>();
+
+  // Svelte action: show a Sonner loading toast after 1s delay.
+  // If the route loads quickly (from cache), the toast never appears.
+  function loadingToast(node: HTMLElement, { title }: { title: string }) {
+    let id: string | undefined;
+    const timer = setTimeout(() => {
+      id = toast.loading(title);
+    }, 1000);
+    return {
+      destroy() {
+        clearTimeout(timer);
+        if (id) toast.dismiss(id);
+      }
+    };
+  }
+
+  // Derive a friendly label from the route title (e.g. "Notes - Fariz" → "Notes")
+  function routeLabel(title?: string): string {
+    if (!title) return 'Loading page…';
+    const clean = title.replace(/\s*[-–—]\s*Fariz$/, '').trim();
+    return clean ? `Loading ${clean}…` : 'Loading page…';
+  }
 </script>
 
 <div class="tv-page">
@@ -37,11 +60,6 @@
         componentCache.set(route.path, mod.default);
         return mod;
       })}
-        <div class="flex items-center justify-center min-h-[70vh]">
-          <div
-            class="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"
-          ></div>
-        </div>
       {:then mod}
         {@const Component = mod.default}
         <Component params={routerState.params} />

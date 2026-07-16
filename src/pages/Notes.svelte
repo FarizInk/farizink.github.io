@@ -3,8 +3,9 @@
   import { deleteNote, getNote, regenerateSummarize, togglePin, type NoteFilters } from '../lib/notes';
   import { toast } from 'svelte-sonner';
   import { tagsStore } from '../lib/stores/tags';
-  import { notesStore, notes, isLoadingNotes, hasMore, totalCount } from '../lib/stores/notes';
+  import { notesStore, notes, notesError, isLoadingNotes, hasMore, totalCount } from '../lib/stores/notes';
   import NoteCard from '../components/NoteCard.svelte';
+  import NoteCardSkeleton from '../components/NoteCardSkeleton.svelte';
   import NoteModal from '../components/NoteModal.svelte';
   import NoteDetailModal from '../components/NoteDetailModal.svelte';
   import TagModal from '../components/TagModal.svelte';
@@ -126,7 +127,7 @@
   let selectedIncludeTags = $state<string[]>([]);
   let selectedExcludeTags = $state<string[]>([]);
 
-  async function loadNotes(append: boolean = false) {
+  async function loadNotes(append: boolean = false, showErrorToast: boolean = true) {
     const apiParams: NoteFilters = {
       ...activeFilters,
       includeTags: selectedIncludeTags.length > 0 ? selectedIncludeTags : undefined,
@@ -140,7 +141,7 @@
     if (append) {
       await notesStore.loadMore(apiParams);
     } else {
-      await notesStore.loadNotes(apiParams);
+      await notesStore.loadNotes(apiParams, true, showErrorToast);
     }
   }
 
@@ -154,8 +155,17 @@
     }
   }
 
-  async function handleRefresh() {
-    await loadNotes(false);
+  function handleRefresh() {
+    const refreshPromise = (async () => {
+      await loadNotes(false, false);
+      if ($notesError) throw new Error($notesError);
+    })();
+
+    return toast.promise(refreshPromise, {
+      loading: 'Refreshing notes...',
+      success: 'Notes are up to date',
+      error: error => (error instanceof Error ? error.message : 'Failed to refresh notes')
+    });
   }
 
   async function handleDelete(note: Note) {
@@ -166,20 +176,22 @@
 
     const replaceIndex = focusedIndex; // captured before the note leaves the list
     deletingNoteId = note.id;
-    try {
+    const deletePromise = (async () => {
       await deleteNote(note.id);
-      toast.success('Note deleted successfully');
       notesStore.removeNote(note.id);
-      // Move focus to the card now occupying the same position (the one that
-      // shifts up), so keyboard users keep their place in the list.
       const replacement = orderedNotes[replaceIndex] ?? orderedNotes[replaceIndex - 1] ?? null;
       focusedNoteId = replacement ? replacement.id : null;
+    })();
+
+    toast.promise(deletePromise, {
+      loading: 'Deleting note...',
+      success: 'Note deleted successfully',
+      error: error => (error instanceof Error ? error.message : 'Failed to delete note')
+    });
+
+    try {
+      await deletePromise;
     } catch (error) {
-      if (error instanceof Error) {
-        toast.error('Failed to delete note');
-      } else {
-        toast.error('An unexpected error occurred');
-      }
       console.error('Delete note error:', error);
     } finally {
       deletingNoteId = null;
@@ -218,17 +230,26 @@
   async function handleTogglePin(note: Note) {
     const newPinned = !note.is_pinned;
     applyPinState(note.id, newPinned); // optimistic
-    try {
+    const pinPromise = (async () => {
       const res = await togglePin(note.id);
       const serverPinned = res.data.is_pinned;
       if (serverPinned !== newPinned) {
-        applyPinState(note.id, serverPinned); // reconcile if server differs
+        applyPinState(note.id, serverPinned);
       }
-      toast.success(serverPinned ? 'Note pinned' : 'Note unpinned');
+      return serverPinned;
+    })();
+
+    toast.promise(pinPromise, {
+      loading: newPinned ? 'Pinning note...' : 'Unpinning note...',
+      success: pinned => (pinned ? 'Note pinned' : 'Note unpinned'),
+      error: 'Failed to toggle pin'
+    });
+
+    try {
+      await pinPromise;
     } catch (error) {
       console.error('Toggle pin error:', error);
       applyPinState(note.id, note.is_pinned); // revert to original
-      toast.error('Failed to toggle pin');
     }
   }
 
@@ -371,17 +392,24 @@
     if (!note.link) return;
 
     isRegeneratingSummarize = true;
-    try {
+    const regeneratePromise = (async () => {
       const response = await regenerateSummarize(note.id);
-      // Update the note with new link_summarize
       if (singleNote && singleNote.id === note.id) {
         singleNote.link_summarize = response.data.link_summarize;
       }
-      toast.success('Link summary regenerated successfully!');
+      return response;
+    })();
+
+    toast.promise(regeneratePromise, {
+      loading: 'Regenerating link summary...',
+      success: 'Link summary regenerated successfully',
+      error: error => (error instanceof Error ? error.message : 'Failed to regenerate summary')
+    });
+
+    try {
+      await regeneratePromise;
     } catch (error) {
       console.error('Regenerate summarize error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to regenerate summary';
-      toast.error(errorMessage);
     } finally {
       isRegeneratingSummarize = false;
     }
@@ -751,14 +779,10 @@
     <!-- Notes Grid -->
     <div class="notes-grid">
       {#if $isLoadingNotes && $notes.length === 0}
-        <!-- Loading State -->
-        <div class="flex flex-col items-center justify-center py-20">
-          <div
-            class="flex items-center justify-center w-16 h-16 mb-4 bg-warning-500/10 dark:bg-primary-500/10 rounded-full text-warning-500 dark:text-primary-400"
-          >
-            <RotateCw class="w-8 h-8 animate-spin" />
-          </div>
-          <p class="text-gray-600 dark:text-gray-400">Loading notes...</p>
+        <div class="flex flex-col gap-4" role="status" aria-label="Loading notes">
+          {#each Array(3) as _, index (index)}
+            <NoteCardSkeleton withPreview={index === 0} />
+          {/each}
         </div>
       {:else if $notes.length === 0}
         <!-- Empty State -->

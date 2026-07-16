@@ -7,6 +7,7 @@
   import { API_BASE_URL } from '../lib/constants';
   import { tags } from '../lib/stores/tags';
   import { Link2, Paperclip, ChevronDown, Settings2 } from '@lucide/svelte';
+  import { toast } from 'svelte-sonner';
   import TagsSelector from './TagsSelector.svelte';
   import FileUpload from './FileUpload.svelte';
   import ExistingFiles from './ExistingFiles.svelte';
@@ -22,6 +23,7 @@
     onError?: (error: string) => void;
     onSubmitReady?: (submitFn: () => void) => void;
     onHasChangesChange?: (hasChanges: boolean) => void;
+    onLoadingChange?: (isLoading: boolean) => void;
   }
 
   let {
@@ -32,6 +34,7 @@
     onError,
     onSubmitReady,
     onHasChangesChange,
+    onLoadingChange,
   }: Props = $props();
 
   // Simple local form state
@@ -86,6 +89,10 @@
   $effect(() => {
     onHasChangesChange?.(hasChanges);
   });
+
+  $effect(() => {
+    onLoadingChange?.(isLoading);
+  });
   // Get available tags from store
   let availableTags = $state<Tag[]>([]);
   let tagOptions = $derived(availableTags.map(tag => ({
@@ -126,13 +133,26 @@
 
     // Notify parent that form is ready with submit function
     if (onSubmitReady) {
-      onSubmitReady(submit);
+      onSubmitReady(submitWithToast);
     }
 
     return () => {
       unsubTags();
     };
   });
+
+  async function submitWithToast() {
+    if (isLoading || !localName.trim()) {
+      submit();
+      return;
+    }
+
+    return toast.promise(submit(), {
+      loading: mode === 'create' ? 'Creating note...' : 'Updating note...',
+      success: mode === 'create' ? 'Note created successfully' : 'Note updated successfully',
+      error: error => (error instanceof Error ? error.message : 'Failed to save note')
+    });
+  }
 
   // Direct submit function
   async function submit() {
@@ -258,7 +278,7 @@
       console.error('Submit error:', error);
       const errorMsg = error instanceof Error ? error.message : 'Failed to save note';
       onError?.(errorMsg);
-      return { success: false, error: errorMsg };
+      throw error;
     } finally {
       isLoading = false;
     }
@@ -266,7 +286,7 @@
 
   function handleSubmitInternal(e: Event) {
     e.preventDefault();
-    submit();
+    void submitWithToast();
   }
 
   // Keyboard shortcut for Ctrl+Shift+S / Command+Shift+S to save the note.
@@ -277,7 +297,7 @@
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 's') {
         event.preventDefault();
-        submit();
+        void submitWithToast();
       }
     };
 

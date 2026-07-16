@@ -1,8 +1,19 @@
 <script lang="ts">
   import { navigate, type Route } from '../lib/router';
   import { allRoutes } from '../routes/index';
-  import { Search, Command, LogOut, User, ArrowUpDown, ArrowRight, Sparkles, Sun, Moon } from '@lucide/svelte';
+  import {
+    Search,
+    Command,
+    LogOut,
+    User,
+    ArrowUpDown,
+    ArrowRight,
+    Sparkles,
+    Sun,
+    Moon
+  } from '@lucide/svelte';
   import { getValidatedAuthState, logout } from '../lib/auth';
+  import { toast } from 'svelte-sonner';
   import { onMount } from 'svelte';
   import { preventBodyScroll, restoreBodyScroll } from '../lib/modalScroll';
 
@@ -86,7 +97,11 @@
     }
   }
 
-  function navigateToRoute(route: { path: string; title?: string; description?: string }, event?: Event, newTab = false) {
+  function navigateToRoute(
+    route: { path: string; title?: string; description?: string },
+    event?: Event,
+    newTab = false
+  ) {
     // Stop event propagation to prevent it from reaching the login modal backdrop
     event?.stopPropagation();
 
@@ -103,8 +118,8 @@
       window.open(route.path, '_blank');
       closeModal();
     } else {
-      navigate(route.path);
       closeModal();
+      navigate(route.path);
     }
   }
 
@@ -130,9 +145,21 @@
   async function handleLogout() {
     if (isLoggingOut) return;
     isLoggingOut = true;
-    try {
+    const logoutPromise = (async () => {
       await logout();
-      await updateAuthState(); // Refresh auth state
+      await updateAuthState();
+    })();
+
+    toast.promise(logoutPromise, {
+      loading: 'Signing out...',
+      success: 'Signed out successfully',
+      error: error => (error instanceof Error ? error.message : 'Failed to sign out')
+    });
+
+    try {
+      await logoutPromise;
+    } catch (error) {
+      console.error('Logout error:', error);
     } finally {
       isLoggingOut = false;
     }
@@ -167,9 +194,8 @@
   // Create dynamic routes based on auth state
   let dynamicRoutes = $derived.by(() => {
     // Filter out dynamic routes (containing ':') and login route from base routes
-    const baseRoutes = allRoutes.filter(route =>
-      route.path !== '/login' &&
-      !route.path.includes(':') // Exclude dynamic parameter routes like /files/:code
+    const baseRoutes = allRoutes.filter(
+      route => route.path !== '/login' && !route.path.includes(':') // Exclude dynamic parameter routes like /files/:code
     );
     const authRoute: Route = authState.isLoggedIn
       ? {
@@ -317,14 +343,21 @@
       role="document"
     >
       <!-- Header with Search -->
-      <div class="p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20">
+      <div
+        class="p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20"
+      >
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-amber-400 dark:from-primary-500 dark:to-primary-600 rounded-xl flex items-center justify-center shadow-md">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-amber-400 dark:from-primary-500 dark:to-primary-600 rounded-xl flex items-center justify-center shadow-md"
+            >
               <Command class="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 id="command-palette-title" class="text-lg font-bold text-gray-900 dark:text-white">
+              <h2
+                id="command-palette-title"
+                class="text-lg font-bold text-gray-900 dark:text-white"
+              >
                 Command Palette
               </h2>
               <p class="text-xs text-gray-600 dark:text-gray-400">
@@ -341,9 +374,13 @@
             title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
           >
             {#if isDark}
-              <Sun class="w-5 h-5 text-warning-600 dark:text-warning-400 group-hover:scale-110 transition-transform" />
+              <Sun
+                class="w-5 h-5 text-warning-600 dark:text-warning-400 group-hover:scale-110 transition-transform"
+              />
             {:else}
-              <Moon class="w-5 h-5 text-purple-600 dark:text-primary-400 group-hover:scale-110 transition-transform" />
+              <Moon
+                class="w-5 h-5 text-purple-600 dark:text-primary-400 group-hover:scale-110 transition-transform"
+              />
             {/if}
           </button>
         </div>
@@ -366,7 +403,13 @@
               class="btn-icon absolute right-3 w-6 h-6 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"
               aria-label="Clear search"
             >
-              <svg class="w-3 h-3 text-gray-600 dark:text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                class="w-3 h-3 text-gray-600 dark:text-gray-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <path d="M18 6L6 18M6 6l12 12" />
               </svg>
             </button>
@@ -381,10 +424,11 @@
             {#each filteredRoutes as route, i (route.path)}
               {@const IconComp = route.icon || DefaultIcon}
               <button
-                class="cmd-item w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group {i === selectedIndex
+                class="cmd-item w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group {i ===
+                selectedIndex
                   ? 'bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-primary-900/30 dark:to-primary-800/20 border-2 border-warning-400 dark:border-primary-400 shadow-md'
                   : 'hover:bg-gray-50 dark:hover:bg-gray-700/50 border-2 border-transparent'}"
-                onclick={(e) => navigateToRoute(route, e, e.ctrlKey || e.metaKey)}
+                onclick={e => navigateToRoute(route, e, e.ctrlKey || e.metaKey)}
                 role="option"
                 aria-selected={i === selectedIndex}
                 tabindex="-1"
@@ -396,13 +440,17 @@
                     : 'bg-gray-100 dark:bg-gray-700 group-hover:bg-gray-200 dark:group-hover:bg-gray-600'}"
                 >
                   <IconComp
-                    class="w-5 h-5 {i === selectedIndex ? 'text-white' : 'text-gray-600 dark:text-gray-400'}"
+                    class="w-5 h-5 {i === selectedIndex
+                      ? 'text-white'
+                      : 'text-gray-600 dark:text-gray-400'}"
                   />
                 </div>
 
                 <!-- Content -->
                 <div class="flex-1 min-w-0 text-left">
-                  <div class="font-semibold text-gray-900 dark:text-white truncate flex items-center gap-2">
+                  <div
+                    class="font-semibold text-gray-900 dark:text-white truncate flex items-center gap-2"
+                  >
                     {#if route.path === '/'}
                       Home
                     {:else if route.path === '/notes'}
@@ -431,18 +479,24 @@
 
                 <!-- Category Badge -->
                 <span
-                  class="px-2.5 py-1 rounded-lg text-xs font-semibold {getCategoryColor(route.path)}"
+                  class="px-2.5 py-1 rounded-lg text-xs font-semibold {getCategoryColor(
+                    route.path
+                  )}"
                 >
                   {getCategoryLabel(route.path)}
                 </span>
 
                 <!-- Arrow for selected -->
                 {#if i === selectedIndex}
-                  <div class="w-6 h-6 bg-yellow-400 dark:bg-primary-400 rounded-full flex items-center justify-center">
+                  <div
+                    class="w-6 h-6 bg-yellow-400 dark:bg-primary-400 rounded-full flex items-center justify-center"
+                  >
                     <ArrowRight class="w-4 h-4 text-white" />
                   </div>
                 {:else}
-                  <div class="w-6 h-6 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div
+                    class="w-6 h-6 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
                     <ArrowRight class="w-4 h-4 text-gray-400" />
                   </div>
                 {/if}
@@ -456,7 +510,9 @@
             >
               <Search class="w-8 h-8 text-gray-400 dark:text-gray-500" />
             </div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">No results found</h3>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+              No results found
+            </h3>
             <p class="text-sm text-gray-500 dark:text-gray-400">
               Try searching for "{searchQuery}"
             </p>

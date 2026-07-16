@@ -86,7 +86,7 @@
     }
   });
 
-  async function loadData() {
+  async function loadData(showErrorToast: boolean = true) {
     isLoading = true;
     try {
       const filters: TransactionFilters = {};
@@ -104,7 +104,11 @@
       summary = summaryRes;
     } catch (error) {
       console.error('Failed to load finance data:', error);
-      toast.error('Failed to load finance data');
+      if (showErrorToast) {
+        toast.error('Failed to load finance data');
+      } else {
+        throw error;
+      }
     } finally {
       isLoading = false;
     }
@@ -130,16 +134,40 @@
     loadData();
   }
 
+  async function handleRefresh() {
+    const refreshPromise = loadData(false);
+
+    toast.promise(refreshPromise, {
+      loading: 'Refreshing finance data...',
+      success: 'Finance data is up to date',
+      error: error => (error instanceof Error ? error.message : 'Failed to refresh finance data')
+    });
+
+    try {
+      await refreshPromise;
+    } catch (error) {
+      console.error('Refresh finance error:', error);
+    }
+  }
+
   async function handleRecalculate() {
     isRecalculating = true;
-    try {
+    const recalculatePromise = (async () => {
       await recalculateFinanceSummary();
-      toast.success('Recalculate queued. Refreshing summary...');
       await new Promise(r => setTimeout(r, 2000));
-      await loadData();
+      await loadData(false);
+    })();
+
+    toast.promise(recalculatePromise, {
+      loading: 'Recalculating finance summary...',
+      success: 'Finance summary updated',
+      error: error => (error instanceof Error ? error.message : 'Failed to recalculate summary')
+    });
+
+    try {
+      await recalculatePromise;
     } catch (error) {
       console.error('Recalculate error:', error);
-      toast.error('Failed to recalculate summary');
     } finally {
       isRecalculating = false;
     }
@@ -220,12 +248,21 @@
     if (!confirm('Delete this transaction?')) return;
 
     deletingTransactionId = transaction.id;
-    try {
+    const deletePromise = (async () => {
       await deleteTransaction(transaction.id);
-      toast.success('Transaction deleted');
-      loadData();
-    } catch {
-      toast.error('Failed to delete transaction');
+      await loadData(false);
+    })();
+
+    toast.promise(deletePromise, {
+      loading: 'Deleting transaction...',
+      success: 'Transaction deleted',
+      error: error => (error instanceof Error ? error.message : 'Failed to delete transaction')
+    });
+
+    try {
+      await deletePromise;
+    } catch (error) {
+      console.error('Delete transaction error:', error);
     } finally {
       deletingTransactionId = null;
     }
@@ -372,8 +409,9 @@
         </div>
 
         <button
-          onclick={() => loadData()}
-          class="btn-icon p-2 transition-colors"
+          onclick={handleRefresh}
+          disabled={isLoading}
+          class="btn-icon p-2 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           title="Refresh"
         >
           <RefreshCw class="w-4 h-4 text-gray-500 dark:text-gray-400" />
