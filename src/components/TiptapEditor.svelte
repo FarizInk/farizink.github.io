@@ -115,7 +115,7 @@
       editable: !disabled,
       editorProps: {
         attributes: {
-          class: 'prose prose-sm max-w-none focus:outline-none min-h-[130px] max-h-full overflow-y-auto p-4 text-gray-800 dark:text-white'
+          class: 'prose prose-sm max-w-none focus:outline-none min-h-[130px] h-full overflow-y-auto p-4 text-gray-800 dark:text-white'
         }
       },
       onUpdate: () => {
@@ -411,7 +411,7 @@
   <div
     class="relative rounded-b-2xl"
     bind:this={editorContainer}
-    style="min-height: 130px; overflow: hidden;"
+    style="height: 250px; overflow: hidden;"
   >
     <div bind:this={editorElement} class="h-full"></div>
 
