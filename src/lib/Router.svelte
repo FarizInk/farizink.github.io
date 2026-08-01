@@ -52,19 +52,26 @@
   {#if routerState.currentRoute}
     {@const route = routerState.currentRoute}
     {@const resolved = componentCache.get(route.path) ?? route.component ?? null}
-    {#if resolved}
-      {@const Component = resolved}
-      <Component params={routerState.params} />
-    {:else if route.load}
-      {#await route.load().then(mod => {
-        componentCache.set(route.path, mod.default);
-        return mod;
-      })}
-      {:then mod}
-        {@const Component = mod.default}
+    {#key route.path}
+      {#if resolved}
+        {@const Component = resolved}
         <Component params={routerState.params} />
-      {/await}
-    {/if}
+      {:else if route.load}
+        {#await route.load().then(mod => {
+          componentCache.set(route.path, mod.default);
+          return mod;
+        })}
+          <div use:loadingToast={{ title: routeLabel(route.title) }} class="flex items-center justify-center min-h-[70vh]">
+            <div
+              class="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"
+            ></div>
+          </div>
+        {:then mod}
+          {@const Component = mod.default}
+          <Component params={routerState.params} />
+        {/await}
+      {/if}
+    {/key}
   {:else}
     <div class="flex flex-col items-center justify-center min-h-[70vh] text-center px-4">
       <div class="mb-8">

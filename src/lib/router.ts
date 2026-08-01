@@ -80,7 +80,9 @@ function resetScroll(): void {
 
 // Navigate to a new path
 export function navigate(path: string) {
-  if (path === getCurrentPath()) return;
+  if (path === getCurrentPath()) {
+    return;
+  }
 
   const swap = () => {
     window.history.pushState({}, '', path);

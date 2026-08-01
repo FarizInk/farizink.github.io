@@ -39,7 +39,13 @@
     return toolsByCategory.find(c => c.name === categoryName)?.tools.length || 0;
   };
 
-  function navigateToTool(toolId: string) {
+  async function navigateToTool(toolId: string) {
+    console.log('[Tools] navigateToTool', toolId);
+    // Defer navigation one frame so any active/hover CSS transition on the
+    // tool card settles before the View Transition API captures the page
+    // snapshot. This mirrors the CommandPalette pattern where a UI state
+    // change (closing the modal) happens right before navigate().
+    await new Promise(resolve => requestAnimationFrame(resolve));
     navigate(`/tools/${toolId}`);
   }
 
