@@ -29,6 +29,13 @@ src/**/*.js.map
 # !src/main.js
 !src/**/*.d.ts
 
+# Boneyard-generated skeleton registry & bones are committed (not ignored)
+!src/bones/**
+# ...but never the tsc-compiled registry — it shadows registry.ts in vite dev
+# (Vite resolves .js before .ts) and goes stale when bones are re-captured.
+src/bones/registry.js
+src/bones/registry.js.map
+
 # Keep this pattern specific to avoid excluding important JS files
 lib/**/*.js
 lib/**/*.js.map

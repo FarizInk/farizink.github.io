@@ -9,6 +9,7 @@
   import Thanks from './components/Thanks.svelte';
   import Modal from './components/Modal.svelte';
   import OfflineIndicator from './components/OfflineIndicator.svelte';
+  import RouteSkeletons from './components/RouteSkeletons.svelte';
   import { Toaster } from 'svelte-sonner';
   import { allRoutes } from './routes/index';
   import { router } from './lib/router';
@@ -86,6 +87,7 @@
   <WavesBackground />
   <Navigation />
   <ScrollToTop />
+  <RouteSkeletons />
   <div class="flex-1">
     <div class="container mx-auto px-px sm:px-6 lg:px-8">
       <Router />

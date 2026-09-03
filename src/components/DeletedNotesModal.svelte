@@ -11,6 +11,8 @@
   import { permanentDeleteNote, restoreNote } from '../lib/notes';
   import { toast } from 'svelte-sonner';
   import NoteCard from './NoteCard.svelte';
+  import Skeleton from 'boneyard-js/svelte';
+  import { fixtureNotes } from '../lib/fixtures';
   import Modal from './Modal.svelte';
   import { RefreshCw, RotateCw, Plus, Trash2, X } from '@lucide/svelte';
 
@@ -145,9 +147,14 @@
 
   <div>
     {#if $isLoadingDeletedNotes && $deletedNotes.length === 0}
-      <div class="flex flex-col items-center justify-center py-12">
-        <RotateCw class="w-8 h-8 text-gray-400 animate-spin mb-4" />
-        <p class="text-gray-500 dark:text-gray-400">Loading notes...</p>
+      <div class="flex flex-col items-center gap-4">
+        {#each Array(3) as _, index (index)}
+          <div class="w-full max-w-2xl">
+            <Skeleton name="note-card" loading={true}>
+              <NoteCard note={fixtureNotes[index] ?? fixtureNotes[0]} hasAuthToken={true} isDeleted={true} />
+            </Skeleton>
+          </div>
+        {/each}
       </div>
     {:else if $deletedNotes.length === 0}
       <div class="text-center py-12">

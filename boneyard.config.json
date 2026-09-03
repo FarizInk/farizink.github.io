@@ -1,0 +1,15 @@
+{
+  "breakpoints": [375, 768, 1280],
+  "out": "./src/bones",
+  "wait": 1200,
+  "routes": [
+    "/",
+    "/notes",
+    "/notes?id=boneyard-capture",
+    "/finance",
+    "/files/boneyard"
+  ],
+  "color": "#e2e8f0",
+  "darkColor": "#334155",
+  "animate": "pulse"
+}

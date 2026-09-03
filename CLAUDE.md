@@ -42,6 +42,22 @@ Deployed as a static site on GitHub Pages with SPA routing support. No server-si
 
 **Important**: No Git commands that modify the repository (read-only access policy).
 
+### Skeleton Screens (boneyard-js)
+
+Loading states use [boneyard-js](https://boneyard.vercel.app) — auto-generated skeleton screens captured from the real rendered DOM.
+
+- **How it works**: The `boneyardPlugin()` (in `vite.config.ts`) launches a headless Chromium during `npm run dev`, snapshots every `<Skeleton name="...">` at 3 breakpoints, and writes `.bones.json` + `registry.ts` to `src/bones/`. Fresh captures always overwrite existing bones for visited routes.
+- **Deploy**: `src/bones/` is **committed to git**. `bun run build` (in `deploy.sh`) just bundles the committed JSON — no browser/dev server at build time. `deploy.sh` is unchanged.
+- **Auth-gated pages** (Notes/Finance/Dashboard): the headless browser can't log in, so each data-driven `<Skeleton>` wraps a `fixture`-rendered version of its content (mock data from `src/lib/fixtures.ts`). Fixtures render only during capture, never at runtime.
+- **`isBoneyardCapture`** (`src/lib/boneyard.ts`): true only inside the plugin's headless browser (`window.__BONEYARD_BUILD`). Auth pages OR it into their loading branches (`{#if isLoading || isBoneyardCapture}`) to force-mount the fixture skeleton during capture, and early-return from `onMount` fetches. Route `/notes?id=boneyard-capture` forces the detail view; `/files/boneyard` matches the `/files/:code` route.
+- **Routes**: `boneyard.config.json → routes` lists the pages to snapshot (default `['/']`). Add a route there when a new `<Skeleton>` lives on a page not yet listed.
+- **Runtime colors**: `configureBoneyard({ color, darkColor, animate })` in `src/main.ts` — the JSON config's colors are dev/capture-time only; the Svelte runtime reads them from `main.ts`. Keep both in sync (`#e2e8f0` / `#334155`, matching `--color-secondary-200/700`).
+- **Bootstrap**: `src/main.ts` imports `./bones/registry`. If `src/bones/` is ever wiped, recreate a stub `registry.ts` exporting `registerBones({})` so the app loads — the plugin overwrites it after the first successful capture.
+- **Workflow after layout changes**: whenever you change the layout of a component wrapped in `<Skeleton>`, run `npm run dev` to re-capture bones, then commit `src/bones/`. Stale bones look wrong; missing bones fall back to empty/loading content.
+- **First-time setup**: run `npx playwright install chromium` once (downloads the Chromium binary boneyard drives).
+- **Config**: `boneyard.config.json` (breakpoints, colors matching `--color-secondary-*` tokens, `animate: pulse`).
+- **perf-mode**: skeletons are static under the default perf-mode (pulse disabled), consistent with the old hand-built skeleton. Toggle `localStorage.perf-mode='fancy'` to see animations.
+
 ## Project Structure
 
 ```

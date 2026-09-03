@@ -5,7 +5,9 @@
   import { tagsStore } from '../lib/stores/tags';
   import { notesStore, notes, notesError, isLoadingNotes, hasMore, totalCount } from '../lib/stores/notes';
   import NoteCard from '../components/NoteCard.svelte';
-  import NoteCardSkeleton from '../components/NoteCardSkeleton.svelte';
+  import Skeleton from 'boneyard-js/svelte';
+  import { fixtureNotes, fixtureSingleNote } from '../lib/fixtures';
+  import { isBoneyardCapture } from '../lib/boneyard';
   import NoteModal from '../components/NoteModal.svelte';
   import NoteDetailModal from '../components/NoteDetailModal.svelte';
   import TagModal from '../components/TagModal.svelte';
@@ -430,6 +432,14 @@
 
   // Load notes and tags on mount
   onMount(async () => {
+    // During boneyard capture, skip fetching — the loading branches below are
+    // forced on via isBoneyardCapture so their fixtures render for the snapshot.
+    if (isBoneyardCapture) {
+      if (new URLSearchParams(window.location.search).get('id')) viewMode = 'detail';
+      isTagModalOpen = true;
+      return;
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const noteId = urlParams.get('id');
 
@@ -778,10 +788,15 @@
 
     <!-- Notes Grid -->
     <div class="notes-grid">
-      {#if $isLoadingNotes && $notes.length === 0}
+      {#if ($isLoadingNotes && $notes.length === 0) || isBoneyardCapture}
         <div class="flex flex-col gap-4" role="status" aria-label="Loading notes">
           {#each Array(3) as _, index (index)}
-            <NoteCardSkeleton withPreview={index === 0} />
+            <Skeleton name="note-card" loading={true}>
+              <!-- Children render only during boneyard capture (dev), giving the
+                   headless browser a real NoteCard layout to snapshot. At runtime
+                   loading=true shows the generated bones instead. -->
+              <NoteCard note={fixtureNotes[index] ?? fixtureNotes[0]} {hasAuthToken} />
+            </Skeleton>
           {/each}
         </div>
       {:else if $notes.length === 0}
@@ -889,14 +904,66 @@
     </div>
   {:else if viewMode === 'detail'}
     <!-- Single Note Detail View -->
-    {#if isLoadingSingleNote}
-      <div class="flex flex-col items-center justify-center py-20">
-        <div
-          class="flex items-center justify-center w-16 h-16 mb-4 bg-warning-500/10 dark:bg-primary-500/10 rounded-full text-warning-500 dark:text-primary-400"
+    {#if isLoadingSingleNote || isBoneyardCapture}
+      <div class="detail-view">
+        <!-- Back Button -->
+        <button
+          class="inline-flex items-center gap-2 px-4 py-2 mb-6 text-sm text-gray-600 dark:text-gray-400"
         >
-          <RotateCw class="w-8 h-8 animate-spin" />
-        </div>
-        <p class="text-gray-600 dark:text-gray-400">Loading note...</p>
+          <File class="w-4 h-4" />
+          Back to all notes
+        </button>
+
+        <Skeleton name="note-detail" loading={true}>
+          <!-- Header Card -->
+          <div
+            class="bg-white/90 dark:bg-gray-900/90 rounded-2xl shadow-lg border border-black/6 dark:border-white/8 p-4 sm:p-6 mb-6"
+          >
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 sm:gap-3 mb-3">
+                  <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white break-words">
+                    {fixtureSingleNote.name || 'Untitled Note'}
+                  </h1>
+                </div>
+                <div class="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                  <div class="flex items-center gap-1.5">
+                    <Calendar class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <span class="truncate">Created Aug 22, 2026</span>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <Clock class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <span class="truncate">Updated Aug 22, 2026</span>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <ImageIcon class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <span>1 file</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center justify-end gap-1.5 sm:gap-2">
+                <div class="btn-icon flex items-center justify-center w-9 sm:w-10 sm:h-10 rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                  <Share2 class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-400" />
+                </div>
+                <div class="btn-icon flex items-center justify-center w-9 sm:w-10 sm:h-10 rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                  <Pencil class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-400" />
+                </div>
+                <div class="btn-icon flex items-center justify-center w-9 sm:w-10 sm:h-10 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                  <Trash2 class="w-4 h-4 sm:w-5 sm:h-5 text-red-600 dark:text-red-400" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Content Card -->
+          <div
+            class="bg-white/90 dark:bg-gray-900/90 rounded-2xl shadow-lg border border-black/6 dark:border-white/8 p-4 sm:p-6 space-y-6"
+          >
+            <div class="prose prose-sm max-w-none text-gray-700 dark:text-gray-300">
+              <p>Key differences between Svelte 4 and 5: $state, $derived, $props, $effect.</p>
+            </div>
+          </div>
+        </Skeleton>
       </div>
     {:else if singleNote}
       <!-- Detail Content -->

@@ -36,9 +36,10 @@ fi
 echo "🏗️  Building (bun run build)…"
 bun run build
 
-# 3) Deploy: write CNAME, push dist/ to the gh-pages branch
+# 3) Deploy: write CNAME + .nojekyll, push dist/ to the gh-pages branch
 echo "🚀  Deploying to GitHub Pages…"
 echo 'fariz.dev' > ./dist/CNAME
+touch ./dist/.nojekyll
 node ./gh-pages.cjs
 
 echo "✅  Deploy complete"

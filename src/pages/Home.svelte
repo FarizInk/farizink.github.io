@@ -6,6 +6,7 @@
   import ConnectWithMe from '../components/ConnectWithMe.svelte';
   import DashboardView from '../components/DashboardView.svelte';
   import { LayoutDashboard, User } from '@lucide/svelte';
+  import { isBoneyardCapture } from '../lib/boneyard';
 
   let showPhoto = $state(false);
   let randPhoto = $state<string | null>(null);
@@ -120,7 +121,7 @@
       </div>
     {/if}
 
-    {#if showDashboard && isLoggedIn}
+    {#if (showDashboard && isLoggedIn) || isBoneyardCapture}
       <!-- Dashboard View -->
       <DashboardView />
     {:else}

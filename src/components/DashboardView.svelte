@@ -7,6 +7,8 @@
   import { truncateText } from '../lib/uiUtils';
   import { stripHtml } from '../lib/uiUtils';
   import { getCached, setCache } from '../lib/cache';
+  import Skeleton from 'boneyard-js/svelte';
+  import { fixtureNotes, fixtureFinanceSummary } from '../lib/fixtures';
   import NoteDetailModal from './NoteDetailModal.svelte';
   import {
     FileText,
@@ -178,8 +180,154 @@
 </script>
 
 {#if isLoading}
-  <div class="flex items-center justify-center py-20">
-    <Loader2 class="w-8 h-8 animate-spin text-primary-500" />
+  <div class="space-y-8">
+    <!-- Finance Summary skeleton -->
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+          <div
+            class="w-9 h-9 bg-gradient-to-br from-emerald-400 to-green-500 dark:from-emerald-500 dark:to-green-600 rounded-xl flex items-center justify-center shadow-sm"
+          >
+            <Wallet class="w-4.5 h-4.5 text-white" />
+          </div>
+          <h2 class="text-lg font-bold text-gray-900 dark:text-white">Finance Summary</h2>
+        </div>
+      </div>
+      <Skeleton name="dashboard-finance" loading={true}>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="bg-white dark:bg-gray-800/60 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
+            <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 mb-1">
+              <TrendingUp class="w-4 h-4" />
+              <span class="text-xs font-medium uppercase tracking-wide">Income</span>
+            </div>
+            <p class="text-xl font-bold text-gray-900 dark:text-white">
+              {displayAmount(fixtureFinanceSummary.total_income)}
+            </p>
+          </div>
+          <div class="bg-white dark:bg-gray-800/60 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
+            <div class="flex items-center gap-2 text-red-500 dark:text-red-400 mb-1">
+              <TrendingDown class="w-4 h-4" />
+              <span class="text-xs font-medium uppercase tracking-wide">Expense</span>
+            </div>
+            <p class="text-xl font-bold text-gray-900 dark:text-white">
+              {displayAmount(fixtureFinanceSummary.total_expense)}
+            </p>
+          </div>
+          <div class="bg-white dark:bg-gray-800/60 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
+            <div class="flex items-center gap-2 text-primary-500 dark:text-primary-400 mb-1">
+              <DollarSign class="w-4 h-4" />
+              <span class="text-xs font-medium uppercase tracking-wide">Balance</span>
+            </div>
+            <p class="text-xl font-bold text-gray-900 dark:text-white">
+              {displayAmount(fixtureFinanceSummary.balance)}
+            </p>
+          </div>
+        </div>
+      </Skeleton>
+    </div>
+
+    <!-- Self-hosted Apps (static — render immediately) -->
+    <div>
+      <div class="flex items-center gap-2 mb-4">
+        <div
+          class="w-9 h-9 bg-gradient-to-br from-blue-400 to-indigo-500 dark:from-blue-500 dark:to-indigo-600 rounded-xl flex items-center justify-center shadow-sm"
+        >
+          <Globe class="w-4.5 h-4.5 text-white" />
+        </div>
+        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Self-Hosted Apps</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {#each myApps as app}
+          <a
+            href={app.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800/60 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-md transition-all duration-200"
+          >
+            <div
+              class="w-10 h-10 bg-gradient-to-br {app.color} rounded-xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200 flex-shrink-0"
+            >
+              <app.icon class="w-5 h-5 text-white" />
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3
+                class="font-semibold text-gray-900 dark:text-white text-sm group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors"
+              >
+                {app.name}
+              </h3>
+              <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{app.description}</p>
+            </div>
+            <ArrowRight
+              class="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors flex-shrink-0"
+            />
+          </a>
+        {/each}
+      </div>
+    </div>
+
+    <!-- Latest Notes skeleton -->
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+          <div
+            class="w-9 h-9 bg-gradient-to-br from-warning-400 to-amber-500 dark:from-primary-500 dark:to-primary-600 rounded-xl flex items-center justify-center shadow-sm"
+          >
+            <FileText class="w-4.5 h-4.5 text-white" />
+          </div>
+          <h2 class="text-lg font-bold text-gray-900 dark:text-white">Latest Notes</h2>
+        </div>
+        <button
+          type="button"
+          onclick={() => navigate('/notes')}
+          class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg bg-warning-50 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300 hover:bg-warning-100 dark:hover:bg-primary-900/30 transition-colors"
+        >
+          View All
+          <ArrowRight class="w-4 h-4" />
+        </button>
+      </div>
+      <Skeleton name="dashboard-notes" loading={true}>
+        <div class="space-y-3">
+          {#each fixtureNotes as note (note.id)}
+            <div class="w-full text-left group rounded-xl bg-white dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex-1 min-w-0">
+                  <h3 class="font-semibold text-gray-900 dark:text-white truncate">
+                    {note.name || 'Untitled Note'}
+                  </h3>
+                  {#if note.description}
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                      {truncateText(stripHtml(note.description), 120)}
+                    </p>
+                  {/if}
+                  <div class="flex items-center gap-3 mt-2 text-xs text-gray-400 dark:text-gray-500">
+                    <span>{formatDate(note.created_at)}</span>
+                    {#if note.tags && note.tags.length > 0}
+                      <span class="flex items-center gap-1">
+                        {#each note.tags.slice(0, 2) as tag}
+                          <span
+                            class="inline-block px-1.5 py-0.5 rounded text-[10px] font-medium"
+                            style="background-color: {tag.color
+                              ? tag.color + '20'
+                              : 'rgba(245, 158, 11, 0.1)'}; color: {tag.color || 'inherit'}"
+                          >
+                            {tag.name || tag.tag}
+                          </span>
+                        {/each}
+                        {#if note.tags.length > 2}
+                          <span class="text-gray-400">+{note.tags.length - 2}</span>
+                        {/if}
+                      </span>
+                    {/if}
+                  </div>
+                </div>
+                <ArrowRight class="w-4 h-4 text-gray-300 dark:text-gray-600 flex-shrink-0 mt-1" />
+              </div>
+            </div>
+          {/each}
+        </div>
+      </Skeleton>
+    </div>
   </div>
 {:else}
   <div class="space-y-8">

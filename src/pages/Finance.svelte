@@ -37,6 +37,9 @@
     type TransactionFilters,
   } from '../lib/finance';
   import { getTags, type Tag } from '../lib/tags';
+  import Skeleton from 'boneyard-js/svelte';
+  import { fixtureTransactions, fixtureFinanceSummary } from '../lib/fixtures';
+  import { isBoneyardCapture } from '../lib/boneyard';
   import Modal from '../components/Modal.svelte';
 
   // Auth
@@ -288,7 +291,7 @@
     <div class="flex items-center justify-center py-20">
       <div class="w-12 h-12 border-4 border-warning-500 border-t-transparent rounded-full animate-spin"></div>
     </div>
-  {:else if !hasAuthToken}
+  {:else if !hasAuthToken && !isBoneyardCapture}
     <div class="flex items-center justify-center min-h-[60vh] px-4">
       <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
         <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -327,7 +330,45 @@
       </div>
 
       <!-- Summary Cards -->
-      {#if summary}
+      {#if isLoading && !summary}
+        <Skeleton name="finance-summary" loading={true}>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-9 h-9 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                  <ArrowUpRight class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <span class="text-sm text-gray-500 dark:text-gray-400">Income</span>
+              </div>
+              <p class="text-xl font-bold text-emerald-600 dark:text-emerald-400">
+                {formatAmount(fixtureFinanceSummary.total_income)}
+              </p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-9 h-9 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                  <ArrowDownRight class="w-5 h-5 text-red-600 dark:text-red-400" />
+                </div>
+                <span class="text-sm text-gray-500 dark:text-gray-400">Expense</span>
+              </div>
+              <p class="text-xl font-bold text-red-600 dark:text-red-400">
+                {formatAmount(fixtureFinanceSummary.total_expense)}
+              </p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-9 h-9 rounded-lg bg-warning-100 dark:bg-purple-900/30 flex items-center justify-center">
+                  <DollarSign class="w-5 h-5 text-warning-600 dark:text-purple-400" />
+                </div>
+                <span class="text-sm text-gray-500 dark:text-gray-400">Balance</span>
+              </div>
+              <p class="text-xl font-bold text-warning-600 dark:text-purple-400">
+                {formatAmount(fixtureFinanceSummary.balance)}
+              </p>
+            </div>
+          </div>
+        </Skeleton>
+      {:else if summary}
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
             <div class="flex items-center gap-3 mb-2">
@@ -420,9 +461,51 @@
 
       <!-- Transactions List -->
       {#if isLoading}
-        <div class="flex items-center justify-center py-20">
-          <Loader2 class="w-8 h-8 text-warning-500 dark:text-purple-500 animate-spin" />
-        </div>
+        <Skeleton name="finance-transactions" loading={true}>
+          <div class="space-y-3">
+            {#each fixtureTransactions as transaction (transaction.id)}
+              <div class="group bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between">
+                <div class="flex items-center gap-4 min-w-0">
+                  <div
+                    class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 {transaction.type === 'income' ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-red-100 dark:bg-red-900/30'}"
+                  >
+                    {#if transaction.type === 'income'}
+                      <ArrowUpRight class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                    {:else}
+                      <ArrowDownRight class="w-5 h-5 text-red-600 dark:text-red-400" />
+                    {/if}
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                      {transaction.description || 'No description'}
+                    </p>
+                    <div class="flex items-center gap-2 mt-0.5">
+                      <span class="text-xs text-gray-400 flex items-center gap-1">
+                        <Calendar class="w-3 h-3" />
+                        {formatDate(transaction.transaction_date)}
+                      </span>
+                      {#each (transaction.tags || []) as tag}
+                        <span
+                          class="text-xs px-1.5 py-0.5 rounded-full font-medium"
+                          style="background-color: {(tag.color || '#6b7280') + '20'}; color: {tag.color || '#6b7280'}"
+                        >
+                          {tag.name || tag.tag}
+                        </span>
+                      {/each}
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span
+                    class="text-sm sm:text-base font-bold whitespace-nowrap {transaction.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}"
+                  >
+                    {transaction.type === 'income' ? '+' : '-'}{formatAmount(transaction.amount)}
+                  </span>
+                </div>
+              </div>
+            {/each}
+          </div>
+        </Skeleton>
       {:else if transactions.length === 0}
         <div class="text-center py-16 bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-600">
           <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">

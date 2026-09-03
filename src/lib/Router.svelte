@@ -3,6 +3,7 @@
   import { router } from './router';
   import type { RouterState } from './router';
   import { toast } from 'svelte-sonner';
+  import Skeleton from 'boneyard-js/svelte';
 
   // Subscribe to router state changes with proper Svelte 5 runes
   let routerState: RouterState = $state({
@@ -61,10 +62,10 @@
           componentCache.set(route.path, mod.default);
           return mod;
         })}
-          <div use:loadingToast={{ title: routeLabel(route.title) }} class="flex items-center justify-center min-h-[70vh]">
-            <div
-              class="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"
-            ></div>
+          <div use:loadingToast={{ title: routeLabel(route.title) }} class="min-h-[70vh]">
+            <Skeleton name={route.path.startsWith('/tools') ? 'route-tool' : 'route-content'} loading={true}>
+              <!-- Children render only during boneyard capture (dev), not here. -->
+            </Skeleton>
           </div>
         {:then mod}
           {@const Component = mod.default}

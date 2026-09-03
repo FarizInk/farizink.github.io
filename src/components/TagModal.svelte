@@ -11,6 +11,9 @@
   } from '@lucide/svelte';
   import { deleteTag, type Tag } from '../lib/tags';
   import { tags, tagsStore, isLoadingTags } from '../lib/stores/tags';
+  import Skeleton from 'boneyard-js/svelte';
+  import { fixtureTagsForModal } from '../lib/fixtures';
+  import { isBoneyardCapture } from '../lib/boneyard';
   import Modal from './Modal.svelte';
   import TagFormModal from './TagFormModal.svelte';
 
@@ -142,10 +145,43 @@
   </div>
 
   <div class="max-h-[50vh] overflow-y-auto">
-    {#if isAnyLoading && $tags.length === 0}
-      <div class="flex items-center justify-center py-10">
-        <RotateCw class="w-5 h-5 animate-spin text-gray-400" />
-      </div>
+    {#if (isAnyLoading && $tags.length === 0) || isBoneyardCapture}
+      <Skeleton name="tag-grid" loading={true}>
+        <div class="grid grid-cols-2 gap-2">
+          {#each fixtureTagsForModal as tag (tag.id)}
+            {@const hasColor = !!tag.color}
+            <div
+              class="group flex items-center justify-between px-2.5 py-2 rounded-lg border transition-all duration-200 {hasColor
+                ? 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                : 'bg-amber-50 border-amber-200 dark:bg-purple-900/20 dark:border-purple-700 hover:border-amber-300 dark:hover:border-purple-600'}"
+              style={hasColor ? `border-color: ${tag.color}30` : ''}
+            >
+              <div class="flex items-center gap-2 min-w-0">
+                <span
+                  class="w-2.5 h-2.5 rounded-full flex-shrink-0 {hasColor ? '' : 'bg-amber-500 dark:bg-purple-400'}"
+                  style={hasColor ? `background-color: ${tag.color}` : ''}
+                ></span>
+                <div class="min-w-0">
+                  <span class="text-sm font-medium text-gray-900 dark:text-white truncate block">
+                    {tag.name}
+                  </span>
+                  <span class="text-xs text-gray-400 truncate block">
+                    {tag.tag}
+                  </span>
+                </div>
+              </div>
+              <div class="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity ml-1 flex-shrink-0">
+                <div class="btn-icon w-6 h-6 rounded-md flex items-center justify-center text-gray-400">
+                  <Edit2 class="w-3 h-3" />
+                </div>
+                <div class="btn-icon btn-danger w-6 h-6 rounded-md flex items-center justify-center text-gray-400">
+                  <Trash2 class="w-3 h-3" />
+                </div>
+              </div>
+            </div>
+          {/each}
+        </div>
+      </Skeleton>
     {:else if filteredTags.length === 0}
       <div class="text-center py-10">
         <TagIcon class="w-8 h-8 mx-auto mb-2 text-gray-300" />

@@ -8,7 +8,8 @@ ghpages.publish(
     user: {
       name: 'Fariz', // update to use your name
       email: 'nizaralfariziakbar10@gmail.com' // Update to use your email
-    }
+    },
+    dotfiles: true // include .nojekyll so GitHub Pages doesn't skip _-prefixed files
   },
   () => {
     console.log('Deploy Complete!');

@@ -14,6 +14,9 @@
     ArrowRight,
     Upload
   } from '@lucide/svelte';
+  import Skeleton from 'boneyard-js/svelte';
+  import { fixtureShortlinkData as fixtureData } from '../lib/fixtures';
+  import { isBoneyardCapture } from '../lib/boneyard';
 
   // Types
   interface ShortlinkFile {
@@ -31,7 +34,9 @@
   // State
   let shortlinkCode = $state('');
   let inputCode = $state('');
-  let isLoading = $state(false);
+  // Start "loading" during boneyard capture so the skeleton branch (with its
+  // fixture files) renders for the headless snapshot.
+  let isLoading = $state(isBoneyardCapture);
   let error = $state<string | null>(null);
   let data = $state<ShortlinkData | null>(null);
 
@@ -61,6 +66,9 @@
   let unsubscribe: (() => void) | null = null;
 
   onMount(() => {
+    // Keep the skeleton branch mounted during boneyard capture.
+    if (isBoneyardCapture) return;
+
     shortlinkCode = getShortlinkCode();
 
     if (!shortlinkCode) {
@@ -273,9 +281,69 @@
 
   <!-- Loading State -->
   {:else if isLoading}
-    <div class="flex flex-col items-center justify-center py-20">
-      <Loader2 class="w-12 h-12 text-primary-500 animate-spin mb-4" />
-      <p class="text-gray-600 dark:text-gray-400">Loading files...</p>
+    <div class="max-w-4xl mx-auto">
+      <!-- Info Card -->
+      <div class="card mb-6">
+        <div class="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+              Files Ready to Download
+            </h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1.5">
+              <Clock class="w-4 h-4" />
+              {formatExpiresAt(fixtureData.expires_at)}
+            </p>
+          </div>
+          <div class="btn btn-secondary">
+            <Copy class="w-4 h-4" />
+            Copy All Links
+          </div>
+        </div>
+      </div>
+
+      <!-- Files skeleton -->
+      <Skeleton name="files-list" loading={true}>
+        <div class="grid gap-4">
+          {#each fixtureData.files as file (file.id)}
+            {@const iconType = getFileIcon(file.original_name)}
+            {@const iconColor = getFileColor(iconType)}
+            <div class="card card-hover overflow-hidden">
+              <div class="flex items-center gap-4 min-w-0">
+                <div class="flex-shrink-0">
+                  <div class={`w-12 h-12 rounded-xl flex items-center justify-center ${iconColor}`}>
+                    {#if iconType === 'image'}
+                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="18" height="18" rx="2" stroke-width="2"/>
+                        <circle cx="8.5" cy="8.5" r="1.5" stroke-width="2"/>
+                        <path d="M21 15l-5-5L5 21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    {:else}
+                      <File class="w-6 h-6" />
+                    {/if}
+                  </div>
+                </div>
+                <div class="flex-1 min-w-0 overflow-hidden">
+                  <h3 class="font-semibold text-gray-900 dark:text-white break-all text-sm leading-tight">
+                    {file.original_name}
+                  </h3>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
+                    {getExtension(file.original_name).toUpperCase()} file
+                  </p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="btn-icon">
+                    <Copy class="w-4 h-4" />
+                  </div>
+                  <div class="btn btn-primary">
+                    <Download class="w-4 h-4" />
+                    <span class="hidden sm:inline">Download</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {/each}
+        </div>
+      </Skeleton>
     </div>
 
   <!-- Error State -->

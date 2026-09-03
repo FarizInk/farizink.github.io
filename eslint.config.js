@@ -63,6 +63,6 @@ export default [
     }
   },
   {
-    ignores: ['build/', '.svelte-kit/', 'dist/', 'gh-pages.cjs']
+    ignores: ['build/', '.svelte-kit/', 'dist/', 'gh-pages.cjs', 'src/bones/']
   }
 ];

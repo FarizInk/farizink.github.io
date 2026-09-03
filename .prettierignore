@@ -1,0 +1,7 @@
+node_modules
+dist
+build
+.svelte-kit
+
+# Boneyard-generated skeleton registry & bones (committed, not formatted)
+src/bones/
