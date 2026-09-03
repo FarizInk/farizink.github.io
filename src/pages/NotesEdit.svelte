@@ -111,7 +111,7 @@
             Go Back
           </button>
           <button
-            onclick={() => navigate('/login')}
+            onclick={() => document.dispatchEvent(new CustomEvent('open-login-modal'))}
             class="btn btn-primary px-5 py-2.5 rounded-lg font-medium transition-all shadow-md"
           >
             Login
