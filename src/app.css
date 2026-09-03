@@ -1213,6 +1213,18 @@ html.dark body {
   border-color: #374151;
 }
 
+/* iOS Safari auto-zooms (and can't zoom back out) when focusing an input
+   whose font-size is < 16px. Bump to 16px on small screens; desktop keeps
+   the 0.875rem above. */
+@media (max-width: 640px) {
+  .input,
+  .textarea,
+  .select {
+    font-size: 16px;
+    line-height: 1.4;
+  }
+}
+
 .input:focus,
 .textarea:focus,
 .select:focus {

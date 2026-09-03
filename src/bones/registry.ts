@@ -8,6 +8,7 @@ import _finance_summary from './finance-summary.bones.json'
 import _finance_transactions from './finance-transactions.bones.json'
 import _note_card from './note-card.bones.json'
 import _note_detail from './note-detail.bones.json'
+import _note_edit_form from './note-edit-form.bones.json'
 import _route_content from './route-content.bones.json'
 import _route_tool from './route-tool.bones.json'
 import _tag_grid from './tag-grid.bones.json'
@@ -20,6 +21,7 @@ registerBones({
   "finance-transactions": _finance_transactions,
   "note-card": _note_card,
   "note-detail": _note_detail,
+  "note-edit-form": _note_edit_form,
   "route-content": _route_content,
   "route-tool": _route_tool,
   "tag-grid": _tag_grid,

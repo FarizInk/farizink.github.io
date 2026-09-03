@@ -10,7 +10,8 @@
   let formSubmitFn: (() => void) | null = null;
 
   onMount(() => {
-    hasAuthToken = typeof localStorage !== 'undefined' ? !!localStorage.getItem('authToken') : false;
+    hasAuthToken =
+      typeof localStorage !== 'undefined' ? !!localStorage.getItem('authToken') : false;
     isCheckingAuth = false;
 
     if (hasAuthToken) {
@@ -46,12 +47,16 @@
 <div class="notes-create-page min-h-screen">
   {#if isCheckingAuth}
     <div class="flex items-center justify-center py-20">
-      <div class="w-12 h-12 border-4 border-warning-500 border-t-transparent rounded-full animate-spin"></div>
+      <div
+        class="w-12 h-12 border-4 border-warning-500 border-t-transparent rounded-full animate-spin"
+      ></div>
     </div>
   {:else if !hasAuthToken}
     <div class="flex items-center justify-center min-h-screen px-4">
       <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
-        <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div
+          class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
           <Lock class="w-8 h-8 text-red-600 dark:text-red-400" />
         </div>
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Access Denied</h1>
@@ -67,7 +72,7 @@
           </button>
           <button
             onclick={() => document.dispatchEvent(new CustomEvent('open-login-modal'))}
-            class="btn btn-primary px-5 py-2.5   rounded-lg font-medium transition-all shadow-md"
+            class="btn btn-primary px-5 py-2.5 rounded-lg font-medium transition-all shadow-md"
           >
             Login
           </button>
@@ -75,20 +80,23 @@
       </div>
     </div>
   {:else}
-    <div class="max-w-3xl mx-auto px-4 py-8">
+    <div class="max-w-3xl mx-auto px-3 py-4 sm:px-4 sm:py-8">
       <button
         onclick={() => navigate('/notes')}
-        class="mb-6 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
+        class="mb-4 sm:mb-6 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"
+          ></path>
         </svg>
         Back to Notes
       </button>
 
-      <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Create Note</h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">Create a new note to save your thoughts</p>
+      <div class="mb-4 sm:mb-6">
+        <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Create Note</h1>
+        <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
+          Create a new note to save your thoughts
+        </p>
       </div>
 
       <!-- Note Form -->
@@ -102,21 +110,28 @@
 
       <!-- Action Buttons -->
       {#if hasAuthToken}
-        <div class="mt-6 flex items-center justify-end gap-3">
+        <div
+          class="mt-4 sm:mt-6 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3"
+        >
           <button
             type="button"
             onclick={handleCancel}
-            class="btn btn-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            class="btn btn-secondary w-full sm:w-auto hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
             Cancel
           </button>
           <button
             type="button"
             onclick={handleSubmit}
-            class="btn btn-primary dark:hover:from-primary-600 dark:hover:to-primary-700 dark:from-primary-500 dark:to-primary-600 font-semibold shadow-md hover:shadow-lg flex items-center gap-2"
+            class="btn btn-primary w-full sm:w-auto dark:hover:from-primary-600 dark:hover:to-primary-700 dark:from-primary-500 dark:to-primary-600 font-semibold shadow-md hover:shadow-lg flex items-center gap-2"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              ></path>
             </svg>
             Create Note
           </button>

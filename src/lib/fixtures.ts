@@ -14,10 +14,38 @@ import type { Tag } from './tags';
 
 // --- Tags ---
 export const fixtureTags: Tag[] = [
-  { id: 'tag-1', tag: 'rust', name: 'Rust', color: '#f59e0b', created_at: '2026-01-01T00:00:00Z', updated_at: '2026-01-01T00:00:00Z' },
-  { id: 'tag-2', tag: 'web', name: 'Web Dev', color: '#8b5cf6', created_at: '2026-01-01T00:00:00Z', updated_at: '2026-01-01T00:00:00Z' },
-  { id: 'tag-3', tag: 'personal', name: 'Personal', color: null, created_at: '2026-01-01T00:00:00Z', updated_at: '2026-01-01T00:00:00Z' },
-  { id: 'tag-4', tag: 'linux', name: 'Linux', color: '#22c55e', created_at: '2026-01-01T00:00:00Z', updated_at: '2026-01-01T00:00:00Z' }
+  {
+    id: 'tag-1',
+    tag: 'rust',
+    name: 'Rust',
+    color: '#f59e0b',
+    created_at: '2026-01-01T00:00:00Z',
+    updated_at: '2026-01-01T00:00:00Z'
+  },
+  {
+    id: 'tag-2',
+    tag: 'web',
+    name: 'Web Dev',
+    color: '#8b5cf6',
+    created_at: '2026-01-01T00:00:00Z',
+    updated_at: '2026-01-01T00:00:00Z'
+  },
+  {
+    id: 'tag-3',
+    tag: 'personal',
+    name: 'Personal',
+    color: null,
+    created_at: '2026-01-01T00:00:00Z',
+    updated_at: '2026-01-01T00:00:00Z'
+  },
+  {
+    id: 'tag-4',
+    tag: 'linux',
+    name: 'Linux',
+    color: '#22c55e',
+    created_at: '2026-01-01T00:00:00Z',
+    updated_at: '2026-01-01T00:00:00Z'
+  }
 ];
 
 // --- Notes (3 representative cards for list skeleton) ---
@@ -44,7 +72,8 @@ export const fixtureNotes: Note[] = [
     link: null,
     link_summarize: null,
     summarize_status: null,
-    description: '<p>Key differences between Svelte 4 and 5: $state, $derived, $props, $effect.</p>',
+    description:
+      '<p>Key differences between Svelte 4 and 5: $state, $derived, $props, $effect.</p>',
     is_public: true,
     is_favorite: true,
     is_pinned: false,
@@ -60,7 +89,8 @@ export const fixtureNotes: Note[] = [
     link: null,
     link_summarize: null,
     summarize_status: null,
-    description: '<p>Notes on setting up Tailscale, Docker, and reverse proxy on the home server.</p>',
+    description:
+      '<p>Notes on setting up Tailscale, Docker, and reverse proxy on the home server.</p>',
     is_public: false,
     is_favorite: false,
     is_pinned: false,
@@ -100,11 +130,56 @@ export const fixtureSingleNote: Note = {
 
 // --- Transactions (5 rows for finance list skeleton) ---
 export const fixtureTransactions: Transaction[] = [
-  { id: 'tx-1', type: 'income', amount: 5000000, description: 'Salary', transaction_date: '2026-08-25T00:00:00Z', created_at: '2026-08-25T00:00:00Z', updated_at: '2026-08-25T00:00:00Z', tags: [fixtureTags[2]] },
-  { id: 'tx-2', type: 'expense', amount: 45000, description: 'Lunch at padang', transaction_date: '2026-08-25T12:00:00Z', created_at: '2026-08-25T12:00:00Z', updated_at: '2026-08-25T12:00:00Z', tags: [] },
-  { id: 'tx-3', type: 'expense', amount: 150000, description: 'Groceries', transaction_date: '2026-08-24T18:00:00Z', created_at: '2026-08-24T18:00:00Z', updated_at: '2026-08-24T18:00:00Z', tags: [fixtureTags[2]] },
-  { id: 'tx-4', type: 'income', amount: 200000, description: 'Freelance project', transaction_date: '2026-08-23T10:00:00Z', created_at: '2026-08-23T10:00:00Z', updated_at: '2026-08-23T10:00:00Z', tags: [fixtureTags[1]] },
-  { id: 'tx-5', type: 'expense', amount: 35000, description: 'Coffee', transaction_date: '2026-08-23T08:00:00Z', created_at: '2026-08-23T08:00:00Z', updated_at: '2026-08-23T08:00:00Z', tags: [] }
+  {
+    id: 'tx-1',
+    type: 'income',
+    amount: 5000000,
+    description: 'Salary',
+    transaction_date: '2026-08-25T00:00:00Z',
+    created_at: '2026-08-25T00:00:00Z',
+    updated_at: '2026-08-25T00:00:00Z',
+    tags: [fixtureTags[2]]
+  },
+  {
+    id: 'tx-2',
+    type: 'expense',
+    amount: 45000,
+    description: 'Lunch at padang',
+    transaction_date: '2026-08-25T12:00:00Z',
+    created_at: '2026-08-25T12:00:00Z',
+    updated_at: '2026-08-25T12:00:00Z',
+    tags: []
+  },
+  {
+    id: 'tx-3',
+    type: 'expense',
+    amount: 150000,
+    description: 'Groceries',
+    transaction_date: '2026-08-24T18:00:00Z',
+    created_at: '2026-08-24T18:00:00Z',
+    updated_at: '2026-08-24T18:00:00Z',
+    tags: [fixtureTags[2]]
+  },
+  {
+    id: 'tx-4',
+    type: 'income',
+    amount: 200000,
+    description: 'Freelance project',
+    transaction_date: '2026-08-23T10:00:00Z',
+    created_at: '2026-08-23T10:00:00Z',
+    updated_at: '2026-08-23T10:00:00Z',
+    tags: [fixtureTags[1]]
+  },
+  {
+    id: 'tx-5',
+    type: 'expense',
+    amount: 35000,
+    description: 'Coffee',
+    transaction_date: '2026-08-23T08:00:00Z',
+    created_at: '2026-08-23T08:00:00Z',
+    updated_at: '2026-08-23T08:00:00Z',
+    tags: []
+  }
 ];
 
 // --- Finance summary (3 stat cards) ---
@@ -130,7 +205,11 @@ export const fixtureShortlinkData: FixtureShortlinkData = {
   expires_at: '2026-08-28T20:00:00Z',
   files: [
     { id: 'f1', original_name: 'project-report.pdf', presigned_url: 'https://example.com/f1' },
-    { id: 'f2', original_name: 'screenshot-2026-08-27.png', presigned_url: 'https://example.com/f2' },
+    {
+      id: 'f2',
+      original_name: 'screenshot-2026-08-27.png',
+      presigned_url: 'https://example.com/f2'
+    },
     { id: 'f3', original_name: 'source-code.zip', presigned_url: 'https://example.com/f3' }
   ]
 };
@@ -138,6 +217,20 @@ export const fixtureShortlinkData: FixtureShortlinkData = {
 // --- Tags for TagModal skeleton (pill-shaped 2-col grid) ---
 export const fixtureTagsForModal: Tag[] = [
   ...fixtureTags,
-  { id: 'tag-5', tag: 'docker', name: 'Docker', color: '#0db7ed', created_at: '2026-01-01T00:00:00Z', updated_at: '2026-01-01T00:00:00Z' },
-  { id: 'tag-6', tag: 'postgres', name: 'PostgreSQL', color: '#336791', created_at: '2026-01-01T00:00:00Z', updated_at: '2026-01-01T00:00:00Z' }
+  {
+    id: 'tag-5',
+    tag: 'docker',
+    name: 'Docker',
+    color: '#0db7ed',
+    created_at: '2026-01-01T00:00:00Z',
+    updated_at: '2026-01-01T00:00:00Z'
+  },
+  {
+    id: 'tag-6',
+    tag: 'postgres',
+    name: 'PostgreSQL',
+    color: '#336791',
+    created_at: '2026-01-01T00:00:00Z',
+    updated_at: '2026-01-01T00:00:00Z'
+  }
 ];

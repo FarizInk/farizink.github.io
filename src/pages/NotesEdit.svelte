@@ -1,5 +1,8 @@
 <script lang="ts">
   import NoteForm from '../components/NoteForm.svelte';
+  import Skeleton from 'boneyard-js/svelte';
+  import { fixtureSingleNote } from '../lib/fixtures';
+  import { isBoneyardCapture } from '../lib/boneyard';
   import { navigate, getCurrentRouterState } from '../lib/router';
   import { tagsStore } from '../lib/stores/tags';
   import { Lock } from '@lucide/svelte';
@@ -15,8 +18,14 @@
   let formSubmitFn: (() => void) | null = null;
 
   onMount(() => {
-    hasAuthToken = typeof localStorage !== 'undefined' ? !!localStorage.getItem('authToken') : false;
+    hasAuthToken =
+      typeof localStorage !== 'undefined' ? !!localStorage.getItem('authToken') : false;
     isCheckingAuth = false;
+
+    // During boneyard capture, skip fetching — the skeleton branch below is
+    // forced on via isBoneyardCapture so its fixture form renders for the
+    // snapshot (the headless browser has no auth token).
+    if (isBoneyardCapture) return;
 
     if (!hasAuthToken) return;
 
@@ -62,6 +71,10 @@
   function handleFormReady(submitFn: () => void) {
     formSubmitFn = submitFn;
   }
+
+  function handleFormSuccess() {
+    navigate('/notes');
+  }
 </script>
 
 <svelte:head>
@@ -73,21 +86,23 @@
   <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="notes-edit-page min-h-screen ">
+<div class="notes-edit-page min-h-screen">
   {#if isCheckingAuth}
     <div class="flex items-center justify-center py-20">
-      <div class="w-12 h-12 border-4 border-warning-500 border-t-transparent rounded-full animate-spin"></div>
+      <div
+        class="w-12 h-12 border-4 border-warning-500 border-t-transparent rounded-full animate-spin"
+      ></div>
     </div>
-  {:else if !hasAuthToken}
+  {:else if !hasAuthToken && !isBoneyardCapture}
     <div class="flex items-center justify-center min-h-screen px-4">
       <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
-        <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div
+          class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
           <Lock class="w-8 h-8 text-red-600 dark:text-red-400" />
         </div>
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Access Denied</h1>
-        <p class="text-gray-600 dark:text-gray-400 mb-6">
-          You need to be logged in to edit notes.
-        </p>
+        <p class="text-gray-600 dark:text-gray-400 mb-6">You need to be logged in to edit notes.</p>
         <div class="flex flex-col sm:flex-row gap-3 justify-center">
           <button
             onclick={() => navigate('/notes')}
@@ -97,79 +112,126 @@
           </button>
           <button
             onclick={() => navigate('/login')}
-            class="btn btn-primary px-5 py-2.5   rounded-lg font-medium transition-all shadow-md"
+            class="btn btn-primary px-5 py-2.5 rounded-lg font-medium transition-all shadow-md"
           >
             Login
           </button>
         </div>
       </div>
     </div>
-  {:else if isLoadingNote}
-    <div class="flex items-center justify-center py-20">
-      <div class="w-12 h-12 border-4 border-warning-500 border-t-transparent rounded-full animate-spin"></div>
+  {:else if isLoadingNote || isBoneyardCapture}
+    <div class="max-w-3xl mx-auto px-3 py-4 sm:px-4 sm:py-8">
+      <button
+        onclick={() => navigate('/notes')}
+        class="mb-4 sm:mb-6 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"
+          ></path>
+        </svg>
+        Back to Notes
+      </button>
+
+      <div class="mb-4 sm:mb-6">
+        <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Edit Note</h1>
+        <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
+          Edit your note details
+        </p>
+      </div>
+
+      <Skeleton name="note-edit-form" loading={true}>
+        <!-- Children render only during boneyard capture (dev), giving the
+             headless browser a real NoteForm layout to snapshot. At runtime
+             loading=true shows the generated bones instead. -->
+        <NoteForm mode="edit" note={fixtureSingleNote} />
+      </Skeleton>
     </div>
   {:else if noteError}
     <div class="flex items-center justify-center min-h-screen px-4">
       <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
-        <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg class="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        <div
+          class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
+          <svg
+            class="w-8 h-8 text-red-600 dark:text-red-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
           </svg>
         </div>
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Error</h1>
         <p class="text-gray-600 dark:text-gray-400 mb-6">{noteError}</p>
         <button
           onclick={() => navigate('/notes')}
-          class="btn btn-primary px-5 py-2.5   rounded-lg font-medium transition-all shadow-md"
+          class="btn btn-primary px-5 py-2.5 rounded-lg font-medium transition-all shadow-md"
         >
           Go Back to Notes
         </button>
       </div>
     </div>
   {:else if note}
-    <div class="max-w-3xl mx-auto px-4 py-8">
+    <div class="max-w-3xl mx-auto px-3 py-4 sm:px-4 sm:py-8">
       <button
         onclick={() => navigate('/notes')}
-        class="mb-6 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
+        class="mb-4 sm:mb-6 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"
+          ></path>
         </svg>
         Back to Notes
       </button>
 
-      <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Edit Note</h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">Edit your note details</p>
+      <div class="mb-4 sm:mb-6">
+        <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Edit Note</h1>
+        <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
+          Edit your note details
+        </p>
       </div>
 
       <!-- Note Form -->
       {#if note}
-        <NoteForm
-          mode="edit"
-          {note}
-          onSuccess={() => navigate('/notes')}
-          onSubmitReady={handleFormReady}
-        />
+        <Skeleton name="note-edit-form" loading={isLoadingNote}>
+          <NoteForm
+            mode="edit"
+            {note}
+            onSuccess={handleFormSuccess}
+            onSubmitReady={handleFormReady}
+          />
+        </Skeleton>
       {/if}
 
       <!-- Action Buttons -->
       {#if note}
-        <div class="mt-6 flex items-center justify-end gap-3">
+        <div
+          class="mt-4 sm:mt-6 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3"
+        >
           <button
             type="button"
             onclick={handleCancel}
-            class="btn btn-secondary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            class="btn btn-secondary w-full sm:w-auto hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
             Cancel
           </button>
           <button
             type="button"
             onclick={handleSubmit}
-            class="btn btn-primary dark:hover:from-primary-600 dark:hover:to-primary-700 dark:from-primary-500 dark:to-primary-600 font-semibold shadow-md hover:shadow-lg flex items-center gap-2"
+            class="btn btn-primary w-full sm:w-auto dark:hover:from-primary-600 dark:hover:to-primary-700 dark:from-primary-500 dark:to-primary-600 font-semibold shadow-md hover:shadow-lg flex items-center gap-2"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              ></path>
             </svg>
             Update Note
           </button>

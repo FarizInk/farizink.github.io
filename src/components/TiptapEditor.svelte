@@ -87,9 +87,12 @@
   }
 
   // Button base class helper
-  const btnBase = 'btn-icon p-2 rounded-lg transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed border';
-  const btnInactive = 'border-transparent hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400';
-  const btnActive = 'bg-amber-50 dark:bg-purple-900/30 text-amber-700 dark:text-purple-300 border-amber-200 dark:border-purple-700 shadow-sm';
+  const btnBase =
+    'btn-icon p-2 rounded-lg transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed border';
+  const btnInactive =
+    'border-transparent hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400';
+  const btnActive =
+    'bg-amber-50 dark:bg-purple-900/30 text-amber-700 dark:text-purple-300 border-amber-200 dark:border-purple-700 shadow-sm';
 
   // Initialize editor
   onMount(() => {
@@ -106,7 +109,8 @@
         Link.configure({
           openOnClick: false,
           HTMLAttributes: {
-            class: 'text-amber-600 dark:text-purple-400 underline hover:text-amber-800 dark:hover:text-purple-300 transition-colors'
+            class:
+              'text-amber-600 dark:text-purple-400 underline hover:text-amber-800 dark:hover:text-purple-300 transition-colors'
           }
         }),
         Placeholder.configure({ placeholder })
@@ -115,7 +119,8 @@
       editable: !disabled,
       editorProps: {
         attributes: {
-          class: 'prose prose-sm max-w-none focus:outline-none min-h-[130px] h-full overflow-y-auto p-4 text-gray-800 dark:text-white'
+          class:
+            'prose prose-sm max-w-none focus:outline-none min-h-[130px] h-full overflow-y-auto p-3 sm:p-4 text-gray-800 dark:text-white'
         }
       },
       onUpdate: () => {
@@ -422,13 +427,15 @@
         aria-label="Drag to resize editor"
         class="absolute bottom-0 left-0 right-0 h-1.5 cursor-ns-resize hover:bg-gradient-to-r hover:from-amber-400 hover:to-amber-500 dark:hover:from-purple-500 dark:hover:to-purple-600 transition-colors group bg-transparent border-0 p-0"
         onmousedown={startResize}
-        onkeydown={(e) => {
+        onkeydown={e => {
           if (e.key === 'Enter' || e.key === ' ') {
             startResize(e as unknown as MouseEvent);
           }
         }}
       >
-        <div class="absolute inset-x-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-8 h-1 bg-gray-300 dark:bg-gray-600 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+        <div
+          class="absolute inset-x-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-8 h-1 bg-gray-300 dark:bg-gray-600 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+        ></div>
       </button>
     {/if}
   </div>
