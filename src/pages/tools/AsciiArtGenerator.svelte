@@ -224,53 +224,25 @@
   icon={Image}
   color="warning"
 >
-  <!-- Hero Section -->
-  <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
-  >
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
-          <Image class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">ASCII Art Generator</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Convert text to creative ASCII art</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Controls -->
-  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
-   <button
-     onclick={loadSampleText}
-      class="btn btn-copy bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white"
-     >Load Sample Text</button
-   >
-   <button
-     onclick={clearAll}
-      class="btn btn-secondary bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300"
-     >Clear All</button
-    >
+  <div class="flex flex-wrap gap-2">
+    <button onclick={loadSampleText} class="btn btn-secondary">Load sample text</button>
+    <button onclick={clearAll} class="btn btn-ghost">Clear all</button>
   </div>
 
   <!-- Style Selector -->
-  <div
-    class="tool-card mb-6"
-  >
-    <h3 class="section-title">Art Style</h3>
+  <div class="tool-card">
+    <h3 class="section-title">Art style</h3>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       {#each Object.entries(asciiStyles) as [key, style], index (index)}
-       <button
-         onclick={() => (selectedStyle = key)}
-          class="preset-btn p-4 border-2 rounded-lg transition-all text-left {selectedStyle === key
-            ? 'border-warning-400 dark:border-primary-500 bg-warning-50 dark:bg-primary-900/20'
-            : 'border-gray-200 dark:border-gray-600 hover:border-warning-300 dark:hover:border-primary-400'}"
+        <button
+          onclick={() => (selectedStyle = key)}
+          class="preset-btn rounded-md! p-4 text-left {selectedStyle === key ? 'active' : ''}"
+          aria-pressed={selectedStyle === key}
         >
           <div class="text-left">
-            <h4 class="font-medium text-gray-900 dark:text-white mb-1">{style.name}</h4>
-            <p class="text-xs text-gray-500 dark:text-gray-400">
+            <h4 class="font-medium text-ink mb-1">{style.name}</h4>
+            <p class="text-body-sm text-ink-muted">
               {key === 'standard'
                 ? 'Classic ASCII style with standard characters'
                 : key === 'block'
@@ -284,12 +256,10 @@
   </div>
 
   <!-- Input Section -->
-  <div
-    class="tool-card mb-6"
-  >
+  <div class="tool-card">
     <div class="flex justify-between items-center mb-4">
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-0">Input Text</h3>
-      <span class="text-sm text-gray-500 dark:text-gray-400">
+      <h3 class="section-title mb-0">Input text</h3>
+      <span class="text-count">
         {inputText.length} characters
       </span>
     </div>
@@ -300,7 +270,7 @@
       class="tool-input w-full font-mono text-sm"
       maxlength={10}
     />
-    <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+    <p class="mt-2 text-body-sm text-ink-muted">
       Maximum 10 characters recommended for best results. Supports letters, numbers, and basic
       punctuation.
     </p>
@@ -308,132 +278,108 @@
 
   <!-- ASCII Art Result -->
   {#if asciiArt}
-    <div
-      class="tool-card mb-6"
-    >
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-0">ASCII Art Result</h3>
+    <div class="tool-card">
+      <div class="flex flex-wrap justify-between items-center gap-2 mb-4">
+        <h3 class="section-title mb-0">ASCII art result</h3>
         <div class="flex gap-2">
-         <button
-           onclick={copyToClipboard}
-            class="btn btn-copy bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white"
-          >
+          <button onclick={copyToClipboard} class="btn btn-primary btn-sm">
             {#if copiedText === 'ascii'}
-              <Check class="w-4 h-4 mr-2" />
+              <Check class="w-4 h-4" />
               Copied!
             {:else}
-              <Copy class="w-4 h-4 mr-2" />
+              <Copy class="w-4 h-4" />
               Copy
             {/if}
           </button>
-         <button
-           onclick={downloadAsciiArt}
-            class="btn btn-copy bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white"
-          >
-            <Download class="w-4 h-4 mr-2" />
+          <button onclick={downloadAsciiArt} class="btn btn-secondary btn-sm">
+            <Download class="w-4 h-4" />
             Download
           </button>
         </div>
       </div>
       <div class="relative">
         <pre
-          class="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg font-mono text-sm text-gray-900 dark:text-white overflow-x-auto whitespace-pre">{asciiArt}</pre>
+          class="p-6 bg-sunken rounded-md font-mono text-sm text-ink overflow-x-auto whitespace-pre">{asciiArt}</pre>
       </div>
     </div>
   {/if}
 
   <!-- Character Set Reference -->
-  <div
-    class="tool-card mb-6"
-  >
-    <h3 class="section-title">Supported Characters</h3>
+  <div class="tool-card">
+    <h3 class="section-title">Supported characters</h3>
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      <div class="text-sm">
-        <span class="font-medium text-gray-900 dark:text-white">Letters:</span>
-        <span class="text-gray-600 dark:text-gray-400"> A-Z</span>
+      <div class="text-body-sm">
+        <span class="font-medium text-ink">Letters:</span>
+        <span class="font-mono text-ink-muted"> A-Z</span>
       </div>
-      <div class="text-sm">
-        <span class="font-medium text-gray-900 dark:text-white">Numbers:</span>
-        <span class="text-gray-600 dark:text-gray-400"> 0-9</span>
+      <div class="text-body-sm">
+        <span class="font-medium text-ink">Numbers:</span>
+        <span class="font-mono text-ink-muted"> 0-9</span>
       </div>
-      <div class="text-sm">
-        <span class="font-medium text-gray-900 dark:text-white">Punctuation:</span>
-        <span class="text-gray-600 dark:text-gray-400"> ! ? . ,</span>
+      <div class="text-body-sm">
+        <span class="font-medium text-ink">Punctuation:</span>
+        <span class="font-mono text-ink-muted"> ! ? . ,</span>
       </div>
-      <div class="text-sm">
-        <span class="font-medium text-gray-900 dark:text-white">Space:</span>
-        <span class="text-gray-600 dark:text-gray-400"> Supported</span>
+      <div class="text-body-sm">
+        <span class="font-medium text-ink">Space:</span>
+        <span class="text-ink-muted"> Supported</span>
       </div>
     </div>
   </div>
 
   <!-- Usage Tips -->
-  <div
-    class="tool-card mb-6"
-  >
-    <h3 class="section-title">Usage Tips</h3>
+  <div class="tool-card">
+    <h3 class="section-title">Usage tips</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-2">Best Practices</h4>
-        <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-          <li>• Keep text short (under 10 characters)</li>
-          <li>• Use uppercase letters for better results</li>
-          <li>• Experiment with different styles</li>
-          <li>• Works great in terminal applications</li>
+      <div class="info-card">
+        <h4 class="section-title-sm">Best practices</h4>
+        <ul class="text-body-sm text-ink-muted space-y-1 list-disc ml-4">
+          <li>Keep text short (under 10 characters)</li>
+          <li>Use uppercase letters for better results</li>
+          <li>Experiment with different styles</li>
+          <li>Works great in terminal applications</li>
         </ul>
       </div>
-      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-2">Common Uses</h4>
-        <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-          <li>• Terminal splash screens</li>
-          <li>• Code comments and signatures</li>
-          <li>• Social media bio text</li>
-          <li>• Email signatures and greetings</li>
+      <div class="info-card">
+        <h4 class="section-title-sm">Common uses</h4>
+        <ul class="text-body-sm text-ink-muted space-y-1 list-disc ml-4">
+          <li>Terminal splash screens</li>
+          <li>Code comments and signatures</li>
+          <li>Social media bio text</li>
+          <li>Email signatures and greetings</li>
         </ul>
       </div>
     </div>
   </div>
 
   <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Type class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="tool-card">
+      <div class="feature-icon">
+        <Type class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Multiple Styles</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Multiple styles</h3>
+      <p class="feature-description">
         Choose from standard, block, and simple ASCII art styles for different use cases
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="tool-card">
+      <div class="feature-icon">
+        <Zap class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Real-time Preview</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Real-time preview</h3>
+      <p class="feature-description">
         See your ASCII art generated instantly as you type with automatic updates
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Palette class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="tool-card">
+      <div class="feature-icon">
+        <Palette class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Easy Export</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Easy export</h3>
+      <p class="feature-description">
         Copy to clipboard or download your ASCII art as a text file for easy sharing
       </p>
     </div>

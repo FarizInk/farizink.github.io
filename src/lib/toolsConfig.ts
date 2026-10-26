@@ -27,14 +27,20 @@ export interface Tool {
 }
 
 export interface Category {
+  /** Matches the design-system category tones (see categoryTone in $lib/components/ds). */
+  id: 'text-data' | 'generators' | 'web-dev' | 'utilities';
   name: string;
+  /** Label for compact UI such as filter tabs. */
+  shortName: string;
   description: string;
   tools: Tool[];
 }
 
 export const toolsByCategory: Category[] = [
   {
+    id: 'text-data',
     name: 'Text & Data Processing',
+    shortName: 'Text & Data',
     description: 'Tools for working with text and data',
     tools: [
       {
@@ -109,7 +115,9 @@ export const toolsByCategory: Category[] = [
     ]
   },
   {
+    id: 'generators',
     name: 'Generators & Converters',
+    shortName: 'Generators',
     description: 'Create and transform various content',
     tools: [
       {
@@ -171,7 +179,9 @@ export const toolsByCategory: Category[] = [
     ]
   },
   {
+    id: 'web-dev',
     name: 'Web Development',
+    shortName: 'Web Dev',
     description: 'Essential tools for web developers',
     tools: [
       {
@@ -230,7 +240,9 @@ export const toolsByCategory: Category[] = [
     ]
   },
   {
+    id: 'utilities',
     name: 'Utilities & Calculators',
+    shortName: 'Utilities',
     description: 'Helpful tools for everyday tasks',
     tools: [
       {
@@ -364,6 +376,10 @@ export const getAllTools = (): Tool[] => {
 
 export const getToolById = (id: string): Tool | undefined => {
   return getAllTools().find(tool => tool.id === id);
+};
+
+export const getCategoryOfTool = (toolId: string): Category | undefined => {
+  return toolsByCategory.find(category => category.tools.some(tool => tool.id === toolId));
 };
 
 export const getToolsByCategory = (categoryName: string): Tool[] => {

@@ -5,7 +5,6 @@
     truncateText,
     formatFileName,
     handleImageError,
-    getFileIconColor,
     formatMimeType
   } from '../lib/uiUtils';
   import {
@@ -19,8 +18,10 @@
     RotateCcw,
     Share2,
     Pin,
-    PinOff
+    PinOff,
+    Lock
   } from '@lucide/svelte';
+  import { Tag } from '$lib/components/ds';
 
   let {
     note,
@@ -78,10 +79,8 @@
 </script>
 
 <div
-  class="card card-hover tv-card !p-6 group relative overflow-hidden cursor-pointer {!note.is_public
-    ? 'bg-gradient-to-br from-warning-50 to-warning-50 dark:from-primary-900/30 dark:to-primary-900/20 border-2 border-warning-300 dark:border-primary-500 shadow-lg'
-    : ''} {isFocused
-    ? 'ring-2 ring-warning-500 dark:ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-gray-900'
+  class="group relative flex cursor-pointer flex-col gap-3 overflow-hidden rounded-lg bg-card p-6 text-ink transition-[transform,box-shadow] duration-150 ease-out hover:-translate-y-0.5 hover:shadow-lift focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring {isFocused
+    ? 'outline-2 outline-offset-2 outline-focus-ring'
     : ''}"
   role="button"
   tabindex="0"
@@ -94,294 +93,273 @@
   }}
   aria-label={`View details for ${note.name || 'note'}`}
 >
-  <!-- Card Accent Border -->
+  <!-- Favorite accent bar -->
   {#if note.is_favorite}
-    <div
-      class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-warning-400 to-warning-600"
-    ></div>
+    <div class="absolute top-0 left-0 h-full w-1 bg-accent" aria-hidden="true"></div>
   {/if}
 
-  <!-- Card Content -->
-  <div class="relative">
-    <!-- Header Section -->
-    <div class="flex items-start justify-between mb-4">
-      <div class="flex-1 min-w-0 pr-4">
-        {#if note.is_pinned}
-          <div class="inline-flex items-center gap-1 mb-2 px-2 py-0.5 rounded-full bg-warning-100 dark:bg-primary-900/30 text-warning-700 dark:text-primary-300 text-xs font-medium w-fit">
-            <Pin class="w-3 h-3" />
-            Pinned
-          </div>
-        {/if}
-        {#if note.name}
-          <h3
-            class="text-xl font-bold text-secondary-900 dark:text-white group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-all duration-200 mb-2"
-            title={note.name}
-          >
-            {note.name}
-          </h3>
-        {/if}
-
-        {#if note.link}
-          <div class="flex items-center gap-2">
-            <Link2 class="w-4 h-4 text-warning-600 dark:text-primary-400 flex-shrink-0" />
-            <a
-              href={note.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-sm text-warning-700 dark:text-primary-300 hover:text-warning-800 dark:hover:text-primary-200 transition-colors cursor-pointer truncate hover:underline"
-              title={note.link}
-            >
-              {truncateText(note.link, 60)}
-            </a>
-          </div>
-        {/if}
-      </div>
+  <!-- Eyebrows -->
+  {#if note.is_pinned || !note.is_public}
+    <div class="flex flex-wrap items-center gap-3">
+      {#if note.is_pinned}
+        <span class="font-mono text-xs font-medium tracking-wide text-accent-text">● PINNED</span>
+      {/if}
+      {#if !note.is_public}
+        <span class="inline-flex items-center gap-1 font-mono text-xs font-medium tracking-wide text-ink-muted">
+          <Lock class="size-3" aria-hidden="true" />
+          PRIVATE
+        </span>
+      {/if}
     </div>
+  {/if}
 
-    <!-- File Preview -->
-    {#if note.files && note.files.length > 0}
-      <div class="mb-4">
-        <!-- Multiple Images Grid -->
-        {#if note.files.filter(f => f?.mime_type?.startsWith('image/')).length > 1}
-          <div class="grid grid-cols-2 gap-2 overflow-hidden">
-            {#each note.files
-              .filter(f => f?.mime_type?.startsWith('image/'))
-              .slice(0, 4) as file, index ((file?.id || 'unknown') + '-' + index)}
+  {#if note.name}
+    <h3
+      class="m-0 font-display text-lg leading-6 font-semibold text-ink"
+      title={note.name}
+    >
+      {note.name}
+    </h3>
+  {/if}
+
+  {#if note.link}
+    <div class="flex min-w-0 items-center gap-2">
+      <Link2 class="size-4 shrink-0 text-accent-text" />
+      <a
+        href={note.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="truncate text-body-sm text-accent-text hover:underline"
+        title={note.link}
+      >
+        {truncateText(note.link, 60)}
+      </a>
+    </div>
+  {/if}
+
+  <!-- File Preview -->
+  {#if note.files && note.files.length > 0}
+    <div>
+      <!-- Multiple Images Grid -->
+      {#if note.files.filter(f => f?.mime_type?.startsWith('image/')).length > 1}
+        <div class="grid grid-cols-2 gap-2 overflow-hidden">
+          {#each note.files
+            .filter(f => f?.mime_type?.startsWith('image/'))
+            .slice(0, 4) as file, index ((file?.id || 'unknown') + '-' + index)}
+            <div
+              class="relative group/file-preview aspect-square bg-sunken rounded-md overflow-hidden"
+            >
+              <img
+                src={getFileUrl(file)}
+                alt={file?.metadata?.alt || file?.original_name || 'file'}
+                class="w-full h-full object-cover rounded-md"
+                onerror={handleImageError}
+              />
+              {#if file === note.files.filter( f => f?.mime_type?.startsWith('image/') )[0] && note.files.filter( f => f?.mime_type?.startsWith('image/') ).length > 4}
+                <div class="absolute inset-0 bg-tile-void/80 flex items-center justify-center">
+                  <span class="font-mono text-ink-on-dark font-semibold text-lg">
+                    +{note.files.filter(f => f?.mime_type?.startsWith('image/')).length - 3}
+                  </span>
+                </div>
+              {/if}
               <div
-                class="relative group/file-preview aspect-square bg-secondary-100 dark:bg-secondary-900 rounded-lg overflow-hidden"
+                class="absolute inset-x-0 bottom-0 bg-tile-void/90 opacity-0 group-hover/file-preview:opacity-100 transition-opacity duration-150"
               >
-                <img
-                  src={getFileUrl(file)}
-                  alt={file?.metadata?.alt || file?.original_name || 'file'}
-                  class="w-full h-full object-cover rounded-lg"
-                  onerror={handleImageError}
-                />
-                {#if file === note.files.filter( f => f?.mime_type?.startsWith('image/') )[0] && note.files.filter( f => f?.mime_type?.startsWith('image/') ).length > 4}
-                  <div class="absolute inset-0 bg-black/60 flex items-center justify-center">
-                    <span class="text-white font-semibold text-lg">
-                      +{note.files.filter(f => f?.mime_type?.startsWith('image/')).length - 3}
-                    </span>
-                  </div>
-                {/if}
-                <div
-                  class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover/file-preview:opacity-100 transition-opacity duration-300"
-                >
-                  <div class="absolute bottom-1 left-1 right-1 text-white">
-                    <p class="text-xs font-medium truncate" title={file?.original_name || 'file'}>
-                      {file?.metadata?.title || formatFileName(file?.original_name || 'file')}
-                    </p>
-                  </div>
+                <div class="px-2 py-1 text-ink-on-dark">
+                  <p class="text-xs font-medium truncate" title={file?.original_name || 'file'}>
+                    {file?.metadata?.title || formatFileName(file?.original_name || 'file')}
+                  </p>
                 </div>
               </div>
-            {/each}
-          </div>
-          <!-- Single Image Preview -->
-        {:else if note.files?.[0]?.mime_type?.startsWith('image/')}
+            </div>
+          {/each}
+        </div>
+        <!-- Single Image Preview -->
+      {:else if note.files?.[0]?.mime_type?.startsWith('image/')}
+        <div
+          class="relative group/file-preview rounded-md overflow-hidden bg-sunken"
+        >
+          <img
+            src={getFileUrl(note.files?.[0])}
+            alt={note.files?.[0].metadata?.alt || note.files?.[0].original_name}
+            class="w-full h-48 object-cover rounded-md"
+            onerror={handleImageError}
+          />
+          <!-- Fallback for broken images -->
           <div
-            class="relative group/file-preview rounded-lg overflow-hidden bg-secondary-100 dark:bg-secondary-800"
+            class="hidden w-full h-48 bg-sunken flex items-center justify-center rounded-md"
           >
-            <img
-              src={getFileUrl(note.files?.[0])}
-              alt={note.files?.[0].metadata?.alt || note.files?.[0].original_name}
-              class="w-full h-48 object-cover rounded-lg"
-              onerror={handleImageError}
-            />
-            <!-- Fallback for broken images -->
-            <div
-              class="hidden w-full h-48 bg-secondary-200 dark:bg-secondary-700 flex items-center justify-center rounded-lg"
-            >
-              <ImageIcon class="w-12 h-12 text-secondary-400" />
-            </div>
-            <div
-              class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover/file-preview:opacity-100 transition-opacity duration-300"
-            >
-              <div class="absolute bottom-2 left-2 right-2 text-white">
-                <p class="text-sm font-medium truncate" title={note.files?.[0].original_name}>
-                  {note.files?.[0].metadata?.title || formatFileName(note.files?.[0].original_name)}
-                </p>
-                {#if note.files?.[0].metadata?.width && note.files?.[0].metadata?.height}
-                  <p class="text-xs opacity-90">
-                    {note.files?.[0]?.metadata?.width} × {note.files?.[0]?.metadata?.height}
-                  </p>
-                {/if}
-              </div>
-            </div>
+            <ImageIcon class="w-12 h-12 text-ink-muted" />
           </div>
-          <!-- File Icon Preview -->
-        {:else}
           <div
-            class="flex items-center gap-3 p-3 bg-secondary-100 dark:bg-secondary-800 rounded-lg group hover:bg-secondary-200 dark:hover:bg-secondary-700 transition-colors"
+            class="absolute inset-x-0 bottom-0 bg-tile-void/90 opacity-0 group-hover/file-preview:opacity-100 transition-opacity duration-150"
           >
-            <div
-              class="w-10 h-10 bg-secondary-200 dark:bg-secondary-700 rounded flex items-center justify-center"
-            >
-              {#if note.files?.[0]?.mime_type?.startsWith('image/')}
-                <ImageIcon class="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
-              {:else}
-                <File class="w-5 h-5 {getFileIconColor(note.files?.[0]?.mime_type)}" />
-              {/if}
-            </div>
-            <div class="flex-1 min-w-0">
-              <p
-                class="text-sm font-medium text-secondary-900 dark:text-white truncate"
-                title={note.files?.[0].original_name}
-              >
+            <div class="px-3 py-2 text-ink-on-dark">
+              <p class="text-sm font-medium truncate" title={note.files?.[0].original_name}>
                 {note.files?.[0].metadata?.title || formatFileName(note.files?.[0].original_name)}
               </p>
-              <p class="text-xs text-secondary-500 dark:text-secondary-400 capitalize">
-                {formatMimeType(note.files?.[0]?.mime_type)}
-              </p>
+              {#if note.files?.[0].metadata?.width && note.files?.[0].metadata?.height}
+                <p class="font-mono text-xs text-ink-on-dark-muted">
+                  {note.files?.[0]?.metadata?.width} × {note.files?.[0]?.metadata?.height}
+                </p>
+              {/if}
             </div>
           </div>
-        {/if}
-      </div>
-    {/if}
-
-    <!-- Tags Section -->
-    {#if note.tags && note.tags.length > 0}
-      <div class="flex flex-wrap gap-2 mb-4">
-        {#each note.tags.slice(0, 5) as tag, index (index)}
+        </div>
+        <!-- File Icon Preview -->
+      {:else}
+        <div
+          class="flex items-center gap-3 p-3 bg-sunken rounded-md"
+        >
           <div
-            class="tag-group flex items-center gap-2 px-3 py-1.5 hover:bg-opacity-80 rounded-full border transition-all duration-200 {!tag.color
-              ? 'bg-warning-50 text-warning-700 border-warning-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700'
-              : ''}"
-            style="background-color: {tag.color
-              ? tag.color + '20'
-              : undefined}; color: {tag.color || undefined}; border-color: {tag.color
-              ? tag.color + '40'
-              : undefined}"
+            class="size-10 bg-tile-deep text-ink-on-dark rounded-sm flex items-center justify-center"
           >
-            <div
-              class="w-3 h-3 rounded-full tag-hover-scale transition-transform duration-200 {!tag.color
-                ? 'bg-warning-600 dark:bg-primary-600'
-                : ''}"
-              style="background-color: {tag.color || undefined}"
-            ></div>
-            <span class="text-sm font-medium">{tag.name || tag.tag}</span>
+            {#if note.files?.[0]?.mime_type?.startsWith('image/')}
+              <ImageIcon class="size-5" />
+            {:else}
+              <File class="size-5" />
+            {/if}
           </div>
-        {/each}
-        {#if note.tags.length > 5}
-          <div
-            class="px-3 py-1.5 bg-secondary-100 dark:bg-secondary-700 rounded-full text-sm text-secondary-600 dark:text-secondary-300 font-medium"
-          >
-            +{note.tags.length - 5} more
+          <div class="flex-1 min-w-0">
+            <p
+              class="text-body-sm font-medium text-ink truncate"
+              title={note.files?.[0].original_name}
+            >
+              {note.files?.[0].metadata?.title || formatFileName(note.files?.[0].original_name)}
+            </p>
+            <p class="text-code text-ink-muted capitalize">
+              {formatMimeType(note.files?.[0]?.mime_type)}
+            </p>
           </div>
-        {/if}
-      </div>
-    {/if}
+        </div>
+      {/if}
+    </div>
+  {/if}
 
-    <!-- Footer Section -->
-    <div
-      class="flex items-center justify-between text-sm text-secondary-500 dark:text-secondary-400 pt-4 border-t border-secondary-100 dark:border-secondary-700"
-    >
-      <div class="flex items-center gap-4">
-        {#if isDeleted && note.deleted_at}
-          <div class="flex items-center gap-2 text-red-600 dark:text-red-400">
-            <Calendar class="w-4 h-4" />
-            <span>Deleted {formatDate(note.deleted_at)}</span>
-          </div>
-        {:else if note.created_at}
-          <div class="flex items-center gap-2">
-            <Calendar class="w-4 h-4" />
-            <span>{formatDate(note.created_at)}</span>
-          </div>
-        {/if}
-        {#if note.files && note.files.length > 0}
-          <div class="flex items-center gap-1">
-            <Paperclip class="w-3 h-3" />
-            <span class="text-xs"
-              >{note.files.length} {note.files.length === 1 ? 'file' : 'files'}</span
-            >
-          </div>
-        {/if}
-      </div>
-
-      <!-- Action Buttons in Footer -->
-      <div class="flex items-center gap-2">
-        {#if isDeleted}
-          <!-- Restore and Permanent Delete buttons for deleted notes -->
-          {#if hasAuthToken && onRestore}
-            <button
-              onclick={e => {
-                e.stopPropagation();
-                handleRestore();
-              }}
-              class="btn-icon w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/30 hover:bg-green-100 dark:hover:bg-green-900/50 border border-green-200 dark:border-green-700 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
-              title="Restore note"
-            >
-              <RotateCcw class="w-4 h-4 text-green-600 dark:text-green-400" />
-            </button>
-          {/if}
-          {#if hasAuthToken && onPermanentDelete}
-            <button
-              onclick={e => {
-                e.stopPropagation();
-                handlePermanentDelete();
-              }}
-              class="btn-icon p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-              title="Permanently delete note"
-            >
-              <Trash2 class="w-3.5 h-3.5 text-red-500" />
-            </button>
-          {/if}
+  <!-- Tags Section -->
+  {#if note.tags && note.tags.length > 0}
+    <div class="flex flex-wrap gap-2">
+      {#each note.tags.slice(0, 5) as tag, index (index)}
+        {#if tag.color}
+          <Tag>
+            <span class="size-2 rounded-pill" style="background-color: {tag.color}" aria-hidden="true"></span>
+            {tag.name || tag.tag}
+          </Tag>
         {:else}
-          <!-- Share button - Always available -->
+          <Tag dot>{tag.name || tag.tag}</Tag>
+        {/if}
+      {/each}
+      {#if note.tags.length > 5}
+        <Tag>+{note.tags.length - 5} more</Tag>
+      {/if}
+    </div>
+  {/if}
+
+  <!-- Footer Section -->
+  <div
+    class="mt-auto flex items-center justify-between gap-3 pt-3 text-code text-ink-muted"
+  >
+    <div class="flex flex-wrap items-center gap-4">
+      {#if isDeleted && note.deleted_at}
+        <div class="flex items-center gap-2 text-negative">
+          <Calendar class="size-4" />
+          <span>Deleted {formatDate(note.deleted_at)}</span>
+        </div>
+      {:else if note.created_at}
+        <div class="flex items-center gap-2">
+          <Calendar class="size-4" />
+          <span>{formatDate(note.created_at)}</span>
+        </div>
+      {/if}
+      {#if note.files && note.files.length > 0}
+        <div class="flex items-center gap-1">
+          <Paperclip class="size-3" />
+          <span>{note.files.length} {note.files.length === 1 ? 'file' : 'files'}</span>
+        </div>
+      {/if}
+    </div>
+
+    <!-- Action Buttons in Footer -->
+    <div class="flex items-center gap-1">
+      {#if isDeleted}
+        <!-- Restore and Permanent Delete buttons for deleted notes -->
+        {#if hasAuthToken && onRestore}
           <button
             onclick={e => {
               e.stopPropagation();
-              handleShare();
+              handleRestore();
             }}
-            class="btn-icon w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
-            title="Share note"
+            class="btn-icon"
+            title="Restore note"
           >
-            <Share2
-              class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors"
-            />
+            <RotateCcw class="size-4" />
           </button>
-          <!-- Edit and Delete buttons - Only show when authenticated -->
-          {#if hasAuthToken}
-            {#if onTogglePin}
-              <button
-                onclick={e => {
-                  e.stopPropagation();
-                  handleTogglePin();
-                }}
-                class="btn-icon w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
-                title={note.is_pinned ? 'Unpin note' : 'Pin note'}
-              >
-                {#if note.is_pinned}
-                  <PinOff class="w-4 h-4 text-warning-600 dark:text-primary-400" />
-                {:else}
-                  <Pin class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
-                {/if}
-              </button>
-            {/if}
+        {/if}
+        {#if hasAuthToken && onPermanentDelete}
+          <button
+            onclick={e => {
+              e.stopPropagation();
+              handlePermanentDelete();
+            }}
+            class="btn-icon hover:!text-negative"
+            title="Permanently delete note"
+          >
+            <Trash2 class="size-4" />
+          </button>
+        {/if}
+      {:else}
+        <!-- Share button - Always available -->
+        <button
+          onclick={e => {
+            e.stopPropagation();
+            handleShare();
+          }}
+          class="btn-icon"
+          title="Share note"
+        >
+          <Share2 class="size-4" />
+        </button>
+        <!-- Edit and Delete buttons - Only show when authenticated -->
+        {#if hasAuthToken}
+          {#if onTogglePin}
             <button
               onclick={e => {
                 e.stopPropagation();
-                handleEdit();
+                handleTogglePin();
               }}
-              class="btn-icon w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
-              title="Edit note"
+              class="btn-icon {note.is_pinned ? '!text-accent-text' : ''}"
+              title={note.is_pinned ? 'Unpin note' : 'Pin note'}
             >
-              <Pencil
-                class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400"
-              />
-            </button>
-
-            <button
-              onclick={e => {
-                e.stopPropagation();
-                handleDelete();
-              }}
-              class="btn-icon w-8 h-8 rounded-lg bg-white dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-600 flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md"
-              title="Delete note"
-            >
-              <Trash2 class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-red-500 dark:group-hover:text-red-400 transition-colors" />
+              {#if note.is_pinned}
+                <PinOff class="size-4" />
+              {:else}
+                <Pin class="size-4" />
+              {/if}
             </button>
           {/if}
+          <button
+            onclick={e => {
+              e.stopPropagation();
+              handleEdit();
+            }}
+            class="btn-icon"
+            title="Edit note"
+          >
+            <Pencil class="size-4" />
+          </button>
+
+          <button
+            onclick={e => {
+              e.stopPropagation();
+              handleDelete();
+            }}
+            class="btn-icon hover:!text-negative"
+            title="Delete note"
+          >
+            <Trash2 class="size-4" />
+          </button>
         {/if}
-      </div>
+      {/if}
     </div>
   </div>
 </div>

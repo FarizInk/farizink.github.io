@@ -340,49 +340,32 @@
   icon={FileText}
   color="warning"
 >
-  <!-- Hero Section -->
-  <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
-  >
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
-          <FileText class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Meta Tag Generator</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Generate SEO-friendly meta tags</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Actions -->
-  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
-    <button
-      class="btn btn-copy"
-      onclick={loadExample}
-    >
-      <RefreshCw class="w-4 h-4 mr-2" />
-      Load Example
-    </button>
+  <div class="flex flex-wrap gap-2 items-center">
     <button
       class="btn btn-secondary"
-      onclick={clearAll}>Clear All</button
+      onclick={loadExample}
+    >
+      <RefreshCw class="w-4 h-4" />
+      Load example
+    </button>
+    <button
+      class="btn btn-ghost"
+      onclick={clearAll}>Clear all</button
     >
   </div>
 
   <!-- Tab Navigation -->
-  <div
-    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 mb-6 shadow-sm"
-  >
-    <div class="flex flex-wrap border-b border-gray-200 dark:border-gray-700">
-      {#each [{ id: 'basic', label: 'Basic SEO', icon: Search }, { id: 'opengraph', label: 'Open Graph', icon: Globe }, { id: 'twitter', label: 'Twitter Cards', icon: Twitter }, { id: 'additional', label: 'Additional', icon: Code }, { id: 'jsonld', label: 'JSON-LD', icon: FileText }] as tab (tab.id)}
+  <div class="card !p-0 overflow-hidden">
+    <div class="tab-nav !mb-0 px-4 pt-2" role="tablist">
+      {#each [{ id: 'basic', label: 'Basic SEO', icon: Search }, { id: 'opengraph', label: 'Open Graph', icon: Globe }, { id: 'twitter', label: 'Twitter cards', icon: Twitter }, { id: 'additional', label: 'Additional', icon: Code }, { id: 'jsonld', label: 'JSON-LD', icon: FileText }] as tab (tab.id)}
         <button
+          role="tab"
+          aria-selected={activeTab === tab.id}
           onclick={() => (activeTab = tab.id)}
-          class="tab-btn {activeTab === tab.id ? 'active' : ''}"
+          class="tab-btn inline-flex items-center gap-2 {activeTab === tab.id ? 'active' : ''}"
         >
-          <tab.icon class="w-4 h-4 mr-2" />
+          <tab.icon class="w-4 h-4" />
           {tab.label}
         </button>
       {/each}
@@ -396,7 +379,7 @@
             <label
               for="title-input"
               class="label"
-              >Page Title *</label
+              >Page title *</label
             >
             <input
               class="tool-input"
@@ -404,7 +387,7 @@
               bind:value={title}
               placeholder="Enter page title (50-60 characters recommended)"
             />
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p class="text-count mt-1">
               {title.length}/60 characters
             </p>
           </div>
@@ -413,14 +396,14 @@
             <label
               for="description-input"
               class="label"
-              >Meta Description *</label
+              >Meta description *</label
             >
             <textarea
               class="code-editor min-h-[80px]"
               bind:value={description}
               placeholder="Enter page description (150-160 characters recommended)"
             ></textarea>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p class="text-count mt-1">
               {description.length}/160 characters
             </p>
           </div>
@@ -491,7 +474,7 @@
             <label
               for="og-title-input"
               class="label"
-              >OG Title</label
+              >OG title</label
             >
             <input
               type="text"
@@ -505,7 +488,7 @@
             <label
               for="og-description-input"
               class="label"
-              >OG Description</label
+              >OG description</label
             >
             <textarea
               bind:value={ogDescription}
@@ -518,7 +501,7 @@
             <label
               for="og-image-input"
               class="label"
-              >OG Image URL</label
+              >OG image URL</label
             >
             <input
               type="url"
@@ -532,7 +515,7 @@
             <label
               for="og-alt-input"
               class="label"
-              >OG Image Alt</label
+              >OG image alt</label
             >
             <input
               type="text"
@@ -558,7 +541,7 @@
           <div>
             <label
               for="og-type-input"
-              class="label">OG Type</label
+              class="label">OG type</label
            >
            <select
              bind:value={ogType}
@@ -577,7 +560,7 @@
             <label
               for="og-site-input"
               class="label"
-              >OG Site Name</label
+              >OG site name</label
             >
             <input
               type="text"
@@ -591,7 +574,7 @@
             <label
               for="og-locale-input"
               class="label"
-              >OG Locale</label
+              >OG locale</label
             >
             <input
               type="text"
@@ -604,16 +587,16 @@
 
         <!-- Article specific fields -->
         {#if ogType === 'article'}
-          <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <div class="mt-8">
             <h3 class="section-title">
-              Article Specific Tags
+              Article-specific tags
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label
                   for="published-input"
                   class="label"
-                  >Published Time</label
+                  >Published time</label
                 >
                 <input
                   type="datetime-local"
@@ -626,7 +609,7 @@
                 <label
                   for="modified-input"
                   class="label"
-                  >Modified Time</label
+                  >Modified time</label
                 >
                 <input
                   type="datetime-local"
@@ -639,7 +622,7 @@
                 <label
                   for="article-author-input"
                   class="label"
-                  >Article Author</label
+                  >Article author</label
                 >
                 <input
                   type="text"
@@ -653,7 +636,7 @@
                 <label
                   for="section-input"
                   class="label"
-                  >Article Section</label
+                  >Article section</label
                 >
                 <input
                   type="text"
@@ -667,7 +650,7 @@
                 <label
                   for="article-tag-input"
                   class="label"
-                  >Article Tags</label
+                  >Article tags</label
                 >
                 <input
                   type="text"
@@ -688,7 +671,7 @@
             <label
               for="twitter-card-type"
               class="label"
-              >Twitter Card Type</label
+              >Twitter card type</label
            >
            <select
              bind:value={twitterCard}
@@ -705,7 +688,7 @@
             <label
               for="twitter-title-input"
               class="label"
-              >Twitter Title</label
+              >Twitter title</label
             >
             <input
               type="text"
@@ -719,7 +702,7 @@
             <label
               for="twitter-desc-input"
               class="label"
-              >Twitter Description</label
+              >Twitter description</label
             >
           <textarea
             bind:value={twitterDescription}
@@ -732,7 +715,7 @@
             <label
               for="twitter-image-input"
               class="label"
-              >Twitter Image URL</label
+              >Twitter image URL</label
             >
             <input
               type="url"
@@ -746,7 +729,7 @@
             <label
               for="twitter-alt-input"
               class="label"
-              >Twitter Image Alt</label
+              >Twitter image alt</label
             >
             <input
               type="text"
@@ -760,7 +743,7 @@
             <label
               for="twitter-site-input"
               class="label"
-              >Twitter Site</label
+              >Twitter site</label
             >
             <input
               type="text"
@@ -774,7 +757,7 @@
             <label
               for="twitter-creator-input"
               class="label"
-              >Twitter Creator</label
+              >Twitter creator</label
             >
             <input
               type="text"
@@ -793,9 +776,9 @@
             <label
               for="theme-color-input"
               class="label"
-              >Theme Color</label
+              >Theme color</label
             >
-            <input type="color" bind:value={themeColor} class="w-full h-8 rounded cursor-pointer" />
+            <input type="color" bind:value={themeColor} class="input h-12 w-full p-1! cursor-pointer" />
           </div>
 
           <div>
@@ -845,16 +828,14 @@
       {#if activeTab === 'jsonld'}
         <div class="space-y-6">
           <div class="flex items-center">
-            <label class="relative flex items-center cursor-pointer">
+            <label class="custom-checkbox">
               <input
                 type="checkbox"
                 bind:checked={enableJsonLd}
                 id="enable-jsonld"
-                class="peer w-5 h-5 text-warning-600 dark:text-primary-400 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded focus:ring-yellow-500 dark:focus:ring-purple-400"
               />
-              <span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300"
-                >Enable JSON-LD Structured Data</span
-              >
+              <span class="checkmark"></span>
+              <span class="label-text">Enable JSON-LD structured data</span>
             </label>
           </div>
 
@@ -864,7 +845,7 @@
                 <label
                   for="jsonld-type"
                   class="label"
-                  >JSON-LD Type</label
+                  >JSON-LD type</label
                >
                <select
                  bind:value={jsonLdType}
@@ -941,18 +922,16 @@
   </div>
 
   <!-- Generated Output -->
-  <div
-    class="tool-card mb-6"
-  >
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Generated Meta Tags</h2>
-      <div class="flex gap-2">
+  <div class="tool-card">
+    <div class="card-header flex-wrap gap-2">
+      <h2 class="section-title !mb-0">Generated meta tags</h2>
+      <div class="flex flex-wrap gap-2">
         <button
-          class="btn btn-copy"
+          class="btn btn-primary"
           onclick={copyToClipboard}
           disabled={!generatedTags}
         >
-          <Copy class="w-4 h-4 mr-1" />
+          <Copy class="w-4 h-4" />
           Copy
         </button>
         <button
@@ -960,59 +939,47 @@
           onclick={downloadAsHtml}
           disabled={!generatedTags}
         >
-          <Download class="w-4 h-4 mr-1" />
+          <Download class="w-4 h-4" />
           Download HTML
         </button>
       </div>
     </div>
 
-    <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
-      <pre class="text-sm text-gray-700 dark:text-gray-300 overflow-x-auto"><code
+    <div class="p-4 rounded-md bg-sunken">
+      <pre class="text-code {generatedTags ? 'text-ink' : 'text-ink-muted'} overflow-x-auto"><code
           >{generatedTags || 'Fill in the form above to generate meta tags...'}</code
         ></pre>
     </div>
   </div>
 
   <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Search class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+    <div class="card">
+      <div class="feature-icon">
+        <Search class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">SEO Optimized</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">SEO optimized</h3>
+      <p class="feature-description">
         Generate meta tags that follow SEO best practices for better search rankings
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Twitter class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <Twitter class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Social Media Ready</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Social media ready</h3>
+      <p class="feature-description">
         Full support for Open Graph and Twitter Cards for rich social sharing
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Code class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <Code class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">JSON-LD Support</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">JSON-LD support</h3>
+      <p class="feature-description">
         Generate structured data for search engines to better understand your content
       </p>
     </div>

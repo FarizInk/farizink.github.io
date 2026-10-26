@@ -1,0 +1,167 @@
+/* Fariz design system — tokens for Tailwind CSS v4.
+ * Generated from the "Fariz" design system (tokens.json). Dark is the PRIMARY theme:
+ * no attribute = dark. Light = <html data-theme="light">.
+ * Import once, AFTER `@import "tailwindcss";` in your main stylesheet.
+ */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
+/* `dark:` variants keep working: they match whenever light is NOT selected. */
+@custom-variant dark (&:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *));
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
+:root, [data-theme="dark"] {
+  color-scheme: dark;
+  --bg-canvas: #09070f;
+  --bg-card: #14101d;
+  --bg-sunken: #050309;
+  --border-subtle: #251f35;
+  --border-strong: #6f6788;
+  --ink: #f1edfa;
+  --ink-muted: #a59fb8;
+  --accent: #9b6bff;
+  --accent-hover: #b08aff;
+  --ink-on-accent: #0b0714;
+  --accent-text: #bda2ff;
+  --tile-violet: #2a1a50;
+  --tile-orchid: #3b1645;
+  --tile-amber: #3d2a0b;
+  --tile-teal: #0f3236;
+  --tile-void: #241838;
+  --ink-on-dark: #f1edfa;
+  --ink-on-dark-muted: #aaa3be;
+  --glow-amber: #ffb347;
+  --live: #3ccf7a;
+  --negative: #ff7a8a;
+  --focus-ring: #bda2ff;
+  --fz-shadow-card: 0 1px 0 rgba(0,0,0,0.5);
+  --fz-shadow-lift: 0 16px 40px -16px rgba(155,107,255,0.45);
+}
+[data-theme="light"] {
+  color-scheme: light;
+  --bg-canvas: #f6f4fb;
+  --bg-card: #ffffff;
+  --bg-sunken: #ece8f5;
+  --border-subtle: #e2dcef;
+  --border-strong: #857d9c;
+  --ink: #140f20;
+  --ink-muted: #5b5470;
+  --accent: #6d28d9;
+  --accent-hover: #5b21b6;
+  --ink-on-accent: #ffffff;
+  --accent-text: #6d28d9;
+  --tile-violet: #e6dcff;
+  --tile-orchid: #f7dcf3;
+  --tile-amber: #ffe3b3;
+  --tile-teal: #cbece8;
+  --tile-void: #140f20;
+  --ink-on-dark: #f1edfa;
+  --ink-on-dark-muted: #aaa3be;
+  --glow-amber: #d97706;
+  --live: #187a42;
+  --negative: #c2354b;
+  --focus-ring: #6d28d9;
+  --fz-shadow-card: 0 1px 0 rgba(20,15,32,0.06), 0 1px 2px rgba(20,15,32,0.04);
+  --fz-shadow-lift: 0 12px 28px -12px rgba(76,29,149,0.28);
+}
+
+@theme inline {
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --color-canvas: var(--bg-canvas);
+  --color-card: var(--bg-card);
+  --color-sunken: var(--bg-sunken);
+  --color-line: var(--border-subtle);
+  --color-line-strong: var(--border-strong);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-ink-on-accent: var(--ink-on-accent);
+  --color-accent-text: var(--accent-text);
+  --color-tile-violet: var(--tile-violet);
+  --color-tile-orchid: var(--tile-orchid);
+  --color-tile-amber: var(--tile-amber);
+  --color-tile-teal: var(--tile-teal);
+  --color-tile-void: var(--tile-void);
+  --color-ink-on-dark: var(--ink-on-dark);
+  --color-ink-on-dark-muted: var(--ink-on-dark-muted);
+  --color-glow-amber: var(--glow-amber);
+  --color-live: var(--live);
+  --color-negative: var(--negative);
+  --color-focus-ring: var(--focus-ring);
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+  --shadow-card: var(--fz-shadow-card);
+  --shadow-lift: var(--fz-shadow-lift);
+}
+
+@layer base {
+  html { background: var(--bg-canvas); color: var(--ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+  :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+}
+
+/* Nama di hero tile. Satu per halaman. */
+@utility text-display-xl {
+  font-family: var(--font-display);
+  font-size: 64px;
+  line-height: 64px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+/* Judul halaman sekunder (Projects, Photos). */
+@utility text-display {
+  font-family: var(--font-display);
+  font-size: 40px;
+  line-height: 44px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+/* Judul di dalam kartu bento. */
+@utility text-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+/* Paragraf intro di hero tile. */
+@utility text-body-lg {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 400;
+}
+/* Teks isi kartu. */
+@utility text-body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+}
+/* Teks tombol, chip, metadata. */
+@utility text-body-sm {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+/* Label kartu (huruf kapital), ditulis UPPERCASE di markup. */
+@utility text-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+/* Tag stack, durasi lagu, snippet kode. */
+@utility text-code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
+}

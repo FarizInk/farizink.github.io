@@ -90,12 +90,12 @@
     <meta name="twitter:image:alt" content="Nizar Alfarizi Akbar" />
 
     <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#09070f" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Fariz" />
     <meta name="application-name" content="Fariz" />
-    <meta name="msapplication-TileColor" content="#000000" />
+    <meta name="msapplication-TileColor" content="#09070f" />
     <meta name="msapplication-config" content="/browserconfig.xml" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta property="og:video" content="" />
@@ -106,6 +106,22 @@
     <link rel="alternate" hreflang="en" href="https://farizink.github.io/" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    />
+    <!-- Theme: dark is the default; light = <html data-theme="light">; 'system' follows the OS. Runs before paint to avoid a flash. -->
+    <script>
+      try {
+        var t = localStorage.getItem('theme') || 'dark';
+        if (t === 'light' || (t === 'system' && matchMedia('(prefers-color-scheme: light)').matches)) {
+          document.documentElement.dataset.theme = 'light';
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f0edf7');
+        }
+        // .dark mirrors the theme for third-party code that sniffs it (boneyard skeletons)
+        else document.documentElement.classList.add('dark');
+      } catch (e) {}
+    </script>
 
     <!-- Structured Data -->
     <script type="application/ld+json">
@@ -151,25 +167,7 @@
   </head>
 
   <body>
-    <div id="app" class="bg-white dark:bg-gray-900"></div>
+    <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
-  <script type="text/javascript">
-    // self executing function here
-    (function () {
-      if (
-        localStorage.theme === 'dark' ||
-        (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
-      ) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-
-      // Performance mode - default ON
-      if (localStorage.getItem('perf-mode') !== 'fancy') {
-        document.documentElement.classList.add('perf-mode');
-      }
-    })();
-  </script>
 </html>

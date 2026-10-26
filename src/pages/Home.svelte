@@ -5,33 +5,35 @@
   import SpotifyActivity from '../components/SpotifyActivity.svelte';
   import ConnectWithMe from '../components/ConnectWithMe.svelte';
   import DashboardView from '../components/DashboardView.svelte';
-  import { LayoutDashboard, User } from '@lucide/svelte';
+  import DiaryView from '../components/diary/DiaryView.svelte';
+  import { Command, LayoutDashboard, NotebookPen, User, X } from '@lucide/svelte';
   import { isBoneyardCapture } from '../lib/boneyard';
+  import { getAllTools } from '../lib/toolsConfig';
+  import { BentoCard, BentoGrid, Segmented, Tag } from '$lib/components/ds';
+  import { readHomeView, writeHomeView, type HomeView } from '../lib/diary';
+
+  const toolCount = getAllTools().length;
+  const stack = ['php', 'laravel', 'typescript', 'svelte', 'linux'];
 
   let showPhoto = $state(false);
   let randPhoto = $state<string | null>(null);
   let imageLoading = $state(false);
 
-  // Dashboard toggle state
-  let showDashboard = $state(false);
+  // Home view (logged in): Profile / Dashboard / Diary, remembered in localStorage.
+  let view = $state<HomeView>('profile');
   let isLoggedIn = $state(false);
 
-  const DASHBOARD_STORAGE_KEY = 'homeShowDashboard';
+  // Boneyard capture forces the data views so their skeletons get snapshotted.
+  const capturedView: HomeView | null = isBoneyardCapture
+    ? new URLSearchParams(window.location.search).get('view') === 'diary'
+      ? 'diary'
+      : 'dashboard'
+    : null;
+  const shownView = $derived(capturedView ?? (isLoggedIn ? view : 'profile'));
 
-  function loadDashboardPreference(): boolean {
-    if (typeof localStorage === 'undefined') return false;
-    const stored = localStorage.getItem(DASHBOARD_STORAGE_KEY);
-    return stored === 'true';
-  }
-
-  function saveDashboardPreference() {
-    if (typeof localStorage === 'undefined') return;
-    localStorage.setItem(DASHBOARD_STORAGE_KEY, JSON.stringify(showDashboard));
-  }
-
-  function toggleDashboard() {
-    showDashboard = !showDashboard;
-    saveDashboardPreference();
+  function setView(next: string) {
+    view = next as HomeView;
+    writeHomeView(localStorage, view);
   }
 
   const togglePhoto = () => {
@@ -71,7 +73,7 @@
   onMount(() => {
     isLoggedIn = !!localStorage.getItem('authToken');
     if (isLoggedIn) {
-      showDashboard = loadDashboardPreference();
+      view = readHomeView(localStorage);
     }
 
     const handleAuthChange = () => {
@@ -79,11 +81,11 @@
       isLoggedIn = !!localStorage.getItem('authToken');
 
       if (isLoggedIn && !wasLoggedIn) {
-        showDashboard = loadDashboardPreference();
+        view = readHomeView(localStorage);
       }
 
       if (!isLoggedIn) {
-        showDashboard = false;
+        view = 'profile';
       }
     };
 
@@ -97,142 +99,107 @@
   });
 </script>
 
-<main class="min-h-screen flex items-center justify-center px-4 py-8 relative">
-  <div class="max-w-4xl w-full">
-    <!-- Toggle Switch (only when logged in) -->
-    {#if isLoggedIn}
-      <div class="flex justify-end mb-6">
-        <button
-          type="button"
-          onclick={toggleDashboard}
-          class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-xl transition-all duration-200 {showDashboard
-            ? 'bg-warning-100 dark:bg-primary-900/30 text-warning-700 dark:text-primary-300 border border-warning-200 dark:border-primary-700'
-            : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700'}"
-          title={showDashboard ? 'Show profile' : 'Show dashboard'}
-        >
-          {#if showDashboard}
-            <User class="w-4 h-4" />
-            <span class="hidden sm:inline">Profile</span>
-          {:else}
-            <LayoutDashboard class="w-4 h-4" />
-            <span class="hidden sm:inline">Dashboard</span>
-          {/if}
-        </button>
+<main class="mx-auto flex min-h-screen max-w-[1120px] flex-col gap-6 pt-24 pb-12">
+  {#snippet profileIcon()}<User class="size-4" />{/snippet}
+  {#snippet dashboardIcon()}<LayoutDashboard class="size-4" />{/snippet}
+  {#snippet diaryIcon()}<NotebookPen class="size-4" />{/snippet}
+
+  {#if isLoggedIn}
+    <div class="flex justify-end">
+      <div class="w-full sm:w-[380px]">
+        <Segmented
+          label="Home view"
+          value={view}
+          onchange={setView}
+          options={[
+            { value: 'profile', label: 'Profile', icon: profileIcon },
+            { value: 'dashboard', label: 'Dashboard', icon: dashboardIcon },
+            { value: 'diary', label: 'Diary', icon: diaryIcon }
+          ]}
+        />
       </div>
-    {/if}
+    </div>
+  {/if}
 
-    {#if (showDashboard && isLoggedIn) || isBoneyardCapture}
-      <!-- Dashboard View -->
-      <DashboardView />
-    {:else}
-      <!-- Default Content (Profile) -->
-      <div class="text-left">
-        <!-- Name with gradient effect -->
-        <div class="mb-3">
-          <h1
-            class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight bg-gradient-to-r from-black via-yellow-700 to-black bg-clip-text text-transparent dark:from-white dark:via-primary-500 dark:to-white dark:text-transparent bg-[length:200%_auto] animate-gradient"
-          >
-            Nizar Alfarizi Akbar
-          </h1>
-        </div>
-
-        <!-- Nickname -->
-        <div class="mb-6">
-          <p class="text-lg md:text-xl text-black dark:text-gray-400">
-            known as
-            <button
-              type="button"
-              onclick={() => togglePhoto()}
-              class="font-bold text-warning-600 dark:text-primary-400 italic"
-            >
-              Fariz
-            </button>
-          </p>
-        </div>
-
-        <!-- Description -->
-        <div class="mb-8">
-          <p class="text-black dark:text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl">
-            Software engineer based in Sidoarjo, Indonesia. Specializing in backend development and
-            high-quality web applications. Currently building <span
-              class="italic text-warning-600 dark:text-primary-400">"gabut"</span
-            > projects and crushing work tasks 🙂
-          </p>
-        </div>
-
-        <!-- Connect Section -->
-        <div class="mb-12">
+  {#if shownView === 'dashboard'}
+    <DashboardView />
+  {:else if shownView === 'diary'}
+    <DiaryView />
+  {:else}
+    <BentoGrid>
+      <BentoCard tone="accent" colSpan={2} rowSpan={2} size="lg" label="Hi, I'm">
+        <h1 class="text-display-xl m-0 max-sm:text-[48px] max-sm:leading-[48px]">
+          <button type="button" onclick={togglePhoto}>Fariz</button>
+        </h1>
+        <p class="text-body-lg m-0 max-w-[480px]">
+          Nizar Alfarizi Akbar — software engineer based in Sidoarjo, Indonesia. Backend, mostly,
+          plus high-quality web apps. Currently building <strong class="font-semibold">gabut</strong>
+          projects and crushing work tasks 🙂
+        </p>
+        <div class="mt-auto pt-4">
           <ConnectWithMe />
         </div>
+      </BentoCard>
 
-        <!-- Spotify Widget -->
-        <div>
-          <SpotifyActivity />
+      <BentoCard tone="lilac" label="Stack">
+        <div class="flex flex-wrap gap-2">
+          {#each stack as item (item)}<Tag>{item}</Tag>{/each}
         </div>
-      </div>
-    {/if}
-  </div>
+      </BentoCard>
+
+      <BentoCard tone="lime" label="Tools" title="{toolCount} utilities" href="/tools">
+        <p class="text-body-sm m-0 mt-auto font-normal">Free dev tools that run in your browser.</p>
+      </BentoCard>
+
+      <SpotifyActivity />
+
+      <BentoCard tone="deep" label="Based in" colSpan={4}>
+        <p class="text-title m-0">Sidoarjo, Indonesia</p>
+        <p class="text-body-sm m-0 mt-auto flex flex-wrap items-center gap-2 font-normal">
+          Press
+          <kbd class="inline-flex items-center gap-1 rounded-md bg-ink-on-dark/15 px-1.5 font-mono text-xs">
+            <Command class="size-3" />K
+          </kbd>
+          to jump anywhere on the site.
+        </p>
+      </BentoCard>
+    </BentoGrid>
+  {/if}
 
   <!-- Floating Photo Card -->
   {#if showPhoto}
     <div
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-overlay p-4 backdrop-blur-sm"
       onclick={() => (showPhoto = false)}
       onkeydown={e => e.key === 'Escape' && (showPhoto = false)}
       role="dialog"
       aria-modal="true"
-      aria-label="Photo modal"
+      aria-label="Photo of Fariz"
       tabindex="-1"
     >
-      <div class="relative group animate-scale-in" role="document" tabindex="-1">
-        <!-- Close button -->
+      <div class="relative" role="document" tabindex="-1">
         <button
           onclick={() => (showPhoto = false)}
-          class="btn-icon absolute hover:cursor-pointer -top-3 -right-3 z-10 w-10 h-10 bg-gray-900 dark:bg-white rounded-full flex items-center justify-center text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-200 transition-all duration-200 shadow-lg hover:scale-110"
-          aria-label="Close photo modal"
+          class="absolute -top-3 -right-3 z-10 grid size-10 place-items-center rounded-pill bg-raised text-ink hover:bg-control"
+          aria-label="Close photo"
         >
-          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
-            <path
-              d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"
-            />
-          </svg>
+          <X class="size-5" />
         </button>
 
-        <!-- Photo card with natural ratio -->
         <div
-          class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden max-w-sm md:max-w-md lg:max-w-lg relative min-w-[280px] sm:min-w-[320px]"
+          class="relative w-fit max-w-sm min-w-[280px] overflow-hidden rounded-lg bg-raised sm:min-w-[320px] md:max-w-md lg:max-w-lg"
         >
           {#if imageLoading}
-            <div
-              class="aspect-[3/4] w-full min-h-[300px] sm:min-h-[400px] bg-gradient-to-br from-gray-100 via-gray-200 to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse"
-            >
-              <div class="h-full w-full relative overflow-hidden">
-                <div
-                  class="absolute inset-0 bg-gradient-to-t from-gray-200/50 to-transparent dark:from-gray-600/50"
-                ></div>
-                <div class="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                  <div
-                    class="h-24 w-24 rounded-full bg-gray-300/50 dark:bg-gray-600/50 animate-pulse"
-                  ></div>
-                </div>
-              </div>
-            </div>
+            <div class="aspect-[3/4] min-h-[300px] w-full bg-sunken sm:min-h-[400px]"></div>
           {/if}
           {#if randPhoto}
             <img
               src={randPhoto}
               alt="Fariz"
-              class="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500 {imageLoading
-                ? 'opacity-0'
-                : 'opacity-100'}"
+              class="block h-auto max-h-[calc(100dvh-4rem)] w-auto max-w-full {imageLoading ? 'opacity-0' : 'opacity-100'}"
             />
           {/if}
         </div>
-
-        <!-- Subtle shadow effect -->
-        <div
-          class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-2xl pointer-events-none"
-        ></div>
       </div>
     </div>
   {/if}

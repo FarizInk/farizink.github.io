@@ -99,73 +99,46 @@
   icon={QrCode}
   color="warning"
 >
-  <!-- Hero Section -->
-  <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
-  >
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
-          <QrCode class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">QR Code Generator</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Generate custom QR codes with ease</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Controls -->
-  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
-    <button class="btn btn-copy" onclick={generateQRCode}>
-      <RefreshCw class="w-4 h-4 mr-2" />
+  <div class="flex flex-wrap gap-2">
+    <button class="btn btn-primary" onclick={generateQRCode}>
+      <RefreshCw class="size-4" />
       Generate
     </button>
     <button class="btn btn-secondary" onclick={resetForm}>Reset</button>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
     <!-- Input Section -->
-    <div class="space-y-6">
+    <div class="flex flex-col gap-4">
       <!-- Text Input -->
-      <div>
-        <label
-          for="text-input"
-          class="label"
-        >
-          Text or URL
-        </label>
+      <div class="tool-card">
+        <label for="text-input" class="label">Text or URL</label>
         <textarea
           id="text-input"
           bind:value={text}
           placeholder="Enter text, URL, or any data to encode..."
           rows="4"
-          class="textarea {error
-            ? 'border-red-200 dark:border-red-600 focus:border-red-500 focus:ring-red-500'
-            : ''}"
+          class="textarea"
+          aria-invalid={error ? 'true' : undefined}
         ></textarea>
         {#if error}
-          <p class="mt-1 text-sm text-danger-500">{error}</p>
+          <p class="text-body-sm mt-2 text-negative">Error: {error}</p>
         {/if}
       </div>
 
       <!-- Customization Options -->
-      <div
-        class="tool-card space-y-6"
-      >
-        <div class="flex items-center gap-2 mb-2 text-gray-900 dark:text-white">
-          <Settings2 class="w-5 h-5" />
-          <h3 class="text-lg font-semibold">Customization</h3>
+      <div class="tool-card flex flex-col gap-6">
+        <div class="flex items-center gap-2 text-ink">
+          <Settings2 class="size-5 text-ink-muted" />
+          <h3 class="section-title mb-0!">Customization</h3>
         </div>
 
         <!-- Size -->
         <div>
-          <div class="flex justify-between items-center mb-2">
-            <label for="size" class="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Size: {size}px
-            </label>
-          </div>
+          <label for="size" class="label">
+            Size: <span class="font-mono text-ink">{size}px</span>
+          </label>
           <input
             id="size"
             type="range"
@@ -174,37 +147,25 @@
             step="50"
             bind:value={size}
             class="slider"
+            style="--p: {((Number(size) - 100) / (500 - 100)) * 100}%"
           />
         </div>
 
         <!-- Colors -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label
-              for="bg-color"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Background</label
-            >
-            <input id="bg-color" type="color" bind:value={bgColor} class="input h-12 p-1 w-full" />
+            <label for="bg-color" class="label">Background</label>
+            <input id="bg-color" type="color" bind:value={bgColor} class="input h-12 w-full p-1!" />
           </div>
           <div>
-            <label
-              for="fg-color"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Foreground</label
-            >
-            <input id="fg-color" type="color" bind:value={fgColor} class="input h-12 p-1 w-full" />
+            <label for="fg-color" class="label">Foreground</label>
+            <input id="fg-color" type="color" bind:value={fgColor} class="input h-12 w-full p-1!" />
           </div>
         </div>
 
         <!-- Error Correction Level -->
         <div>
-          <label
-            for="error-correction"
-            class="label"
-          >
-            Error Correction Level
-          </label>
+          <label for="error-correction" class="label">Error correction level</label>
           <select id="error-correction" bind:value={errorCorrection} class="select">
             {#each errorCorrectionOptions as option (option.value)}
               <option value={option.value}>{option.label}</option>
@@ -213,77 +174,62 @@
         </div>
 
         <!-- Margin -->
-        <div class="flex items-center">
-          <input
-            type="checkbox"
-            id="include-margin"
-            bind:checked={includeMargin}
-            class="w-4 h-4 text-warning-600 dark:text-primary-500 bg-gray-100 border-gray-300 rounded focus:ring-success-500 dark:focus:ring-success-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-          />
-          <label
-            for="include-margin"
-            class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300"
-          >
-            Include margin
-          </label>
-        </div>
+        <label class="custom-checkbox" for="include-margin">
+          <input type="checkbox" id="include-margin" bind:checked={includeMargin} />
+          <span class="checkmark"></span>
+          <span class="label-text">Include margin</span>
+        </label>
       </div>
     </div>
 
     <!-- Output Section -->
-    <div class="space-y-6">
-      <div>
-        <h3 class="section-title">Generated QR Code</h3>
+    <div class="flex flex-col gap-4">
+      <div class="tool-card">
+        <h3 class="section-title">Generated QR code</h3>
 
         {#if qrDataUrl}
-          <div
-            class="tool-card flex flex-col items-center"
-          >
-            <div class="mb-6 p-4 bg-white rounded-lg shadow-sm">
+          <div class="flex flex-col items-center">
+            <div class="mb-6 rounded-md bg-sunken p-4">
               <img
                 src={qrDataUrl}
                 alt="Generated QR Code"
-                class="max-w-full h-auto rounded"
+                class="h-auto max-w-full rounded-sm"
                 style="max-width: {size}px; max-height: {size}px;"
               />
             </div>
 
-            <div class="flex flex-wrap gap-3 justify-center w-full">
-              <button onclick={downloadQRCode} class="btn btn-copy btn-block sm:w-auto">
-                <Download class="w-4 h-4 mr-2" />
+            <div class="flex w-full flex-wrap justify-center gap-2">
+              <button onclick={downloadQRCode} class="btn btn-secondary">
+                <Download class="size-4" />
                 Download PNG
               </button>
-              <button onclick={copyToClipboard} class="btn btn-secondary btn-block sm:w-auto">
-                <Copy class="w-4 h-4 mr-2" />
-                Copy Image
+              <button onclick={copyToClipboard} class="btn btn-ghost">
+                <Copy class="size-4" />
+                Copy image
               </button>
             </div>
           </div>
         {:else if error}
-          <div
-            class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6"
-          >
-            <p class="text-red-600 dark:text-red-400 text-center">
-              {error}
-            </p>
+          <div class="status-error rounded-md p-6">
+            <p class="text-center">Error: {error}</p>
           </div>
         {:else}
           <div
-            class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-12 flex flex-col items-center justify-center text-gray-500 dark:text-gray-400"
+            class="flex flex-col items-center justify-center rounded-md bg-sunken p-12 text-ink-muted"
           >
-            <QrCode class="w-12 h-12 mb-4 opacity-50" />
-            <p class="text-center">Enter text and click "Generate" to create your QR code</p>
+            <QrCode class="mb-4 size-12" />
+            <p class="text-body-sm text-center">Enter text and click "Generate" to create your QR code</p>
           </div>
         {/if}
       </div>
 
       <!-- Info Section -->
-      <div class="bg-warning-100 dark:bg-primary-900/20 text-yellow-800 dark:text-primary-200">
-        <div class="flex items-center gap-2 mb-2 text-yellow-800 dark:text-yellow-200">
-          <Info class="w-4 h-4" />
-          <h4 class="text-sm font-semibold">Tips</h4>
+      <div class="info-card">
+        <div class="mb-2 flex items-center gap-2 text-ink">
+          <Info class="size-4 text-accent-text" />
+          <h4 class="text-label text-ink-muted">Tips</h4>
         </div>
-        <ul class="text-sm text-warning-700 dark:text-primary-300 space-y-1 list-disc list-inside">
+        <ul class="text-body-sm list-inside list-disc space-y-1 text-ink-muted">
           <li>QR codes can store up to 4,296 alphanumeric characters</li>
           <li>Higher error correction levels create more complex but more robust codes</li>
           <li>Test your QR code before using it in production</li>

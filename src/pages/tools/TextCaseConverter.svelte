@@ -149,36 +149,14 @@
   icon={Type}
   color="warning"
 >
-  <!-- Hero Section -->
-  <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
-  >
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
-          <Type class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Case Converter</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            Transform text between 10 different case formats
-          </p>
-        </div>
-      </div>
-      <button
-        onclick={clearAll}
-        class="btn btn-secondary"
-      >
-        Clear All
-      </button>
-    </div>
+  <!-- Toolbar -->
+  <div class="flex flex-wrap gap-2">
+    <button onclick={clearAll} class="btn btn-sm btn-secondary">Clear all</button>
   </div>
 
   <!-- Case Selection -->
-  <div
-    class="tool-card mb-4"
-  >
-    <h2 class="section-title">Select Case Type</h2>
+  <div class="tool-card">
+    <h2 class="section-title">Select case type</h2>
 
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
       {#each Object.entries(caseConversions) as [caseType] (caseType)}
@@ -198,28 +176,26 @@
         <button
           type="button"
           onclick={() => (activeCase = caseType)}
-          class="preset-btn {activeCase === caseType ? 'active' : ''}"
+          class="preset-btn relative !rounded-md !text-center {activeCase === caseType ? 'active' : ''}"
         >
           <div
             class="flex items-center justify-center mb-2 {activeCase === caseType
-              ? 'text-warning-600 dark:text-primary-400'
-              : 'text-gray-500 dark:text-gray-400'}"
+              ? 'text-accent-text'
+              : 'text-ink-muted'}"
           >
             <Type class="w-5 h-5" />
           </div>
 
-          <div class="text-sm font-medium text-gray-900 dark:text-white capitalize mb-1">
+          <div class="text-body-sm text-ink capitalize mb-1">
             {caseType.replace(/([A-Z])/g, ' $1').trim()}
           </div>
 
-          <div class="text-xs text-gray-500 dark:text-gray-400 font-mono text-center">
+          <div class="text-code text-ink-muted text-center">
             {examples[caseType as keyof typeof examples]}
           </div>
 
           {#if activeCase === caseType}
-            <div
-              class="absolute top-1 right-1 w-2 h-2 bg-warning-500 dark:bg-primary-500 rounded-full"
-            ></div>
+            <div class="absolute top-2 right-2 w-2 h-2 bg-accent rounded-pill"></div>
           {/if}
         </button>
       {/each}
@@ -229,12 +205,10 @@
   <!-- Main Content -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Input Section -->
-    <div
-      class="tool-card"
-    >
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input Text</h2>
-        <div class="text-sm text-gray-500 dark:text-gray-400">
+    <div class="tool-card">
+      <div class="card-header">
+        <h2 class="section-title !mb-0">Input text</h2>
+        <div class="text-count">
           {inputText.length} chars
         </div>
       </div>
@@ -246,39 +220,35 @@
       ></textarea>
 
       {#if textStats}
-        <div
-          class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 grid grid-cols-2 md:grid-cols-3 gap-2"
-        >
-          <div class="text-sm text-gray-600 dark:text-gray-400">
-            <span class="font-medium">Characters:</span>
-            <span class="ml-1 text-gray-900 dark:text-white">{textStats.characters}</span>
+        <div class="mt-4 grid grid-cols-2 md:grid-cols-3 gap-2">
+          <div class="text-body-sm text-ink-muted">
+            <span>Characters:</span>
+            <span class="ml-1 font-mono text-ink">{textStats.characters}</span>
           </div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">
-            <span class="font-medium">No spaces:</span>
-            <span class="ml-1 text-gray-900 dark:text-white">{textStats.charactersNoSpaces}</span>
+          <div class="text-body-sm text-ink-muted">
+            <span>No spaces:</span>
+            <span class="ml-1 font-mono text-ink">{textStats.charactersNoSpaces}</span>
           </div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">
-            <span class="font-medium">Words:</span>
-            <span class="ml-1 text-gray-900 dark:text-white">{textStats.words}</span>
+          <div class="text-body-sm text-ink-muted">
+            <span>Words:</span>
+            <span class="ml-1 font-mono text-ink">{textStats.words}</span>
           </div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">
-            <span class="font-medium">Sentences:</span>
-            <span class="ml-1 text-gray-900 dark:text-white">{textStats.sentences}</span>
+          <div class="text-body-sm text-ink-muted">
+            <span>Sentences:</span>
+            <span class="ml-1 font-mono text-ink">{textStats.sentences}</span>
           </div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">
-            <span class="font-medium">Lines:</span>
-            <span class="ml-1 text-gray-900 dark:text-white">{textStats.lines}</span>
+          <div class="text-body-sm text-ink-muted">
+            <span>Lines:</span>
+            <span class="ml-1 font-mono text-ink">{textStats.lines}</span>
           </div>
         </div>
       {/if}
     </div>
 
     <!-- Output Section -->
-    <div
-      class="tool-card"
-    >
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Converted Text</h2>
+    <div class="tool-card">
+      <div class="card-header">
+        <h2 class="section-title !mb-0">Converted text</h2>
         <div class="flex items-center gap-2">
           <button
             onclick={swapTexts}
@@ -291,7 +261,7 @@
           <button
             onclick={copyToClipboard}
             disabled={!convertedText}
-            class="btn btn-sm btn-copy"
+            class="btn btn-sm btn-primary"
           >
             <Copy class="w-3.5 h-3.5" />
             {copied ? 'Copied!' : 'Copy'}
@@ -307,21 +277,19 @@
 
       <div class="flex gap-2 mt-4">
         <button
-          class="btn btn-copy w-full"
+          class="btn btn-secondary w-full"
           onclick={downloadAsFile}
           disabled={!convertedText}
         >
-          Download as File
+          Download as file
         </button>
       </div>
     </div>
   </div>
 
   <!-- Quick Actions -->
-  <div
-    class="tool-card mb-4"
-  >
-    <h2 class="section-title">Quick Actions</h2>
+  <div class="tool-card">
+    <h2 class="section-title">Quick actions</h2>
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
       <button
@@ -329,74 +297,53 @@
           inputText = 'Hello World! This is a SAMPLE text for TESTING.';
           activeCase = 'uppercase';
         }}
-        class="btn btn-copy"
-      >
-        Load Sample Text
-      </button>
-
-      <button
-        onclick={() => (activeCase = 'uppercase')}
         class="btn btn-secondary"
       >
+        Load sample text
+      </button>
+
+      <button onclick={() => (activeCase = 'uppercase')} class="btn btn-secondary">
         UPPERCASE
       </button>
 
-      <button
-        onclick={() => (activeCase = 'lowercase')}
-        class="btn btn-secondary"
-      >
+      <button onclick={() => (activeCase = 'lowercase')} class="btn btn-secondary">
         lowercase
       </button>
 
-      <button
-        onclick={() => (activeCase = 'title')}
-        class="btn btn-secondary"
-      >
+      <button onclick={() => (activeCase = 'title')} class="btn btn-secondary">
         Title Case
       </button>
     </div>
   </div>
 
   <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Sparkles class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+    <div class="card">
+      <div class="feature-icon">
+        <Sparkles class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Multiple Cases</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Multiple cases</h3>
+      <p class="feature-description">
         Convert between 10 different case formats including camelCase, snake_case, and kebab-case.
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <Zap class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Real-time Conversion</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Real-time conversion</h3>
+      <p class="feature-description">
         Text is converted automatically as you type with instant visual feedback.
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Check class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <Check class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Text Statistics</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Text statistics</h3>
+      <p class="feature-description">
         View character count, word count, and more statistics about your input text.
       </p>
     </div>

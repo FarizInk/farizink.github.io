@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Hash, Zap, FileText } from '@lucide/svelte';
+  import { Hash, Zap, FileText, Check } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
 
   let inputText = $state('');
@@ -93,40 +93,21 @@
   icon={Hash}
   color="warning"
 >
-  <!-- Hero Section -->
-  <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
-  >
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
-          <Hash class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Hash Generator</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Generate secure hashes instantly</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Controls -->
-  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
-    <button class="btn btn-copy" onclick={loadSampleText}>
-      Load Sample Text
+  <div class="flex flex-wrap gap-2">
+    <button class="btn btn-secondary btn-sm" onclick={loadSampleText}>
+      Load sample text
     </button>
-    <button class="btn btn-secondary" onclick={clearAll}>
-      Clear All
+    <button class="btn btn-ghost btn-sm" onclick={clearAll}>
+      Clear all
     </button>
   </div>
 
   <!-- Input Section -->
-  <div
-    class="tool-card mb-6"
-  >
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input Text</h2>
-      <span class="text-sm text-gray-500 dark:text-gray-400">
+  <div class="tool-card">
+    <div class="card-header">
+      <h2 class="section-title mb-0">Input text</h2>
+      <span class="text-count">
         {inputText.length} characters
       </span>
     </div>
@@ -139,39 +120,38 @@
 
   <!-- Hash Results -->
   {#if Object.keys(hashes).length > 0}
-    <div class="space-y-4 mb-6">
+    <div class="flex flex-col gap-4">
       {#each Object.entries(hashes) as [algorithm, hash] (algorithm)}
-        <div
-          class="tool-card"
-        >
-          <div class="flex justify-between items-center mb-3">
+        <div class="tool-card">
+          <div class="flex justify-between items-center gap-3 mb-3">
             <div class="flex items-center gap-3">
-              <div
-                class="w-10 h-10 bg-warning-100 dark:bg-primary-900/20 rounded-lg flex items-center justify-center"
-              >
-                <Hash class="w-5 h-5 text-warning-600 dark:text-primary-400" />
+              <div class="w-10 h-10 bg-tile-lilac text-ink-on-bright rounded-md flex items-center justify-center">
+                <Hash class="w-5 h-5 text-ink" />
               </div>
               <div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                <h3 class="text-title text-ink">
                   {algorithm.toUpperCase()}
                 </h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                  {hash.length} characters • {hash.length * 4} bits
+                <p class="text-code text-ink-muted">
+                  {hash.length} characters · {hash.length * 4} bits
                 </p>
               </div>
             </div>
 
             <button
               onclick={() => copyToClipboard(hash, algorithm)}
-              class="btn btn-copy"
+              class="btn btn-copy btn-sm"
             >
-              {copiedText === algorithm ? '✓ Copied!' : 'Copy Hash'}
+              {#if copiedText === algorithm}
+                <Check class="w-4 h-4" />
+                Copied
+              {:else}
+                Copy hash
+              {/if}
             </button>
           </div>
           <div class="relative">
-            <div
-              class="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg font-mono text-sm text-gray-900 dark:text-white break-all"
-            >
+            <div class="p-3 bg-sunken rounded-md font-mono text-code text-ink break-all">
               {hash}
             </div>
           </div>
@@ -181,32 +161,30 @@
   {/if}
 
   <!-- Hash Information -->
-  <div
-    class="tool-card mb-6"
-  >
-    <h3 class="section-title">About Hash Algorithms</h3>
+  <div class="tool-card">
+    <h3 class="section-title">About hash algorithms</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-2">MD5</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
+      <div class="info-card">
+        <h4 class="section-title-sm">MD5</h4>
+        <p class="text-body-sm text-ink-muted">
           128-bit hash function. Fast but not cryptographically secure for sensitive data.
         </p>
       </div>
-      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-2">SHA-1</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
+      <div class="info-card">
+        <h4 class="section-title-sm">SHA-1</h4>
+        <p class="text-body-sm text-ink-muted">
           160-bit hash function. Deprecated for security purposes but still used for compatibility.
         </p>
       </div>
-      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-2">SHA-256</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
+      <div class="info-card">
+        <h4 class="section-title-sm">SHA-256</h4>
+        <p class="text-body-sm text-ink-muted">
           256-bit hash function. Secure and widely used for blockchain and data integrity.
         </p>
       </div>
-      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-2">SHA-512</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
+      <div class="info-card">
+        <h4 class="section-title-sm">SHA-512</h4>
+        <p class="text-body-sm text-ink-muted">
           512-bit hash function. Highest security level, suitable for critical applications.
         </p>
       </div>
@@ -214,45 +192,33 @@
   </div>
 
   <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Hash class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="card">
+      <div class="feature-icon">
+        <Hash class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Multiple Algorithms</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Multiple algorithms</h3>
+      <p class="feature-description">
         Generate MD5, SHA1, SHA256, and SHA512 hashes for different security needs
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <FileText class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <FileText class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Data Verification</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Data verification</h3>
+      <p class="feature-description">
         Verify file integrity and authenticate data transfers with cryptographic hashes
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <Zap class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Instant Results</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Instant results</h3>
+      <p class="feature-description">
         Generate hashes instantly with real-time updates as you type
       </p>
     </div>

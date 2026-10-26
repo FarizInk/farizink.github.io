@@ -2,6 +2,7 @@ import { svelte } from '@sveltejs/vite-plugin-svelte';
 import tailwindcss from '@tailwindcss/vite';
 import { boneyardPlugin } from 'boneyard-js/vite';
 import { defineConfig } from 'vite';
+import { fileURLToPath } from 'node:url';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,6 +11,9 @@ export default defineConfig({
   // It is dev-only — `vite build` (run by deploy.sh) just bundles the
   // committed .bones.json from src/bones/, no browser involved.
   plugins: [svelte(), tailwindcss(), boneyardPlugin()],
+  resolve: {
+    alias: { $lib: fileURLToPath(new URL('./src/lib', import.meta.url)) }
+  },
   build: {
     rollupOptions: {
       output: {

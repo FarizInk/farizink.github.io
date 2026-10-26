@@ -39,7 +39,7 @@
   let activeTab = $state('box');
 
   // Derived CSS output
-  const boxShadowCSS = $derived(() => {
+  const boxShadowCSS = $derived.by(() => {
     return shadows
       .map(shadow => {
         const colorHex =
@@ -55,7 +55,7 @@
       .join(', ');
   });
 
-  const textShadowCSS = $derived(() => {
+  const textShadowCSS = $derived.by(() => {
     return textShadows
       .map(shadow => {
         const colorHex =
@@ -287,84 +287,62 @@
   icon={Settings2}
   color="warning"
 >
-  <!-- Hero Section -->
-  <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
-  >
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
-          <Settings2 class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">CSS Shadow Generator</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Create beautiful shadow effects</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Presets -->
-  <div
-    class="tool-card mb-6"
-  >
-    <h2 class="section-title">Quick Presets</h2>
+  <div class="tool-card">
+    <h2 class="section-title">Quick presets</h2>
     <div class="flex flex-wrap gap-2">
       <button
         onclick={() => loadPreset('card')}
-        class="btn btn-sm btn-secondary">Card Shadow</button
+        class="preset-btn">Card shadow</button
       >
       <button
         onclick={() => loadPreset('button')}
-        class="btn btn-sm btn-secondary">Button Shadow</button
+        class="preset-btn">Button shadow</button
       >
       <button
         onclick={() => loadPreset('neon')}
-        class="btn btn-sm btn-secondary">Neon Effect</button
+        class="preset-btn">Neon effect</button
       >
       <button
         onclick={() => loadPreset('inset')}
-        class="btn btn-sm btn-secondary">Inset Shadow</button
+        class="preset-btn">Inset shadow</button
       >
       <button
         onclick={randomizeColor}
-        class="btn btn-sm btn-copy"
+        class="btn btn-sm btn-secondary"
       >
-        🎨 Random Color
+        <Sparkles class="w-4 h-4" />
+        Random color
       </button>
       <button
         onclick={resetAll}
-        class="px-3 py-1.5 text-sm rounded transition-colors bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/30"
-        >Reset All</button
+        class="btn btn-sm btn-ghost"
+        >Reset all</button
       >
     </div>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Controls Panel -->
     <div class="space-y-4">
       <!-- Tab Navigation -->
-      <div
-        class="tool-card"
-      >
-        <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6">
+      <div class="tool-card">
+        <div class="tab-nav" role="tablist">
           <button
+            role="tab"
+            aria-selected={activeTab === 'box'}
             onclick={() => (activeTab = 'box')}
-            class="tab-btn px-4 py-3 text-sm font-medium border-b-2 transition-colors flex-1 {activeTab ===
-            'box'
-              ? 'border-warning-500 dark:border-primary-500 text-warning-600 dark:text-primary-400 bg-warning-50 dark:bg-primary-900/20'
-              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
+            class="tab-btn flex-1 {activeTab === 'box' ? 'active' : ''}"
           >
-            Box Shadow
+            Box shadow
           </button>
           <button
+            role="tab"
+            aria-selected={activeTab === 'text'}
             onclick={() => (activeTab = 'text')}
-            class="tab-btn px-4 py-3 text-sm font-medium border-b-2 transition-colors flex-1 {activeTab ===
-            'text'
-              ? 'border-warning-500 dark:border-primary-500 text-warning-600 dark:text-primary-400 bg-warning-50 dark:bg-primary-900/20'
-              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
+            class="tab-btn flex-1 {activeTab === 'text' ? 'active' : ''}"
           >
-            Text Shadow
+            Text shadow
           </button>
         </div>
 
@@ -372,15 +350,17 @@
         {#if activeTab === 'box'}
           <div class="space-y-4">
             {#each shadows as shadow, index (shadow.id)}
-              <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+              <div class="result-card">
                 <div class="flex items-center justify-between mb-4">
-                  <h3 class="text-sm font-medium text-gray-900 dark:text-white">
+                  <h3 class="text-label text-ink-muted">
                     Shadow {index + 1}
                   </h3>
                   {#if shadows.length > 1}
                     <button
                       onclick={() => removeBoxShadow(shadow.id)}
-                      class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-100 hover:bg-red-200 dark:bg-red-900/20 dark:hover:bg-red-900/30 text-red-700 dark:text-red-400 transition-all"
+                      class="btn-icon hover:!text-negative"
+                      aria-label="Remove shadow {index + 1}"
+                      title="Remove shadow"
                     >
                       <X class="w-4 h-4" />
                     </button>
@@ -389,91 +369,96 @@
 
                 <div class="grid grid-cols-2 gap-4">
                   <div>
-                    <span class="label section-title-sm">X Offset</span>
+                    <span class="label">X offset</span>
                     <input
                       type="range"
                       bind:value={shadow.x}
                       min="-50"
                       max="50"
                       class="slider w-full"
+                      style="--p: {((shadow.x + 50) / 100) * 100}%"
                     />
-                    <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.x}px</span>
+                    <span class="text-code text-ink-muted">{shadow.x}px</span>
                   </div>
 
                   <div>
-                    <span class="label section-title-sm">Y Offset</span>
+                    <span class="label">Y offset</span>
                     <input
                       type="range"
                       bind:value={shadow.y}
                       min="-50"
                       max="50"
                       class="slider w-full"
+                      style="--p: {((shadow.y + 50) / 100) * 100}%"
                     />
-                    <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.y}px</span>
+                    <span class="text-code text-ink-muted">{shadow.y}px</span>
                   </div>
 
                   <div>
-                    <span class="label section-title-sm">Blur</span>
+                    <span class="label">Blur</span>
                     <input
                       type="range"
                       bind:value={shadow.blur}
                       min="0"
                       max="100"
                       class="slider w-full"
+                      style="--p: {(shadow.blur / 100) * 100}%"
                     />
-                    <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.blur}px</span>
+                    <span class="text-code text-ink-muted">{shadow.blur}px</span>
                   </div>
 
                   <div>
-                    <span class="label section-title-sm">Spread</span>
+                    <span class="label">Spread</span>
                     <input
                       type="range"
                       bind:value={shadow.spread}
                       min="-50"
                       max="50"
                       class="slider w-full"
+                      style="--p: {((shadow.spread + 50) / 100) * 100}%"
                     />
-                    <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.spread}px</span>
+                    <span class="text-code text-ink-muted">{shadow.spread}px</span>
                   </div>
 
                   <div>
-                    <span class="label section-title-sm">Color</span>
+                    <span class="label">Color</span>
                     <div class="flex gap-2">
                       <input
                         type="color"
                         bind:value={shadow.color}
-                        class="w-12 h-8 rounded cursor-pointer"
+                        class="w-12 h-10 rounded-sm bg-control p-1 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
                       />
                       <input
                         type="text"
                         bind:value={shadow.color}
-                        class="inline-input flex-1"
+                        class="inline-input flex-1 min-w-0 font-mono"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <span class="label section-title-sm">Opacity</span>
+                    <span class="label">Opacity</span>
                     <input
                       type="range"
                       bind:value={shadow.opacity}
                       min="0"
                       max="100"
                       class="slider w-full"
+                      style="--p: {(shadow.opacity / 100) * 100}%"
                     />
-                    <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.opacity}%</span>
+                    <span class="text-code text-ink-muted">{shadow.opacity}%</span>
                   </div>
                 </div>
 
                 <div class="flex items-center mt-4">
-                  <label class="relative flex items-center cursor-pointer">
+                  <label class="custom-checkbox">
                     <input
                       type="checkbox"
                       bind:checked={shadow.inset}
                       id="box-inset-{index}"
-                      class="peer w-4 h-4 text-warning-600 dark:text-primary-400 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded focus:ring-yellow-500 dark:focus:ring-purple-400"
                     />
-                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Inset Shadow</span>
+                    <span class="checkmark"></span>
+                    <span class="label-text">Inset shadow</span>
                   </label>
                 </div>
               </div>
@@ -481,10 +466,10 @@
 
             <button
               onclick={addBoxShadow}
-              class="btn btn-copy w-full bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white"
+              class="btn btn-secondary w-full"
             >
-              <Plus class="w-4 h-4 mr-2" />
-              Add Shadow Layer
+              <Plus class="w-4 h-4" />
+              Add shadow layer
             </button>
           </div>
         {/if}
@@ -493,15 +478,17 @@
         {#if activeTab === 'text'}
           <div class="space-y-4">
             {#each textShadows as shadow, index (shadow.id)}
-              <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+              <div class="result-card">
                 <div class="flex items-center justify-between mb-4">
-                  <h3 class="text-sm font-medium text-gray-900 dark:text-white">
-                    Text Shadow {index + 1}
+                  <h3 class="text-label text-ink-muted">
+                    Text shadow {index + 1}
                   </h3>
                   {#if textShadows.length > 1}
                     <button
                       onclick={() => removeTextShadow(shadow.id)}
-                      class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-100 hover:bg-red-200 dark:bg-red-900/20 dark:hover:bg-red-900/30 text-red-700 dark:text-red-400 transition-all"
+                      class="btn-icon hover:!text-negative"
+                      aria-label="Remove text shadow {index + 1}"
+                      title="Remove text shadow"
                     >
                       <X class="w-4 h-4" />
                     </button>
@@ -510,53 +497,56 @@
 
                 <div class="grid grid-cols-3 gap-4">
                   <div>
-                    <span class="label section-title-sm">X Offset</span>
+                    <span class="label">X offset</span>
                     <input
                       type="range"
                       bind:value={shadow.x}
                       min="-50"
                       max="50"
                       class="slider w-full"
+                      style="--p: {((shadow.x + 50) / 100) * 100}%"
                     />
-                    <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.x}px</span>
+                    <span class="text-code text-ink-muted">{shadow.x}px</span>
                   </div>
 
                   <div>
-                    <span class="label section-title-sm">Y Offset</span>
+                    <span class="label">Y offset</span>
                     <input
                       type="range"
                       bind:value={shadow.y}
                       min="-50"
                       max="50"
                       class="slider w-full"
+                      style="--p: {((shadow.y + 50) / 100) * 100}%"
                     />
-                    <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.y}px</span>
+                    <span class="text-code text-ink-muted">{shadow.y}px</span>
                   </div>
 
                   <div>
-                    <span class="label section-title-sm">Blur</span>
+                    <span class="label">Blur</span>
                     <input
                       type="range"
                       bind:value={shadow.blur}
                       min="0"
                       max="50"
                       class="slider w-full"
+                      style="--p: {(shadow.blur / 50) * 100}%"
                     />
-                    <span class="text-xs text-gray-500 dark:text-gray-400">{shadow.blur}px</span>
+                    <span class="text-code text-ink-muted">{shadow.blur}px</span>
                   </div>
 
                   <div class="col-span-3">
-                    <span class="label section-title-sm">Color</span>
-                    <div class="flex gap-2">
+                    <span class="label">Color</span>
+                    <div class="flex items-center gap-2">
                       <input
                         type="color"
                         bind:value={shadow.color}
-                        class="w-12 h-8 rounded cursor-pointer"
+                        class="w-12 h-10 rounded-sm bg-control p-1 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
                       />
                       <input
                         type="text"
                         bind:value={shadow.color}
-                        class="inline-input flex-1"
+                        class="inline-input flex-1 min-w-0 font-mono"
                       />
                       <input
                         type="range"
@@ -564,8 +554,9 @@
                         min="0"
                         max="100"
                         class="slider w-24"
+                        style="--p: {(shadow.opacity / 100) * 100}%"
                       />
-                      <span class="text-xs text-gray-500 dark:text-gray-400 w-12"
+                      <span class="text-code text-ink-muted w-12"
                         >{shadow.opacity}%</span
                       >
                     </div>
@@ -576,46 +567,44 @@
 
             <button
               onclick={addTextShadow}
-              class="btn btn-copy w-full bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white"
+              class="btn btn-secondary w-full"
             >
-              <Plus class="w-4 h-4 mr-2" />
-              Add Text Shadow Layer
+              <Plus class="w-4 h-4" />
+              Add text shadow layer
             </button>
           </div>
         {/if}
       </div>
 
       <!-- Preview Settings -->
-      <div
-        class="tool-card"
-      >
-        <h2 class="section-title">Preview Settings</h2>
+      <div class="tool-card">
+        <h2 class="section-title">Preview settings</h2>
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label
                 for="background-color"
-                class="label section-title-sm"
+                class="label"
                 >Background</label
               >
               <input
                 type="color"
                 bind:value={backgroundColor}
                 id="background-color"
-                class="w-full h-8 rounded cursor-pointer"
+                class="w-full h-10 rounded-sm bg-control p-1 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
               />
             </div>
             <div>
               <label
                 for="text-color"
-                class="label section-title-sm"
-                >Text Color</label
+                class="label"
+                >Text color</label
               >
               <input
                 type="color"
                 bind:value={textColor}
                 id="text-color"
-                class="w-full h-8 rounded cursor-pointer"
+                class="w-full h-10 rounded-sm bg-control p-1 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
               />
             </div>
           </div>
@@ -623,8 +612,8 @@
           <div>
             <label
               for="border-radius"
-              class="label section-title-sm"
-              >Border Radius: {borderRadius}px</label
+              class="label"
+              >Border radius: <span class="font-mono text-ink">{borderRadius}px</span></label
             >
             <input
               type="range"
@@ -632,14 +621,15 @@
               min="0"
               max="50"
               class="slider w-full"
+              style="--p: {(borderRadius / 50) * 100}%"
             />
           </div>
 
           <div>
             <label
               for="preview-text"
-              class="label section-title-sm"
-              >Preview Text</label
+              class="label"
+              >Preview text</label
             >
             <input
               type="text"
@@ -650,23 +640,23 @@
           </div>
 
           <div class="flex items-center gap-4">
-            <label class="relative flex items-center cursor-pointer">
+            <label class="custom-checkbox">
               <input
                 type="checkbox"
                 bind:checked={showBox}
                 id="show-box"
-                class="peer w-4 h-4 text-warning-600 dark:text-primary-400 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded focus:ring-yellow-500 dark:focus:ring-purple-400"
               />
-              <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Show Box</span>
+              <span class="checkmark"></span>
+              <span class="label-text">Show box</span>
             </label>
-            <label class="relative flex items-center cursor-pointer">
+            <label class="custom-checkbox">
               <input
                 type="checkbox"
                 bind:checked={showText}
                 id="show-text"
-                class="peer w-4 h-4 text-warning-600 dark:text-primary-400 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded focus:ring-yellow-500 dark:focus:ring-purple-400"
               />
-              <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Show Text</span>
+              <span class="checkmark"></span>
+              <span class="label-text">Show text</span>
             </label>
           </div>
         </div>
@@ -676,65 +666,64 @@
     <!-- Preview Panel -->
     <div class="space-y-4">
       <!-- Live Preview -->
-      <div
-        class="tool-card"
-      >
-        <h2 class="section-title">Live Preview</h2>
-        <div
-          class="p-8 rounded-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center min-h-[200px] transition-all duration-200"
-          style="background-color: {backgroundColor};"
-        >
-          {#if showBox}
-            <div
-              class="p-8 rounded-lg transition-all duration-200 flex items-center justify-center"
-              style="box-shadow: {boxShadowCSS}; border-radius: {borderRadius}px; background: white;"
-            >
-              {#if showText}
-                <h3
-                  class="text-2xl font-bold transition-all duration-200"
-                  style="color: {textColor}; text-shadow: {textShadowCSS};"
-                >
-                  {previewText}
-                </h3>
-              {/if}
-            </div>
-          {:else if showText}
-            <h3
-              class="text-2xl font-bold transition-all duration-200"
-              style="color: {textColor}; text-shadow: {textShadowCSS};"
-            >
-              {previewText}
-            </h3>
-          {/if}
+      <div class="tool-card">
+        <h2 class="section-title">Live preview</h2>
+        <!-- Canvas: token surface; the user-picked background (data) is applied inline on top. -->
+        <div class="p-3 rounded-md bg-sunken">
+          <div
+            class="p-8 rounded-sm flex items-center justify-center min-h-[200px]"
+            style="background-color: {backgroundColor};"
+          >
+            {#if showBox}
+              <div
+                class="p-8 flex items-center justify-center"
+                style="box-shadow: {boxShadowCSS}; border-radius: {borderRadius}px; background: white;"
+              >
+                {#if showText}
+                  <h3
+                    class="text-2xl font-bold"
+                    style="color: {textColor}; text-shadow: {textShadowCSS};"
+                  >
+                    {previewText}
+                  </h3>
+                {/if}
+              </div>
+            {:else if showText}
+              <h3
+                class="text-2xl font-bold"
+                style="color: {textColor}; text-shadow: {textShadowCSS};"
+              >
+                {previewText}
+              </h3>
+            {/if}
+          </div>
         </div>
       </div>
 
       <!-- CSS Output -->
-      <div
-        class="tool-card"
-      >
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">CSS Code</h2>
-          <div class="flex gap-2">
+      <div class="tool-card">
+        <div class="card-header flex-wrap gap-2">
+          <h2 class="section-title !mb-0">CSS code</h2>
+          <div class="flex flex-wrap gap-2">
             <button
               onclick={() => copyToClipboard(`box-shadow: ${boxShadowCSS};`)}
-              class="quick-btn"
+              class="btn btn-sm btn-secondary"
             >
-              <Copy class="w-4 h-4 mr-1" />
-              Copy Box
+              <Copy class="w-4 h-4" />
+              Copy box
             </button>
             <button
               onclick={() => copyToClipboard(`text-shadow: ${textShadowCSS};`)}
-              class="quick-btn"
+              class="btn btn-sm btn-secondary"
             >
-              <Copy class="w-4 h-4 mr-1" />
-              Copy Text
+              <Copy class="w-4 h-4" />
+              Copy text
             </button>
             <button
               onclick={downloadCSS}
-              class="btn btn-copy"
+              class="btn btn-sm btn-primary"
             >
-              <Download class="w-4 h-4 mr-1" />
+              <Download class="w-4 h-4" />
               Download
             </button>
           </div>
@@ -742,17 +731,17 @@
 
         <div class="space-y-4">
           <div>
-            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Box Shadow</h3>
+            <h3 class="text-label text-ink-muted mb-2">Box shadow</h3>
             <pre
-              class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm text-gray-700 dark:text-gray-300"><code
+              class="bg-sunken p-4 rounded-md overflow-x-auto text-code text-ink"><code
                 >box-shadow: {boxShadowCSS};</code
               ></pre>
           </div>
 
           <div>
-            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Text Shadow</h3>
+            <h3 class="text-label text-ink-muted mb-2">Text shadow</h3>
             <pre
-              class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm text-gray-700 dark:text-gray-300"><code
+              class="bg-sunken p-4 rounded-md overflow-x-auto text-code text-ink"><code
                 >text-shadow: {textShadowCSS};</code
               ></pre>
           </div>
@@ -762,45 +751,33 @@
   </div>
 
   <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Settings2 class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+    <div class="card">
+      <div class="feature-icon">
+        <Settings2 class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Real-time Preview</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Real-time preview</h3>
+      <p class="feature-description">
         See your shadow effects instantly as you adjust the controls
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Sparkles class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <Sparkles class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Multiple Layers</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Multiple layers</h3>
+      <p class="feature-description">
         Add multiple shadow layers for complex and beautiful effects
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <Zap class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Quick Presets</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Quick presets</h3>
+      <p class="feature-description">
         Pre-built styles for cards, buttons, neon effects, and more
       </p>
     </div>

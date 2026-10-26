@@ -217,53 +217,21 @@
   icon={Timer}
   color="warning"
 >
-  <!-- Hero Section -->
-  <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
-  >
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
-          <Timer class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Cron Expression Generator</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            Generate and validate cron expressions easily
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="grid lg:grid-cols-2 gap-4">
     <!-- Left Column: Expression Builder -->
     <div class="space-y-4">
       <!-- Current Expression -->
-      <div
-        class="tool-card"
-      >
+      <div class="tool-card">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Cron Expression</h3>
+          <h3 class="section-title mb-0">Cron expression</h3>
           <div class="flex items-center gap-2">
-            <button
-              onclick={generateRandomCron}
-              class="btn-icon"
-              title="Generate Random"
-            >
+            <button onclick={generateRandomCron} class="btn-icon" title="Generate Random">
               <RefreshCw class="w-4 h-4" />
             </button>
             {#if copySuccess}
-              <button
-                class="p-2 rounded-lg text-xs font-semibold transition-colors bg-warning-100 dark:bg-primary-900/20 text-warning-600 dark:text-primary-400"
-                disabled>Copied!</button
-              >
+              <button class="badge badge-primary h-9 px-3" disabled>Copied!</button>
             {:else}
-              <button
-                onclick={copyToClipboard}
-                class="btn-icon"
-                title="Copy to clipboard"
-              >
+              <button onclick={copyToClipboard} class="btn-icon" title="Copy to clipboard">
                 <Copy class="w-4 h-4" />
               </button>
             {/if}
@@ -278,12 +246,13 @@
           placeholder="* * * * *"
         />
 
-        <div class="text-sm text-gray-600 dark:text-gray-400 mt-2">
-          <span class="font-medium">Format:</span> [Minute] [Hour] [Day of Month] [Month] [Day of Week]
+        <div class="text-body-sm text-ink-muted mt-2">
+          <span class="font-medium text-ink">Format:</span>
+          <span class="font-mono">[Minute] [Hour] [Day of Month] [Month] [Day of Week]</span>
         </div>
 
         {#if !isValidCron}
-          <div class="flex items-center gap-2 text-red-600 dark:text-red-400 text-sm mt-2">
+          <div class="flex items-center gap-2 text-negative text-body-sm mt-2">
             <Info class="w-4 h-4" />
             Invalid cron expression format
           </div>
@@ -291,87 +260,65 @@
       </div>
 
       <!-- Manual Builder -->
-      <div
-        class="tool-card"
-      >
-        <h3 class="section-title">Manual Builder</h3>
+      <div class="tool-card">
+        <h3 class="section-title">Manual builder</h3>
         <div class="space-y-4">
           <div>
-            <label
-              for="minute"
-              class="label"
-              >Minute (0-59)</label
-            >
+            <label for="minute" class="label">Minute (0-59)</label>
             <input
               id="minute"
               type="text"
               bind:value={minute}
               oninput={updateFromComponents}
-              class="tool-input"
+              class="tool-input font-mono"
               placeholder="0"
             />
           </div>
 
           <div>
-            <label
-              for="hour"
-              class="label"
-              >Hour (0-23)</label
-            >
+            <label for="hour" class="label">Hour (0-23)</label>
             <input
               id="hour"
               type="text"
               bind:value={hour}
               oninput={updateFromComponents}
-              class="tool-input"
+              class="tool-input font-mono"
               placeholder="0"
             />
           </div>
 
           <div>
-            <label
-              for="day-of-month"
-              class="label"
-              >Day of Month (1-31)</label
-            >
+            <label for="day-of-month" class="label">Day of month (1-31)</label>
             <input
               id="day-of-month"
               type="text"
               bind:value={dayOfMonth}
               oninput={updateFromComponents}
-              class="tool-input"
+              class="tool-input font-mono"
               placeholder="*"
             />
           </div>
 
           <div>
-            <label
-              for="month"
-              class="label"
-              >Month (1-12)</label
-            >
+            <label for="month" class="label">Month (1-12)</label>
             <input
               id="month"
               type="text"
               bind:value={month}
               oninput={updateFromComponents}
-              class="tool-input"
+              class="tool-input font-mono"
               placeholder="*"
             />
           </div>
 
           <div>
-            <label
-              for="day-of-week"
-              class="label"
-              >Day of Week (0-6, 0=Sunday)</label
-            >
+            <label for="day-of-week" class="label">Day of week (0-6, 0=Sunday)</label>
             <input
               id="day-of-week"
               type="text"
               bind:value={dayOfWeek}
               oninput={updateFromComponents}
-              class="tool-input"
+              class="tool-input font-mono"
               placeholder="*"
             />
           </div>
@@ -383,16 +330,12 @@
     <div class="space-y-4">
       <!-- Description -->
       {#if isValidCron}
-        <div
-          class="tool-card"
-        >
-          <h3
-            class="section-title flex items-center gap-2"
-          >
-            <Info class="w-5 h-5" />
+        <div class="tool-card">
+          <h3 class="section-title flex items-center gap-2">
+            <Info class="w-5 h-5 text-ink-muted" />
             Description
           </h3>
-          <p class="text-gray-700 dark:text-gray-300">
+          <p class="text-body text-ink">
             {getCronDescription(cronExpression)}
           </p>
         </div>
@@ -400,18 +343,14 @@
 
       <!-- Next Run Times -->
       {#if isValidCron && nextRunTimes.length > 0}
-        <div
-          class="tool-card"
-        >
-          <h3
-            class="section-title flex items-center gap-2"
-          >
-            <Calendar class="w-5 h-5" />
-            Next Run Times
+        <div class="tool-card">
+          <h3 class="section-title flex items-center gap-2">
+            <Calendar class="w-5 h-5 text-ink-muted" />
+            Next run times
           </h3>
           <div class="space-y-2">
             {#each nextRunTimes.slice(0, 5) as time (time)}
-              <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+              <div class="flex items-center gap-2 text-body-sm font-mono text-ink-muted">
                 <Clock class="w-4 h-4" />
                 {time}
               </div>
@@ -421,20 +360,15 @@
       {/if}
 
       <!-- Presets -->
-      <div
-        class="tool-card"
-      >
-        <h3 class="section-title">Common Presets</h3>
+      <div class="tool-card">
+        <h3 class="section-title">Common presets</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {#each presets as preset (preset.name)}
-            <button
-              onclick={() => applyPreset(preset.expression)}
-              class="preset-btn text-left"
-            >
-              <div class="font-medium text-gray-900 dark:text-white text-sm">
+            <button onclick={() => applyPreset(preset.expression)} class="preset-btn rounded-md! text-left">
+              <div class="font-medium text-ink text-body-sm">
                 {preset.name}
               </div>
-              <div class="text-xs text-gray-500 dark:text-gray-400 font-mono mt-1">
+              <div class="text-code text-ink-muted mt-1">
                 {preset.expression}
               </div>
             </button>
@@ -445,45 +379,38 @@
   </div>
 
   <!-- Help Information -->
-  <div
-    class="bg-warning-100 dark:bg-yellow-900/20 rounded-xl border border-warning-200 dark:border-yellow-800 p-6 mb-6"
-  >
-    <h3
-      class="text-lg font-semibold text-yellow-800 dark:text-yellow-200 mb-4 flex items-center gap-2"
-    >
-      <Info class="w-5 h-5" />
-      Cron Syntax Help
+  <div class="info-card">
+    <h3 class="section-title flex items-center gap-2">
+      <Info class="w-5 h-5 text-ink-muted" />
+      Cron syntax help
     </h3>
-    <div class="space-y-3 text-sm text-yellow-800 dark:text-yellow-200">
+    <div class="space-y-3 text-body-sm text-ink">
       <div>
-        <strong class="font-semibold">* (asterisk)</strong> - any value
+        <strong class="font-semibold font-mono">* (asterisk)</strong> - any value
       </div>
       <div>
-        <strong class="font-semibold">, (comma)</strong> - value list separator
+        <strong class="font-semibold font-mono">, (comma)</strong> - value list separator
       </div>
       <div>
-        <strong class="font-semibold">- (hyphen)</strong> - range of values
+        <strong class="font-semibold font-mono">- (hyphen)</strong> - range of values
       </div>
       <div>
-        <strong class="font-semibold">/ (forward slash)</strong> - step values
+        <strong class="font-semibold font-mono">/ (forward slash)</strong> - step values
       </div>
       <div>
         <strong class="font-semibold">Examples:</strong>
-        <ul class="mt-2 space-y-1 ml-4">
+        <ul class="mt-2 space-y-1 ml-4 list-disc">
           <li>
-            • <code class="bg-yellow-200 dark:bg-yellow-900/30 px-1 rounded font-mono"
-              >*/15 * * * *</code
-            > - Every 15 minutes
+            <code class="bg-control px-1.5 rounded-sm font-mono">*/15 * * * *</code> - Every
+            15 minutes
           </li>
           <li>
-            • <code class="bg-yellow-200 dark:bg-yellow-900/30 px-1 rounded font-mono"
-              >0 9 * * 1-5</code
-            > - Weekdays at 9 AM
+            <code class="bg-control px-1.5 rounded-sm font-mono">0 9 * * 1-5</code> - Weekdays
+            at 9 AM
           </li>
           <li>
-            • <code class="bg-yellow-200 dark:bg-yellow-900/30 px-1 rounded font-mono"
-              >0 0 1 * *</code
-            > - First day of every month
+            <code class="bg-control px-1.5 rounded-sm font-mono">0 0 1 * *</code> - First day of
+            every month
           </li>
         </ul>
       </div>
@@ -491,47 +418,29 @@
   </div>
 
   <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="tool-card">
+      <div class="feature-icon">
+        <Zap class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Visual Builder</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-        Build cron expressions with an intuitive visual interface
-      </p>
+      <h3 class="feature-title">Visual builder</h3>
+      <p class="feature-description">Build cron expressions with an intuitive visual interface</p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Copy class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="tool-card">
+      <div class="feature-icon">
+        <Copy class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Easy Export</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-        Copy generated expressions directly to your clipboard
-      </p>
+      <h3 class="feature-title">Easy export</h3>
+      <p class="feature-description">Copy generated expressions directly to your clipboard</p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Calendar class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="tool-card">
+      <div class="feature-icon">
+        <Calendar class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Next Run Times</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-        Preview upcoming execution times for your cron jobs
-      </p>
+      <h3 class="feature-title">Next run times</h3>
+      <p class="feature-description">Preview upcoming execution times for your cron jobs</p>
     </div>
   </div>
 </ToolLayout>

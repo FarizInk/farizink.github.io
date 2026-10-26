@@ -292,47 +292,30 @@
   icon={Calculator}
   color="warning"
 >
-  <!-- Hero Section -->
-  <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
-  >
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
-          <Calculator class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Unit Converter</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            Convert between length, weight, temperature, volume, time, and speed
-          </p>
-        </div>
-      </div>
-      <div class="flex gap-2">
-        <button class="btn btn-copy" onclick={reset}>
-          <RotateCcw class="w-4 h-4" />
-          Reset
-        </button>
-        <button class="btn btn-secondary" onclick={clearHistory}>
-          <Trash2 class="w-4 h-4" />
-          Clear History
-        </button>
-      </div>
-    </div>
+  <!-- Toolbar -->
+  <div class="flex flex-wrap gap-2">
+    <button class="btn btn-secondary" onclick={reset}>
+      <RotateCcw class="w-4 h-4" />
+      Reset
+    </button>
+    <button class="btn btn-ghost" onclick={clearHistory}>
+      <Trash2 class="w-4 h-4" />
+      Clear history
+    </button>
   </div>
 
   <!-- Category Selection -->
-  <div class="flex gap-3 overflow-x-auto pb-2 mb-6 min-w-max">
+  <div class="flex gap-2 overflow-x-auto pb-2">
     {#each categories as category (category.id)}
       <button
         onclick={() => {
           activeCategory = category.id;
           reset();
         }}
-        class="preset-btn {activeCategory === category.id ? 'active' : ''}"
+        class="preset-btn inline-flex shrink-0 items-center gap-2 {activeCategory === category.id ? 'active' : ''}"
       >
         <category.icon class="w-4 h-4" />
-        <span class="text-sm font-medium">{category.name}</span>
+        <span>{category.name}</span>
       </button>
     {/each}
   </div>
@@ -341,28 +324,23 @@
     <!-- Main Converter -->
     <div class="lg:col-span-2 space-y-4">
       <!-- Converter Card -->
-      <div
-        class="tool-card"
-      >
-        <h2 class="section-title flex items-center">
-          <Calculator class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
-          Convert {categories.find(c => c.id === activeCategory)?.name}
+      <div class="tool-card">
+        <h2 class="section-title flex items-center gap-2">
+          <Calculator class="w-5 h-5 text-accent-text" />
+          Convert {categories.find(c => c.id === activeCategory)?.name.toLowerCase()}
         </h2>
 
         <div class="space-y-6">
           <!-- From Unit -->
           <div>
-            <label
-              for="from-value-input"
-              class="label">From</label
-            >
+            <label for="from-value-input" class="label">From</label>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <input
                 id="from-value-input"
                 type="number" inputmode="decimal"
                 bind:value={fromValue}
                 placeholder="Enter value"
-                class="tool-input text-lg"
+                class="tool-input font-mono tabular-nums text-lg"
               />
               <select bind:value={fromUnit} class="tool-select">
                 {#each unitOptions as option (option.value)}
@@ -374,17 +352,19 @@
 
           <!-- Swap Button -->
           <div class="flex justify-center">
-            <button class="btn btn-copy rounded-full" onclick={swapUnits} style="width: 2.5rem; height: 2.5rem; padding: 0;">
+            <button
+              class="btn-icon bg-control hover:bg-control-hover text-ink"
+              onclick={swapUnits}
+              aria-label="Swap units"
+              title="Swap units"
+            >
               <ArrowUpDown class="w-5 h-5" />
             </button>
           </div>
 
           <!-- To Unit -->
           <div>
-            <label
-              for="to-value-input"
-              class="label">To</label
-            >
+            <label for="to-value-input" class="label">To</label>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div class="relative">
                 <input
@@ -393,12 +373,13 @@
                   bind:value={toValue}
                   readonly
                   placeholder="Result"
-                  class="tool-input text-lg font-medium pr-12"
+                  class="tool-input font-display text-xl font-bold tabular-nums pr-14"
                 />
                 <button
                   onclick={copyResult}
-                  class="btn btn-sm btn-secondary absolute right-3 top-1/2 -translate-y-1/2"
+                  class="btn-icon absolute right-1 top-1/2 -translate-y-1/2"
                   title="Copy result"
+                  aria-label="Copy result"
                 >
                   <Copy class="w-4 h-4" />
                 </button>
@@ -413,13 +394,9 @@
 
           <!-- Formula Information (for temperature) -->
           {#if activeCategory === 'temperature'}
-            <div
-              class="p-4 rounded-lg bg-warning-50 dark:bg-primary-900/20 border border-warning-200 dark:border-primary-800"
-            >
-              <h3 class="text-sm font-medium text-yellow-800 dark:text-primary-200 mb-2">
-                Conversion Formulas
-              </h3>
-              <div class="space-y-1 text-xs">
+            <div class="info-card">
+              <h3 class="text-label text-ink-muted mb-2">Conversion formulas</h3>
+              <div class="space-y-1 font-mono text-code text-ink">
                 <p>°C to °F: (°C × 9/5) + 32</p>
                 <p>°F to °C: (°F - 32) × 5/9</p>
                 <p>°C to K: °C + 273.15</p>
@@ -431,76 +408,34 @@
       </div>
 
       <!-- Quick Reference -->
-      <div
-        class="tool-card"
-      >
-        <h3 class="section-title">Quick Reference</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+      <div class="tool-card">
+        <h3 class="section-title">Quick reference</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 font-mono text-code text-ink">
           {#if activeCategory === 'length'}
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">1 inch = 2.54 cm</p>
-            </div>
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">1 foot = 12 inches</p>
-            </div>
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">1 mile = 1.609 km</p>
-            </div>
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">1 yard = 0.914 m</p>
-            </div>
+            <div class="result-row"><p>1 inch = 2.54 cm</p></div>
+            <div class="result-row"><p>1 foot = 12 inches</p></div>
+            <div class="result-row"><p>1 mile = 1.609 km</p></div>
+            <div class="result-row"><p>1 yard = 0.914 m</p></div>
           {:else if activeCategory === 'weight'}
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">1 kg = 2.205 lbs</p>
-            </div>
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">1 lb = 16 oz</p>
-            </div>
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">1 ton = 1000 kg</p>
-            </div>
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">1 stone = 14 lbs</p>
-            </div>
+            <div class="result-row"><p>1 kg = 2.205 lbs</p></div>
+            <div class="result-row"><p>1 lb = 16 oz</p></div>
+            <div class="result-row"><p>1 ton = 1000 kg</p></div>
+            <div class="result-row"><p>1 stone = 14 lbs</p></div>
           {:else if activeCategory === 'volume'}
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">1 gallon = 3.785 L</p>
-            </div>
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">1 L = 1000 mL</p>
-            </div>
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">1 cup = 236.6 mL</p>
-            </div>
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">1 quart = 2 pints</p>
-            </div>
+            <div class="result-row"><p>1 gallon = 3.785 L</p></div>
+            <div class="result-row"><p>1 L = 1000 mL</p></div>
+            <div class="result-row"><p>1 cup = 236.6 mL</p></div>
+            <div class="result-row"><p>1 quart = 2 pints</p></div>
           {:else if activeCategory === 'time'}
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">1 minute = 60 seconds</p>
-            </div>
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">1 hour = 60 minutes</p>
-            </div>
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">1 day = 24 hours</p>
-            </div>
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">1 week = 7 days</p>
-            </div>
+            <div class="result-row"><p>1 minute = 60 seconds</p></div>
+            <div class="result-row"><p>1 hour = 60 minutes</p></div>
+            <div class="result-row"><p>1 day = 24 hours</p></div>
+            <div class="result-row"><p>1 week = 7 days</p></div>
           {:else if activeCategory === 'speed'}
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">100 km/h = 27.78 m/s</p>
-            </div>
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">60 mph = 96.56 km/h</p>
-            </div>
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">1 knot = 1.852 km/h</p>
-            </div>
-            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <p class="font-medium text-gray-900 dark:text-white">Mach 1 = 343 m/s</p>
-            </div>
+            <div class="result-row"><p>100 km/h = 27.78 m/s</p></div>
+            <div class="result-row"><p>60 mph = 96.56 km/h</p></div>
+            <div class="result-row"><p>1 knot = 1.852 km/h</p></div>
+            <div class="result-row"><p>Mach 1 = 343 m/s</p></div>
           {/if}
         </div>
       </div>
@@ -509,34 +444,30 @@
     <!-- Sidebar -->
     <div class="space-y-4">
       <!-- Conversion History -->
-      <div
-        class="tool-card sticky"
-      >
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">History</h3>
+      <div class="tool-card sticky">
+        <div class="card-header">
+          <h3 class="section-title mb-0">History</h3>
           {#if conversionHistory.length > 0}
-            <button class="btn btn-sm btn-secondary">Clear</button>
+            <button class="btn btn-sm btn-ghost">Clear</button>
           {/if}
         </div>
 
         {#if conversionHistory.length === 0}
-          <div
-            class="flex flex-col items-center justify-center py-8 text-gray-500 dark:text-gray-400"
-          >
+          <div class="flex flex-col items-center justify-center py-8 text-ink-muted">
             <History class="w-8 h-8 mb-2 opacity-50" />
-            <p class="text-sm">No conversions yet</p>
+            <p class="text-body-sm">No conversions yet</p>
           </div>
         {:else}
           <div class="space-y-2 max-h-[400px] overflow-y-auto">
             {#each conversionHistory as item (item.timestamp)}
               <button
                 onclick={() => loadHistoryItem(item)}
-                class="preset-btn w-full text-left"
+                class="w-full text-left rounded-md bg-control px-4 py-3 transition-colors hover:bg-control-hover"
               >
-                <div class="text-sm font-medium text-gray-900 dark:text-white">
+                <div class="font-mono text-code text-ink">
                   {item.from}
                 </div>
-                <div class="text-sm text-gray-600 dark:text-gray-400">
+                <div class="font-mono text-code text-ink-muted">
                   → {item.to}
                 </div>
               </button>
@@ -548,45 +479,33 @@
   </div>
 
   <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Calculator class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+  <div class="features-grid mt-4">
+    <div class="card">
+      <div class="feature-icon">
+        <Calculator class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Precision</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Precision</h3>
+      <p class="feature-description">
         High-precision calculations for accurate results every time
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <History class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <History class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">History</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">History</h3>
+      <p class="feature-description">
         Automatically saves your recent conversions for quick reference
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <Zap class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Fast</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Fast</h3>
+      <p class="feature-description">
         Instant conversion as you type with no page reloads
       </p>
     </div>

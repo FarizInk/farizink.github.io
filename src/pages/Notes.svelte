@@ -34,10 +34,11 @@
     Sparkles,
     Filter,
     X,
-    BookOpen,
     Keyboard,
-    Loader2
+    Loader2,
+    ChevronLeft
   } from '@lucide/svelte';
+  import { Button, EmptyState, PageHeader } from '$lib/components/ds';
   import { onMount } from 'svelte';
 
   // View mode: 'list' for normal notes list, 'detail' for single note view
@@ -655,139 +656,95 @@
   />
 </svelte:head>
 
-<div class="notes-page">
+<div class="mx-auto flex max-w-[1120px] flex-col gap-6 pt-16 pb-12">
   {#if viewMode === 'list'}
-    <!-- Hero Section -->
-    <div class="notes-hero-section">
-      <div
-        class="notes-hero-badge inline-flex items-center gap-2 px-4 py-2 bg-warning-100 dark:bg-primary-900/30 border border-warning-300 dark:border-primary-700 rounded-full text-warning-700 dark:text-warning-300 text-sm font-medium"
-      >
-        <BookOpen class="w-4 h-4" />
-        <span>{$totalCount} Note{$totalCount === 1 ? '' : 's'}</span>
-      </div>
+    <PageHeader
+      align="center"
+      badge="{$totalCount} {$totalCount === 1 ? 'NOTE' : 'NOTES'}"
+      title="My"
+      highlight="Notes"
+      subtitle="Organize your thoughts, ideas, and resources. Fast, searchable, and always available."
+    />
 
-      <h1 class="notes-hero-title">
-        <span class="text-gray-900 dark:text-white">My</span>
-        <span
-          class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-amber-400 dark:from-primary-400 to-purple-500 bg-gradient-to-l"
-          >Notes</span
+    <!-- Search -->
+    <label class="relative flex w-full items-center">
+      <Search class="pointer-events-none absolute left-4 size-5 text-ink-muted" />
+      <input
+        type="search"
+        bind:value={searchQuery}
+        bind:this={searchInput}
+        onkeydown={e => {
+          if (e.key === 'Enter') {
+            // Apply current filters and search, like in the modal
+            applyFilters(activeFilters, searchQuery, selectedIncludeTags, selectedExcludeTags);
+          }
+        }}
+        placeholder="Search notes…"
+        aria-label="Search notes"
+        class="text-body h-13 w-full rounded-pill bg-card pr-12 pl-12 text-ink placeholder:text-ink-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring sm:pr-28"
+      />
+      {#if searchQuery}
+        <button
+          onclick={() => {
+            searchQuery = '';
+            saveFiltersToStorage();
+            loadNotes(false);
+          }}
+          class="absolute right-3 grid size-7 sm:right-24 place-items-center rounded-pill bg-sunken text-ink-muted hover:text-ink"
+          aria-label="Clear search"
         >
-      </h1>
+          <X class="size-3.5" />
+        </button>
+      {/if}
+      <kbd class="absolute right-4 rounded-md max-sm:hidden bg-control px-1.5 py-0.5 font-mono text-xs text-ink-muted">Ctrl ⇧ F</kbd>
+    </label>
 
-      <p class="notes-hero-description">
-        Organize your thoughts, ideas, and resources. Fast, searchable, and always available.
-      </p>
+    <!-- Toolbar -->
+    <div class="flex flex-wrap items-center gap-2">
+      <Button variant="secondary" size="sm" onclick={openFilterModal}>
+        <Filter class="size-4" />
+        Filter
+        {#if getActiveFilterCount() > 0}
+          <span class="grid h-6 min-w-6 place-items-center rounded-pill bg-accent px-1.5 font-mono text-xs text-ink-on-accent">
+            {getActiveFilterCount()}
+          </span>
+        {/if}
+      </Button>
 
-      <!-- Search Bar -->
-      <div class="search-container">
-        <div class="peer relative flex items-center p-4 border-2 rounded-xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg transition-all border-warning-500/20 dark:border-primary-500/20 focus-within:border-warning-500 focus-within:shadow-[0_0_0_4px_rgba(251,191,36,0.1)] dark:focus-within:border-primary-500 dark:focus-within:shadow-[0_0_0_4px_rgba(139,92,246,0.1)]">
-          <Search class="w-5 h-5 mr-3 text-gray-400 dark:text-gray-500 transition-colors peer-focus:text-warning-500 dark:peer-focus:text-primary-400" />
-          <input
-            type="text"
-            bind:value={searchQuery}
-            bind:this={searchInput}
-            onkeydown={e => {
-              if (e.key === 'Enter') {
-                // Apply current filters and search, like in the modal
-                applyFilters(activeFilters, searchQuery, selectedIncludeTags, selectedExcludeTags);
-              }
-            }}
-            placeholder="Search notes... (Ctrl+Shift+F)"
-            class="flex-1 border-none bg-transparent text-base text-gray-900 dark:text-gray-100 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
-          />
-          {#if searchQuery}
-            <button
-              onclick={() => {
-               searchQuery = '';
-                saveFiltersToStorage();
-               loadNotes(false);
-             }}
-              class="notes-search-clear"
-              aria-label="Clear search"
-            >
-              <X class="w-4 h-4" />
-            </button>
-          {/if}
-        </div>
+      <button
+        onclick={handleRefresh}
+        disabled={$isLoadingNotes || isLoadingMore}
+        class="btn-icon"
+        title="Refresh"
+        aria-label="Refresh"
+      >
+        <RefreshCw class="size-4 {$isLoadingNotes ? 'animate-spin' : ''}" />
+      </button>
 
-        <!-- Action Buttons -->
-        <div class="flex flex-wrap items-center gap-3 mt-4">
-          <!-- Filter Button -->
-          <button
-            onclick={openFilterModal}
-            class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm leading-5 text-gray-600 dark:text-gray-300 transition-all hover:bg-gray-100 dark:hover:bg-gray-800 {getActiveFilterCount() > 0 ? 'bg-warning-50 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300 ring-2 ring-warning-500/20 dark:ring-primary-500/20' : ''}"
-          >
-            <Filter class="w-4 h-4" />
-            <span class="hidden sm:inline">Filter</span>
-            {#if getActiveFilterCount() > 0}
-              <span
-                class="flex items-center justify-center min-w-6 h-5 px-1.5 bg-warning-500 dark:bg-primary-500 rounded-full text-xs font-bold text-white"
-              >
-                {getActiveFilterCount()}
-              </span>
-            {/if}
-          </button>
+      <button
+        onclick={() => (showShortcutsModal = true)}
+        class="btn-icon"
+        title="Keyboard shortcuts (?)"
+        aria-label="Keyboard shortcuts"
+      >
+        <Keyboard class="size-4" />
+      </button>
 
-          <!-- Refresh -->
-          <button
-            onclick={handleRefresh}
-            disabled={$isLoadingNotes || isLoadingMore}
-            class="btn-icon w-10 h-10 rounded-xl flex items-center justify-center transition-all hover:bg-warning-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            title="Refresh"
-          >
-            <RefreshCw
-              class={`w-4 h-4 text-gray-600 dark:text-gray-400 hover:text-warning-500 dark:hover:text-primary-400 transition-colors ${$isLoadingNotes ? 'animate-spin' : ''}`}
-            />
-          </button>
-
-          <!-- Keyboard shortcuts -->
-          <button
-            onclick={() => (showShortcutsModal = true)}
-            class="btn-icon w-10 h-10 rounded-xl flex items-center justify-center transition-all hover:bg-warning-50 dark:hover:bg-gray-700"
-            title="Keyboard shortcuts (?)"
-            aria-label="Keyboard shortcuts"
-          >
-            <Keyboard class="w-4 h-4 text-gray-600 dark:text-gray-400 hover:text-warning-500 dark:hover:text-primary-400 transition-colors" />
-          </button>
-
-          <!-- Authenticated Actions -->
-          {#if hasAuthToken}
-            <!-- Trash -->
-            <button
-              onclick={openDeletedNotesModal}
-              class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm leading-5 text-amber-600 dark:text-amber-400 transition-all hover:bg-amber-50 dark:hover:bg-amber-900/20"
-              title="View deleted notes"
-            >
-              <Trash2 class="w-4 h-4" />
-              <span class="hidden sm:inline">Trash</span>
-            </button>
-
-            <!-- Tags -->
-            <button
-              onclick={handleTagModalOpen}
-              class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm leading-5 text-gray-600 dark:text-gray-300 transition-all hover:bg-gray-100 dark:hover:bg-gray-800"
-              title="Manage tags"
-            >
-              <TagIcon class="w-4 h-4" />
-              <span class="hidden sm:inline">Tags</span>
-            </button>
-
-            <!-- Create Note -->
-            <button
-              onclick={handleCreate}
-              class="btn btn-primary flex items-center gap-2 shadow-lg hover:shadow-xl"
-              title="New note"
-            >
-              <Plus class="w-4 h-4" />
-              <span class="hidden sm:inline">New Note</span>
-            </button>
-          {/if}
-        </div>
-      </div>
+      {#if hasAuthToken}
+        <Button variant="ghost" size="sm" onclick={openDeletedNotesModal} title="View deleted notes">
+          <Trash2 class="size-4" /> Trash
+        </Button>
+        <Button variant="ghost" size="sm" onclick={handleTagModalOpen} title="Manage tags">
+          <TagIcon class="size-4" /> Tags
+        </Button>
+        <Button size="sm" class="ml-auto" onclick={handleCreate} title="New note">
+          <Plus class="size-4" /> New note
+        </Button>
+      {/if}
     </div>
 
-    <!-- Notes Grid -->
-    <div class="notes-grid">
+    <!-- Notes -->
+    <div class="flex flex-col gap-4">
       {#if ($isLoadingNotes && $notes.length === 0) || isBoneyardCapture}
         <div class="flex flex-col gap-4" role="status" aria-label="Loading notes">
           {#each Array(3) as _, index (index)}
@@ -800,65 +757,47 @@
           {/each}
         </div>
       {:else if $notes.length === 0}
-        <!-- Empty State -->
-        <div
-          class="text-center py-16 px-8 bg-white/90 dark:bg-gray-900/90 rounded-xl border border-dashed border-black/10 dark:border-white/10"
-        >
-          <div
-            class="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-warning-500/10 dark:bg-primary-500/10 rounded-full text-warning-500 dark:text-primary-400"
+        <div class="rounded-lg bg-card">
+          <EmptyState
+            title={searchQuery ? 'No notes found' : 'No notes yet'}
+            text={searchQuery ? 'Try adjusting your search terms.' : 'Create your first note to get started.'}
           >
-            <BookOpen class="w-8 h-8" />
-          </div>
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            {searchQuery ? 'No notes found' : 'No notes yet'}
-          </h3>
-          <p class="text-gray-600 dark:text-gray-400 mb-6">
-            {searchQuery
-              ? 'Try adjusting your search terms'
-              : 'Create your first note to get started'}
-          </p>
-          {#if !searchQuery && hasAuthToken}
-            <button
-              onclick={handleCreate}
-              class="btn btn-primary gap-2 dark:from-primary-500 dark:to-primary-600 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-600 dark:hover:to-primary-700 shadow-lg"
-            >
-              <Plus class="w-4 h-4" />
-              Create Your First Note
-            </button>
-          {/if}
+            {#snippet actions()}
+              {#if !searchQuery && hasAuthToken}
+                <Button onclick={handleCreate}><Plus class="size-4" /> Create your first note</Button>
+              {/if}
+            {/snippet}
+          </EmptyState>
         </div>
       {:else}
-        <!-- Pinned Section (only when there are pinned notes) -->
         {#if pinnedNotes.length > 0}
-          <div class="mb-6">
-            <div class="flex items-center gap-2 mb-4">
-              <Pin class="w-5 h-5 text-warning-600 dark:text-primary-400" />
-              <h2 class="text-lg font-semibold text-secondary-900 dark:text-white">Pinned</h2>
-              <span class="text-sm text-secondary-500 dark:text-secondary-400">({pinnedNotes.length})</span>
-            </div>
-            <div class="flex flex-col gap-4">
-              {#each pinnedNotes as note, index (note.id)}
-                <div data-note-card={note.id} style="animation-delay: {index * 30}ms">
-                  <NoteCard
-                    {note}
-                    isFocused={note.id === focusedNoteId}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                    {hasAuthToken}
-                    onShowDetail={handleShowDetail}
-                    onShare={handleShare}
-                    onTogglePin={handleTogglePin}
-                  />
-                </div>
-              {/each}
-            </div>
-          </div>
+          <section class="flex flex-col gap-4">
+            <h2 class="text-label flex items-center gap-2 text-ink-muted">
+              <Pin class="size-4" /> Pinned · {pinnedNotes.length}
+            </h2>
+            {#each pinnedNotes as note (note.id)}
+              <div data-note-card={note.id}>
+                <NoteCard
+                  {note}
+                  isFocused={note.id === focusedNoteId}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  {hasAuthToken}
+                  onShowDetail={handleShowDetail}
+                  onShare={handleShare}
+                  onTogglePin={handleTogglePin}
+                />
+              </div>
+            {/each}
+          </section>
         {/if}
 
-        <!-- Other Notes -->
-        <div class="flex flex-col gap-4">
-          {#each otherNotes as note, index (note.id)}
-            <div data-note-card={note.id} style="animation-delay: {index * 30}ms">
+        <section class="flex flex-col gap-4">
+          {#if pinnedNotes.length > 0}
+            <h2 class="text-label mt-2 text-ink-muted">Other notes</h2>
+          {/if}
+          {#each otherNotes as note (note.id)}
+            <div data-note-card={note.id}>
               <NoteCard
                 {note}
                 isFocused={note.id === focusedNoteId}
@@ -871,449 +810,319 @@
               />
             </div>
           {/each}
-        </div>
+        </section>
 
-        <!-- Load More Button -->
-        <div class="mt-8 flex justify-center">
+        <div class="mt-4 flex justify-center">
           {#if $hasMore}
-            <button
-              onclick={loadMoreNotes}
-              disabled={isLoadingMore}
-              class="btn btn-outline inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-sm transition-all hover:bg-warning-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            <Button variant="secondary" onclick={loadMoreNotes} disabled={isLoadingMore}>
               {#if isLoadingMore}
-                <RotateCw class="w-4 h-4 animate-spin" />
-                Loading more...
+                <RotateCw class="size-4 animate-spin" /> Loading more…
               {:else}
-                <Plus class="w-4 h-4" />
-                Load More Notes
+                <Plus class="size-4" /> Load more notes
               {/if}
-            </button>
+            </Button>
           {:else if $notes.length > 0}
-            <div
-              class="inline-flex items-center gap-2 px-4 py-2 bg-white/90 dark:bg-gray-800/90 rounded-full border border-gray-200 dark:border-gray-700"
-            >
-              <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span class="text-sm text-gray-600 dark:text-gray-400">
-                Showing all {$notes.length} of {$totalCount} notes
-              </span>
-            </div>
+            <p class="text-code inline-flex items-center gap-2 rounded-pill bg-card px-4 py-2 text-ink-muted">
+              Showing all {$notes.length} of {$totalCount} notes
+            </p>
           {/if}
         </div>
       {/if}
     </div>
   {:else if viewMode === 'detail'}
-    <!-- Single Note Detail View -->
     {#if isLoadingSingleNote || isBoneyardCapture}
-      <div class="detail-view">
-        <!-- Back Button -->
-        <button
-          class="inline-flex items-center gap-2 px-4 py-2 mb-6 text-sm text-gray-600 dark:text-gray-400"
-        >
-          <File class="w-4 h-4" />
-          Back to all notes
-        </button>
+      <div class="mx-auto flex w-full max-w-[900px] flex-col gap-4">
+        <Button variant="ghost" size="sm" class="self-start"><ChevronLeft class="size-4" /> All notes</Button>
 
         <Skeleton name="note-detail" loading={true}>
-          <!-- Header Card -->
-          <div
-            class="bg-white/90 dark:bg-gray-900/90 rounded-2xl shadow-lg border border-black/6 dark:border-white/8 p-4 sm:p-6 mb-6"
-          >
-            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 sm:gap-3 mb-3">
-                  <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white break-words">
-                    {fixtureSingleNote.name || 'Untitled Note'}
-                  </h1>
-                </div>
-                <div class="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                  <div class="flex items-center gap-1.5">
-                    <Calendar class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    <span class="truncate">Created Aug 22, 2026</span>
-                  </div>
-                  <div class="flex items-center gap-1.5">
-                    <Clock class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    <span class="truncate">Updated Aug 22, 2026</span>
-                  </div>
-                  <div class="flex items-center gap-1.5">
-                    <ImageIcon class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    <span>1 file</span>
-                  </div>
+          <div class="flex flex-col gap-4">
+            <div class="card flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div class="min-w-0 flex-1">
+                <h1 class="text-display m-0 mb-3 break-words max-sm:text-[28px] max-sm:leading-8">
+                  {fixtureSingleNote.name || 'Untitled note'}
+                </h1>
+                <div class="text-code flex flex-wrap items-center gap-4 text-ink-muted">
+                  <span class="flex items-center gap-1.5"><Calendar class="size-4" /> Created Aug 22, 2026</span>
+                  <span class="flex items-center gap-1.5"><Clock class="size-4" /> Updated Aug 22, 2026</span>
+                  <span class="flex items-center gap-1.5"><ImageIcon class="size-4" /> 1 file</span>
                 </div>
               </div>
-              <div class="flex items-center justify-end gap-1.5 sm:gap-2">
-                <div class="btn-icon flex items-center justify-center w-9 sm:w-10 sm:h-10 rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                  <Share2 class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-400" />
-                </div>
-                <div class="btn-icon flex items-center justify-center w-9 sm:w-10 sm:h-10 rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                  <Pencil class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-400" />
-                </div>
-                <div class="btn-icon flex items-center justify-center w-9 sm:w-10 sm:h-10 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-                  <Trash2 class="w-4 h-4 sm:w-5 sm:h-5 text-red-600 dark:text-red-400" />
-                </div>
+              <div class="flex items-center justify-end gap-2">
+                <span class="btn-icon bg-control hover:bg-control-hover"><Share2 class="size-4" /></span>
+                <span class="btn-icon bg-control hover:bg-control-hover"><Pencil class="size-4" /></span>
+                <span class="btn-icon bg-control hover:bg-control-hover text-negative"><Trash2 class="size-4" /></span>
               </div>
             </div>
-          </div>
-
-          <!-- Content Card -->
-          <div
-            class="bg-white/90 dark:bg-gray-900/90 rounded-2xl shadow-lg border border-black/6 dark:border-white/8 p-4 sm:p-6 space-y-6"
-          >
-            <div class="prose prose-sm max-w-none text-gray-700 dark:text-gray-300">
-              <p>Key differences between Svelte 4 and 5: $state, $derived, $props, $effect.</p>
+            <div class="card">
+              <div class="prose max-w-none text-ink">
+                <p>Key differences between Svelte 4 and 5: $state, $derived, $props, $effect.</p>
+              </div>
             </div>
           </div>
         </Skeleton>
       </div>
     {:else if singleNote}
-      <!-- Detail Content -->
-      <div class="detail-view">
-        <!-- Back Button -->
-        <button
-          onclick={backToList}
-          class="inline-flex items-center gap-2 px-4 py-2 mb-6 text-sm text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
-        >
-          <File class="w-4 h-4" />
-          Back to all notes
-        </button>
+      <div class="mx-auto flex w-full max-w-[900px] flex-col gap-4">
+        <Button variant="ghost" size="sm" class="self-start" onclick={backToList}>
+          <ChevronLeft class="size-4" /> All notes
+        </Button>
 
         <!-- Header Card -->
-        <div
-          class="bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg rounded-2xl shadow-lg border border-black/6 dark:border-white/8 p-4 sm:p-6 mb-6"
-        >
-          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 sm:gap-3 mb-3">
-                {#if singleNote.is_favorite}
-                  <div
-                    class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-warning-100 to-warning-200 dark:from-warning-900/30 dark:to-warning-800/30 shrink-0"
-                  >
-                    <Star class="w-4 h-4 sm:w-5 sm:h-5 text-warning-600 dark:text-warning-400 fill-warning-600 dark:fill-warning-400" />
-                  </div>
-                {/if}
-                <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white break-words">
-                  {singleNote.name || 'Untitled Note'}
-                </h1>
-              </div>
+        <div class="card flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div class="min-w-0 flex-1">
+            {#if singleNote.is_pinned || singleNote.is_favorite}
+              <p class="text-label mb-2 flex items-center gap-3 text-accent-text">
+                {#if singleNote.is_pinned}<span>● Pinned</span>{/if}
+                {#if singleNote.is_favorite}<span class="flex items-center gap-1"><Star class="size-3.5 fill-current" /> Favorite</span>{/if}
+              </p>
+            {/if}
+            <h1 class="text-display m-0 mb-3 break-words max-sm:text-[28px] max-sm:leading-8">
+              {singleNote.name || 'Untitled note'}
+            </h1>
 
-              <div class="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                <div class="flex items-center gap-1.5">
-                  <Calendar class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span class="truncate">Created {new Date(singleNote.created_at).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                  })}</span>
-                </div>
-                <div class="flex items-center gap-1.5">
-                  <Clock class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span class="truncate">Updated {new Date(singleNote.updated_at).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                  })}</span>
-                </div>
-                {#if singleNote.files && singleNote.files.length > 0}
-                  <div class="flex items-center gap-1.5">
-                    <ImageIcon class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    <span>{singleNote.files.length} file{singleNote.files.length === 1 ? '' : 's'}</span>
-                  </div>
-                {/if}
-              </div>
-            </div>
-
-            <!-- Actions -->
-            <div class="flex items-center justify-end gap-1.5 sm:gap-2">
-              {#if singleNote.link}
-                <button
-                  onclick={() => window.open(singleNote.link, '_blank', 'noopener,noreferrer')}
-                  class="btn-icon flex items-center justify-center w-9 sm:w-10 sm:h-10 rounded-xl bg-warning-50 dark:bg-primary-900/20 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-warning-200 dark:border-primary-800 transition-all shrink-0"
-                  title="Open link"
-                >
-                  <Link2 class="w-4 h-4 sm:w-5 sm:h-5 text-warning-600 dark:text-primary-400" />
-                </button>
+            <div class="text-code flex flex-wrap items-center gap-4 text-ink-muted">
+              <span class="flex items-center gap-1.5">
+                <Calendar class="size-4" />
+                Created {new Date(singleNote.created_at).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric'
+                })}
+              </span>
+              <span class="flex items-center gap-1.5">
+                <Clock class="size-4" />
+                Updated {new Date(singleNote.updated_at).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric'
+                })}
+              </span>
+              {#if singleNote.files && singleNote.files.length > 0}
+                <span class="flex items-center gap-1.5">
+                  <ImageIcon class="size-4" />
+                  {singleNote.files.length} file{singleNote.files.length === 1 ? '' : 's'}
+                </span>
               {/if}
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center justify-end gap-2">
+            {#if singleNote.link}
               <button
-                onclick={() => handleShare(singleNote)}
-                class="btn-icon flex items-center justify-center w-9 sm:w-10 sm:h-10 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-gray-200 dark:border-gray-700 hover:border-warning-300 dark:hover:border-primary-800 transition-all shrink-0"
-                title="Share note"
+                onclick={() => window.open(singleNote.link, '_blank', 'noopener,noreferrer')}
+                class="btn-icon bg-control hover:bg-control-hover"
+                title="Open link"
+                aria-label="Open link"
               >
-                <Share2 class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-400" />
+                <Link2 class="size-4" />
               </button>
-              {#if hasAuthToken}
-                <button
-                  onclick={() => handleEdit(singleNote)}
-                  class="btn-icon flex items-center justify-center w-9 sm:w-10 sm:h-10 rounded-xl bg-warning-50 dark:bg-primary-900/20 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-warning-200 dark:border-primary-800 transition-all shrink-0"
-                  title="Edit note"
-                >
-                  <Pencil class="w-4 h-4 sm:w-5 sm:h-5 text-warning-600 dark:text-primary-400" />
-                </button>
-                <button
-                  onclick={() => {
-                    if (confirm('Are you sure you want to delete this note?')) {
-                      handleDelete(singleNote);
-                      backToList();
-                    }
-                  }}
-                  class="btn-icon flex items-center justify-center w-9 sm:w-10 sm:h-10 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 transition-all shrink-0"
-                  title="Delete note"
-                >
-                  <Trash2 class="w-4 h-4 sm:w-5 sm:h-5 text-red-600 dark:text-red-400" />
-                </button>
-              {/if}
-            </div>
+            {/if}
+            <button
+              onclick={() => handleShare(singleNote)}
+              class="btn-icon bg-control hover:bg-control-hover"
+              title="Share note"
+              aria-label="Share note"
+            >
+              <Share2 class="size-4" />
+            </button>
+            {#if hasAuthToken}
+              <button
+                onclick={() => handleEdit(singleNote)}
+                class="btn-icon bg-control hover:bg-control-hover"
+                title="Edit note"
+                aria-label="Edit note"
+              >
+                <Pencil class="size-4" />
+              </button>
+              <button
+                onclick={() => {
+                  if (confirm('Are you sure you want to delete this note?')) {
+                    handleDelete(singleNote);
+                    backToList();
+                  }
+                }}
+                class="btn-icon bg-control hover:bg-control-hover text-negative hover:text-negative"
+                title="Delete note"
+                aria-label="Delete note"
+              >
+                <Trash2 class="size-4" />
+              </button>
+            {/if}
           </div>
         </div>
 
         <!-- Content Card -->
-        <div
-          class="bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg rounded-2xl shadow-lg border border-black/6 dark:border-white/8 p-4 sm:p-6 space-y-6"
-        >
-          <!-- Link Section -->
+        <div class="card space-y-6">
           {#if singleNote.link}
-            <div
-              class="p-3 sm:p-4 bg-warning-50 dark:bg-primary-900/10 rounded-xl border border-warning-200 dark:border-primary-800"
-            >
-              <div class="flex flex-col sm:flex-row sm:items-center gap-3">
-                <div
-                  class="flex items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-gray-800 shrink-0"
-                >
-                  <Link2 class="w-5 h-5 text-warning-600 dark:text-primary-400" />
-                </div>
-                <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-warning-900 dark:text-primary-100 mb-1">
-                    External Link
-                  </p>
+            <div class="rounded-md bg-sunken p-4">
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <span class="grid size-10 flex-none place-items-center rounded-md bg-tile-deep text-ink-on-dark">
+                  <Link2 class="size-5" />
+                </span>
+                <div class="min-w-0 flex-1">
+                  <p class="text-label mb-1 text-ink-muted">External link</p>
                   <a
                     href={singleNote.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="text-warning-700 dark:text-primary-300 hover:text-warning-800 dark:hover:text-primary-200 truncate block text-sm"
+                    class="block truncate text-body-sm text-accent-text underline-offset-2 hover:underline"
                   >
                     {singleNote.link}
                   </a>
                 </div>
-                <button
+                <Button
+                  variant="secondary"
+                  size="sm"
                   onclick={() => window.open(singleNote.link, '_blank', 'noopener,noreferrer')}
-                  class="btn btn-primary px-4 py-2 shadow-md shrink-0"
                 >
                   Visit
-                </button>
+                </Button>
               </div>
 
-              <!-- Link Summarize Section -->
-              <div class="mt-3 pt-3 border-t border-warning-200 dark:border-primary-700">
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                  <p class="text-sm font-semibold text-warning-900 dark:text-primary-100 flex items-center gap-1.5">
-                    <Sparkles class="w-4 h-4" />
-                    AI Summary
+              <div class="mt-5">
+                <div class="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <p class="text-label flex items-center gap-1.5 text-ink">
+                    <Sparkles class="size-4" /> AI summary
                   </p>
-                  <div class="flex items-center gap-2 sm:gap-2">
-                    {#if singleNote.link_summarize && (singleNote.link_summarize.length > 150)}
+                  <div class="flex items-center gap-2">
+                    {#if singleNote.link_summarize && singleNote.link_summarize.length > 150}
                       <button
                         onclick={() => (isSummaryFull = !isSummaryFull)}
-                        class="text-xs text-warning-700 dark:text-primary-300 hover:text-warning-800 dark:hover:text-primary-200 font-medium transition-colors"
+                        class="text-body-sm text-accent-text hover:underline"
                       >
                         {isSummaryFull ? 'Show less' : 'Show more'}
                       </button>
                     {/if}
                     {#if hasAuthToken}
-                      <button
+                      <Button
+                        variant="secondary"
+                        size="sm"
                         onclick={() => handleRegenerateSummarize(singleNote)}
                         disabled={isRegeneratingSummarize}
-                        class="btn btn-primary btn-sm flex items-center justify-center gap-1.5 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
                         title="Regenerate AI summary"
                       >
                         {#if isRegeneratingSummarize}
-                          <Loader2 class="w-3.5 h-3.5 animate-spin" />
-                          <span class="hidden xs:inline">Regenerating...</span>
+                          <Loader2 class="size-3.5 animate-spin" /> Regenerating…
                         {:else}
-                          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                          </svg>
-                          <span class="hidden xs:inline">Regenerate</span>
+                          <RefreshCw class="size-3.5" /> Regenerate
                         {/if}
-                      </button>
+                      </Button>
                     {/if}
                   </div>
                 </div>
                 {#if singleNote.link_summarize}
-                  <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                  <p class="text-body-sm font-normal text-ink">
                     {isSummaryFull || singleNote.link_summarize.length <= 150
                       ? singleNote.link_summarize
-                      : singleNote.link_summarize.slice(0, 150) + '...'}
+                      : singleNote.link_summarize.slice(0, 150) + '…'}
                   </p>
                 {:else}
-                  <p class="text-sm text-gray-500 dark:text-gray-400 italic">
-                    No summary available yet.{#if hasAuthToken} Click regenerate to generate AI summary.{/if}
+                  <p class="text-body-sm font-normal text-ink-muted">
+                    No summary available yet.{#if hasAuthToken} Click regenerate to generate an AI summary.{/if}
                   </p>
                 {/if}
               </div>
             </div>
           {/if}
 
-          <!-- Description -->
           {#if singleNote.description}
-            <div>
-              <div
-                class="prose prose-sm max-w-none dark:prose-invert text-gray-700 dark:text-gray-300"
-              >
-                {@html singleNote.description}
-              </div>
+            <div class="prose max-w-none text-ink">
+              {@html singleNote.description}
             </div>
           {/if}
 
-          <!-- Images -->
-          {#if singleNote.files && singleNote.files.filter( f => f.mime_type.startsWith('image/') ).length > 0}
-            <div>
-              <h3
-                class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2"
-              >
-                <ImageIcon class="w-5 h-5 text-warning-600 dark:text-primary-400" />
-                Images ({singleNote.files.filter(f => f.mime_type.startsWith('image/')).length})
+          {#if singleNote.files && singleNote.files.filter(f => f.mime_type.startsWith('image/')).length > 0}
+            <section>
+              <h3 class="text-label mb-3 flex items-center gap-2 text-ink-muted">
+                <ImageIcon class="size-4" />
+                Images · {singleNote.files.filter(f => f.mime_type.startsWith('image/')).length}
               </h3>
-              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {#each singleNote.files.filter( f => f.mime_type.startsWith('image/') ) as file, index (file.id + '-' + index)}
-                  <div
-                    class="group relative bg-gray-50 dark:bg-gray-800 rounded-xl overflow-hidden hover:shadow-lg transition-all border border-gray-200 dark:border-gray-700"
-                  >
-                    <div class="aspect-square bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
+              <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {#each singleNote.files.filter(f => f.mime_type.startsWith('image/')) as file, index (file.id + '-' + index)}
+                  <figure class="m-0 overflow-hidden rounded-md bg-sunken">
+                    <div class="aspect-square">
                       <img
-                        src={file.presigned_url ||
-                          file.url ||
-                          `data:${file.mime_type};base64,${file.data}`}
+                        src={file.presigned_url || file.url || `data:${file.mime_type};base64,${file.data}`}
                         alt={file.original_name}
-                        class="w-full h-full object-cover rounded-lg"
+                        class="h-full w-full object-cover"
                       />
                     </div>
-                    <div
-                      class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <div class="absolute bottom-0 left-0 right-0 p-3">
-                        <p class="text-white text-sm font-medium truncate">
-                          {file.original_name}
-                        </p>
-                        <p class="text-white/80 text-xs">{(file.size / 1024).toFixed(0)} KB</p>
-                      </div>
-                    </div>
-                  </div>
+                    <figcaption class="flex items-center justify-between gap-2 px-3 py-2">
+                      <span class="truncate text-body-sm">{file.original_name}</span>
+                      <span class="text-code flex-none text-ink-muted">{(file.size / 1024).toFixed(0)} KB</span>
+                    </figcaption>
+                  </figure>
                 {/each}
               </div>
-            </div>
+            </section>
           {/if}
 
-          <!-- Other Files -->
           {#if singleNote.files && singleNote.files.filter(f => !f.mime_type.startsWith('image/')).length > 0}
-            <div>
-              <h3
-                class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2"
-              >
-                <File class="w-5 h-5 text-warning-600 dark:text-primary-400" />
-                Files ({singleNote.files.filter(f => !f.mime_type.startsWith('image/')).length})
+            <section>
+              <h3 class="text-label mb-3 flex items-center gap-2 text-ink-muted">
+                <File class="size-4" />
+                Files · {singleNote.files.filter(f => !f.mime_type.startsWith('image/')).length}
               </h3>
               <div class="space-y-3">
                 {#each singleNote.files.filter(f => !f.mime_type.startsWith('image/')) as file, index (file.id + '-' + index)}
-                  <div
-                    class="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all"
-                  >
-                    <div
-                      class="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gray-200 dark:bg-gray-700 rounded-lg shrink-0"
-                    >
-                      <File class="w-5 h-5 sm:w-6 sm:h-6 text-gray-500 dark:text-gray-400" />
-                    </div>
-                    <div class="flex-1 min-w-0">
-                      <p class="font-medium text-gray-900 dark:text-white truncate text-sm">
-                        {file.original_name}
-                      </p>
-                      <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                        {(file.size / 1024).toFixed(0)} KB
-                      </p>
+                  <div class="flex items-center gap-3 rounded-md bg-sunken p-3">
+                    <span class="grid size-10 flex-none place-items-center rounded-md bg-card">
+                      <File class="size-5 text-ink-muted" />
+                    </span>
+                    <div class="min-w-0 flex-1">
+                      <p class="truncate text-body-sm">{file.original_name}</p>
+                      <p class="text-code text-ink-muted">{(file.size / 1024).toFixed(0)} KB</p>
                     </div>
                     <a
                       href={file.presigned_url || file.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="btn btn-primary px-3 sm:px-4 py-2 text-xs sm:text-sm shadow-md shrink-0"
+                      class="btn btn-secondary btn-sm"
                     >
                       View
                     </a>
                   </div>
                 {/each}
               </div>
-            </div>
+            </section>
           {/if}
 
-          <!-- Tags -->
           {#if singleNote.tags && singleNote.tags.length > 0}
-            <div>
-              <h3
-                class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2"
-              >
-                <Tag class="w-5 h-5 text-warning-600 dark:text-primary-400" />
-                Tags
+            <section>
+              <h3 class="text-label mb-3 flex items-center gap-2 text-ink-muted">
+                <Tag class="size-4" /> Tags
               </h3>
               <div class="flex flex-wrap gap-2">
                 {#each singleNote.tags as tag (tag.id)}
-                  <div
-                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-full border {!tag.color
-                      ? 'bg-warning-50 text-warning-700 border-warning-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700'
-                      : ''}"
-                    style="background-color: {tag.color
-                      ? tag.color + '20'
-                      : undefined}; color: {tag.color || undefined}; border-color: {tag.color
-                      ? tag.color + '40'
-                      : undefined}"
-                  >
-                    <div
-                      class="w-2 h-2 rounded-full {!tag.color
-                        ? 'bg-warning-600 dark:bg-primary-600'
-                        : ''}"
-                      style="background-color: {tag.color || undefined}"
-                    ></div>
-                    <span class="text-sm font-medium">{tag.name || tag.tag}</span>
-                  </div>
+                  <span class="inline-flex h-7 items-center gap-1.5 rounded-pill bg-sunken px-3 text-code text-ink">
+                    <span
+                      class="size-2 rounded-pill bg-accent"
+                      style={tag.color ? `background-color: ${tag.color}` : undefined}
+                      aria-hidden="true"
+                    ></span>
+                    {tag.name || tag.tag}
+                  </span>
                 {/each}
               </div>
-            </div>
+            </section>
           {/if}
 
-          <!-- Empty State -->
           {#if !singleNote.description && (!singleNote.tags || singleNote.tags.length === 0) && !singleNote.link && (!singleNote.files || singleNote.files.length === 0)}
-            <div class="text-center py-12">
-              <div
-                class="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full"
-              >
-                <Calendar class="w-8 h-8 text-gray-400" />
-              </div>
-              <p class="text-gray-600 dark:text-gray-400">
-                No additional content available
-              </p>
-            </div>
+            <p class="py-8 text-center text-ink-muted">No additional content in this note.</p>
           {/if}
         </div>
       </div>
     {:else}
-      <!-- Note not found -->
-      <div
-        class="text-center py-16 px-8 bg-white/90 dark:bg-gray-900/90 rounded-xl border border-dashed border-black/10 dark:border-white/10"
-      >
-        <div
-          class="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-warning-500/10 dark:bg-primary-500/10 rounded-full text-warning-500 dark:text-primary-400"
+      <div class="mx-auto w-full max-w-[900px] rounded-lg bg-card">
+        <EmptyState
+          title="Note not found"
+          text="This note doesn't exist or has been deleted."
         >
-          <File class="w-8 h-8" />
-        </div>
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-          Note not found
-        </h2>
-        <p class="text-gray-600 dark:text-gray-400 mb-6">
-          The note you're looking for doesn't exist or has been deleted.
-        </p>
-        <button
-          onclick={backToList}
-          class="btn btn-primary gap-2 dark:from-primary-500 dark:to-primary-600 hover:from-warning-600 hover:to-amber-600 dark:hover:from-primary-600 dark:hover:to-primary-700 shadow-lg"
-        >
-          Back to Notes
-        </button>
+          {#snippet actions()}
+            <Button onclick={backToList}>Back to notes</Button>
+          {/snippet}
+        </EmptyState>
       </div>
     {/if}
   {/if}

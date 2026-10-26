@@ -83,13 +83,6 @@
     navigator.clipboard.writeText(text);
   }
 
-  function getLimitColor(current: number, limit: number): string {
-    const percent = (current / limit) * 100;
-    if (percent >= 100) return 'bg-red-500';
-    if (percent >= 80) return 'bg-warning-500';
-    return 'bg-green-500';
-  }
-
   function getLimitPercent(current: number, limit: number): number {
     return Math.min((current / limit) * 100, 100);
   }
@@ -175,49 +168,20 @@ ${inputText}
   icon={Calculator}
   color="warning"
 >
-  <!-- Hero Section -->
-  <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
-  >
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
-          <Calculator class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Text Analysis</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            Comprehensive statistics including reading time and word frequency
-          </p>
-        </div>
-      </div>
-      <div class="flex gap-2">
-        <button
-          class="btn btn-copy"
-          onclick={loadSampleText}
-        >
-          Load Sample
-        </button>
-        <button
-          class="btn btn-secondary"
-          onclick={clearAll}
-        >
-          Clear
-        </button>
-      </div>
-    </div>
+  <!-- Toolbar -->
+  <div class="flex flex-wrap gap-2">
+    <button class="btn btn-secondary btn-sm" onclick={loadSampleText}>Load sample</button>
+    <button class="btn btn-ghost btn-sm" onclick={clearAll}>Clear</button>
   </div>
 
   <!-- Main Content Grid -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
     <!-- Text Input Area -->
     <div class="lg:col-span-2">
-      <div
-        class="tool-card"
-      >
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input Text</h2>
-          <div class="text-sm text-gray-500 dark:text-gray-400">
+      <div class="tool-card">
+        <div class="card-header">
+          <h2 class="section-title mb-0">Input text</h2>
+          <div class="text-count">
             {inputText.length} chars
           </div>
         </div>
@@ -233,22 +197,23 @@ ${inputText}
           <div class="mt-4 space-y-2">
             {#each commonLimits as limit (limit.name)}
               {@const percentage = (stats.totalChars / limit.limit) * 100}
-              <div class="flex items-center justify-between text-sm">
-                <span class="text-gray-600 dark:text-gray-400 min-w-[100px]">{limit.name}</span>
+              <div class="flex items-center justify-between text-body-sm">
+                <span class="text-ink-muted min-w-[100px]">{limit.name}</span>
                 <div class="flex items-center gap-2 flex-1">
-                  <div class="w-32 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div class="w-32 bg-sunken rounded-pill h-2">
                     <div
-                      class="h-2 rounded-full transition-all {percentage > 100
-                        ? 'bg-red-500'
-                        : percentage > 80
-                          ? 'bg-warning-500'
-                          : 'bg-green-500'}"
+                      class="h-2 rounded-pill transition-[width] {percentage > 100
+                        ? 'bg-negative'
+                        : 'bg-accent'}"
                       style="width: {Math.min(percentage, 100)}%"
                     ></div>
                   </div>
-                  <span class="text-gray-600 dark:text-gray-400 min-w-[60px] text-right">
+                  <span class="font-mono text-code text-ink-muted min-w-[60px] text-right">
                     {stats.totalChars}/{limit.limit}
                   </span>
+                  {#if percentage > 100}
+                    <span class="text-label text-negative">Over</span>
+                  {/if}
                 </div>
               </div>
             {/each}
@@ -260,91 +225,65 @@ ${inputText}
     <!-- Statistics Panel -->
     <div class="space-y-4">
       <!-- Quick Stats -->
-      <div
-        class="tool-card"
-      >
-        <h2 class="section-title">Quick Stats</h2>
+      <div class="tool-card">
+        <h2 class="section-title">Quick stats</h2>
 
         {#if stats}
           <div class="space-y-3">
-            <div
-              class="flex items-center justify-between p-3 rounded-lg bg-warning-50 dark:bg-primary-900/20"
-            >
+            <div class="result-row">
               <div class="flex items-center">
-                <Type class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
-                <span class="text-sm font-medium text-gray-900 dark:text-white">Characters</span>
+                <Type class="w-5 h-5 mr-2 text-accent-text" />
+                <span class="text-body-sm text-ink">Characters</span>
               </div>
-              <span class="text-lg font-bold text-warning-600 dark:text-primary-400"
-                >{stats.totalChars}</span
-              >
+              <span class="result-value">{stats.totalChars}</span>
             </div>
 
-            <div
-              class="flex items-center justify-between p-3 rounded-lg bg-warning-50 dark:bg-primary-900/20"
-            >
+            <div class="result-row">
               <div class="flex items-center">
-                <FileText class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
-                <span class="text-sm font-medium text-gray-900 dark:text-white">Words</span>
+                <FileText class="w-5 h-5 mr-2 text-accent-text" />
+                <span class="text-body-sm text-ink">Words</span>
               </div>
-              <span class="text-lg font-bold text-warning-600 dark:text-primary-400"
-                >{stats.words}</span
-              >
+              <span class="result-value">{stats.words}</span>
             </div>
 
-            <div
-              class="flex items-center justify-between p-3 rounded-lg bg-warning-50 dark:bg-primary-900/20"
-            >
+            <div class="result-row">
               <div class="flex items-center">
-                <Hash class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
-                <span class="text-sm font-medium text-gray-900 dark:text-white">Sentences</span>
+                <Hash class="w-5 h-5 mr-2 text-accent-text" />
+                <span class="text-body-sm text-ink">Sentences</span>
               </div>
-              <span class="text-lg font-bold text-warning-600 dark:text-primary-400"
-                >{stats.sentences}</span
-              >
+              <span class="result-value">{stats.sentences}</span>
             </div>
 
-            <div
-              class="flex items-center justify-between p-3 rounded-lg bg-warning-50 dark:bg-primary-900/20"
-            >
+            <div class="result-row">
               <div class="flex items-center">
-                <Clock class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
-                <span class="text-sm font-medium text-gray-900 dark:text-white">Reading Time</span>
+                <Clock class="w-5 h-5 mr-2 text-accent-text" />
+                <span class="text-body-sm text-ink">Reading time</span>
               </div>
-              <span class="text-lg font-bold text-warning-600 dark:text-primary-400"
-                >{stats.readingTimeAvg}m</span
-              >
+              <span class="result-value">{stats.readingTimeAvg}m</span>
             </div>
           </div>
         {:else}
-          <p class="text-gray-500 dark:text-gray-400 text-center py-8">
-            Enter text to see statistics
-          </p>
+          <p class="text-body text-ink-muted text-center py-8">Enter text to see statistics</p>
         {/if}
       </div>
 
       <!-- Action Buttons -->
-      <div
-        class="tool-card"
-      >
+      <div class="tool-card">
         <h2 class="section-title">Actions</h2>
 
         <div class="space-y-3">
           <button
-            class="btn btn-copy w-full"
+            class="btn btn-secondary w-full"
             onclick={() => copyToClipboard(inputText)}
             disabled={!inputText}
           >
             <Copy class="w-4 h-4" />
-            Copy Text
+            Copy text
           </button>
 
-          <button
-            class="btn btn-copy w-full"
-            onclick={downloadReport}
-            disabled={!stats}
-          >
+          <button class="btn btn-primary w-full" onclick={downloadReport} disabled={!stats}>
             <Calculator class="w-4 h-4" />
-            Download Report
+            Download report
           </button>
         </div>
       </div>
@@ -353,94 +292,81 @@ ${inputText}
 
   <!-- Detailed Statistics -->
   {#if stats}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <!-- Character Breakdown -->
-      <div
-        class="tool-card"
-      >
-        <h3 class="section-title">
-          Character Breakdown
-        </h3>
+      <div class="tool-card">
+        <h3 class="section-title">Character breakdown</h3>
         <div class="space-y-2">
-          <div class="flex justify-between text-sm">
-            <span class="text-gray-600 dark:text-gray-400">Letters</span>
-            <span class="font-medium text-gray-900 dark:text-white">{stats.letters}</span>
+          <div class="flex justify-between text-body-sm">
+            <span class="text-ink-muted">Letters</span>
+            <span class="font-mono text-ink">{stats.letters}</span>
           </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-gray-600 dark:text-gray-400">Numbers</span>
-            <span class="font-medium text-gray-900 dark:text-white">{stats.numbers}</span>
+          <div class="flex justify-between text-body-sm">
+            <span class="text-ink-muted">Numbers</span>
+            <span class="font-mono text-ink">{stats.numbers}</span>
           </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-gray-600 dark:text-gray-400">Spaces</span>
-            <span class="font-medium text-gray-900 dark:text-white">{stats.spaces}</span>
+          <div class="flex justify-between text-body-sm">
+            <span class="text-ink-muted">Spaces</span>
+            <span class="font-mono text-ink">{stats.spaces}</span>
           </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-gray-600 dark:text-gray-400">Punctuation</span>
-            <span class="font-medium text-gray-900 dark:text-white">{stats.punctuation}</span>
+          <div class="flex justify-between text-body-sm">
+            <span class="text-ink-muted">Punctuation</span>
+            <span class="font-mono text-ink">{stats.punctuation}</span>
           </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-gray-600 dark:text-gray-400">Special chars</span>
-            <span class="font-medium text-gray-900 dark:text-white">{stats.specialChars}</span>
+          <div class="flex justify-between text-body-sm">
+            <span class="text-ink-muted">Special chars</span>
+            <span class="font-mono text-ink">{stats.specialChars}</span>
           </div>
         </div>
       </div>
 
       <!-- Reading Time -->
-      <div
-        class="tool-card"
-      >
-        <h3 class="section-title">Reading Time</h3>
+      <div class="tool-card">
+        <h3 class="section-title">Reading time</h3>
         <div class="space-y-3">
           <div class="flex items-center justify-between">
             <div class="flex items-center">
-              <Clock class="w-4 h-4 text-gray-400 mr-2" />
-              <span class="text-sm text-gray-600 dark:text-gray-400">Slow (130 WPM)</span>
+              <Clock class="w-4 h-4 text-ink-muted mr-2" />
+              <span class="text-body-sm text-ink-muted">Slow (130 WPM)</span>
             </div>
-            <span class="font-medium text-gray-900 dark:text-white"
-              >{stats.readingTimeSlow} min</span
-            >
+            <span class="font-mono text-ink">{stats.readingTimeSlow} min</span>
           </div>
           <div class="flex items-center justify-between">
             <div class="flex items-center">
-              <Clock class="w-4 h-4 text-gray-400 mr-2" />
-              <span class="text-sm text-gray-600 dark:text-gray-400">Average (200 WPM)</span>
+              <Clock class="w-4 h-4 text-ink-muted mr-2" />
+              <span class="text-body-sm text-ink-muted">Average (200 WPM)</span>
             </div>
-            <span class="font-medium text-gray-900 dark:text-white">{stats.readingTimeAvg} min</span
-            >
+            <span class="font-mono text-ink">{stats.readingTimeAvg} min</span>
           </div>
           <div class="flex items-center justify-between">
             <div class="flex items-center">
-              <Clock class="w-4 h-4 text-gray-400 mr-2" />
-              <span class="text-sm text-gray-600 dark:text-gray-400">Fast (300 WPM)</span>
+              <Clock class="w-4 h-4 text-ink-muted mr-2" />
+              <span class="text-body-sm text-ink-muted">Fast (300 WPM)</span>
             </div>
-            <span class="font-medium text-gray-900 dark:text-white"
-              >{stats.readingTimeFast} min</span
-            >
+            <span class="font-mono text-ink">{stats.readingTimeFast} min</span>
           </div>
         </div>
       </div>
 
       <!-- Structure Analysis -->
-      <div
-        class="tool-card"
-      >
-        <h3 class="section-title">Structure Analysis</h3>
+      <div class="tool-card">
+        <h3 class="section-title">Structure analysis</h3>
         <div class="space-y-2">
-          <div class="flex justify-between text-sm">
-            <span class="text-gray-600 dark:text-gray-400">Paragraphs</span>
-            <span class="font-medium text-gray-900 dark:text-white">{stats.paragraphs}</span>
+          <div class="flex justify-between text-body-sm">
+            <span class="text-ink-muted">Paragraphs</span>
+            <span class="font-mono text-ink">{stats.paragraphs}</span>
           </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-gray-600 dark:text-gray-400">Lines</span>
-            <span class="font-medium text-gray-900 dark:text-white">{stats.lines}</span>
+          <div class="flex justify-between text-body-sm">
+            <span class="text-ink-muted">Lines</span>
+            <span class="font-mono text-ink">{stats.lines}</span>
           </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-gray-600 dark:text-gray-400">Unique words</span>
-            <span class="font-medium text-gray-900 dark:text-white">{stats.uniqueWords}</span>
+          <div class="flex justify-between text-body-sm">
+            <span class="text-ink-muted">Unique words</span>
+            <span class="font-mono text-ink">{stats.uniqueWords}</span>
           </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-gray-600 dark:text-gray-400">Avg word length</span>
-            <span class="font-medium text-gray-900 dark:text-white">
+          <div class="flex justify-between text-body-sm">
+            <span class="text-ink-muted">Avg word length</span>
+            <span class="font-mono text-ink">
               {stats.words > 0 ? (stats.charsNoSpaces / stats.words).toFixed(1) : 0}
             </span>
           </div>
@@ -450,23 +376,19 @@ ${inputText}
 
     <!-- Word Frequency -->
     {#if Object.keys(stats.wordFrequency).length > 0}
-      <div
-        class="tool-card mt-4 shadow-sm"
-      >
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Most Frequent Words</h3>
-          <BarChart3 class="w-5 h-5 text-gray-400" />
+      <div class="tool-card">
+        <div class="card-header">
+          <h3 class="section-title mb-0">Most frequent words</h3>
+          <BarChart3 class="w-5 h-5 text-ink-muted" />
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {#each Object.entries(stats.wordFrequency) as [word, count] (word)}
-            <div
-              class="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-700"
-            >
-              <span class="text-sm font-medium text-gray-900 dark:text-white capitalize">
+            <div class="result-row">
+              <span class="text-body-sm text-ink capitalize">
                 {word}
               </span>
-              <span class="text-sm text-gray-600 dark:text-gray-400">{count}x</span>
+              <span class="font-mono text-code text-ink-muted">{count}x</span>
             </div>
           {/each}
         </div>
@@ -475,47 +397,33 @@ ${inputText}
   {/if}
 
   <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Sparkles class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="card">
+      <div class="feature-icon">
+        <Sparkles class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-        Comprehensive Analysis
-      </h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Comprehensive analysis</h3>
+      <p class="feature-description">
         Get detailed statistics including character counts, word counts, and reading time estimates.
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <Zap class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Real-time Updates</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Real-time updates</h3>
+      <p class="feature-description">
         All statistics update instantly as you type with accurate calculations.
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Check class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <Check class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Platform Limits</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Platform limits</h3>
+      <p class="feature-description">
         Check character limits for popular platforms like Twitter, SMS, and social media.
       </p>
     </div>

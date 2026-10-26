@@ -195,22 +195,22 @@
         tabindex="0"
         onkeydown={e => (e.key === 'Enter' || e.key === ' ') && openFileDialog()}
         class={`
-          border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors
+          rounded-lg p-6 text-center cursor-pointer transition-colors
           ${
             dragActive
-              ? 'border-warning-500 bg-warning-50 dark:bg-primary-900/20 dark:border-primary-500'
-              : 'border-secondary-300 dark:border-secondary-600 hover:border-warning-400 dark:hover:border-primary-500'
+              ? 'bg-tile-deep text-ink-on-dark'
+              : 'bg-control text-ink hover:bg-control-hover'
           }
           ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         `}
         onclick={openFileDialog}
       >
-        <Upload class="w-8 h-8 mx-auto mb-3 text-secondary-400" />
-        <p class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-1">
+        <Upload class="w-8 h-8 mx-auto mb-3 {dragActive ? 'text-tile-lime' : 'text-accent-text'}" />
+        <p class="text-sm font-medium mb-1">
           Click to upload or drag and drop
         </p>
-        <p class="text-xs text-secondary-500 dark:text-secondary-400">All file types</p>
-        <p class="text-xs text-secondary-500 dark:text-secondary-400 mt-1">
+        <p class="text-body-sm {dragActive ? 'text-ink-on-dark-muted' : 'text-ink-muted'}">All file types</p>
+        <p class="text-count mt-1 {dragActive ? 'text-ink-on-dark-muted' : ''}">
           Max {formatFileSize(maxFileSize)} per file, up to {maxFiles} files
         </p>
       </div>
@@ -220,42 +220,42 @@
   <!-- File List -->
   {#if files.length > 0}
     <div class="space-y-2">
-      <div class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2">
+      <div class="text-label text-ink-muted mb-2">
         Files ({files.length}/{maxFiles})
       </div>
 
       {#each files as file, index (index)}
         <div
-          class="flex items-center gap-3 p-3 bg-secondary-50 dark:bg-secondary-800 rounded-lg border border-secondary-200 dark:border-secondary-600"
+          class="flex items-center gap-3 p-3 bg-control rounded-md"
         >
           <!-- File Icon/Preview -->
           <div
-            class="flex-shrink-0 w-12 h-12 bg-secondary-100 dark:bg-secondary-700 rounded flex items-center justify-center"
+            class="flex-shrink-0 w-12 h-12 bg-raised rounded-sm flex items-center justify-center overflow-hidden"
           >
             {#if file.mimeType.startsWith('image/')}
               {#if previewUrls.get(index)}
                 <img
                   src={previewUrls.get(index)}
                   alt={file.originalName}
-                  class="w-full h-full object-cover rounded"
+                  class="w-full h-full object-cover rounded-sm"
                 />
               {:else}
-                <ImageIcon class="w-6 h-6 text-secondary-500 dark:text-secondary-400" />
+                <ImageIcon class="w-6 h-6 text-ink-muted" />
               {/if}
             {:else}
-              <File class="w-6 h-6 text-secondary-500 dark:text-secondary-400" />
+              <File class="w-6 h-6 text-ink-muted" />
             {/if}
           </div>
 
           <!-- File Info -->
           <div class="flex-1 min-w-0">
             <p
-              class="text-sm font-medium text-secondary-900 dark:text-white truncate"
+              class="text-sm font-medium text-ink truncate"
               title={file.originalName}
             >
               {formatFileName(file.originalName)}
             </p>
-            <p class="text-xs text-secondary-500 dark:text-secondary-400">
+            <p class="text-count">
               {file.mimeType}
             </p>
           </div>
@@ -267,9 +267,10 @@
               onclick={() => removeFile(index)}
               {disabled}
               title="Remove file"
-              class="btn-icon btn-danger w-8 h-8 rounded hover:bg-red-100 dark:hover:bg-red-900/20 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Remove file"
+              class="btn-icon hover:text-negative"
             >
-              <Trash2 class="w-4 h-4 text-red-600 dark:text-red-400" />
+              <Trash2 class="w-4 h-4" />
             </button>
           </div>
         </div>

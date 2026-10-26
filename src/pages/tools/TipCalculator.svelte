@@ -87,51 +87,26 @@
   icon={Calculator}
   color="warning"
 >
-  <!-- Hero Section -->
-  <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
-  >
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
-          <Calculator class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Tip Calculator</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            Calculate tips and split bills easily
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Controls -->
-  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
-    <button class="btn btn-copy" onclick={loadSampleBill}>
-      <Sparkles class="w-4 h-4 mr-2" />
-      Load Sample Bill
+  <div class="flex flex-wrap gap-2">
+    <button class="btn btn-secondary" onclick={loadSampleBill}>
+      <Sparkles class="w-4 h-4" />
+      Load sample bill
     </button>
-    <button class="btn btn-secondary" onclick={clearAll}>
-      Clear All
+    <button class="btn btn-ghost" onclick={clearAll}>
+      Clear all
     </button>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Input Section -->
-    <div
-      class="tool-card"
-    >
-      <h3 class="section-title">Bill Details</h3>
+    <div class="tool-card">
+      <h3 class="section-title">Bill details</h3>
 
       <div class="space-y-4">
         <!-- Bill Amount -->
         <div>
-          <label
-            for="bill-amount"
-            class="label"
-            >Bill Amount ($)</label
-          >
+          <label for="bill-amount" class="label">Bill amount ($)</label>
           <input
             id="bill-amount"
             type="number" inputmode="decimal"
@@ -139,19 +114,15 @@
             placeholder="0.00"
             step="0.01"
             min="0"
-            class="tool-input text-lg"
+            class="tool-input font-mono text-lg tabular-nums"
           />
         </div>
 
         <!-- Tip Percentage -->
         <div>
           <div class="flex justify-between items-center mb-2">
-            <label
-              for="tip-slider"
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >Tip Percentage</label
-            >
-            <span class="text-sm font-semibold text-gray-900 dark:text-white">
+            <label for="tip-slider" class="text-body-sm font-medium text-ink-muted">Tip percentage</label>
+            <span class="font-mono text-body-sm font-medium text-ink tabular-nums">
               {tipPercentage}%
             </span>
           </div>
@@ -163,8 +134,9 @@
             max="50"
             step="1"
             class="slider w-full"
+            style="--p: {((tipPercentage - 0) / (50 - 0)) * 100}%"
           />
-          <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+          <div class="flex justify-between font-mono text-xs text-ink-muted mt-1">
             <span>0%</span>
             <span>25%</span>
             <span>50%</span>
@@ -175,7 +147,7 @@
             {#each tipPresets as preset (preset)}
               <button
                 onclick={() => (tipPercentage = preset)}
-                class="preset-btn {tipPercentage === preset ? 'active' : ''}"
+                class="preset-btn text-center font-mono {tipPercentage === preset ? 'active' : ''}"
               >
                 {preset}%
               </button>
@@ -185,11 +157,7 @@
 
         <!-- Number of People -->
         <div>
-          <label
-            for="number-people"
-            class="label"
-            >Number of People</label
-          >
+          <label for="number-people" class="label">Number of people</label>
           <div class="flex items-center gap-2">
             <button
               onclick={() => (numberOfPeople = Math.max(1, numberOfPeople - 1))}
@@ -202,7 +170,7 @@
               type="number" inputmode="decimal"
               bind:value={numberOfPeople}
               min="1"
-              class="inline-input flex-1 text-center"
+              class="inline-input flex-1 text-center font-mono tabular-nums"
             />
             <button
               onclick={() => (numberOfPeople = numberOfPeople + 1)}
@@ -214,30 +182,18 @@
         </div>
 
         <!-- Tax Options -->
-        <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-          <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-4">Tax Options</h3>
+        <div class="pt-4">
+          <h3 class="section-title-sm mb-4">Tax options</h3>
 
-          <label class="relative flex items-center cursor-pointer mb-4">
-            <input
-              type="checkbox"
-              bind:checked={includeTax}
-              class="absolute opacity-0 cursor-pointer h-0 w-0"
-            />
-            <span
-              class="relative flex-shrink-0 w-5 h-5 border-2 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 transition-all hover:border-warning-400 dark:hover:border-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20 checked:bg-warning-500 dark:checked:bg-primary-500 checked:border-warning-500 dark:checked:border-primary-500 checked:after:absolute checked:after:left-1.5 checked:after:top-0.5 checked:after:w-1.25 checked:after:h-2.25 checked:after:border-solid checked:after:border-white checked:after:border-r-0 checked:after:border-t-0 checked:after:rotate-45"
-            ></span>
-            <span class="text-sm font-medium text-gray-700 dark:text-gray-300 ml-2"
-              >Include tax in total</span
-            >
+          <label class="custom-checkbox mb-4">
+            <input type="checkbox" bind:checked={includeTax} />
+            <span class="checkmark"></span>
+            <span class="label-text">Include tax in total</span>
           </label>
 
           <div class="space-y-3">
             <div>
-              <label
-                for="tax-amount"
-                class="label"
-                >Tax Amount ($)</label
-              >
+              <label for="tax-amount" class="label">Tax amount ($)</label>
               <input
                 id="tax-amount"
                 type="number" inputmode="decimal"
@@ -246,16 +202,12 @@
                 step="0.01"
                 min="0"
                 oninput={updateTaxRate}
-                class="tool-input"
+                class="tool-input font-mono tabular-nums"
               />
             </div>
 
             <div>
-              <label
-                for="tax-rate"
-                class="label"
-                >Tax Rate (%)</label
-              >
+              <label for="tax-rate" class="label">Tax rate (%)</label>
               <input
                 id="tax-rate"
                 type="number" inputmode="decimal"
@@ -264,7 +216,7 @@
                 step="0.1"
                 min="0"
                 oninput={updateTaxAmount}
-                class="tool-input"
+                class="tool-input font-mono tabular-nums"
               />
             </div>
           </div>
@@ -273,24 +225,21 @@
     </div>
 
     <!-- Results Section -->
-    <div
-      class="tool-card"
-    >
-      <h3 class="section-title">Calculation Results</h3>
+    <div class="tool-card">
+      <h3 class="section-title">Calculation results</h3>
 
-      <div class="space-y-4">
+      <div class="space-y-3">
         <!-- Tip Amount -->
-        <div
-          class="flex justify-between items-center p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50"
-        >
-          <span class="text-gray-600 dark:text-gray-400">Tip Amount:</span>
+        <div class="result-row">
+          <span class="result-label">Tip amount</span>
           <div class="flex items-center gap-2">
-            <span class="text-xl font-semibold text-gray-900 dark:text-white"
+            <span class="font-display text-xl font-bold text-ink tabular-nums"
               >${tipAmount.toFixed(2)}</span
             >
             <button
               onclick={() => copyToClipboard(tipAmount.toFixed(2))}
               class="btn-icon"
+              title="Copy tip amount"
             >
               <Copy class="w-4 h-4" />
             </button>
@@ -298,17 +247,16 @@
         </div>
 
         <!-- Total Amount -->
-        <div
-          class="flex justify-between items-center p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50"
-        >
-          <span class="text-gray-600 dark:text-gray-400">Total Amount:</span>
+        <div class="result-row">
+          <span class="result-label">Total amount</span>
           <div class="flex items-center gap-2">
-            <span class="text-xl font-semibold text-gray-900 dark:text-white"
+            <span class="font-display text-xl font-bold text-ink tabular-nums"
               >${totalAmount.toFixed(2)}</span
             >
             <button
               onclick={() => copyToClipboard(totalAmount.toFixed(2))}
               class="btn-icon"
+              title="Copy total amount"
             >
               <Copy class="w-4 h-4" />
             </button>
@@ -316,17 +264,16 @@
         </div>
 
         <!-- Per Person -->
-        <div
-          class="flex items-center justify-between p-4 rounded-lg border-2 bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 border-warning-200 dark:border-primary-800"
-        >
-          <span class="text-base text-gray-600 dark:text-gray-400">Per Person:</span>
+        <div class="flex items-center justify-between p-4 rounded-md bg-tile-lime text-ink-on-bright">
+          <span class="text-label">Per person</span>
           <div class="flex items-center gap-2">
-            <span class="text-2xl font-bold text-warning-600 dark:text-primary-400"
+            <span class="font-display text-[32px] leading-9 font-bold tracking-tight tabular-nums"
               >${amountPerPerson.toFixed(2)}</span
             >
             <button
               onclick={() => copyToClipboard(amountPerPerson.toFixed(2))}
-              class="btn-icon"
+              class="btn-icon text-current hover:bg-current/10"
+              title="Copy amount per person"
             >
               <Copy class="w-4 h-4" />
             </button>
@@ -335,28 +282,24 @@
 
         <!-- Breakdown -->
         {#if numberOfPeople > 1}
-          <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-            <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-3">
-              Bill Breakdown
-            </h3>
-            <div class="space-y-2 text-sm">
+          <div class="info-card">
+            <h3 class="section-title-sm mb-3">Bill breakdown</h3>
+            <div class="space-y-2 text-body-sm">
               <div class="flex justify-between">
-                <span class="text-gray-600 dark:text-gray-400">Bill per person:</span>
-                <span class="font-medium text-gray-900 dark:text-white">
+                <span class="text-ink-muted">Bill per person</span>
+                <span class="font-mono font-medium text-ink tabular-nums">
                   ${((parseFloat(billAmount) || 0) / numberOfPeople).toFixed(2)}
                 </span>
               </div>
               <div class="flex justify-between">
-                <span class="text-gray-600 dark:text-gray-400">Tip per person:</span>
-                <span class="font-medium text-gray-900 dark:text-white">
+                <span class="text-ink-muted">Tip per person</span>
+                <span class="font-mono font-medium text-ink tabular-nums">
                   ${(tipAmount / numberOfPeople).toFixed(2)}
                 </span>
               </div>
-              <div
-                class="flex justify-between font-semibold pt-2 border-t border-gray-200 dark:border-gray-700"
-              >
-                <span class="text-gray-900 dark:text-white">Total per person:</span>
-                <span class="text-warning-600 dark:text-primary-400">
+              <div class="flex justify-between font-semibold pt-2">
+                <span class="text-ink">Total per person</span>
+                <span class="font-mono text-accent-text tabular-nums">
                   ${amountPerPerson.toFixed(2)}
                 </span>
               </div>
@@ -368,45 +311,33 @@
   </div>
 
   <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Calculator class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+    <div class="card">
+      <div class="feature-icon">
+        <Calculator class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Tip Calculation</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Tip calculation</h3>
+      <p class="feature-description">
         Calculate tips with customizable percentages and preset options
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Users class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <Users class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Bill Splitting</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Bill splitting</h3>
+      <p class="feature-description">
         Split bills easily among multiple people with fair distribution
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <DollarSign class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <DollarSign class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Tax Support</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Tax support</h3>
+      <p class="feature-description">
         Include tax calculations by amount or percentage for accurate totals
       </p>
     </div>

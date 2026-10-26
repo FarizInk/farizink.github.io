@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Hash, Upload, Shield, FileText, Zap } from '@lucide/svelte';
+  import { Hash, Upload, Shield, FileText, Zap, AlertCircle, Check } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
 
   let inputText = $state('');
@@ -127,89 +127,46 @@
   icon={Hash}
   color="warning"
 >
-  <!-- Hero Section -->
-  <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
-  >
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
-          <Hash class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Base64 Converter</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            Encode and decode text and files to Base64 format
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Tab Navigation -->
-  <div class="mb-6">
-    <div class="flex justify-center">
-      <div
-        class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1"
+  <div class="flex justify-center">
+    <div class="mode-toggle">
+      <button
+        onclick={() => (activeTab = 'text')}
+        class="mode-btn {activeTab === 'text' ? 'active' : ''}"
       >
-        <button
-          onclick={() => (activeTab = 'text')}
-          class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'text'
-            ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
-            : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
-        >
-          Text Converter
-        </button>
-        <button
-         onclick={() => (activeTab = 'file')}
-         class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'file'
-            ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
-            : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
-        >
-          File Converter
-        </button>
-      </div>
+        Text converter
+      </button>
+      <button
+        onclick={() => (activeTab = 'file')}
+        class="mode-btn {activeTab === 'file' ? 'active' : ''}"
+      >
+        File converter
+      </button>
     </div>
   </div>
 
   {#if activeTab === 'text'}
     <!-- Text Converter -->
     <!-- Controls -->
-    <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
-      <button
-        class="btn btn-copy"
-        onclick={encodeBase64}>Encode to Base64</button
-      >
-      <button
-        class="btn btn-copy"
-        onclick={decodeBase64}>Decode from Base64</button
-      >
-      <button
-        class="btn btn-secondary"
-        onclick={loadSampleText}>Load Sample Text</button
-      >
-      <button
-        class="btn btn-secondary"
-        onclick={loadSampleBase64}>Load Sample Base64</button
-      >
-      <button
-        class="btn btn-secondary"
-        onclick={clearAll}>Clear All</button
-      >
+    <div class="flex flex-wrap gap-2 items-center justify-center">
+      <button class="btn btn-primary" onclick={encodeBase64}>Encode to Base64</button>
+      <button class="btn btn-secondary" onclick={decodeBase64}>Decode from Base64</button>
+      <button class="btn btn-ghost" onclick={loadSampleText}>Load sample text</button>
+      <button class="btn btn-ghost" onclick={loadSampleBase64}>Load sample Base64</button>
+      <button class="btn btn-ghost" onclick={clearAll}>Clear all</button>
     </div>
 
     <!-- Error Display -->
     {#if error}
-      <div
-        class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
-      >
-        <p class="text-red-700 dark:text-red-400 font-medium">
+      <div class="status-error flex items-center gap-2 p-4 rounded-md" role="alert">
+        <AlertCircle class="w-5 h-5 shrink-0" />
+        <p class="text-body-sm">
           Error: {error}
         </p>
       </div>
     {/if}
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <!-- Input Section -->
       <div>
         <textarea
@@ -217,7 +174,7 @@
           bind:value={inputText}
           placeholder="Enter text or Base64 string to encode/decode..."
         ></textarea>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-right">
+        <p class="text-count mt-1 text-right">
           {inputText.length} characters
         </p>
       </div>
@@ -227,13 +184,13 @@
         <!-- Encoded Result -->
         <div class="mb-4">
           <div class="flex justify-between items-center mb-2">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Base64 Result</h2>
+            <h2 class="section-title-sm mb-0">Base64 result</h2>
             {#if encodedText}
               <button
                 class="btn btn-copy btn-sm"
                 onclick={() => copyToClipboard(encodedText, 'encoded')}
               >
-                {copiedText === 'encoded' ? '✓ Copied!' : 'Copy'}
+                {#if copiedText === 'encoded'}<Check class="w-4 h-4" /> Copied{:else}Copy{/if}
               </button>
             {/if}
           </div>
@@ -247,13 +204,13 @@
         <!-- Decoded Result -->
         <div>
           <div class="flex justify-between items-center mb-2">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Decoded Result</h2>
+            <h2 class="section-title-sm mb-0">Decoded result</h2>
             {#if decodedText}
               <button
                 class="btn btn-copy btn-sm"
                 onclick={() => copyToClipboard(decodedText, 'decoded')}
               >
-                {copiedText === 'decoded' ? '✓ Copied!' : 'Copy'}
+                {#if copiedText === 'decoded'}<Check class="w-4 h-4" /> Copied{:else}Copy{/if}
               </button>
             {/if}
           </div>
@@ -267,34 +224,28 @@
     </div>
   {:else}
     <!-- File Converter -->
-    <div class="max-w-2xl mx-auto">
+    <div class="max-w-2xl mx-auto w-full flex flex-col gap-4">
       <!-- File Upload -->
-      <div
-        class="tool-card mb-6"
-      >
-        <h2 class="section-title">
-          Upload File for Base64 Conversion
-        </h2>
+      <div class="tool-card">
+        <h2 class="section-title">Upload file for Base64 conversion</h2>
 
-        <div
-          class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center"
-        >
-          <Upload class="w-12 h-12 mx-auto mb-4 text-gray-400" />
+        <div class="rounded-md bg-control p-8 text-center">
+          <Upload class="w-12 h-12 mx-auto mb-4 text-ink-muted" />
 
-          <label for="file-upload" class="cursor-pointer">
-            <span class="text-warning-600 dark:text-primary-400 hover:underline font-medium">
+          <label for="file-upload" class="cursor-pointer text-body-sm">
+            <span class="text-accent-text hover:underline">
               Click to upload
             </span>
-            <span class="text-gray-600 dark:text-gray-400"> or drag and drop </span>
+            <span class="text-ink-muted"> or drag and drop </span>
           </label>
           <input class="hidden" id="file-upload" type="file" onchange={handleFileSelect} />
-          <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Supports any file type</p>
+          <p class="text-count mt-2">Supports any file type</p>
         </div>
 
         {#if fileName}
-          <div class="mt-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Selected file: {fileName}
+          <div class="info-card mt-4">
+            <p class="text-body-sm text-ink">
+              Selected file: <span class="font-mono">{fileName}</span>
             </p>
           </div>
         {/if}
@@ -305,19 +256,18 @@
         <div class="text-center py-8">
           <div class="inline-flex items-center gap-2">
             <div
-              class="w-5 h-5 border-2 border-yellow-600 dark:border-primary-500 border-t-transparent rounded-full animate-spin"
+              class="w-5 h-5 border-2 border-accent border-t-transparent rounded-pill animate-spin"
             ></div>
-            <span class="text-gray-600 dark:text-gray-400">Processing file...</span>
+            <span class="text-body-sm text-ink-muted">Processing file...</span>
           </div>
         </div>
       {/if}
 
       <!-- Error Display -->
       {#if error}
-        <div
-          class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
-        >
-          <p class="text-red-700 dark:text-red-400 font-medium">
+        <div class="status-error flex items-center gap-2 p-4 rounded-md" role="alert">
+          <AlertCircle class="w-5 h-5 shrink-0" />
+          <p class="text-body-sm">
             Error: {error}
           </p>
         </div>
@@ -325,50 +275,37 @@
 
       <!-- File Result -->
       {#if fileResult}
-        <div
-          class="tool-card"
-        >
-          <h3 class="section-title">
-            Conversion Result
-          </h3>
+        <div class="tool-card">
+          <h3 class="section-title">Conversion result</h3>
 
-          <div class="space-y-4">
+          <div class="flex flex-col gap-4">
             <div>
-              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">File Name:</span>
-              <p class="text-gray-900 dark:text-white font-mono text-sm">{fileResult.name}</p>
+              <span class="text-label text-ink-muted">File name</span>
+              <p class="text-ink font-mono text-code">{fileResult.name}</p>
             </div>
 
             <div>
-              <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
-                >Original Size:</span
-              >
-              <p class="text-gray-900 dark:text-white">{formatFileSize(fileResult.size)}</p>
+              <span class="text-label text-ink-muted">Original size</span>
+              <p class="text-ink font-mono text-code">{formatFileSize(fileResult.size)}</p>
             </div>
 
             <div>
-              <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
-                >Base64 Length:</span
-              >
-              <p class="text-gray-900 dark:text-white">{fileResult.encoded.length} characters</p>
+              <span class="text-label text-ink-muted">Base64 length</span>
+              <p class="text-ink font-mono text-code">{fileResult.encoded.length} characters</p>
             </div>
 
             <div>
               <div class="flex justify-between items-center mb-2">
-                <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >Base64 Data:</span
-                >
+                <span class="text-label text-ink-muted">Base64 data</span>
                 <div class="flex gap-2">
                   <button
-                    class="btn btn-copy btn-sm bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white"
+                    class="btn btn-copy btn-sm"
                     onclick={() =>
                       fileResult && copyToClipboard(fileResult.encoded, 'file-encoded')}
                   >
-                    {copiedText === 'file-encoded' ? '✓ Copied!' : 'Copy'}
+                    {#if copiedText === 'file-encoded'}<Check class="w-4 h-4" /> Copied{:else}Copy{/if}
                   </button>
-                  <button
-                    class="btn btn-secondary btn-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300"
-                    onclick={downloadEncodedFile}
-                  >
+                  <button class="btn btn-ghost btn-sm" onclick={downloadEncodedFile}>
                     Download
                   </button>
                 </div>
@@ -385,46 +322,34 @@
   {/if}
 
   <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Shield class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="card">
+      <div class="feature-icon">
+        <Shield class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Secure Encoding</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Secure encoding</h3>
+      <p class="feature-description">
         Encode text and files to Base64 format with proper UTF-8 handling for international
         characters
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <FileText class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <FileText class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">File Support</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">File support</h3>
+      <p class="feature-description">
         Convert any file type to Base64 and download the encoded data for easy sharing
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <Zap class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Fast Processing</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Fast processing</h3>
+      <p class="feature-description">
         Instant encoding and decoding with efficient algorithms for both text and binary data
       </p>
     </div>

@@ -1,35 +1,27 @@
 <script lang="ts">
-  import { navigate } from '../lib/router';
   import { onMount } from 'svelte';
-  import { fade } from 'svelte/transition';
-  import { tvPanel } from '../lib/motion';
-  import { preventBodyScroll, restoreBodyScroll } from '../lib/modalScroll';
   import {
-    Sun,
-    Moon,
     Menu,
     House,
     Wrench,
+    FileText,
+    Wallet,
     Download,
     X,
     RefreshCw,
-    Wifi,
     WifiOff,
-    ChevronDown,
-    ChevronUp,
-    Settings,
     Zap,
     Activity,
     CircleCheck,
     CircleX,
-    Info,
-    Heart,
-    Gauge,
+    ChevronRight
   } from '@lucide/svelte';
   import CommandPalette from './CommandPalette.svelte';
   import LoginModal from './LoginModal.svelte';
   import Modal from './Modal.svelte';
   import { API_BASE_URL } from '../lib/constants';
+  import { IconButton, Sidebar, Switch, ThemeSwitch } from '$lib/components/ds';
+  import { getAllTools } from '../lib/toolsConfig';
 
   // Health status interface (Laravel API format)
   interface HealthData {
@@ -39,11 +31,12 @@
     version: string;
   }
 
-  let isDark = $state(false);
   let isCommandPaletteOpen = $state(false);
   let drawerOpen = $state(false);
   let isLoginModalOpen = $state(false);
-  let isSettingsExpanded = $state(false);
+  let isLoggedIn = $state(false);
+  let activeNavId = $state<string | undefined>(undefined);
+  const toolCount = getAllTools().length;
   let isApiHealthModalOpen = $state(false);
   let deferredPrompt: Event | null = null;
   let isIOS = $state(false);
@@ -62,44 +55,14 @@
   let healthData = $state<HealthData | null>(null);
   let lastChecked = $state<Date | null>(null);
 
-  // Current year for footer
-  let currentYear = $state(new Date().getFullYear());
-
-  // Performance Mode
-  let perfMode = $state(false);
-
-  function togglePerfMode() {
-    perfMode = !perfMode;
-    localStorage.setItem("perf-mode", perfMode ? "performance" : "fancy");
-    document.documentElement.classList.toggle("perf-mode", perfMode);
-  }
-
   // Double click state for menu button
   let lastClickTime = 0;
   let clickTimeout: ReturnType<typeof setTimeout> | null = null;
   const DOUBLE_CLICK_DELAY = 200;
 
-  function handleNavigation(event: MouseEvent, href: string) {
-    event.preventDefault();
-    navigate(href);
-    drawerOpen = false;
-  }
-
   function handleOpenLoginModal() {
     isLoginModalOpen = true;
     drawerOpen = false;
-  }
-
-  function toggleTheme() {
-    isDark = !isDark;
-    const html = document.documentElement;
-    if (isDark) {
-      html.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      html.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
   }
 
   // Double click handler for menu button
@@ -199,15 +162,13 @@
   function selectItem(items: globalThis.NodeListOf<Element>, index: number) {
     // Remove selection from all items
     items.forEach(item => {
-      item.classList.remove('bg-secondary-100', 'dark:bg-secondary-700', 'border-primary-500');
-      item.classList.add('border-transparent');
+      item.classList.remove('bg-control');
       item.setAttribute('data-selected', 'false');
     });
 
     // Add selection to target item
     if (items[index]) {
-      items[index].classList.add('bg-secondary-100', 'dark:bg-secondary-700', 'border-primary-500');
-      items[index].classList.remove('border-transparent');
+      items[index].classList.add('bg-control');
       items[index].setAttribute('data-selected', 'true');
 
       // Scroll to selected item
@@ -377,30 +338,24 @@
     }
   }
 
+  // Menu context, refreshed each time the drawer opens.
   $effect(() => {
     if (!drawerOpen) return;
-    const scrollId = preventBodyScroll();
-    return () => restoreBodyScroll(scrollId);
+    isLoggedIn = !!localStorage.getItem('authToken');
+    const path = window.location.pathname;
+    activeNavId =
+      path === '/'
+        ? 'home'
+        : path.startsWith('/tools')
+          ? 'tools'
+          : path.startsWith('/notes')
+            ? 'notes'
+            : path.startsWith('/finance')
+              ? 'finance'
+              : undefined;
   });
 
   onMount(() => {
-    // Check for saved theme preference or default to light mode
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
-
-    // Initialize performance mode
-    const storedPerf = localStorage.getItem("perf-mode");
-    perfMode = storedPerf === "performance";
-    if (perfMode) document.documentElement.classList.add("perf-mode");
-
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-
     // Initialize Service Worker settings
     initializeServiceWorkerSettings();
     checkPWAInstallation();
@@ -455,13 +410,6 @@
   });
 </script>
 
-<svelte:window
-  on:keydown={e => {
-    if (e.key === 'Escape' && drawerOpen) {
-      drawerOpen = false;
-    }
-  }}
-/>
 
 <!-- Command Palette Modal -->
 <CommandPalette bind:isOpen={isCommandPaletteOpen} />
@@ -475,149 +423,94 @@
   onClose={() => (isApiHealthModalOpen = false)}
   maxW="max-w-md"
 >
-  <div class="flex items-center justify-between mb-6">
+  <div class="mb-6 flex items-center justify-between">
     <div class="flex items-center gap-3">
-      <div
-        class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-amber-400 dark:from-purple-500 dark:to-purple-600 rounded-xl flex items-center justify-center shadow-lg"
-      >
+      <div class="grid size-12 place-items-center rounded-md bg-tile-deep text-ink-on-dark">
         {#if apiHealthStatus === 'checking'}
-          <Activity class="w-6 h-6 text-white animate-pulse" />
+          <Activity class="size-6" />
         {:else if apiHealthStatus === 'ok'}
-          <CircleCheck class="w-6 h-6 text-white" />
+          <CircleCheck class="size-6" />
         {:else}
-          <CircleX class="w-6 h-6 text-white" />
+          <CircleX class="size-6" />
         {/if}
       </div>
       <div>
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white">API Server Status</h2>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
+        <h2 class="text-title">API server status</h2>
+        <p class="text-body-sm font-normal text-ink-muted">
           {#if apiHealthStatus === 'checking'}
-            Checking connection...
+            Checking connection…
           {:else if apiHealthStatus === 'ok'}
-            Connected & healthy
+            Connected and healthy
           {:else}
             Connection failed
           {/if}
         </p>
       </div>
     </div>
-    <button
-      onclick={() => (isApiHealthModalOpen = false)}
-      class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-    >
-      <X class="w-5 h-5 text-gray-500" />
+    <button onclick={() => (isApiHealthModalOpen = false)} class="btn-icon" aria-label="Close">
+      <X class="size-5" />
     </button>
   </div>
 
   {#if apiHealthStatus === 'checking'}
     <div class="flex flex-col items-center justify-center py-8">
       <div
-        class="w-12 h-12 border-4 border-yellow-200 dark:border-purple-800 border-t-yellow-500 dark:border-t-purple-500 rounded-full animate-spin mb-4"
+        class="mb-4 size-12 animate-spin rounded-pill border-4 border-control border-t-accent"
       ></div>
-      <p class="text-gray-600 dark:text-gray-400">Checking API health...</p>
+      <p class="text-ink-muted">Checking API health…</p>
     </div>
   {:else if healthData}
-    <div class="space-y-4">
-      <!-- Status Badge -->
-      <div
-        class="flex items-center justify-center gap-2 p-3 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-700/50"
-      >
-        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-        <span class="text-sm font-semibold text-green-900 dark:text-green-300">API is Online</span>
+    <div class="space-y-3">
+      <div class="flex items-center justify-center gap-2 rounded-md bg-sunken p-3">
+        <span class="size-2 rounded-pill bg-live"></span>
+        <span class="text-label text-live">Online</span>
       </div>
 
-      <!-- Info Grid -->
       <div class="grid grid-cols-2 gap-3">
-        <!-- Service Name -->
-        <div
-          class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-700"
-        >
-          <div class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 text-xs mb-1">
-            <Info class="w-3 h-3" />
-            <span>Service</span>
-          </div>
-          <p class="text-sm font-semibold text-gray-900 dark:text-white">{healthData.service}</p>
-        </div>
-
-        <!-- Version -->
-        <div
-          class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-700"
-        >
-          <div class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 text-xs mb-1">
-            <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
-            <span>Version</span>
-          </div>
-          <p class="text-sm font-semibold text-gray-900 dark:text-white">{healthData.version}</p>
-        </div>
-
-        <!-- Status -->
-        <div
-          class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-700"
-        >
-          <div class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 text-xs mb-1">
-            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-            <span>Status</span>
-          </div>
-          <p class="text-sm font-semibold text-gray-900 dark:text-white capitalize">
-            {healthData.status}
-          </p>
-        </div>
-
-        <!-- Last Check -->
-        <div
-          class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-700"
-        >
-          <div class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 text-xs mb-1">
-            <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-            <span>Last Check</span>
-          </div>
-          <p class="text-sm font-semibold text-gray-900 dark:text-white">
-            {lastChecked
+        {#each [
+          { label: 'Service', value: healthData.service },
+          { label: 'Version', value: healthData.version },
+          { label: 'Status', value: healthData.status },
+          {
+            label: 'Last check',
+            value: lastChecked
               ? new Date(lastChecked).toLocaleTimeString([], {
                   hour: '2-digit',
                   minute: '2-digit',
                   second: '2-digit'
                 })
-              : '-'}
-          </p>
-        </div>
+              : '-'
+          }
+        ] as item (item.label)}
+          <div class="rounded-md bg-sunken p-3">
+            <p class="text-label mb-1 text-ink-muted">{item.label}</p>
+            <p class="text-body-sm">{item.value}</p>
+          </div>
+        {/each}
       </div>
 
-      <!-- Server Timestamp -->
-      <div
-        class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-700"
-      >
-        <div class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 text-xs mb-1">
-          <div class="w-3 h-3 bg-orange-500 rounded-full"></div>
-          <span>Server Timestamp</span>
-        </div>
-        <p class="text-sm font-semibold text-gray-900 dark:text-white">
+      <div class="rounded-md bg-sunken p-3">
+        <p class="text-label mb-1 text-ink-muted">Server timestamp</p>
+        <p class="text-body-sm">
           {healthData.timestamp ? new Date(healthData.timestamp).toLocaleString() : '-'}
         </p>
       </div>
     </div>
   {:else}
-    <!-- Error State -->
     <div class="space-y-4">
       <div class="flex flex-col items-center justify-center py-4">
-        <div
-          class="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-4"
-        >
-          <WifiOff class="w-8 h-8 text-red-500" />
+        <div class="mb-4 grid size-16 place-items-center rounded-pill bg-sunken">
+          <WifiOff class="size-8 text-negative" />
         </div>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Connection Error</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 text-center">
-          Unable to connect to the API server
+        <h3 class="text-title mb-1">Connection error</h3>
+        <p class="text-center text-body-sm font-normal text-ink-muted">
+          Unable to connect to the API server.
         </p>
       </div>
 
       {#if apiHealthError}
-        <div
-          class="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-700/50"
-        >
-          <p class="text-xs text-red-600 dark:text-red-400 font-mono break-all">
-            {apiHealthError}
-          </p>
+        <div class="rounded-md bg-sunken p-3">
+          <p class="break-all font-mono text-xs text-negative">{apiHealthError}</p>
         </div>
       {/if}
     </div>
@@ -626,338 +519,129 @@
   <button
     onclick={checkAPIHealth}
     disabled={apiHealthStatus === 'checking'}
-    class="btn btn-primary w-full flex items-center justify-center gap-2 py-3.5 font-semibold rounded-xl transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-md mt-6"
+    class="btn btn-primary mt-6 w-full"
   >
-    {#if apiHealthStatus === 'checking'}
-      <RefreshCw class="w-4 h-4 animate-spin" />
-      <span>Checking...</span>
-    {:else}
-      <RefreshCw class="w-4 h-4" />
-      <span>Refresh</span>
-    {/if}
+    <RefreshCw class="size-4 {apiHealthStatus === 'checking' ? 'animate-spin' : ''}" />
+    {apiHealthStatus === 'checking' ? 'Checking…' : 'Refresh'}
   </button>
 </Modal>
 
-<!-- Floating Menu Button with Ping Effect (Matches Tools.svelte style) -->
-<div class="fixed top-6 right-6 z-50 flex items-center justify-center">
-  <!-- Animated ping rings -->
-  <div
-    class="absolute w-14 h-14 rounded-full border-2 border-warning-400/30 dark:border-primary-400/30 animate-ping"
-    style="animation-delay: 0s;"
-  ></div>
-  <div
-    class="absolute w-14 h-14 rounded-full border-2 border-warning-300/20 dark:border-primary-300/20 animate-ping"
-    style="animation-delay: 0.5s;"
-  ></div>
-
-  <button
-    onclick={handleMenuClick}
-    class="relative z-10 w-14 h-14 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl border-2 border-warning-500/20 dark:border-primary-500/20 hover:border-warning-500 dark:hover:border-primary-500 hover:shadow-[0_0_0_4px_rgba(251,191,36,0.1)] dark:hover:shadow-[0_0_0_4px_rgba(139,92,246,0.1)] transition-all duration-300 flex items-center justify-center hover:scale-105 active:scale-95 group"
-    title="Menu - Single click: Drawer, Double click: Command Palette"
-  >
-    <Menu class="w-6 h-6 text-gray-700 dark:text-gray-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
-  </button>
+<!-- Menu (single click: drawer, double click: command palette). Theme lives in the drawer. -->
+<div class="fixed top-5 right-5 z-50">
+  <IconButton label="Menu (double-click for command palette)" onclick={handleMenuClick}>
+    <Menu />
+  </IconButton>
 </div>
 
-<!-- Backdrop -->
-{#if drawerOpen}
-  <div
-    transition:fade={{ duration: 200 }}
-    class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
-    onclick={() => (drawerOpen = false)}
-    onkeydown={e => e.key === 'Escape' && (drawerOpen = false)}
-    role="dialog"
-    aria-modal="true"
-    aria-label="Navigation menu"
-    tabindex="-1"
-  ></div>
-{/if}
+{#snippet homeIcon()}<House />{/snippet}
+{#snippet toolsIcon()}<Wrench />{/snippet}
+{#snippet notesIcon()}<FileText />{/snippet}
+{#snippet financeIcon()}<Wallet />{/snippet}
 
-<!-- Sidebar -->
-{#if drawerOpen}
-  <div
-    transition:tvPanel
-    class="fixed top-0 right-0 h-full w-80 max-w-[90vw] bg-white dark:bg-gray-900 z-50 flex flex-col shadow-2xl"
-  >
-
-    <!-- Menu Items -->
-    <div class="flex-1 overflow-y-auto p-6 space-y-6">
-      <!-- Main Navigation -->
-      <div class="space-y-3">
-        <!-- Home -->
-        <a
-          href="/"
-          class="group flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-2xl hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-gray-200 dark:border-gray-700 hover:border-warning-300 dark:hover:border-primary-400 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg cursor-pointer"
-          onclick={e => handleNavigation(e, '/')}
-        >
-          <div
-            class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-500 dark:from-blue-500 dark:to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md"
-          >
-            <House class="w-6 h-6 text-white" />
-          </div>
-          <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Home</span>
-        </a>
-
-        <!-- Tools -->
-        <a
-          href="/tools"
-          class="group flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-2xl hover:bg-warning-50 dark:hover:bg-primary-900/20 border border-gray-200 dark:border-gray-700 hover:border-warning-300 dark:hover:border-primary-400 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg cursor-pointer"
-          onclick={e => handleNavigation(e, '/tools')}
-        >
-          <div
-            class="w-12 h-12 bg-gradient-to-br from-primary-400 to-primary-500 dark:from-primary-500 dark:to-primary-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md"
-          >
-            <Wrench class="w-6 h-6 text-white" />
-          </div>
-          <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Tools</span>
-        </a>
-      </div>
-
-
-
-      <!-- Settings Section -->
-      <div class="pt-6">
-        <!-- Settings Toggle -->
-        <button
-          onclick={() => (isSettingsExpanded = !isSettingsExpanded)}
-          class="w-full flex items-center justify-between p-4 rounded-2xl bg-gradient-to-br from-warning-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 hover:from-warning-100 dark:hover:from-primary-900/30 hover:to-amber-100 dark:hover:to-primary-900/40 border border-warning-200 dark:border-primary-800 hover:border-warning-300 dark:hover:border-primary-400 transition-all duration-200 group"
-        >
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-amber-400 dark:from-primary-500 dark:to-primary-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
-              <Settings class="w-5 h-5 text-white" />
-            </div>
-            <div class="text-left">
-              <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Settings</h3>
-              <p class="text-xs text-gray-500 dark:text-gray-400">Customize your experience</p>
-            </div>
-          </div>
-          <div class="flex items-center">
-            {#if isSettingsExpanded}
-              <ChevronUp class="w-5 h-5 text-gray-500 dark:text-gray-400" />
-            {:else}
-              <ChevronDown class="w-5 h-5 text-gray-500 dark:text-gray-400" />
-            {/if}
-          </div>
-        </button>
-
-        <!-- Settings Content (Only show when expanded) -->
-        {#if isSettingsExpanded}
-        <div class="mt-4 space-y-3">
-          <!-- Status Cards -->
-          <div class="flex flex-wrap gap-2 items-center">
-            <!-- Theme Card (Clickable) -->
-            <button
-              onclick={toggleTheme}
-              class="mode-btn flex-1 min-w-[120px] h-12 flex items-center justify-center gap-2 px-3 rounded-xl bg-gradient-to-br from-warning-50 to-amber-50 dark:from-indigo-900/30 dark:to-primary-900/20 border border-warning-200 dark:border-primary-700/50 hover:shadow-md transition-all cursor-pointer"
-            >
-              {#if isDark}
-                <Moon class="w-4 h-4 text-primary-600 dark:text-primary-400" />
-                <span class="text-xs font-semibold text-primary-900 dark:text-primary-300">Dark</span>
-              {:else}
-                <Sun class="w-4 h-4 text-warning-600 dark:text-warning-400" />
-                <span class="text-xs font-semibold text-warning-900 dark:text-warning-300">Light</span>
-              {/if}
-            </button>
-
-            <!-- API Status Card (Clickable) -->
-            <button
-              onclick={openApiHealthModal}
-              class="mode-btn flex-1 min-w-[120px] h-12 flex items-center justify-center gap-2 px-3 rounded-xl border transition-all cursor-pointer hover:shadow-md {healthData
-                ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700/50 hover:border-green-300 dark:hover:border-green-600'
-                : apiHealthStatus === 'checking'
-                  ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700/50 hover:border-blue-300 dark:hover:border-blue-600'
-                  : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-700/50 hover:border-red-300 dark:hover:border-red-600'}"
-            >
-              {#if apiHealthStatus === 'checking'}
-                <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                <span class="text-xs font-semibold text-blue-900 dark:text-blue-300">Checking...</span>
-              {:else if healthData}
-                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span class="text-xs font-semibold text-green-900 dark:text-green-300">Connected</span>
-              {:else}
-                <WifiOff class="w-3 h-3 text-red-500" />
-                <span class="text-xs font-semibold text-red-900 dark:text-red-300">Offline</span>
-              {/if}
-            </button>
-          </div>
-
-          <!-- Performance Mode Toggle -->
-          <button
-            onclick={togglePerfMode}
-            class="w-full flex items-center justify-between p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-warning-50 dark:hover:bg-primary-900/20 hover:border-warning-300 dark:hover:border-primary-400 transition-all duration-200"
-          >
-            <div class="flex items-center gap-3">
-              <div
-                class="w-11 h-11 bg-gradient-to-br from-amber-100 to-yellow-200 dark:from-amber-900/30 dark:to-amber-800/50 rounded-xl flex items-center justify-center"
-              >
-                <Gauge class="w-5 h-5 text-amber-600 dark:text-amber-400" />
-              </div>
-              <div class="text-left">
-                <p class="text-sm font-semibold text-gray-900 dark:text-white">Performance Mode</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">
-                  {perfMode ? "Animations disabled" : "Full visual effects"}
-                </p>
-              </div>
-            </div>
-            <span
-              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium {perfMode
-                ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300"
-                : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"}"
-            >
-              {perfMode ? "ON" : "OFF"}
-            </span>
-          </button>
-          <!-- Service Worker Toggle -->
-          <div
-            class="w-full p-4 rounded-xl {serviceWorkerCanToggle
-              ? 'bg-white dark:bg-gray-800 hover:bg-warning-50 dark:hover:bg-primary-900/20'
-              : 'bg-gray-50 dark:bg-gray-800/50'} border border-gray-200 dark:border-gray-700 hover:border-warning-300 dark:hover:border-primary-400 transition-all duration-200"
-          >
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-11 h-11 bg-gradient-to-br from-warning-100 to-amber-200 dark:from-primary-900/30 dark:to-primary-800/50 rounded-xl flex items-center justify-center"
-                >
-                  {#if serviceWorkerEnabled}
-                    <Wifi class="w-5 h-5 text-warning-600 dark:text-primary-400" />
-                  {:else}
-                    <WifiOff class="w-5 h-5 text-gray-400 dark:text-gray-600" />
-                  {/if}
-                </div>
-                <div class="text-left">
-                  <p class="text-sm font-semibold text-gray-900 dark:text-white">Offline Mode</p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400">
-                    {#if isPWAInstalled}
-                      Always on (PWA)
-                    {:else if serviceWorkerEnabled}
-                      Enable for 34 tools
-                    {:else}
-                      Enable offline access
-                    {/if}
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={serviceWorkerEnabled}
-                onclick={toggleServiceWorker}
-                disabled={!serviceWorkerCanToggle}
-                class="group relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-warning-500 dark:focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 {serviceWorkerEnabled
-                  ? 'bg-warning-500 dark:bg-primary-600'
-                  : 'bg-gray-200 dark:bg-gray-600'} {serviceWorkerCanToggle
-                  ? ''
-                  : 'opacity-60 cursor-not-allowed'}"
-                aria-label={serviceWorkerCanToggle
-                  ? serviceWorkerEnabled
-                    ? 'Disable Offline Mode'
-                    : 'Enable Offline Mode'
-                  : 'Offline Mode cannot be changed (PWA Installed)'}
-              >
-                <span
-                  class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out {serviceWorkerEnabled
-                    ? 'translate-x-5'
-                    : 'translate-x-0'}"
-                ></span>
-              </button>
-            </div>
-            {#if isPWAInstalled && !serviceWorkerCanToggle}
-              <p class="text-xs text-orange-600 dark:text-orange-400 mt-2 flex items-center gap-1">
-                <Zap class="w-3 h-3" />
-                Uninstall app to disable
-              </p>
-            {/if}
-          </div>
-
-          <!-- Install PWA -->
-          {#if serviceWorkerEnabled}
-            {#if canInstall && !isIOS}
-              <button
-                onclick={installPWA}
-                class="w-full flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/30 border border-green-200 dark:border-green-700/50 hover:from-green-100 dark:hover:from-green-900/40 hover:border-green-300 dark:hover:border-green-600 hover:shadow-lg transition-all duration-200 group"
-              >
-                <div
-                  class="w-11 h-11 bg-gradient-to-br from-green-400 to-green-500 dark:from-green-500 dark:to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md"
-                >
-                  <Download class="w-5 h-5 text-white" />
-                </div>
-                <div class="text-left">
-                  <p class="text-sm font-semibold text-green-900 dark:text-green-100">Install App</p>
-                  <p class="text-xs text-green-700 dark:text-green-300">Add to home screen</p>
-                </div>
-              </button>
-            {:else if isIOS}
-              <div class="p-4 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/30 border border-blue-200 dark:border-blue-700/50">
-                <div class="flex items-center gap-3">
-                  <div
-                    class="w-11 h-11 bg-gradient-to-br from-blue-400 to-blue-500 dark:from-blue-500 dark:to-blue-600 rounded-xl flex items-center justify-center"
-                  >
-                    <Zap class="w-5 h-5 text-white" />
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold text-blue-900 dark:text-blue-100">iOS Instructions</p>
-                    <p class="text-xs text-blue-700 dark:text-blue-300">Tap Share → Add to Home Screen</p>
-                  </div>
-                </div>
-              </div>
-            {/if}
-          {/if}
-
-          <!-- Refresh Cache -->
-          {#if serviceWorkerEnabled}
-            <button
-              onclick={refreshServiceWorker}
-              disabled={isRefreshing}
-              class="w-full flex items-center justify-between p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-600 hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-11 h-11 bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-900/30 dark:to-orange-800/50 rounded-xl flex items-center justify-center"
-                >
-                  <RefreshCw
-                    class="w-5 h-5 text-orange-600 dark:text-orange-400 {isRefreshing
-                      ? 'animate-spin'
-                      : ''}"
-                  />
-                </div>
-                <div class="text-left">
-                  <p class="text-sm font-semibold text-gray-900 dark:text-white">Refresh Cache</p>
-                  {#if swUpdateAvailable}
-                    <p class="text-xs text-green-600 dark:text-green-400">Update available</p>
-                  {:else}
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Clear cached data</p>
-                  {/if}
-                </div>
-              </div>
-              <div class="flex items-center gap-2">
-                {#if isRefreshing}
-                  <span class="text-xs text-gray-500">Refreshing...</span>
-                {:else}
-                  <svg
-                    class="w-4 h-4 text-gray-400"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path d="M9 18l6-6-6-6" />
-                  </svg>
-                {/if}
-              </div>
-            </button>
-          {/if}
-        </div>
-        {/if}
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="p-6 bg-gray-50/50 dark:bg-gray-800/50 backdrop-blur">
-      <div class="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-        <span>© {currentYear} Fariz</span>
-        <span>•</span>
-        <span class="flex items-center gap-1">Built with <Heart class="w-3 h-3 text-red-500 fill-red-500" /></span>
-      </div>
-    </div>
+<Sidebar
+  bind:open={drawerOpen}
+  logo="/android-chrome-192x192.png"
+  activeId={activeNavId}
+  groups={[
+    {
+      label: 'Explore',
+      items: [
+        { id: 'home', label: 'Home', href: '/', icon: homeIcon },
+        { id: 'tools', label: 'Tools', href: '/tools', icon: toolsIcon, badge: toolCount }
+      ]
+    },
+    ...(isLoggedIn
+      ? [
+          {
+            label: 'Personal',
+            items: [
+              { id: 'notes', label: 'Notes', href: '/notes', icon: notesIcon },
+              { id: 'finance', label: 'Finance', href: '/finance', icon: financeIcon }
+            ]
+          }
+        ]
+      : [])
+  ]}
+>
+  <div class="flex flex-col gap-2 rounded-lg bg-card p-3">
+    <span class="text-label px-1 text-ink-muted">Theme</span>
+    <ThemeSwitch />
   </div>
-{/if}
+
+  <div class="flex flex-col gap-1 rounded-lg bg-card p-2">
+    <button
+      onclick={openApiHealthModal}
+      class="flex min-h-12 items-center gap-3 rounded-md px-2 text-left transition-colors hover:bg-control"
+    >
+      <span class="grid size-9 place-items-center rounded-sm bg-control">
+        <span
+          class="size-2 rounded-pill {apiHealthStatus === 'checking'
+            ? 'bg-ink-muted'
+            : healthData
+              ? 'bg-live'
+              : 'bg-negative'}"
+        ></span>
+      </span>
+      <span class="min-w-0 flex-1 text-body-sm">
+        API status
+        <span class="block text-xs font-normal text-ink-muted">
+          {apiHealthStatus === 'checking' ? 'Checking…' : healthData ? 'Online' : 'Offline'}
+        </span>
+      </span>
+      <ChevronRight class="size-4 text-ink-muted" />
+    </button>
+
+    <div class="flex min-h-12 items-center gap-3 px-2 py-1 {serviceWorkerCanToggle ? '' : 'opacity-80'}">
+      <Switch
+        checked={serviceWorkerEnabled}
+        disabled={!serviceWorkerCanToggle}
+        onchange={toggleServiceWorker}
+        label="Offline mode"
+        description={isPWAInstalled
+          ? 'Always on (PWA) — uninstall the app to disable'
+          : serviceWorkerEnabled
+            ? 'Enabled for 34 tools'
+            : 'Enable offline access'}
+      />
+    </div>
+
+    {#if serviceWorkerEnabled}
+      {#if canInstall && !isIOS}
+        <button
+          onclick={installPWA}
+          class="flex min-h-12 items-center gap-3 rounded-md px-2 text-left transition-colors hover:bg-control"
+        >
+          <span class="grid size-9 place-items-center rounded-sm bg-control text-ink-muted"><Download class="size-[18px]" /></span>
+          <span class="min-w-0 flex-1 text-body-sm">
+            Install app
+            <span class="block text-xs font-normal text-ink-muted">Add to home screen</span>
+          </span>
+        </button>
+      {:else if isIOS}
+        <div class="flex min-h-12 items-center gap-3 px-2">
+          <span class="grid size-9 place-items-center rounded-sm bg-control text-ink-muted"><Zap class="size-[18px]" /></span>
+          <span class="min-w-0 flex-1 text-body-sm">
+            iOS install
+            <span class="block text-xs font-normal text-ink-muted">Tap Share → Add to Home Screen</span>
+          </span>
+        </div>
+      {/if}
+
+      <button
+        onclick={refreshServiceWorker}
+        disabled={isRefreshing}
+        class="flex min-h-12 items-center gap-3 rounded-md px-2 text-left transition-colors hover:bg-control disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        <span class="grid size-9 place-items-center rounded-sm bg-control text-ink-muted">
+          <RefreshCw class="size-[18px] {isRefreshing ? 'animate-spin' : ''}" />
+        </span>
+        <span class="min-w-0 flex-1 text-body-sm">
+          Refresh cache
+          <span class="block text-xs font-normal {swUpdateAvailable ? 'text-live' : 'text-ink-muted'}">
+            {isRefreshing ? 'Refreshing…' : swUpdateAvailable ? 'Update available' : 'Clear cached data'}
+          </span>
+        </span>
+      </button>
+    {/if}
+  </div>
+</Sidebar>

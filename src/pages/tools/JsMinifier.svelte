@@ -189,121 +189,90 @@ console.log('Total amount:', result.total);`;
   icon={FileText}
   color="warning"
 >
-  <!-- Hero Section -->
-  <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
-  >
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
-          <FileText class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">
-            JavaScript Minifier/Beautifier
-          </h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            Optimize or format your JavaScript code
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Mode Toggle -->
-  <div
-    class="tool-card mb-6"
-  >
-    <div
-      class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1"
+  <div class="tab-nav" role="tablist">
+    <button
+      role="tab"
+      aria-selected={!minified}
+      onclick={() => (minified = false)}
+      class="tab-btn {!minified ? 'active' : ''}"
     >
-      <button
-        onclick={() => (minified = false)}
-        class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition-colors {!minified
-          ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
-          : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
-      >
-        Beautify JavaScript
-      </button>
-      <button
-        onclick={() => (minified = true)}
-        class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition-colors {minified
-          ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
-          : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
-      >
-        Minify JavaScript
-      </button>
-    </div>
+      Beautify JavaScript
+    </button>
+    <button
+      role="tab"
+      aria-selected={minified}
+      onclick={() => (minified = true)}
+      class="tab-btn {minified ? 'active' : ''}"
+    >
+      Minify JavaScript
+    </button>
   </div>
 
   <!-- Controls -->
-  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
-    <button
-      onclick={loadSampleJs}
-      class="btn btn-copy"
-    >
-      <RefreshCw class="w-4 h-4 mr-2" />
-      Load Sample JavaScript
-    </button>
-    <button
-      onclick={clearAll}
-      class="btn btn-secondary"
-    >
-      Clear All
-    </button>
+  <div class="flex flex-wrap gap-2 items-center">
     {#if jsOutput}
       <button
         onclick={() => copyToClipboard(jsOutput)}
-        class="btn btn-copy"
+        class="btn btn-primary"
       >
-        <Copy class="w-4 h-4 mr-2" />
-        Copy Result
+        <Copy class="w-4 h-4" />
+        Copy result
       </button>
       <button
         onclick={downloadJs}
-        class="btn btn-copy"
+        class="btn btn-secondary"
       >
-        <Download class="w-4 h-4 mr-2" />
+        <Download class="w-4 h-4" />
         Download JavaScript
       </button>
     {/if}
+    <button
+      onclick={loadSampleJs}
+      class="btn btn-secondary"
+    >
+      <RefreshCw class="w-4 h-4" />
+      Load sample JavaScript
+    </button>
+    <button
+      onclick={clearAll}
+      class="btn btn-ghost"
+    >
+      Clear all
+    </button>
   </div>
 
   <!-- Error Display -->
   {#if error}
-    <div
-      class="flex items-start gap-2 p-3 mb-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"
-    >
-      <AlertCircle class="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
-      <p class="text-sm text-red-700 dark:text-red-300 font-medium">{error}</p>
+    <div class="status-error flex items-start gap-2 p-3 rounded-md">
+      <AlertCircle class="w-5 h-5 text-negative flex-shrink-0 mt-0.5" />
+      <p class="text-body-sm text-negative">{error}</p>
     </div>
   {/if}
 
   <!-- Statistics -->
   {#if originalSize > 0}
-    <div
-      class="flex justify-center gap-8 p-4 rounded-xl border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 mb-6 flex-wrap shadow-sm"
-    >
-      <div class="text-center">
-        <p class="text-sm text-gray-600 dark:text-gray-400">Original Size</p>
-        <p class="text-lg font-semibold text-gray-900 dark:text-white">
+    <div class="stats-card">
+      <div class="stat-item">
+        <p class="text-label text-ink-muted">Original size</p>
+        <p class="stat-value font-mono">
           {formatFileSize(originalSize)}
         </p>
       </div>
 
-      <div class="text-center">
-        <p class="text-sm text-gray-600 dark:text-gray-400">Processed Size</p>
-        <p class="text-lg font-semibold text-gray-900 dark:text-white">
+      <div class="stat-item">
+        <p class="text-label text-ink-muted">Processed size</p>
+        <p class="stat-value font-mono">
           {formatFileSize(minifiedSize)}
         </p>
       </div>
 
-      <div class="text-center">
-        <p class="text-sm text-gray-600 dark:text-gray-400">Size Change</p>
+      <div class="stat-item">
+        <p class="text-label text-ink-muted">Size change</p>
         <p
-          class="text-lg font-semibold {minifiedSize < originalSize
-            ? 'text-green-600 dark:text-green-400'
-            : 'text-red-600 dark:text-red-400'}"
+          class="stat-value font-mono {minifiedSize < originalSize
+            ? '!text-live'
+            : '!text-negative'}"
         >
           {minifiedSize < originalSize ? '-' : '+'}{formatFileSize(
             Math.abs(minifiedSize - originalSize)
@@ -311,22 +280,20 @@ console.log('Total amount:', result.total);`;
         </p>
       </div>
 
-      <div class="text-center">
-        <p class="text-sm text-gray-600 dark:text-gray-400">Compression</p>
-        <p class="text-lg font-semibold text-gray-900 dark:text-white">{compressionRatio}%</p>
+      <div class="stat-item">
+        <p class="text-label text-ink-muted">Compression</p>
+        <p class="stat-value font-mono">{compressionRatio}%</p>
       </div>
     </div>
   {/if}
 
   <!-- JavaScript Input and Output -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Input Section -->
-    <div
-      class="tool-card"
-    >
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input JavaScript</h2>
-        <span class="text-sm text-gray-500 dark:text-gray-400">
+    <div class="tool-card">
+      <div class="card-header">
+        <h2 class="section-title !mb-0">Input JavaScript</h2>
+        <span class="text-count">
           {jsInput.length} characters
         </span>
       </div>
@@ -339,14 +306,12 @@ console.log('Total amount:', result.total);`;
     </div>
 
     <!-- Output Section -->
-    <div
-      class="tool-card"
-    >
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+    <div class="tool-card">
+      <div class="card-header">
+        <h2 class="section-title !mb-0">
           {minified ? 'Minified' : 'Beautified'} JavaScript
         </h2>
-        <span class="text-sm text-gray-500 dark:text-gray-400">
+        <span class="text-count">
           {jsOutput.length} characters
         </span>
       </div>
@@ -362,8 +327,8 @@ console.log('Total amount:', result.total);`;
           <div
             class="absolute inset-0 flex flex-col items-center justify-center p-6 pointer-events-none"
           >
-            <FileText class="w-12 h-12 mb-2 opacity-50 text-gray-400 dark:text-gray-600" />
-            <p class="text-gray-400 dark:text-gray-600 text-sm">
+            <FileText class="w-12 h-12 mb-2 opacity-50 text-ink-muted" />
+            <p class="text-body-sm text-ink-muted">
               Enter JavaScript code to see {minified ? 'minified' : 'beautified'} result
             </p>
           </div>
@@ -373,45 +338,33 @@ console.log('Total amount:', result.total);`;
   </div>
 
   <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+    <div class="card">
+      <div class="feature-icon">
+        <Zap class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Minify JavaScript</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Minify JavaScript</h3>
+      <p class="feature-description">
         Reduce file size by removing whitespace, comments, and unnecessary characters
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <FileText class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <FileText class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Beautify JavaScript</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Beautify JavaScript</h3>
+      <p class="feature-description">
         Format JavaScript with proper indentation and line breaks for better readability
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Download class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <Download class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Export Results</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Export results</h3>
+      <p class="feature-description">
         Copy to clipboard or download processed JavaScript as a file for immediate use
       </p>
     </div>

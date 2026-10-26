@@ -42,7 +42,8 @@ npm run format     # Prettier
 ```
 src/
 ├── main.ts              # Entry point
-├── app.css              # Global styles + @theme tokens
+├── app.css              # Global styles + DS component classes
+├── styles/fariz-tokens.css # Fariz design tokens
 ├── App.svelte           # Root component
 ├── routes/
 │   ├── index.ts         # Route aggregator
@@ -92,11 +93,12 @@ src/
 - No external state library
 
 ### Styling
-- **Tailwind CSS 4** with custom `@theme` in `app.css`
-- Color palette: Purple primary, Slate secondary, semantic (success/warning/danger)
+- **Tailwind CSS 4** + Fariz design system (see DESIGN.md): semantic tokens only (`canvas`, `card`, `ink`, `accent`, `tile-*`, `live`, `negative`), no palette colors, no gradients
+- DS Svelte components in `src/lib/components/ds/` (import from `'$lib/components/ds'`)
 - Component classes: `.btn`, `.input`, `.card`, `.badge`, `.label`
-- Dark mode: system detection + manual toggle → localStorage
-- Font: Outfit (Google Fonts)
+- Flat surfaces: no borders/shadows between surfaces; use `bg-card` → `bg-control` → `bg-raised`
+- Theme: dark default, light via `data-theme="light"`, or system (`src/lib/theme.svelte.ts`) → localStorage; no `dark:` color variants
+- Fonts: Space Grotesk + IBM Plex Mono
 
 ### Tools Configuration
 All 34 tools defined in `src/lib/toolsConfig.ts`:
@@ -111,7 +113,7 @@ All 34 tools defined in `src/lib/toolsConfig.ts`:
 2. **Runes** — use `$state`/`$derived`, not legacy Svelte stores
 3. **No Git writes** — read-only repository access
 4. **Mobile-first** — responsive design on all components
-5. **Dark mode** — must work across all components
+5. **Themes** — dark (default) and light must work across all components
 6. **Tool layout** — use `ToolLayout.svelte` wrapper for consistent tool pages
 7. **SEO** — every route needs meta tags and Open Graph data
 8. **Accessibility** — WCAG 2.1 AA compliance (ARIA, keyboard nav, focus management)
@@ -122,4 +124,4 @@ All 34 tools defined in `src/lib/toolsConfig.ts`:
 
 - **CLAUDE.md** — Claude Code instructions: full feature details, routing, API integration, build config, tools inventory, constraints
 - **ARCHITECTURE.md** — System diagrams, router flow, state management, API client, component hierarchy, build pipeline, deployment
-- **DESIGN.md** — Tailwind CSS 4 @theme tokens, color palette, spacing/radius/shadow scales, component classes, dark mode, typography
+- **DESIGN.md** — Fariz design system: tokens, components, theme wiring, brand rules

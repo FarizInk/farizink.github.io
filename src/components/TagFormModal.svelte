@@ -72,22 +72,31 @@
     }
   }
 
-  let title = $derived(mode === 'create' ? 'Create Tag' : 'Edit Tag');
+  let title = $derived(mode === 'create' ? 'Create tag' : 'Edit tag');
 </script>
 
 <Modal {isOpen} onClose={handleClose} maxW="max-w-sm">
-  <div class="flex items-center justify-between mb-5">
-    <h2 class="text-lg font-bold text-gray-900 dark:text-white">
-      {title}
-    </h2>
-    <button onclick={handleClose} class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700">
-      <X class="w-5 h-5 text-gray-500" />
+  <div class="mb-5 flex items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <div class="flex size-10 items-center justify-center rounded-md bg-tile-deep text-ink-on-dark">
+        {#if mode === 'create'}
+          <Plus class="size-5" />
+        {:else}
+          <Edit2 class="size-5" />
+        {/if}
+      </div>
+      <h2 class="text-title text-ink">
+        {title}
+      </h2>
+    </div>
+    <button type="button" onclick={handleClose} class="btn-icon" aria-label="Close">
+      <X class="size-5" />
     </button>
   </div>
 
   <form id="tag-form" onsubmit={handleSave} class="space-y-4">
     <div>
-      <label for="tag-identifier" class="label">Tag Identifier</label>
+      <label for="tag-identifier" class="label">Tag identifier</label>
       <input
         id="tag-identifier"
         type="text"
@@ -97,11 +106,11 @@
         disabled={isLoading}
         autocomplete="off"
       />
-      <p class="text-xs text-gray-400 mt-1">Lowercase, no spaces</p>
+      <p class="mt-1 text-body-sm text-ink-muted">Lowercase, no spaces</p>
     </div>
 
     <div>
-      <label for="tag-name" class="label">Display Name</label>
+      <label for="tag-name" class="label">Display name</label>
       <input
         id="tag-name"
         type="text"
@@ -119,15 +128,15 @@
         <input
           id="tag-color"
           type="color"
-          class="w-8 h-8 rounded-md cursor-pointer border border-gray-200 dark:border-gray-700 p-0.5"
+          class="size-10 shrink-0 cursor-pointer rounded-sm bg-control p-0.5"
           bind:value={formData.color}
           disabled={isLoading}
         />
         <input
           id="tag-color-hex"
           type="text"
-          placeholder="#hex (optional)"
-          class="input flex-1"
+          placeholder="Hex color (optional)"
+          class="input flex-1 font-mono"
           bind:value={formData.color}
           disabled={isLoading}
         />
@@ -136,19 +145,10 @@
   </form>
 
   <div class="flex items-center justify-end gap-3 pt-5">
-    <button
-      type="button"
-      onclick={handleClose}
-      class="btn btn-secondary"
-    >
+    <button type="button" onclick={handleClose} class="btn btn-secondary">
       Cancel
     </button>
-    <button
-      type="submit"
-      form="tag-form"
-      disabled={isLoading}
-      class="btn btn-primary flex items-center gap-2 shadow-md hover:shadow-lg disabled:opacity-50"
-    >
+    <button type="submit" form="tag-form" disabled={isLoading} class="btn btn-primary">
       {isLoading ? 'Saving...' : mode === 'create' ? 'Create' : 'Save'}
     </button>
   </div>

@@ -60,26 +60,25 @@
 
 <!-- Offline Notice -->
 {#if showOfflineNotice}
-  <div class="fixed bottom-4 left-4 z-40 slide-in-from-bottom duration-300">
+  <div class="fixed bottom-4 left-4 z-40">
     <div
-      class="bg-orange-500 text-white backdrop-blur-sm rounded-lg shadow-lg p-3 flex items-center gap-3 min-w-0"
+      class="flex min-w-0 items-center gap-3 rounded-lg bg-raised p-3 text-ink shadow-pop"
     >
-      <WifiOff class="w-4 h-4 flex-shrink-0" />
+      <span class="grid size-8 flex-none place-items-center rounded-md bg-tile-lilac text-ink-on-bright">
+        <WifiOff class="size-4" />
+      </span>
       <div class="min-w-0 flex-1">
-        <p class="font-semibold text-xs">You're offline</p>
-        <p class="text-xs opacity-90">Some features may be limited</p>
+        <p class="text-body-sm">You're offline</p>
+        <p class="text-xs text-ink-muted">Some features may be limited</p>
       </div>
       <button
         onclick={checkConnection}
-        class="btn btn-sm flex items-center gap-1 bg-white/20 hover:bg-white/30 flex-shrink-0"
+        class="btn-icon flex-none"
         disabled={isCheckingConnection}
+        aria-label="Check connection"
         title="Check connection"
       >
-        {#if isCheckingConnection}
-          <RefreshCw class="w-3 h-3 animate-spin" />
-        {:else}
-          <RefreshCw class="w-3 h-3" />
-        {/if}
+        <RefreshCw class="size-4 {isCheckingConnection ? 'animate-spin' : ''}" />
       </button>
     </div>
   </div>
@@ -87,27 +86,20 @@
 
 <!-- Back Online Notice -->
 {#if showBackOnlineNotice}
-  <div class="fixed top-0 left-0 right-0 z-40 animate-in slide-in-from-top duration-300">
-    <div class="bg-green-600 text-white px-4 py-3 shadow-lg">
-      <div class="max-w-4xl mx-auto flex items-center gap-3">
-        <CheckCircle class="w-5 h-5 flex-shrink-0" />
-        <div>
-          <p class="font-semibold text-sm">Back online</p>
-          <p class="text-xs opacity-90">All features are now available.</p>
-        </div>
-      </div>
+  <div class="fixed top-4 left-1/2 z-40 -translate-x-1/2">
+    <div class="flex items-center gap-3 rounded-pill bg-raised px-4 py-2.5 text-ink shadow-pop">
+      <CheckCircle class="size-5 flex-none text-live" />
+      <p class="text-body-sm">Back online <span class="font-normal text-ink-muted">· all features are available</span></p>
     </div>
   </div>
 {/if}
 
 <!-- Connection Status Badge (shown when offline for extended time) -->
 {#if !isOnline && !showOfflineNotice}
-  <div class="fixed bottom-4 right-4 z-30">
-    <div
-      class="bg-gray-900/90 text-white backdrop-blur-sm rounded-lg px-3 py-2 flex items-center gap-2 text-sm"
-    >
-      <WifiOff class="w-4 h-4" />
-      <span>Offline Mode</span>
+  <div class="fixed right-4 bottom-4 z-30">
+    <div class="flex items-center gap-2 rounded-pill bg-raised px-3 py-2 text-body-sm text-ink shadow-pop">
+      <WifiOff class="size-4 text-ink-muted" />
+      <span>Offline mode</span>
     </div>
   </div>
 {/if}

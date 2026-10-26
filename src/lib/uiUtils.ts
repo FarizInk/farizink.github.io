@@ -43,27 +43,6 @@ export function getFileIconType(mimeType?: string): typeof ImageIcon | typeof Fi
 }
 
 /**
- * Get icon color class based on mime type
- */
-export function getFileIconColor(mimeType?: string): string {
-  if (!mimeType) return 'text-secondary-600 dark:text-secondary-400';
-
-  if (mimeType === 'application/pdf') {
-    return 'text-red-600 dark:text-red-400';
-  }
-
-  if (mimeType.includes('document') || mimeType.includes('word') || mimeType.includes('office')) {
-    return 'text-blue-600 dark:text-blue-400';
-  }
-
-  if (mimeType.includes('text') || mimeType.includes('code')) {
-    return 'text-green-600 dark:text-green-400';
-  }
-
-  return 'text-secondary-600 dark:text-secondary-400';
-}
-
-/**
  * Get display text for mime type
  */
 export function formatMimeType(mimeType?: string): string {

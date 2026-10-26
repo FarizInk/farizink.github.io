@@ -79,17 +79,17 @@
       // Code blocks
       .replace(
         /```(.*?)\n([\s\S]*?)```/g,
-        '<pre class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto mb-4"><code class="text-sm font-mono">$2</code></pre>'
+        '<pre class="overflow-x-auto mb-4"><code class="font-mono">$2</code></pre>'
       )
       // Inline code
       .replace(
         /`(.*?)`/g,
-        '<code class="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm font-mono">$1</code>'
+        '<code class="font-mono">$1</code>'
       )
       // Links
       .replace(
         /\[([^\]]+)\]\(([^)]+)\)/g,
-        '<a href="$2" class="text-primary-600 dark:text-primary-400 hover:underline" target="_blank" rel="noopener noreferrer">$1</a>'
+        '<a href="$2" class="hover:underline" target="_blank" rel="noopener noreferrer">$1</a>'
       )
       // Lists
       .replace(/^- (.*$)/gm, '<li class="ml-4">$1</li>')
@@ -221,58 +221,26 @@ Visit [GitHub](https://github.com) for more resources!`;
   icon={FileText}
   color="warning"
 >
-  <!-- Hero Section -->
-  <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
-  >
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
-          <FileText class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Markdown Preview</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            Live markdown rendering with syntax highlighting
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Controls -->
-  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
-    <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+  <div class="flex flex-wrap gap-2 items-center">
+    <button onclick={loadSample} class="btn btn-secondary">Load sample</button>
+    <button onclick={clearAll} class="btn btn-ghost">Clear</button>
+    <div class="flex items-center gap-2 text-code text-ink-muted ml-auto">
       <FileText class="w-4 h-4" />
       <span>{lineCount} lines</span>
     </div>
-    <button
-      onclick={loadSample}
-      class="btn btn-copy">Load Sample</button
-    >
-    <button
-      onclick={clearAll}
-      class="btn btn-secondary">Clear</button
-    >
   </div>
 
   <!-- Editor and Preview -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Markdown Editor -->
-    <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"
-    >
-      <div
-        class="bg-gray-50 dark:bg-gray-700 px-4 py-3 border-b border-gray-200 dark:border-gray-600 flex items-center justify-between"
-      >
+    <div class="tool-card flex flex-col gap-3">
+      <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <Edit class="w-4 h-4 text-gray-600 dark:text-gray-400" />
-          <span class="text-sm font-medium text-gray-900 dark:text-white">Markdown Editor</span>
+          <Edit class="w-4 h-4 text-ink-muted" />
+          <span class="text-label text-ink-muted">Markdown editor</span>
         </div>
-        <button
-          onclick={copyToClipboard}
-          class="btn-icon"
-        >
+        <button onclick={copyToClipboard} class="btn-icon" title="Copy markdown" aria-label="Copy markdown">
           <Copy class="w-4 h-4" />
         </button>
       </div>
@@ -280,49 +248,39 @@ Visit [GitHub](https://github.com) for more resources!`;
         <textarea
           bind:value={markdownText}
           placeholder="Enter your markdown text here..."
-          class="w-full h-48 sm:h-64 lg:h-96 p-4 font-mono text-sm border-0 resize-none focus:ring-0 bg-white dark:bg-gray-800 text-gray-900 dark:text-white code-editor"
+          class="code-editor w-full h-48 sm:h-64 lg:h-96"
         ></textarea>
       </div>
     </div>
 
     <!-- Live Preview -->
-    <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"
-    >
-      <div
-        class="bg-gray-50 dark:bg-gray-700 px-4 py-3 border-b border-gray-200 dark:border-gray-600 flex items-center justify-between"
-      >
+    <div class="tool-card flex flex-col gap-3">
+      <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <Eye class="w-4 h-4 text-gray-600 dark:text-gray-400" />
-          <span class="text-sm font-medium text-gray-900 dark:text-white">Live Preview</span>
+          <Eye class="w-4 h-4 text-ink-muted" />
+          <span class="text-label text-ink-muted">Live preview</span>
         </div>
         <div class="flex gap-2">
-          <button
-            onclick={copyHtmlToClipboard}
-            class="btn-icon"
-          >
+          <button onclick={copyHtmlToClipboard} class="btn-icon" title="Copy HTML" aria-label="Copy HTML">
             <Copy class="w-4 h-4" />
           </button>
-          <button
-            onclick={downloadHtml}
-            class="btn-icon"
-          >
+          <button onclick={downloadHtml} class="btn-icon" title="Download HTML" aria-label="Download HTML">
             <Download class="w-4 h-4" />
           </button>
         </div>
       </div>
-      <div class="h-48 sm:h-64 lg:h-96 overflow-y-auto p-3 sm:p-6 prose prose-sm dark:prose-invert max-w-none">
+      <div
+        class="h-48 sm:h-64 lg:h-96 overflow-y-auto p-4 sm:p-6 bg-sunken rounded-md text-ink prose max-w-none"
+      >
         {#if htmlContent}
           <!-- eslint-disable-next-line svelte/no-at-html-tags -->
           {@html htmlContent}
         {:else}
-          <div
-            class="flex items-center justify-center h-full text-gray-400 dark:text-gray-600 text-center"
-          >
+          <div class="flex items-center justify-center h-full text-ink-muted text-center">
             <div>
               <Eye class="w-12 h-12 mb-2 opacity-50 mx-auto" />
               <p>Your markdown preview will appear here</p>
-              <p class="text-sm">Start typing in the editor to see the live preview</p>
+              <p class="text-body-sm">Start typing in the editor to see the live preview</p>
             </div>
           </div>
         {/if}
@@ -331,45 +289,33 @@ Visit [GitHub](https://github.com) for more resources!`;
   </div>
 
   <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="tool-card">
+      <div class="feature-icon">
+        <Zap class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Live Preview</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Live preview</h3>
+      <p class="feature-description">
         See your markdown rendered in real-time as you type with instant updates
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Code class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="tool-card">
+      <div class="feature-icon">
+        <Code class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Syntax Highlighting</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Syntax highlighting</h3>
+      <p class="feature-description">
         Code blocks with proper formatting and highlighting for better readability
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Download class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="tool-card">
+      <div class="feature-icon">
+        <Download class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Export Options</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Export options</h3>
+      <p class="feature-description">
         Download your formatted content as HTML or copy to clipboard with one click
       </p>
     </div>

@@ -55,8 +55,8 @@
     title,
     searchPlaceholder,
     sortOptions = [
-      { value: 'created_at', label: 'Date Created', icon: Calendar },
-      { value: 'updated_at', label: 'Last Updated', icon: Calendar }
+      { value: 'created_at', label: 'Date created', icon: Calendar },
+      { value: 'updated_at', label: 'Last updated', icon: Calendar }
     ],
     showPublicFilter = true,
     defaultSortBy = 'created_at',
@@ -132,18 +132,18 @@
     <div class="mb-5">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-md">
+          <div class="flex size-10 shrink-0 items-center justify-center rounded-md bg-tile-deep text-ink-on-dark">
             {#if expertFilterMode}
-              <SlidersHorizontal class="w-6 h-6 text-white" />
+              <SlidersHorizontal class="size-5" />
             {:else}
-              <Filter class="w-6 h-6 text-white" />
+              <Filter class="size-5" />
             {/if}
           </div>
           <div>
-            <h2 id="modal-title" class="text-lg font-bold text-gray-900 dark:text-white">
+            <h2 id="modal-title" class="text-title text-ink">
               {title}
             </h2>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
+            <p class="text-body-sm text-ink-muted">
               {expertFilterMode ? 'Advanced filtering options' : 'Quick filters for notes'}
             </p>
           </div>
@@ -153,23 +153,24 @@
           <button
             type="button"
             onclick={() => (expertFilterMode = !expertFilterMode)}
-            class="mode-btn p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            title={expertFilterMode ? 'Switch to Simple Mode' : 'Switch to Expert Mode'}
+            class="btn-icon"
+            title={expertFilterMode ? 'Switch to simple mode' : 'Switch to expert mode'}
+            aria-label={expertFilterMode ? 'Switch to simple mode' : 'Switch to expert mode'}
           >
             {#if expertFilterMode}
-              <Filter class="w-4 h-4 text-gray-500" />
+              <Filter class="size-4" />
             {:else}
-              <SlidersHorizontal class="w-4 h-4 text-gray-500" />
+              <SlidersHorizontal class="size-4" />
             {/if}
           </button>
           <!-- Close Button -->
           <button
             type="button"
             onclick={onClose}
-            class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700"
+            class="btn-icon"
             aria-label="Close modal"
           >
-            <X class="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <X class="size-5" />
           </button>
         </div>
       </div>
@@ -187,7 +188,7 @@
           <div class="relative group">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search
-                class="w-4 h-4 text-gray-400 group-focus-within:text-purple-500 transition-colors"
+                class="size-4 text-ink-muted transition-colors group-focus-within:text-accent-text"
               />
             </div>
             <input
@@ -204,15 +205,15 @@
 
         <!-- Sort Options - Full Width -->
         <div class="md:col-span-2">
-          <span class="label">Sort By</span>
+          <span class="label">Sort by</span>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {#each sortOptions as sortOption (sortOption.value)}
               {@const Icon = sortOption.icon}
-              <div class="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+              <div class="rounded-md bg-sunken p-3">
                 <div
-                  class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-1"
+                  class="mb-2 flex items-center gap-1 text-body-sm font-medium text-ink"
                 >
-                  <Icon class="w-4 h-4" />
+                  <Icon class="size-4" />
                   {sortOption.label}
                 </div>
                 <div class="flex gap-2">
@@ -223,12 +224,12 @@
                         sortBy: sortOption.value,
                         sortOrder: 'desc'
                       })}
-                    class="preset-btn flex-1 px-3 py-2 text-sm rounded-md border transition-colors flex items-center justify-center gap-1 {tempFilters.sortBy ===
+                    class="preset-btn flex-1 flex items-center justify-center gap-1 {tempFilters.sortBy ===
                      sortOption.value && tempFilters.sortOrder === 'desc'
-                      ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
-                      : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
+                      ? 'active'
+                      : ''}"
                   >
-                    <ArrowDown class="w-3 h-3" />
+                    <ArrowDown class="size-3" />
                     Newest
                   </button>
                   <button
@@ -238,12 +239,12 @@
                         sortBy: sortOption.value,
                         sortOrder: 'asc'
                       })}
-                    class="preset-btn flex-1 px-3 py-2 text-sm rounded-md border transition-colors flex items-center justify-center gap-1 {tempFilters.sortBy ===
+                    class="preset-btn flex-1 flex items-center justify-center gap-1 {tempFilters.sortBy ===
                      sortOption.value && tempFilters.sortOrder === 'asc'
-                      ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
-                      : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
+                      ? 'active'
+                      : ''}"
                   >
-                    <ArrowUp class="w-3 h-3" />
+                    <ArrowUp class="size-3" />
                     Oldest
                   </button>
                 </div>
@@ -255,31 +256,31 @@
         <!-- Public Status Filter -->
         {#if showPublicFilter}
           <div>
-            <span class="label">Public Status</span>
+            <span class="label">Public status</span>
             <div class="flex flex-col gap-2">
               <button
                 onclick={() => (tempFilters = { ...tempFilters, isPublic: true })}
-                class="preset-btn px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic ===
+                class="preset-btn text-left {tempFilters.isPublic ===
                 true
-                  ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
-                  : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
+                  ? 'active'
+                  : ''}"
               >
-                Public Only
+                Public only
               </button>
               <button
                 onclick={() => (tempFilters = { ...tempFilters, isPublic: false })}
-                class="preset-btn px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isPublic ===
+                class="preset-btn text-left {tempFilters.isPublic ===
                 false
-                  ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
-                  : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
+                  ? 'active'
+                  : ''}"
               >
-                Private Only
+                Private only
               </button>
               <button
                 onclick={() => (tempFilters = { ...tempFilters, isPublic: undefined })}
-                class="preset-btn px-3 py-2 text-sm rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left {tempFilters.isPublic ===
+                class="preset-btn text-left {tempFilters.isPublic ===
                 undefined
-                  ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
+                  ? 'active'
                   : ''}"
               >
                 All
@@ -290,31 +291,31 @@
 
         <!-- Favorite Status Filter -->
         <div>
-          <span class="label">Favorite Status</span>
+          <span class="label">Favorite status</span>
           <div class="flex flex-col gap-2">
             <button
               onclick={() => (tempFilters = { ...tempFilters, isFavorite: true })}
-              class="preset-btn px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite ===
+              class="preset-btn text-left {tempFilters.isFavorite ===
               true
-                ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
-                : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
+                ? 'active'
+                : ''}"
             >
-              Favorites Only
+              Favorites only
             </button>
             <button
               onclick={() => (tempFilters = { ...tempFilters, isFavorite: false })}
-              class="preset-btn px-3 py-2 text-sm rounded-md border transition-colors text-left {tempFilters.isFavorite ===
+              class="preset-btn text-left {tempFilters.isFavorite ===
               false
-                ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
-                : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
+                ? 'active'
+                : ''}"
             >
               Non-Favorites
             </button>
             <button
               onclick={() => (tempFilters = { ...tempFilters, isFavorite: undefined })}
-              class="preset-btn px-3 py-2 text-sm rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left {tempFilters.isFavorite ===
+              class="preset-btn text-left {tempFilters.isFavorite ===
               undefined
-                ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
+                ? 'active'
                 : ''}"
             >
               All
@@ -325,7 +326,7 @@
         <!-- Tag Filters -->
         {#if $tags.length > 0}
           <div>
-            <label for="include-tags" class="label">Include Tags</label>
+            <label for="include-tags" class="label">Include tags</label>
             <TagsSelector
               id="include-tags"
               options={$tagOptions}
@@ -336,7 +337,7 @@
           </div>
 
           <div>
-            <label for="exclude-tags" class="label">Exclude Tags</label>
+            <label for="exclude-tags" class="label">Exclude tags</label>
             <TagsSelector
               id="exclude-tags"
               options={$tagOptions}
@@ -348,19 +349,19 @@
         {:else if $isLoadingTags}
           <div class="md:col-span-2">
             <div
-              class="flex items-center justify-center py-4 border border-gray-200 dark:border-gray-700 rounded-lg"
+              class="flex items-center justify-center rounded-md bg-sunken py-4"
             >
-              <RotateCw class="w-4 h-4 text-gray-400 animate-spin mr-2" />
-              <span class="text-sm text-gray-500">Loading tags...</span>
+              <RotateCw class="mr-2 size-4 animate-spin text-ink-muted" />
+              <span class="text-body-sm text-ink-muted">Loading tags...</span>
             </div>
           </div>
         {:else}
           <div class="md:col-span-2">
             <div
-              class="text-center py-4 border border-gray-200 dark:border-gray-700 rounded-lg"
+              class="rounded-md bg-sunken py-4 text-center"
             >
-              <TagIcon class="w-8 h-8 text-gray-300 mx-auto mb-2" />
-              <p class="text-sm text-gray-500">No tags available</p>
+              <TagIcon class="mx-auto mb-2 size-8 text-ink-muted" />
+              <p class="text-body-sm text-ink-muted">No tags available</p>
             </div>
           </div>
         {/if}
@@ -370,8 +371,8 @@
       <div class="space-y-4">
         <!-- Search -->
         <div>
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-1.5" for="simple-search-input">
-            <Search class="w-4 h-4" />
+          <label class="label flex items-center gap-1.5" for="simple-search-input">
+            <Search class="size-4" />
             Search
           </label>
           <input
@@ -388,9 +389,9 @@
 
         <!-- Sort -->
         <div>
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-1.5">
-            <SortIcon class="w-4 h-4" />
-            Sort By
+          <label class="label flex items-center gap-1.5">
+            <SortIcon class="size-4" />
+            Sort by
           </label>
           <div class="grid grid-cols-2 gap-2">
             <button
@@ -400,12 +401,12 @@
                   sortBy: tempFilters.sortBy || defaultSortBy,
                   sortOrder: 'desc'
                 })}
-              class="preset-btn px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1.5 {tempFilters.sortOrder ===
+              class="preset-btn flex items-center justify-center gap-1.5 {tempFilters.sortOrder ===
               'desc'
-                ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
-                : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
+                ? 'active'
+                : ''}"
             >
-              <ArrowDown class="w-3.5 h-3.5" />
+              <ArrowDown class="size-3.5" />
               Newest
             </button>
             <button
@@ -415,12 +416,12 @@
                   sortBy: tempFilters.sortBy || defaultSortBy,
                   sortOrder: 'asc'
                 })}
-              class="preset-btn px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1.5 {tempFilters.sortOrder ===
+              class="preset-btn flex items-center justify-center gap-1.5 {tempFilters.sortOrder ===
               'asc'
-                ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
-                : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
+                ? 'active'
+                : ''}"
             >
-              <ArrowUp class="w-3.5 h-3.5" />
+              <ArrowUp class="size-3.5" />
               Oldest
             </button>
           </div>
@@ -429,38 +430,38 @@
         <!-- Visibility -->
         {#if showPublicFilter}
           <div>
-            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-1.5">
-              <Globe class="w-4 h-4" />
+            <label class="label flex items-center gap-1.5">
+              <Globe class="size-4" />
               Visibility
             </label>
             <div class="grid grid-cols-3 gap-2">
               <button
                 onclick={() => (tempFilters = { ...tempFilters, isPublic: undefined })}
-                class="preset-btn px-3 py-2 text-sm rounded-lg border transition-colors {tempFilters.isPublic ===
+                class="preset-btn text-center {tempFilters.isPublic ===
                 undefined
-                  ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
-                  : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
+                  ? 'active'
+                  : ''}"
               >
                 All
               </button>
               <button
                 onclick={() => (tempFilters = { ...tempFilters, isPublic: true })}
-                class="preset-btn px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isPublic ===
+                class="preset-btn flex items-center justify-center gap-1 {tempFilters.isPublic ===
                 true
-                  ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
-                  : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
+                  ? 'active'
+                  : ''}"
               >
-                <Globe class="w-3.5 h-3.5" />
+                <Globe class="size-3.5" />
                 Public
               </button>
               <button
                 onclick={() => (tempFilters = { ...tempFilters, isPublic: false })}
-                class="preset-btn px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isPublic ===
+                class="preset-btn flex items-center justify-center gap-1 {tempFilters.isPublic ===
                 false
-                  ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
-                  : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
+                  ? 'active'
+                  : ''}"
               >
-                <Lock class="w-3.5 h-3.5" />
+                <Lock class="size-3.5" />
                 Private
               </button>
             </div>
@@ -469,38 +470,38 @@
 
         <!-- Favorites -->
         <div>
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-1.5">
-            <Star class="w-4 h-4" />
+          <label class="label flex items-center gap-1.5">
+            <Star class="size-4" />
             Favorites
           </label>
           <div class="grid grid-cols-3 gap-2">
             <button
               onclick={() => (tempFilters = { ...tempFilters, isFavorite: undefined })}
-              class="preset-btn px-3 py-2 text-sm rounded-lg border transition-colors {tempFilters.isFavorite ===
+              class="preset-btn text-center {tempFilters.isFavorite ===
               undefined
-                ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
-                : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
+                ? 'active'
+                : ''}"
             >
               All
             </button>
             <button
               onclick={() => (tempFilters = { ...tempFilters, isFavorite: true })}
-              class="preset-btn px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isFavorite ===
+              class="preset-btn flex items-center justify-center gap-1 {tempFilters.isFavorite ===
               true
-                ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
-                : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
+                ? 'active'
+                : ''}"
             >
-              <Star class="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+              <Star class="size-3.5 fill-current text-accent-text" />
               Yes
             </button>
             <button
               onclick={() => (tempFilters = { ...tempFilters, isFavorite: false })}
-              class="preset-btn px-3 py-2 text-sm rounded-lg border transition-colors flex items-center justify-center gap-1 {tempFilters.isFavorite ===
+              class="preset-btn flex items-center justify-center gap-1 {tempFilters.isFavorite ===
               false
-                ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
-                : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}"
+                ? 'active'
+                : ''}"
             >
-              <Star class="w-3.5 h-3.5 text-gray-400" />
+              <Star class="size-3.5 text-ink-muted" />
               No
             </button>
           </div>
@@ -509,8 +510,8 @@
         <!-- Tags -->
         {#if $tags.length > 0}
           <div>
-            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-1.5">
-              <TagIcon class="w-4 h-4" />
+            <label class="label flex items-center gap-1.5">
+              <TagIcon class="size-4" />
               Tags
             </label>
             <TagsSelector
@@ -522,17 +523,17 @@
           </div>
         {:else if $isLoadingTags}
           <div
-            class="flex items-center justify-center py-4 border border-gray-200 dark:border-gray-700 rounded-lg"
+            class="flex items-center justify-center rounded-md bg-sunken py-4"
           >
-            <RotateCw class="w-4 h-4 text-gray-400 animate-spin mr-2" />
-            <span class="text-sm text-gray-500">Loading tags...</span>
+            <RotateCw class="mr-2 size-4 animate-spin text-ink-muted" />
+            <span class="text-body-sm text-ink-muted">Loading tags...</span>
           </div>
         {:else}
           <div
-            class="text-center py-4 border border-gray-200 dark:border-gray-700 rounded-lg"
+            class="rounded-md bg-sunken py-4 text-center"
           >
-            <TagIcon class="w-8 h-8 text-gray-300 mx-auto mb-2" />
-            <p class="text-sm text-gray-500">No tags available</p>
+            <TagIcon class="mx-auto mb-2 size-8 text-ink-muted" />
+            <p class="text-body-sm text-ink-muted">No tags available</p>
           </div>
         {/if}
       </div>
@@ -540,9 +541,9 @@
   
 
   
-    <div class="pt-5 border-t border-gray-200 dark:border-gray-700 mt-2">
+    <div class="mt-2 pt-5">
       <div class="flex items-center justify-between gap-6">
-        <div class="text-sm text-gray-500 dark:text-gray-400">
+        <div class="text-body-sm text-ink-muted">
           <span>
             {expertFilterMode
               ? 'Use advanced filters to find specific notes'
@@ -560,9 +561,9 @@
           <button
             type="button"
             onclick={handleApply}
-            class="btn btn-primary flex items-center gap-2 shadow-md hover:shadow-lg"
+            class="btn btn-primary"
           >
-            <Filter class="w-4 h-4" />
+            <Filter class="size-4" />
             Apply
           </button>
         </div>

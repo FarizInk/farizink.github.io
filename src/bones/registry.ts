@@ -3,6 +3,7 @@ import { registerBones } from 'boneyard-js/svelte'
 
 import _dashboard_finance from './dashboard-finance.bones.json'
 import _dashboard_notes from './dashboard-notes.bones.json'
+import _diary_feed from './diary-feed.bones.json'
 import _files_list from './files-list.bones.json'
 import _finance_summary from './finance-summary.bones.json'
 import _finance_transactions from './finance-transactions.bones.json'
@@ -16,6 +17,7 @@ import _tag_grid from './tag-grid.bones.json'
 registerBones({
   "dashboard-finance": _dashboard_finance,
   "dashboard-notes": _dashboard_notes,
+  "diary-feed": _diary_feed,
   "files-list": _files_list,
   "finance-summary": _finance_summary,
   "finance-transactions": _finance_transactions,

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { navigate, type Route } from '../lib/router';
+  import { theme, toggleTheme } from '../lib/theme.svelte';
   import { allRoutes } from '../routes/index';
   import {
     Search,
@@ -10,8 +11,10 @@
     ArrowRight,
     Sparkles,
     Sun,
-    Moon
+    Moon,
+    X
   } from '@lucide/svelte';
+  import { IconButton } from '$lib/components/ds';
   import { getValidatedAuthState, logout } from '../lib/auth';
   import { toast } from 'svelte-sonner';
   import { onMount } from 'svelte';
@@ -31,24 +34,12 @@
   let isLoggingOut = $state(false);
 
   // Theme state
-  let isDark = $state(false);
+  const isDark = $derived(!theme.light);
 
   function closeModal() {
     isOpen = false;
     searchQuery = '';
     selectedIndex = 0;
-  }
-
-  function toggleTheme() {
-    isDark = !isDark;
-    const html = document.documentElement;
-    if (isDark) {
-      html.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      html.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
   }
 
   // Sync auth state from localStorage immediately (for responsive UI)
@@ -63,23 +54,6 @@
       isLoggedIn: !!(token && isLoggedIn),
       username
     };
-  }
-
-  // Sync theme state from localStorage
-  function syncThemeFromStorage() {
-    if (typeof localStorage === 'undefined') return;
-
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
-
-    // Apply theme to html
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
   }
 
   async function updateAuthState() {
@@ -180,11 +154,11 @@
     const category = getCategoryLabel(path);
     switch (category) {
       case 'Page':
-        return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300';
+        return 'bg-tile-deep text-ink-on-dark';
       case 'Auth':
-        return 'bg-purple-100 text-purple-700 dark:bg-primary-900/30 dark:text-primary-300';
+        return 'bg-tile-violet text-ink-on-dark';
       default:
-        return 'bg-warning-100 text-warning-700 dark:bg-primary-900/30 dark:text-warning-300';
+        return 'bg-tile-lilac text-ink-on-bright';
     }
   }
 
@@ -238,8 +212,7 @@
 
   // Update auth state when component mounts and listen for auth changes
   onMount(() => {
-    // Sync theme and auth from localStorage
-    syncThemeFromStorage();
+    // Sync auth from localStorage
     syncAuthStateFromStorage();
 
     // Then validate asynchronously (don't await, let it happen in background)
@@ -254,21 +227,12 @@
       syncAuthStateFromStorage(); // Immediate update from localStorage
     };
 
-    // Listen for theme changes from other components
-    const handleThemeChange = () => {
-      syncThemeFromStorage();
-    };
-
     document.addEventListener('login-success', handleLoginSuccess);
     document.addEventListener('logout-success', handleLogoutSuccess);
-    window.addEventListener('storage', handleThemeChange);
-    window.addEventListener('theme-changed', handleThemeChange);
 
     return () => {
       document.removeEventListener('login-success', handleLoginSuccess);
       document.removeEventListener('logout-success', handleLogoutSuccess);
-      window.removeEventListener('storage', handleThemeChange);
-      window.removeEventListener('theme-changed', handleThemeChange);
     };
   });
 
@@ -324,7 +288,7 @@
 <!-- Backdrop -->
 {#if isOpen}
   <div
-    class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9999] flex items-center justify-center"
+    class="fixed inset-0 z-[9999] flex items-center justify-center bg-overlay backdrop-blur-sm"
     onclick={e => {
       // Only close if clicking the backdrop (not the modal content)
       if (e.target === e.currentTarget) {
@@ -337,62 +301,36 @@
     aria-labelledby="command-palette-title"
     tabindex="-1"
   >
-    <!-- Modal -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl mx-4 border border-gray-200 dark:border-gray-700 overflow-hidden animate-scale-in"
+      class="mx-4 w-full max-w-2xl overflow-hidden rounded-lg bg-raised text-ink"
       role="document"
     >
       <!-- Header with Search -->
-      <div
-        class="p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20"
-      >
-        <div class="flex items-center justify-between mb-3">
+      <div class="flex flex-col gap-4 p-5">
+        <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <div
-              class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-amber-400 dark:from-primary-500 dark:to-primary-600 rounded-xl flex items-center justify-center shadow-md"
-            >
-              <Command class="w-5 h-5 text-white" />
-            </div>
+            <span class="grid size-10 place-items-center rounded-md bg-tile-deep text-ink-on-dark">
+              <Command class="size-5" />
+            </span>
             <div>
-              <h2
-                id="command-palette-title"
-                class="text-lg font-bold text-gray-900 dark:text-white"
-              >
-                Command Palette
-              </h2>
-              <p class="text-xs text-gray-600 dark:text-gray-400">
-                Search pages, tools, and settings
-              </p>
+              <h2 id="command-palette-title" class="text-title">Command palette</h2>
+              <p class="text-body-sm font-normal text-ink-muted">Search pages, tools, and settings</p>
             </div>
           </div>
 
-          <!-- Theme Toggle -->
-          <button
-            onclick={toggleTheme}
-            class="w-10 h-10 bg-white dark:bg-gray-900 rounded-xl flex items-center justify-center border-2 border-gray-200 dark:border-gray-700 hover:border-warning-400 dark:hover:border-primary-400 hover:shadow-md transition-all group"
-            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-            title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-          >
-            {#if isDark}
-              <Sun
-                class="w-5 h-5 text-warning-600 dark:text-warning-400 group-hover:scale-110 transition-transform"
-              />
-            {:else}
-              <Moon
-                class="w-5 h-5 text-purple-600 dark:text-primary-400 group-hover:scale-110 transition-transform"
-              />
-            {/if}
-          </button>
+          <IconButton label={isDark ? 'Switch to light mode' : 'Switch to dark mode'} onclick={toggleTheme}>
+            {#if isDark}<Sun />{:else}<Moon />{/if}
+          </IconButton>
         </div>
 
-        <!-- Search Input -->
         <div class="relative flex items-center">
-          <Search class="absolute left-4 w-5 h-5 text-gray-400 dark:text-gray-500" />
+          <Search class="pointer-events-none absolute left-4 size-5 text-ink-muted" />
           <input
             id="command-palette-search"
             type="text"
-            placeholder="Search anything..."
-            class="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-warning-500 dark:focus:border-purple-500 focus:shadow-[0_0_0_4px_rgba(251,191,36,0.1)] dark:focus:shadow-[0_0_0_4px_rgba(139,92,246,0.1)] transition-all"
+            placeholder="Search anything…"
+            aria-label="Search pages and tools"
+            class="text-body h-13 w-full rounded-pill bg-control pr-12 pl-12 text-ink placeholder:text-ink-muted focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
             bind:value={searchQuery}
             onkeydown={handleSearchKeydown}
             autocomplete="off"
@@ -400,57 +338,41 @@
           {#if searchQuery}
             <button
               onclick={() => (searchQuery = '')}
-              class="btn-icon absolute right-3 w-6 h-6 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"
+              class="absolute right-3 grid size-7 place-items-center rounded-pill bg-raised text-ink-muted hover:text-ink"
               aria-label="Clear search"
             >
-              <svg
-                class="w-3 h-3 text-gray-600 dark:text-gray-400"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
+              <X class="size-3.5" />
             </button>
           {/if}
         </div>
       </div>
 
       <!-- Results -->
-      <div class="max-h-96 overflow-y-auto command-palette-list">
+      <div class="command-palette-list max-h-96 overflow-y-auto">
         {#if filteredRoutes.length > 0}
           <div class="p-2">
             {#each filteredRoutes as route, i (route.path)}
               {@const IconComp = route.icon || DefaultIcon}
+              {@const selected = i === selectedIndex}
               <button
-                class="cmd-item w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group {i ===
-                selectedIndex
-                  ? 'bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-primary-900/30 dark:to-primary-800/20 border-2 border-warning-400 dark:border-primary-400 shadow-md'
-                  : 'hover:bg-gray-50 dark:hover:bg-gray-700/50 border-2 border-transparent'}"
+                class="cmd-item group flex w-full items-center gap-3 rounded-md p-3 text-left transition-colors duration-150 {selected
+                  ? 'bg-control'
+                  : 'hover:bg-control'}"
                 onclick={e => navigateToRoute(route, e, e.ctrlKey || e.metaKey)}
                 role="option"
-                aria-selected={i === selectedIndex}
+                aria-selected={selected}
                 tabindex="-1"
               >
-                <!-- Icon -->
-                <div
-                  class="w-10 h-10 rounded-lg flex items-center justify-center {i === selectedIndex
-                    ? 'bg-gradient-to-br from-yellow-400 to-amber-400 dark:from-primary-500 dark:to-primary-600 shadow-md'
-                    : 'bg-gray-100 dark:bg-gray-700 group-hover:bg-gray-200 dark:group-hover:bg-gray-600'}"
+                <span
+                  class="grid size-10 flex-none place-items-center rounded-md {selected
+                    ? 'bg-accent text-ink-on-accent'
+                    : 'bg-control text-ink'}"
                 >
-                  <IconComp
-                    class="w-5 h-5 {i === selectedIndex
-                      ? 'text-white'
-                      : 'text-gray-600 dark:text-gray-400'}"
-                  />
-                </div>
+                  <IconComp class="size-5" />
+                </span>
 
-                <!-- Content -->
-                <div class="flex-1 min-w-0 text-left">
-                  <div
-                    class="font-semibold text-gray-900 dark:text-white truncate flex items-center gap-2"
-                  >
+                <span class="min-w-0 flex-1">
+                  <span class="block truncate text-body font-semibold">
                     {#if route.path === '/'}
                       Home
                     {:else if route.path === '/notes'}
@@ -464,113 +386,62 @@
                     {:else}
                       {route.title?.replace(' - Fariz', '') || route.path}
                     {/if}
-                  </div>
+                  </span>
                   {#if route.path !== '/' && route.path !== '/notes' && route.path !== '/tools' && route.path !== '/login' && route.path !== '/logout'}
-                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-0.5 font-mono text-xs">
-                      {route.path}
-                    </div>
+                    <span class="mt-0.5 block text-code text-ink-muted">{route.path}</span>
                   {/if}
                   {#if route.description && (route.path === '/login' || route.path === '/logout')}
-                    <div class="text-sm text-gray-600 dark:text-gray-400 mt-0.5 line-clamp-2">
+                    <span class="mt-0.5 line-clamp-2 block text-body-sm font-normal text-ink-muted">
                       {route.description}
-                    </div>
+                    </span>
                   {/if}
-                </div>
+                </span>
 
-                <!-- Category Badge -->
-                <span
-                  class="px-2.5 py-1 rounded-lg text-xs font-semibold {getCategoryColor(
-                    route.path
-                  )}"
-                >
+                <span class="text-label rounded-pill px-2.5 py-1 {getCategoryColor(route.path)}">
                   {getCategoryLabel(route.path)}
                 </span>
 
-                <!-- Arrow for selected -->
-                {#if i === selectedIndex}
-                  <div
-                    class="w-6 h-6 bg-yellow-400 dark:bg-primary-400 rounded-full flex items-center justify-center"
-                  >
-                    <ArrowRight class="w-4 h-4 text-white" />
-                  </div>
-                {:else}
-                  <div
-                    class="w-6 h-6 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <ArrowRight class="w-4 h-4 text-gray-400" />
-                  </div>
-                {/if}
+                <ArrowRight
+                  class="size-4 text-ink-muted {selected ? '' : 'opacity-0 group-hover:opacity-100'}"
+                />
               </button>
             {/each}
           </div>
         {:else}
           <div class="p-8 text-center">
-            <div
-              class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-4"
-            >
-              <Search class="w-8 h-8 text-gray-400 dark:text-gray-500" />
+            <div class="mx-auto mb-4 grid size-16 place-items-center rounded-lg bg-control">
+              <Search class="size-8 text-ink-muted" />
             </div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-              No results found
-            </h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              Try searching for "{searchQuery}"
-            </p>
+            <h3 class="text-title mb-1">No results found</h3>
+            <p class="text-body-sm font-normal text-ink-muted">Nothing matches "{searchQuery}"</p>
           </div>
         {/if}
       </div>
 
-      <!-- Footer with keyboard shortcuts and theme indicator -->
-      <div class="p-3 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
-        <div class="flex items-center justify-between">
-          <!-- Keyboard shortcuts -->
-          <div class="flex items-center gap-6 text-xs text-gray-600 dark:text-gray-400">
-            <div class="flex items-center gap-2">
-              <kbd
-                class="flex items-center gap-1 px-2 py-1 bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 font-mono shadow-sm"
-              >
-                <ArrowUpDown class="w-3 h-3" />
+      <!-- Footer with keyboard shortcuts -->
+      <div class="flex items-center justify-between px-4 py-3">
+        <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-ink-muted">
+          {#each [
+            { key: 'nav', label: 'Navigate' },
+            { key: '↵', label: 'Select' },
+            { key: 'esc', label: 'Close' },
+            { key: 'cmdk', label: 'Open' }
+          ] as hint (hint.key)}
+            <span class="flex items-center gap-2">
+              <kbd class="flex items-center gap-1 rounded-md bg-control px-2 py-0.5 font-mono">
+                {#if hint.key === 'nav'}
+                  <ArrowUpDown class="size-3" />
+                {:else if hint.key === 'cmdk'}
+                  <Command class="size-3" /> K
+                {:else}
+                  {hint.key}
+                {/if}
               </kbd>
-              <span>Navigate</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <kbd
-                class="px-2 py-1 bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 font-mono shadow-sm"
-              >
-                ↵
-              </kbd>
-              <span>Select</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <kbd
-                class="px-2 py-1 bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 font-mono shadow-sm"
-              >
-                esc
-              </kbd>
-              <span>Close</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <kbd
-                class="flex items-center gap-1 px-2 py-1 bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 font-mono shadow-sm"
-              >
-                <Command class="w-3 h-3" />
-                K
-              </kbd>
-              <span>Open</span>
-            </div>
-          </div>
-
-          <!-- Theme indicator (visible on mobile/smaller screens) -->
-          <div class="hidden sm:flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
-            {#if isDark}
-              <Moon class="w-4 h-4 text-purple-600 dark:text-primary-400" />
-              <span>Dark</span>
-            {:else}
-              <Sun class="w-4 h-4 text-warning-600 dark:text-warning-400" />
-              <span>Light</span>
-            {/if}
-          </div>
+              {hint.label}
+            </span>
+          {/each}
         </div>
+        <span class="text-label hidden text-ink-muted sm:block">{isDark ? 'Dark' : 'Light'}</span>
       </div>
     </div>
   </div>

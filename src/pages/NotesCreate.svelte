@@ -2,7 +2,8 @@
   import NoteForm from '../components/NoteForm.svelte';
   import { navigate } from '../lib/router';
   import { tagsStore } from '../lib/stores/tags';
-  import { Lock } from '@lucide/svelte';
+  import { ChevronLeft, Plus } from '@lucide/svelte';
+  import { Button, EmptyState, PageHeader } from '$lib/components/ds';
   import { onMount } from 'svelte';
 
   let hasAuthToken = $state(false);
@@ -44,60 +45,27 @@
   <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="notes-create-page min-h-screen">
+<div class="mx-auto max-w-[768px] pt-16 pb-12">
   {#if isCheckingAuth}
     <div class="flex items-center justify-center py-20">
-      <div
-        class="w-12 h-12 border-4 border-warning-500 border-t-transparent rounded-full animate-spin"
-      ></div>
+      <div class="size-12 animate-spin rounded-pill border-4 border-control border-t-accent"></div>
     </div>
   {:else if !hasAuthToken}
-    <div class="flex items-center justify-center min-h-screen px-4">
-      <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
-        <div
-          class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
-        >
-          <Lock class="w-8 h-8 text-red-600 dark:text-red-400" />
-        </div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Access Denied</h1>
-        <p class="text-gray-600 dark:text-gray-400 mb-6">
-          You need to be logged in to create notes.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-3 justify-center">
-          <button
-            onclick={() => navigate('/notes')}
-            class="btn btn-secondary px-5 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
-          >
-            Go Back
-          </button>
-          <button
-            onclick={() => document.dispatchEvent(new CustomEvent('open-login-modal'))}
-            class="btn btn-primary px-5 py-2.5 rounded-lg font-medium transition-all shadow-md"
-          >
-            Login
-          </button>
-        </div>
-      </div>
+    <div class="flex min-h-[70vh] items-center justify-center">
+      <EmptyState title="Login required" text="You need to be logged in to create notes.">
+        {#snippet actions()}
+          <Button onclick={() => document.dispatchEvent(new CustomEvent('open-login-modal'))}>Log in</Button>
+          <Button variant="secondary" onclick={() => navigate('/notes')}>Back to notes</Button>
+        {/snippet}
+      </EmptyState>
     </div>
   {:else}
-    <div class="max-w-3xl mx-auto px-3 py-4 sm:px-4 sm:py-8">
-      <button
-        onclick={() => navigate('/notes')}
-        class="mb-4 sm:mb-6 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
-      >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"
-          ></path>
-        </svg>
-        Back to Notes
-      </button>
+    <div class="flex flex-col">
+      <Button variant="ghost" size="sm" class="self-start" onclick={() => navigate('/notes')}>
+        <ChevronLeft class="size-4" /> All notes
+      </Button>
 
-      <div class="mb-4 sm:mb-6">
-        <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Create Note</h1>
-        <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
-          Create a new note to save your thoughts
-        </p>
-      </div>
+      <PageHeader title="Create" highlight="note" subtitle="Create a new note to save your thoughts." />
 
       <!-- Note Form -->
       {#if hasAuthToken}
@@ -110,31 +78,11 @@
 
       <!-- Action Buttons -->
       {#if hasAuthToken}
-        <div
-          class="mt-4 sm:mt-6 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3"
-        >
-          <button
-            type="button"
-            onclick={handleCancel}
-            class="btn btn-secondary w-full sm:w-auto hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            onclick={handleSubmit}
-            class="btn btn-primary w-full sm:w-auto dark:hover:from-primary-600 dark:hover:to-primary-700 dark:from-primary-500 dark:to-primary-600 font-semibold shadow-md hover:shadow-lg flex items-center gap-2"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 4v16m8-8H4"
-              ></path>
-            </svg>
-            Create Note
-          </button>
+        <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
+          <Button variant="secondary" class="w-full sm:w-auto" onclick={handleCancel}>Cancel</Button>
+          <Button class="w-full sm:w-auto" onclick={handleSubmit}>
+            <Plus class="size-4" /> Create note
+          </Button>
         </div>
       {/if}
     </div>

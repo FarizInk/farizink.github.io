@@ -55,22 +55,32 @@
     formHasChanges = hasChanges;
   }
 
-  let title = $derived(mode === 'create' ? 'Create Note' : 'Edit Note');
-  let submitText = $derived(mode === 'create' ? 'Create Note' : 'Update Note');
+  let title = $derived(mode === 'create' ? 'Create note' : 'Edit note');
+  let submitText = $derived(mode === 'create' ? 'Create note' : 'Update note');
   let icon = $derived(mode === 'create' ? Plus : Edit2);
 </script>
 
 <Modal {isOpen} onClose={requestClose} locked={showConfirm} maxW="max-w-4xl">
-  <div class="flex items-center justify-between mb-6">
-    <h2 class="text-lg font-bold text-gray-900 dark:text-white">
-      {title}
-    </h2>
+  <div class="flex items-center justify-between gap-3 mb-6">
+    <div class="flex items-center gap-3">
+      <div class="flex size-10 shrink-0 items-center justify-center rounded-md bg-tile-deep text-ink-on-dark">
+        {#if mode === 'create'}
+          <Plus class="size-5" />
+        {:else}
+          <Edit2 class="size-5" />
+        {/if}
+      </div>
+      <h2 class="text-title text-ink">
+        {title}
+      </h2>
+    </div>
     <button
       onclick={requestClose}
       disabled={isSubmitting}
-      class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700"
+      class="btn-icon"
+      aria-label="Close"
     >
-      <X class="w-5 h-5 text-gray-500" />
+      <X class="size-5" />
     </button>
   </div>
 
@@ -85,24 +95,22 @@
     />
   </div>
 
-  <div
-    class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700"
-  >
-    <button type="button" onclick={requestClose} disabled={isSubmitting} class="btn btn-secondary"> Cancel </button>
+  <div class="flex items-center justify-end gap-3 pt-4">
+    <button type="button" onclick={requestClose} disabled={isSubmitting} class="btn btn-secondary">Cancel</button>
     <button
       type="button"
       onclick={handleSubmit}
       disabled={isSubmitting}
-      class="btn btn-primary flex items-center gap-2 shadow-md hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+      class="btn btn-primary flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-60"
     >
       {#if isSubmitting}
-        <Loader2 class="w-4 h-4 animate-spin" />
+        <Loader2 class="size-4 animate-spin" />
         Saving...
       {:else if mode === 'create'}
-        <Plus class="w-4 h-4" />
+        <Plus class="size-4" />
         {submitText}
       {:else}
-        <Edit2 class="w-4 h-4" />
+        <Edit2 class="size-4" />
         {submitText}
       {/if}
     </button>
@@ -112,37 +120,25 @@
     {#if showConfirm}
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <div
-        class="absolute inset-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl flex items-center justify-center z-10"
+        class="absolute inset-0 bg-overlay backdrop-blur-sm rounded-lg flex items-center justify-center z-10"
         onwheel={e => e.preventDefault()}
         ontouchmove={e => e.preventDefault()}
       >
-        <div
-          class="bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 max-w-sm w-full mx-4"
-        >
+        <div class="bg-raised rounded-lg p-6 max-w-sm w-full mx-4">
           <div class="flex items-center gap-3 mb-3">
-            <div
-              class="flex items-center justify-center w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30"
-            >
-              <AlertTriangle class="w-5 h-5 text-amber-600 dark:text-amber-400" />
+            <div class="flex size-10 shrink-0 items-center justify-center rounded-md bg-tile-lilac text-ink-on-bright">
+              <AlertTriangle class="size-5" />
             </div>
-            <h3 class="text-base font-semibold text-gray-900 dark:text-white">Unsaved Changes</h3>
+            <h3 class="text-title text-ink">Unsaved changes</h3>
           </div>
-          <p class="text-sm text-gray-600 dark:text-gray-400 mb-5">
+          <p class="text-body-sm text-ink-muted mb-5">
             You have unsaved changes. Are you sure you want to discard them?
           </p>
           <div class="flex items-center justify-end gap-2">
-            <button
-              type="button"
-              onclick={cancelDiscard}
-              class="btn btn-secondary"
-            >
-              Keep Editing
+            <button type="button" onclick={cancelDiscard} class="btn btn-secondary">
+              Keep editing
             </button>
-            <button
-              type="button"
-              onclick={confirmDiscard}
-              class="btn bg-red-500 hover:bg-red-600 text-white"
-            >
+            <button type="button" onclick={confirmDiscard} class="btn btn-danger">
               Discard
             </button>
           </div>

@@ -234,54 +234,26 @@
   icon={Palette}
   color="warning"
 >
-  <!-- Hero Section -->
-  <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
-  >
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
-          <Palette class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Color Palette Generator</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Generate harmonious color palettes</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Controls -->
-  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
-    <button
-      onclick={loadSamplePalette}
-      class="btn btn-copy"
-    >
-      <RefreshCw class="w-4 h-4 mr-2" />
-      Load Sample
+  <div class="flex flex-wrap gap-2">
+    <button onclick={loadSamplePalette} class="btn btn-primary">
+      <RefreshCw class="size-4" />
+      Load sample
     </button>
-    <button
-      onclick={randomColor}
-      class="btn btn-secondary"
-    >
-      <RefreshCw class="w-4 h-4 mr-2" />
-      Random Color
+    <button onclick={randomColor} class="btn btn-secondary">
+      <RefreshCw class="size-4" />
+      Random color
     </button>
   </div>
 
   <!-- Base Color & Type Selection -->
-  <div
-    class="tool-card mb-6"
-  >
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div class="tool-card">
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
       <div>
-        <label
-          for="base-color-picker"
-          class="label">Base Color</label
-        >
+        <label for="base-color-picker" class="label">Base color</label>
         <div class="flex gap-2">
           <input
-            class="w-12 h-8 rounded cursor-pointer"
+            class="h-11 w-12 cursor-pointer rounded-sm bg-control p-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
             id="base-color-picker"
             type="color"
             bind:value={baseColor}
@@ -289,23 +261,15 @@
           <input
             type="text"
             bind:value={baseColor}
-            class="tool-input font-mono flex-1"
+            class="tool-input flex-1 font-mono!"
             maxlength={7}
           />
         </div>
       </div>
 
       <div>
-        <label
-          for="palette-type-select"
-          class="label"
-          >Palette Type</label
-        >
-        <select
-          id="palette-type-select"
-          bind:value={paletteType}
-          class="tool-select"
-        >
+        <label for="palette-type-select" class="label">Palette type</label>
+        <select id="palette-type-select" bind:value={paletteType} class="tool-select">
           <option value="complementary">Complementary</option>
           <option value="triadic">Triadic</option>
           <option value="analogous">Analogous</option>
@@ -317,44 +281,40 @@
 
   <!-- Color Palette -->
   {#if palette.length > 0}
-    <div
-      class="tool-card mb-6"
-    >
-      <h3 class="section-title">Generated Palette</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+    <div class="tool-card">
+      <h3 class="section-title">Generated palette</h3>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {#each palette as color, i (color.hex + i)}
-          <div
-            class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-          >
+          <div class="overflow-hidden rounded-md bg-sunken">
             <div class="h-24 w-full" style="background-color: {color.hex}"></div>
             <div class="p-3">
-              <h4 class="font-medium text-gray-900 dark:text-white mb-2">{color.name}</h4>
+              <h4 class="text-body-sm mb-2 font-medium text-ink">{color.name}</h4>
               <div class="space-y-1 text-xs">
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-600 dark:text-gray-400">HEX:</span>
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-ink-muted">HEX:</span>
                   <button
                     onclick={() => copyToClipboard(color.hex)}
-                    class="quick-btn font-mono text-gray-900 dark:text-white hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
+                    class="quick-btn font-mono"
                     title="Copy HEX"
                   >
                     {color.hex}
                   </button>
                 </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-600 dark:text-gray-400">HSL:</span>
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-ink-muted">HSL:</span>
                   <button
                     onclick={() => copyToClipboard(`hsl(${color.hsl})`)}
-                    class="quick-btn font-mono text-gray-900 dark:text-white hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
+                    class="quick-btn font-mono"
                     title="Copy HSL"
                   >
                     {color.hsl}
                   </button>
                 </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-gray-600 dark:text-gray-400">RGB:</span>
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-ink-muted">RGB:</span>
                   <button
                     onclick={() => copyToClipboard(`rgb(${color.rgb})`)}
-                    class="quick-btn font-mono text-gray-900 dark:text-white hover:text-warning-600 dark:hover:text-primary-400 transition-colors"
+                    class="quick-btn font-mono"
                     title="Copy RGB"
                   >
                     {color.rgb}
@@ -369,34 +329,32 @@
   {/if}
 
   <!-- Palette Types Information -->
-  <div
-    class="tool-card mb-6"
-  >
-    <h3 class="section-title">Palette Types</h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-2">Complementary</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
+  <div class="tool-card">
+    <h3 class="section-title">Palette types</h3>
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div class="info-card">
+        <h4 class="section-title-sm">Complementary</h4>
+        <p class="text-body-sm text-ink-muted">
           Two colors opposite each other on the color wheel. Creates high contrast and visual
           interest.
         </p>
       </div>
-      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-2">Triadic</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
+      <div class="info-card">
+        <h4 class="section-title-sm">Triadic</h4>
+        <p class="text-body-sm text-ink-muted">
           Three colors evenly spaced on the color wheel. Creates vibrant, balanced color schemes.
         </p>
       </div>
-      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-2">Analogous</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
+      <div class="info-card">
+        <h4 class="section-title-sm">Analogous</h4>
+        <p class="text-body-sm text-ink-muted">
           Colors adjacent to each other on the color wheel. Creates harmonious and pleasing
           combinations.
         </p>
       </div>
-      <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-2">Monochromatic</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
+      <div class="info-card">
+        <h4 class="section-title-sm">Monochromatic</h4>
+        <p class="text-body-sm text-ink-muted">
           Variations of a single color with different lightness values. Creates subtle and
           sophisticated looks.
         </p>
@@ -405,47 +363,27 @@
   </div>
 
   <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Palette class="w-6 h-6 text-warning-600 dark:text-primary-400" />
-      </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Color Harmony</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+    <div class="card">
+      <div class="feature-icon"><Palette class="size-5" /></div>
+      <h3 class="feature-title">Color harmony</h3>
+      <p class="feature-description">
         Generate color schemes based on color theory principles for professional designs
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Copy class="w-6 h-6 text-warning-600 dark:text-primary-400" />
-      </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Multiple Formats</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+    <div class="card">
+      <div class="feature-icon"><Copy class="size-5" /></div>
+      <h3 class="feature-title">Multiple formats</h3>
+      <p class="feature-description">
         Export colors in HEX, RGB, and HSL formats for use in any design tool
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
-      </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Instant Preview</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-        See your color palette in real-time as you adjust settings
-      </p>
+    <div class="card">
+      <div class="feature-icon"><Zap class="size-5" /></div>
+      <h3 class="feature-title">Instant preview</h3>
+      <p class="feature-description">See your color palette in real-time as you adjust settings</p>
     </div>
   </div>
 </ToolLayout>

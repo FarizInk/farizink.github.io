@@ -314,11 +314,11 @@
 
   function getNextBirthdayMessage(): string {
     if (isBirthdayToday) {
-      return '🎉 Happy Birthday! 🎂';
+      return 'Happy birthday!';
     } else if (daysUntilNextBirthday === 1) {
-      return 'Tomorrow is your birthday! 🎈';
+      return 'Tomorrow is your birthday!';
     } else if (daysUntilNextBirthday <= 7) {
-      return `${daysUntilNextBirthday} days until your birthday! 🎁`;
+      return `${daysUntilNextBirthday} days until your birthday!`;
     } else {
       return `${daysUntilNextBirthday} days until your birthday`;
     }
@@ -331,74 +331,40 @@
   icon={Calendar}
   color="warning"
 >
-  <!-- Hero Section -->
-  <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
-  >
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
-          <Calendar class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Age Calculator</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            Calculate exact age and discover fun facts
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Controls -->
-  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
-    <button
-      onclick={loadExample}
-      class="btn btn-copy"
-    >
-      <Sparkles class="w-4 h-4 mr-2" />
-      Load Example
+  <div class="flex flex-wrap gap-2">
+    <button onclick={loadExample} class="btn btn-secondary">
+      <Sparkles class="w-4 h-4" />
+      Load example
     </button>
-    <button
-      onclick={reset}
-      class="btn btn-secondary"
-    >
-      <RotateCcw class="w-4 h-4 mr-2" />
+    <button onclick={reset} class="btn btn-ghost">
+      <RotateCcw class="w-4 h-4" />
       Reset
     </button>
   </div>
 
   <!-- Input Section -->
-  <div
-    class="tool-card mb-6"
-  >
-    <h3 class="section-title">Enter Dates</h3>
+  <div class="tool-card">
+    <h3 class="section-title">Enter dates</h3>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
       <div>
-        <label
-          for="birth-date"
-          class="label">Birth Date</label
-        >
+        <label for="birth-date" class="label">Birth date</label>
         <input
           id="birth-date"
           type="date"
           bind:value={birthDate}
           max={currentDate}
-          class="tool-input"
+          class="tool-input font-mono"
         />
       </div>
       <div>
-        <label
-          for="current-date"
-          class="label"
-          >Current Date</label
-        >
+        <label for="current-date" class="label">Current date</label>
         <input
           id="current-date"
           type="date"
           bind:value={currentDate}
-          class="tool-input"
+          class="tool-input font-mono"
         />
       </div>
     </div>
@@ -406,37 +372,17 @@
     <!-- Calculation Mode -->
     <div>
       <fieldset>
-        <legend class="label"
-          >Calculation Mode</legend
-        >
-        <div class="flex gap-4">
-          <label class="relative flex items-center cursor-pointer">
-            <input
-              type="radio"
-              bind:group={calculationMode}
-              value="exact"
-              class="absolute opacity-0 cursor-pointer h-0 w-0"
-            />
-            <span
-              class="relative flex-shrink-0 w-5 h-5 border-2 border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800 transition-all hover:border-warning-400 dark:hover:border-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20 checked:border-warning-500 dark:checked:border-primary-500"
-            ></span>
-            <span class="text-sm font-medium text-gray-700 dark:text-gray-300 ml-2"
-              >Exact Age (Years, Months, Days)</span
-            >
+        <legend class="label">Calculation mode</legend>
+        <div class="flex flex-wrap gap-4">
+          <label class="custom-radio">
+            <input type="radio" bind:group={calculationMode} value="exact" />
+            <span class="radio-dot"></span>
+            <span class="label-text">Exact age (years, months, days)</span>
           </label>
-          <label class="relative flex items-center cursor-pointer">
-            <input
-              type="radio"
-              bind:group={calculationMode}
-              value="difference"
-              class="absolute opacity-0 cursor-pointer h-0 w-0"
-            />
-            <span
-              class="relative flex-shrink-0 w-5 h-5 border-2 border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800 transition-all hover:border-warning-400 dark:hover:border-primary-400 hover:bg-warning-50 dark:hover:bg-primary-900/20 checked:border-warning-500 dark:checked:border-primary-500"
-            ></span>
-            <span class="text-sm font-medium text-gray-700 dark:text-gray-300 ml-2"
-              >Total Difference</span
-            >
+          <label class="custom-radio">
+            <input type="radio" bind:group={calculationMode} value="difference" />
+            <span class="radio-dot"></span>
+            <span class="label-text">Total difference</span>
           </label>
         </div>
       </fieldset>
@@ -448,25 +394,21 @@
       <!-- Main Age Display -->
       <div class="lg:col-span-2 space-y-4">
         <!-- Age Result -->
-        <div
-          class="tool-card"
-        >
-          <h3 class="section-title flex items-center">
-            <Clock class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
-            Your Age
+        <div class="tool-card">
+          <h3 class="section-title flex items-center gap-2">
+            <Clock class="w-5 h-5 text-accent-text" />
+            Your age
           </h3>
 
-          <div class="text-center mb-8">
-            <div
-              class="inline-block p-8 rounded-xl border-2 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 border-warning-200 dark:border-primary-800"
-            >
-              <div class="text-6xl font-bold text-warning-600 dark:text-primary-400 mb-4">
+          <div class="text-center mb-6">
+            <div class="inline-block min-w-48 px-10 py-8 rounded-md bg-tile-lime text-ink-on-bright">
+              <div class="font-display text-[64px] leading-[64px] font-bold tracking-tight tabular-nums mb-3">
                 {years}
               </div>
-              <div class="text-lg font-medium text-warning-700 dark:text-primary-300">Years</div>
+              <div class="text-label">Years</div>
 
               {#if months > 0 || days > 0}
-                <div class="mt-4 text-gray-600 dark:text-gray-400">
+                <div class="mt-4 text-body-sm">
                   {months > 0 ? `${months} month${months !== 1 ? 's' : ''}` : ''}
                   {#if months > 0 && days > 0},{/if}
                   {days > 0 ? `${days} day${days !== 1 ? 's' : ''}` : ''}
@@ -476,117 +418,109 @@
           </div>
 
           <!-- Total Time Units -->
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="text-center p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <div class="text-2xl font-bold text-gray-900 dark:text-white">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="text-center p-4 rounded-md bg-sunken">
+              <div class="font-display text-2xl font-bold text-ink tabular-nums">
                 {totalDays.toLocaleString()}
               </div>
-              <div class="text-sm text-gray-600 dark:text-gray-400">Days</div>
+              <div class="text-label text-ink-muted mt-1">Days</div>
             </div>
-            <div class="text-center p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <div class="text-2xl font-bold text-gray-900 dark:text-white">
+            <div class="text-center p-4 rounded-md bg-sunken">
+              <div class="font-display text-2xl font-bold text-ink tabular-nums">
                 {totalWeeks.toLocaleString()}
               </div>
-              <div class="text-sm text-gray-600 dark:text-gray-400">Weeks</div>
+              <div class="text-label text-ink-muted mt-1">Weeks</div>
             </div>
-            <div class="text-center p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <div class="text-2xl font-bold text-gray-900 dark:text-white">
+            <div class="text-center p-4 rounded-md bg-sunken">
+              <div class="font-display text-2xl font-bold text-ink tabular-nums">
                 {totalMonths.toLocaleString()}
               </div>
-              <div class="text-sm text-gray-600 dark:text-gray-400">Months</div>
+              <div class="text-label text-ink-muted mt-1">Months</div>
             </div>
-            <div class="text-center p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <div class="text-2xl font-bold text-gray-900 dark:text-white">
+            <div class="text-center p-4 rounded-md bg-sunken">
+              <div class="font-display text-2xl font-bold text-ink tabular-nums">
                 {totalHours.toLocaleString()}
               </div>
-              <div class="text-sm text-gray-600 dark:text-gray-400">Hours</div>
+              <div class="text-label text-ink-muted mt-1">Hours</div>
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-4 mt-4">
-            <div class="text-center p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <div class="text-2xl font-bold text-gray-900 dark:text-white">
+          <div class="grid grid-cols-2 gap-3 mt-3">
+            <div class="text-center p-4 rounded-md bg-sunken">
+              <div class="font-display text-2xl font-bold text-ink tabular-nums">
                 {totalMinutes.toLocaleString()}
               </div>
-              <div class="text-sm text-gray-600 dark:text-gray-400">Minutes</div>
+              <div class="text-label text-ink-muted mt-1">Minutes</div>
             </div>
-            <div class="text-center p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-              <div class="text-2xl font-bold text-gray-900 dark:text-white">
+            <div class="text-center p-4 rounded-md bg-sunken">
+              <div class="font-display text-2xl font-bold text-ink tabular-nums">
                 {totalSeconds.toLocaleString()}
               </div>
-              <div class="text-sm text-gray-600 dark:text-gray-400">Seconds</div>
+              <div class="text-label text-ink-muted mt-1">Seconds</div>
             </div>
           </div>
         </div>
 
         <!-- Next Birthday -->
-        <div
-          class="tool-card"
-        >
-          <h3 class="section-title flex items-center">
-            <Gift class="w-6 h-6 mr-2 text-warning-600 dark:text-primary-400" />
-            Next Birthday
+        <div class="tool-card">
+          <h3 class="section-title flex items-center gap-2">
+            <Gift class="w-5 h-5 text-accent-text" />
+            Next birthday
           </h3>
 
           <div class="text-center">
             {#if isBirthdayToday}
-              <div
-                class="inline-block p-6 rounded-lg border-2 mb-6 bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-primary-900/20 border-pink-200 dark:border-pink-800"
-              >
-                <div class="text-3xl mb-4">🎉🎂🎈</div>
-                <div class="text-2xl font-bold text-pink-600 dark:text-pink-400">
-                  Happy Birthday!
-                </div>
-                <div class="text-pink-700 dark:text-pink-300 mt-2">
+              <div class="inline-block p-6 rounded-md mb-6 bg-tile-violet text-ink-on-dark">
+                <Gift class="w-8 h-8 mx-auto mb-3" />
+                <div class="font-display text-2xl font-bold">Happy birthday!</div>
+                <div class="text-body mt-2">
                   You are now {years} years old!
                 </div>
               </div>
 
               <!-- Countdown to next year's birthday -->
-              <div class="p-4 rounded-lg bg-warning-100 dark:bg-primary-900/20">
-                <h3 class="text-lg font-medium text-yellow-800 dark:text-primary-200 mb-2">
-                  Countdown to Next Birthday
-                </h3>
+              <div class="p-4 rounded-md bg-tile-lilac text-ink-on-bright">
+                <h3 class="section-title-sm">Countdown to next birthday</h3>
                 <div class="grid grid-cols-4 gap-2 text-center">
                   <div>
-                    <div class="text-2xl font-bold text-warning-600 dark:text-primary-400">
+                    <div class="font-display text-2xl font-bold tabular-nums">
                       {countdownTime.days}
                     </div>
-                    <div class="text-xs text-warning-700 dark:text-primary-300">Days</div>
+                    <div class="text-label">Days</div>
                   </div>
                   <div>
-                    <div class="text-2xl font-bold text-warning-600 dark:text-primary-400">
+                    <div class="font-display text-2xl font-bold tabular-nums">
                       {countdownTime.hours}
                     </div>
-                    <div class="text-xs text-warning-700 dark:text-primary-300">Hours</div>
+                    <div class="text-label">Hours</div>
                   </div>
                   <div>
-                    <div class="text-2xl font-bold text-warning-600 dark:text-primary-400">
+                    <div class="font-display text-2xl font-bold tabular-nums">
                       {countdownTime.minutes}
                     </div>
-                    <div class="text-xs text-warning-700 dark:text-primary-300">Minutes</div>
+                    <div class="text-label">Minutes</div>
                   </div>
                   <div>
-                    <div class="text-2xl font-bold text-warning-600 dark:text-primary-400">
+                    <div class="font-display text-2xl font-bold tabular-nums">
                       {countdownTime.seconds}
                     </div>
-                    <div class="text-xs text-warning-700 dark:text-primary-300">Seconds</div>
+                    <div class="text-label">Seconds</div>
                   </div>
                 </div>
               </div>
             {:else}
-              <div class="p-6 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-                <div class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              <div class="p-6 rounded-md bg-sunken">
+                <div class="section-title-sm">
                   {getNextBirthdayMessage()}
                 </div>
-                <div class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                <div class="font-display text-[32px] leading-9 font-bold tracking-tight tabular-nums mb-1">
                   {daysUntilNextBirthday}
                 </div>
-                <div class="text-sm text-gray-600 dark:text-gray-400">
+                <div class="text-body-sm text-ink-muted">
                   {daysUntilNextBirthday === 1 ? 'day' : 'days'} remaining
                 </div>
                 {#if nextBirthday}
-                  <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                  <div class="mt-4 text-body-sm text-ink-muted">
                     Next birthday: {new Date(nextBirthday + 'T00:00:00').toLocaleDateString(
                       'en-US',
                       {
@@ -607,27 +541,25 @@
       <!-- Sidebar -->
       <div class="space-y-4">
         <!-- Birth Details -->
-        <div
-          class="tool-card"
-        >
-          <h3 class="section-title flex items-center">
-            <Calendar class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
-            Birth Details
+        <div class="tool-card">
+          <h3 class="section-title flex items-center gap-2">
+            <Calendar class="w-5 h-5 text-accent-text" />
+            Birth details
           </h3>
           <div class="space-y-3">
-            <div class="flex justify-between items-center">
-              <span class="text-sm text-gray-600 dark:text-gray-400">Day of Week:</span>
-              <span class="text-gray-900 dark:text-white font-medium">{birthDayOfWeek}</span>
+            <div class="flex justify-between items-center gap-3">
+              <span class="text-body-sm text-ink-muted">Day of week</span>
+              <span class="text-ink font-medium">{birthDayOfWeek}</span>
             </div>
             {#if isLeapYear}
-              <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600 dark:text-gray-400">Birth Year:</span>
-                <span class="text-gray-900 dark:text-white font-medium">Leap Year 🗓️</span>
+              <div class="flex justify-between items-center gap-3">
+                <span class="text-body-sm text-ink-muted">Birth year</span>
+                <span class="text-ink font-medium">Leap year</span>
               </div>
             {/if}
-            <div class="flex justify-between items-center">
-              <span class="text-sm text-gray-600 dark:text-gray-400">Age in Milliseconds:</span>
-              <span class="text-gray-900 dark:text-white font-medium"
+            <div class="flex justify-between items-center gap-3">
+              <span class="text-body-sm text-ink-muted">Age in milliseconds</span>
+              <span class="font-mono text-ink font-medium tabular-nums break-all text-right"
                 >{ageInMilliseconds.toLocaleString()}</span
               >
             </div>
@@ -635,25 +567,23 @@
         </div>
 
         <!-- Zodiac Signs -->
-        <div
-          class="tool-card"
-        >
-          <h3 class="section-title flex items-center">
-            <Star class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
-            Zodiac Signs
+        <div class="tool-card">
+          <h3 class="section-title flex items-center gap-2">
+            <Star class="w-5 h-5 text-accent-text" />
+            Zodiac signs
           </h3>
 
           {#if zodiacSign}
             {@const zodiacInfo = getZodiacInfo()}
             <div class="mb-4">
               <div class="flex items-center justify-between mb-2">
-                <span class="text-2xl">{zodiacInfo?.symbol}</span>
-                <span class="text-lg font-medium text-gray-900 dark:text-white">{zodiacSign}</span>
+                <span class="text-2xl text-accent-text" aria-hidden="true">{zodiacInfo?.symbol}&#xFE0E;</span>
+                <span class="text-title text-ink">{zodiacSign}</span>
               </div>
-              <div class="text-sm text-gray-600 dark:text-gray-400">
+              <div class="font-mono text-body-sm text-ink-muted">
                 {zodiacInfo?.dates}
               </div>
-              <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              <div class="text-body-sm text-ink-muted mt-1">
                 Element: {zodiacInfo?.element}
               </div>
             </div>
@@ -661,10 +591,8 @@
 
           {#if chineseZodiac}
             <div>
-              <div class="text-base font-semibold text-gray-900 dark:text-white mb-1">
-                Chinese Zodiac
-              </div>
-              <div class="text-sm text-gray-600 dark:text-gray-400">
+              <div class="section-title-sm mb-1">Chinese zodiac</div>
+              <div class="text-body-sm text-ink-muted">
                 Year of the {chineseZodiac}
               </div>
             </div>
@@ -672,52 +600,46 @@
         </div>
 
         <!-- Fun Facts -->
-        <div
-          class="p-6 rounded-xl border bg-gradient-to-br from-purple-50 to-pink-50 dark:from-primary-900/20 dark:to-pink-900/20 border-purple-200 dark:border-primary-800"
-        >
-          <h3
-            class="text-lg font-semibold text-purple-800 dark:text-primary-200 mb-4 flex items-center"
-          >
-            <Heart class="w-5 h-5 mr-2" />
-            Fun Facts
+        <div class="p-6 rounded-lg bg-tile-deep text-ink-on-dark">
+          <h3 class="section-title flex items-center gap-2">
+            <Heart class="w-5 h-5" />
+            Fun facts
           </h3>
-          <div class="space-y-3 text-sm text-purple-700 dark:text-primary-300">
+          <div class="space-y-3 text-body-sm">
             <div>
-              <strong>{totalWeeks.toLocaleString()}</strong> weeks old
+              <strong class="font-mono tabular-nums">{totalWeeks.toLocaleString()}</strong> weeks old
             </div>
             <div>
-              Lived through <strong>{years}</strong> seasons
+              Lived through <strong class="font-mono tabular-nums">{years}</strong> seasons
             </div>
             <div>
-              Approximately <strong>{(totalDays * 8).toLocaleString()}</strong> hours of sleep (average)
+              Approximately <strong class="font-mono tabular-nums">{(totalDays * 8).toLocaleString()}</strong> hours of sleep (average)
             </div>
             <div>
-              About <strong>{(totalDays * 50).toLocaleString()}</strong> meals eaten
+              About <strong class="font-mono tabular-nums">{(totalDays * 50).toLocaleString()}</strong> meals eaten
             </div>
             <div>
-              Heart has beaten <strong>{(totalMinutes * 80).toLocaleString()}</strong> times (average)
+              Heart has beaten <strong class="font-mono tabular-nums">{(totalMinutes * 80).toLocaleString()}</strong> times (average)
             </div>
           </div>
         </div>
 
         <!-- Copy Results -->
-        <div
-          class="tool-card"
-        >
-          <h3 class="section-title">Quick Copy</h3>
+        <div class="tool-card">
+          <h3 class="section-title">Quick copy</h3>
           <div class="space-y-2">
             <button
-              class="btn btn-copy w-full"
+              class="btn btn-primary w-full"
               onclick={() => copyToClipboard(formatAgeText())}
             >
-              <Copy class="w-4 h-4 mr-2" />
-              Copy Age Text
+              <Copy class="w-4 h-4" />
+              Copy age text
             </button>
             <button
               class="btn btn-secondary w-full"
               onclick={() => copyToClipboard(`${years} years, ${months} months, ${days} days`)}
             >
-              Copy Detailed Age
+              Copy detailed age
             </button>
           </div>
         </div>
@@ -726,45 +648,33 @@
   {/if}
 
   <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Calendar class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+    <div class="card">
+      <div class="feature-icon">
+        <Calendar class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Precise Calculations</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Precise calculations</h3>
+      <p class="feature-description">
         Calculate exact age including years, months, and days with precision
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Gift class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <Gift class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Birthday Countdown</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Birthday countdown</h3>
+      <p class="feature-description">
         Never miss a birthday with live countdown and zodiac sign information
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Heart class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <Heart class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Fun Facts</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Fun facts</h3>
+      <p class="feature-description">
         Discover interesting facts about your age in various time units
       </p>
     </div>

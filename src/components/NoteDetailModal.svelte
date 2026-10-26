@@ -24,9 +24,11 @@
     RefreshCw,
     Pin,
     PinOff,
-    Sparkles
+    Sparkles,
+    StickyNote
   } from '@lucide/svelte';
   import Modal from './Modal.svelte';
+  import { Tag } from '$lib/components/ds';
 
   let {
     note,
@@ -146,75 +148,69 @@
 
 <Modal isOpen={shouldShowModal} {onClose} maxW="max-w-6xl">
 <div class="mb-5">
-      <div class="flex items-center justify-between">
+      <div class="flex items-center justify-between gap-3">
         <!-- Mobile: "Detail" title, Desktop: Title & Meta Info -->
-        <div class="hidden sm:block flex-1 min-w-0">
+        <div class="hidden sm:flex flex-1 min-w-0 items-start gap-3">
+          <div class="flex size-10 shrink-0 items-center justify-center rounded-md bg-tile-lilac text-ink-on-bright">
+            <StickyNote class="size-5" />
+          </div>
+          <div class="flex-1 min-w-0">
+          {#if note.is_pinned && !isDeleted}
+            <span class="font-mono text-xs font-medium tracking-wide text-accent-text">● PINNED</span>
+          {/if}
           <div class="flex items-center gap-2 mb-2">
             <h1
               id="modal-title"
-              class="text-xl sm:text-2xl font-bold tracking-tight {isDeleted ? 'text-red-600 dark:text-red-400' : ''} {note.is_favorite && !isDeleted ? 'bg-gradient-to-r from-warning-500 via-amber-500 to-yellow-500 dark:from-warning-400 dark:via-amber-400 dark:to-yellow-400 bg-clip-text text-transparent' : ''} {!isDeleted && !note.is_favorite ? 'text-gray-900 dark:text-white' : ''}"
+              class="font-display text-title font-semibold {note.is_favorite && !isDeleted ? 'text-accent-text' : 'text-ink'}"
             >
-              {note.name || 'Untitled Note'}
+              {note.name || 'Untitled note'}
             </h1>
           </div>
 
           <!-- Meta Info Pills (Desktop only) -->
-          <div class="flex flex-wrap items-center gap-2 text-sm">
+          <div class="flex flex-wrap items-center gap-2">
             {#if isDeleted && note.deleted_at}
               <div
-                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 font-medium border border-red-200 dark:border-red-800"
+                class="inline-flex h-7 items-center gap-1.5 px-3 rounded-pill bg-[color-mix(in_oklab,var(--negative)_16%,var(--bg-control))] text-negative text-code"
               >
-                <AlertTriangle class="w-3.5 h-3.5" />
+                <AlertTriangle class="size-3.5" />
                 <span>Deleted {formatDate(note.deleted_at)}</span>
               </div>
             {:else}
-              <div
-                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-50 dark:bg-secondary-800 text-secondary-700 dark:text-secondary-300 font-medium"
-              >
-                <Calendar class="w-3.5 h-3.5" />
+              <div class="inline-flex h-7 items-center gap-1.5 px-3 rounded-pill bg-sunken text-ink-muted text-code">
+                <Calendar class="size-3.5" />
                 <span>{formatDate(note.created_at)}</span>
               </div>
-              <div
-                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-50 dark:bg-secondary-800 text-secondary-700 dark:text-secondary-300 font-medium"
-              >
-                <Clock class="w-3.5 h-3.5" />
+              <div class="inline-flex h-7 items-center gap-1.5 px-3 rounded-pill bg-sunken text-ink-muted text-code">
+                <Clock class="size-3.5" />
                 <span>{formatDate(note.updated_at)}</span>
               </div>
             {/if}
             {#if note.files && note.files.length > 0}
-              <div
-                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-medium"
-              >
-                <Paperclip class="w-3.5 h-3.5" />
+              <div class="inline-flex h-7 items-center gap-1.5 px-3 rounded-pill bg-sunken text-ink-muted text-code">
+                <Paperclip class="size-3.5" />
                 <span>{note.files.length} file{note.files.length > 1 ? 's' : ''}</span>
               </div>
             {/if}
           </div>
+          </div>
         </div>
 
         <!-- Mobile: "Detail" title -->
-        <h1 class="sm:hidden text-lg font-semibold text-gray-900 dark:text-white">
+        <h1 class="sm:hidden text-title text-ink">
           Detail
         </h1>
 
         <!-- Action Buttons (Desktop only) -->
-        <div class="hidden sm:flex items-center gap-2 flex-shrink-0">
+        <div class="hidden sm:flex items-center gap-1 flex-shrink-0">
           {#if note.link}
-            <button
-              onclick={handleLinkClick}
-              class="btn-icon group relative bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 hover:scale-105 active:scale-95"
-              title="Open link"
-            >
-              <ExternalLink class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
+            <button onclick={handleLinkClick} class="btn-icon" title="Open link" aria-label="Open link">
+              <ExternalLink class="size-5" />
             </button>
           {/if}
 
-          <button
-            onclick={handleShare}
-            class="btn-icon group relative bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 hover:scale-105 active:scale-95"
-            title="Share note"
-          >
-            <Share2 class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
+          <button onclick={handleShare} class="btn-icon" title="Share note" aria-label="Share note">
+            <Share2 class="size-5" />
           </button>
 
           {#if !hideActions}
@@ -222,10 +218,11 @@
               {#if hasAuthToken && onPermanentDelete}
                 <button
                   onclick={handlePermanentDelete}
-                  class="btn-icon group relative bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 hover:scale-105 active:scale-95"
+                  class="btn-icon hover:text-negative"
                   title="Permanently delete note"
+                  aria-label="Permanently delete note"
                 >
-                  <Trash2 class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
+                  <Trash2 class="size-5" />
                 </button>
               {/if}
             {:else}
@@ -233,45 +230,34 @@
                 {#if onTogglePin}
                   <button
                     onclick={handleTogglePin}
-                    class="btn-icon group relative bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 hover:scale-105 active:scale-95"
+                    class="btn-icon {note.is_pinned ? 'text-accent-text' : ''}"
                     title={note.is_pinned ? 'Unpin note' : 'Pin note'}
+                    aria-label={note.is_pinned ? 'Unpin note' : 'Pin note'}
                   >
                     {#if note.is_pinned}
-                      <PinOff class="w-5 h-5 text-warning-600 dark:text-primary-400" />
+                      <PinOff class="size-5" />
                     {:else}
-                      <Pin class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
+                      <Pin class="size-5" />
                     {/if}
                   </button>
                 {/if}
-                <button
-                  onclick={handleEdit}
-                  class="btn-icon group relative bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 hover:scale-105 active:scale-95"
-                  title="Edit note"
-                >
-                  <Edit class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-warning-600 dark:group-hover:text-primary-400 transition-colors" />
+                <button onclick={handleEdit} class="btn-icon" title="Edit note" aria-label="Edit note">
+                  <Edit class="size-5" />
                 </button>
 
-                <button
-                  onclick={handleDelete}
-                  class="btn-icon group relative bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 hover:scale-105 active:scale-95"
-                  title="Delete note"
-                >
-                  <Trash2 class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
+                <button onclick={handleDelete} class="btn-icon hover:text-negative" title="Delete note" aria-label="Delete note">
+                  <Trash2 class="size-5" />
                 </button>
               {/if}
             {/if}
           {/if}
 
-          <div class="w-px h-8 bg-gray-200 dark:bg-gray-700 mx-1"></div>
+          <div class="w-2" aria-hidden="true"></div>
         </div>
 
         <!-- Close Button (Always visible) -->
-        <button
-          onclick={onClose}
-          class="btn-icon group relative bg-secondary-100 dark:bg-secondary-700 hover:bg-secondary-200 dark:hover:bg-secondary-600 border border-secondary-200 dark:border-secondary-600 hover:scale-105 active:scale-95 sm:mx-1"
-          title="Close modal"
-        >
-          <X class="w-5 h-5 text-secondary-600 dark:text-secondary-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" />
+        <button onclick={onClose} class="btn-icon shrink-0" title="Close modal" aria-label="Close modal">
+          <X class="size-5" />
         </button>
       </div>
     </div>
@@ -280,32 +266,35 @@
         <!-- Mobile: Title, Meta Info & Action Buttons -->
         <div class="sm:hidden mb-6 space-y-4">
           <!-- Title -->
+          {#if note.is_pinned && !isDeleted}
+            <span class="font-mono text-xs font-medium tracking-wide text-accent-text">● PINNED</span>
+          {/if}
           <h2
-            class="text-xl font-bold tracking-tight {isDeleted ? 'text-red-600 dark:text-red-400' : ''} {note.is_favorite && !isDeleted ? 'bg-gradient-to-r from-warning-500 via-amber-500 to-yellow-500 dark:from-warning-400 dark:via-amber-400 dark:to-yellow-400 bg-clip-text text-transparent' : ''} {!isDeleted && !note.is_favorite ? 'text-gray-900 dark:text-white' : ''}"
+            class="font-display text-title font-semibold {note.is_favorite && !isDeleted ? 'text-accent-text' : 'text-ink'}"
           >
-            {note.name || 'Untitled Note'}
+            {note.name || 'Untitled note'}
           </h2>
 
           <!-- Meta Info (2 lines, no chip style) -->
-          <div class="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+          <div class="text-code text-ink-muted space-y-1">
             {#if isDeleted && note.deleted_at}
-              <div class="flex items-center gap-1.5">
-                <AlertTriangle class="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
-                <span class="text-red-700 dark:text-red-400">Deleted {formatDate(note.deleted_at)}</span>
+              <div class="flex items-center gap-1.5 text-negative">
+                <AlertTriangle class="size-3.5" />
+                <span>Deleted {formatDate(note.deleted_at)}</span>
               </div>
             {:else}
               <div class="flex items-center gap-1.5">
-                <Calendar class="w-3.5 h-3.5" />
+                <Calendar class="size-3.5" />
                 <span>{formatDate(note.created_at)}</span>
               </div>
               <div class="flex items-center gap-1.5">
-                <Clock class="w-3.5 h-3.5" />
+                <Clock class="size-3.5" />
                 <span>{formatDate(note.updated_at)}</span>
               </div>
             {/if}
             {#if note.files && note.files.length > 0}
               <div class="flex items-center gap-1.5">
-                <Paperclip class="w-3.5 h-3.5" />
+                <Paperclip class="size-3.5" />
                 <span>{note.files.length} file{note.files.length > 1 ? 's' : ''}</span>
               </div>
             {/if}
@@ -314,64 +303,46 @@
           <!-- Action Buttons (Mobile) - Grid layout for auto wrap -->
           <div class="grid grid-cols-2 gap-2">
             {#if note.link}
-              <button
-                onclick={handleLinkClick}
-                class="btn btn-secondary flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 rounded-xl transition-all text-sm font-medium"
-              >
-                <ExternalLink class="w-4 h-4 text-secondary-600 dark:text-secondary-300" />
-                <span class="text-secondary-700 dark:text-secondary-300">Open Link</span>
+              <button onclick={handleLinkClick} class="btn btn-secondary btn-sm">
+                <ExternalLink class="size-4" />
+                <span>Open link</span>
               </button>
             {/if}
 
-            <button
-              onclick={handleShare}
-              class="btn btn-secondary flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 rounded-xl transition-all text-sm font-medium"
-            >
-              <Share2 class="w-4 h-4 text-secondary-600 dark:text-secondary-300" />
-              <span class="text-secondary-700 dark:text-secondary-300">Share</span>
+            <button onclick={handleShare} class="btn btn-secondary btn-sm">
+              <Share2 class="size-4" />
+              <span>Share</span>
             </button>
 
             {#if !hideActions}
               {#if isDeleted}
                 {#if hasAuthToken && onPermanentDelete}
-                  <button
-                    onclick={handlePermanentDelete}
-                    class="btn col-span-2 flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 rounded-xl transition-all text-sm font-medium"
-                  >
-                    <Trash2 class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
-                    <span class="text-secondary-700 dark:text-secondary-300 group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors">Delete Permanently</span>
+                  <button onclick={handlePermanentDelete} class="btn btn-secondary btn-sm col-span-2 hover:text-negative">
+                    <Trash2 class="size-4" />
+                    <span>Delete permanently</span>
                   </button>
                 {/if}
               {:else}
                 {#if hasAuthToken}
                   {#if onTogglePin}
-                    <button
-                      onclick={handleTogglePin}
-                      class="btn btn-secondary flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 rounded-xl transition-all text-sm font-medium"
-                    >
+                    <button onclick={handleTogglePin} class="btn btn-secondary btn-sm">
                       {#if note.is_pinned}
-                        <PinOff class="w-4 h-4 text-warning-600 dark:text-primary-400" />
-                        <span class="text-warning-700 dark:text-primary-300">Unpin</span>
+                        <PinOff class="size-4 text-accent-text" />
+                        <span>Unpin</span>
                       {:else}
-                        <Pin class="w-4 h-4 text-secondary-600 dark:text-secondary-300" />
-                        <span class="text-secondary-700 dark:text-secondary-300">Pin</span>
+                        <Pin class="size-4" />
+                        <span>Pin</span>
                       {/if}
                     </button>
                   {/if}
-                  <button
-                    onclick={handleEdit}
-                    class="btn btn-secondary flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-warning-100 dark:hover:bg-primary-900/30 border border-secondary-200 dark:border-secondary-600 hover:border-warning-300 dark:hover:border-primary-500 rounded-xl transition-all text-sm font-medium"
-                  >
-                    <Edit class="w-4 h-4 text-secondary-600 dark:text-secondary-300" />
-                    <span class="text-secondary-700 dark:text-secondary-300">Edit</span>
+                  <button onclick={handleEdit} class="btn btn-secondary btn-sm">
+                    <Edit class="size-4" />
+                    <span>Edit</span>
                   </button>
 
-                  <button
-                    onclick={handleDelete}
-                    class="btn flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary-100 dark:bg-secondary-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-secondary-200 dark:border-secondary-600 hover:border-red-300 dark:hover:border-red-700 rounded-xl transition-all text-sm font-medium"
-                  >
-                    <Trash2 class="w-4 h-4 text-secondary-600 dark:text-secondary-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
-                    <span class="text-secondary-700 dark:text-secondary-300 group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors">Delete</span>
+                  <button onclick={handleDelete} class="btn btn-secondary btn-sm hover:text-negative">
+                    <Trash2 class="size-4" />
+                    <span>Delete</span>
                   </button>
                 {/if}
               {/if}
@@ -380,49 +351,44 @@
         </div>
         <!-- Link Section -->
         {#if note.link}
-          <div
-            class="mb-6 p-4 bg-warning-50 dark:bg-primary-900/10 rounded-lg border border-warning-200 dark:border-primary-800"
-          >
+          <div class="mb-6 p-4 bg-sunken rounded-md">
           <div class="flex items-center gap-3 mb-3">
-            <Link2 class="w-5 h-5 text-warning-600 dark:text-primary-400 flex-shrink-0" />
+            <Link2 class="size-5 text-accent-text flex-shrink-0" />
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-warning-900 dark:text-primary-100 mb-1">External Link</p>
+              <p class="text-label text-ink-muted mb-1">External link</p>
               <a
                 href={note.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="text-warning-700 dark:text-primary-300 hover:text-warning-800 dark:hover:text-primary-200 truncate block"
+                class="text-body-sm text-accent-text hover:underline truncate block"
               >
                 {note.link}
               </a>
             </div>
-            <button
-              onclick={handleLinkClick}
-              class="btn btn-primary px-3 py-2 bg-warning-600 dark:bg-primary-600 hover:bg-warning-700 dark:hover:bg-primary-700 text-white"
-            >
+            <button onclick={handleLinkClick} class="btn btn-primary btn-sm">
               Visit
             </button>
           </div>
 
           <!-- Link Summarize Section -->
-          <div class="mt-3 pt-3 border-t border-warning-200 dark:border-primary-700">
+          <div class="mt-4">
             <div class="flex items-center justify-between mb-2">
-              <p class="text-sm font-semibold text-warning-900 dark:text-primary-100 flex items-center gap-1.5">
-                <Sparkles class="w-4 h-4" />
-                AI Summary
+              <p class="text-body-sm font-semibold text-ink flex items-center gap-1.5">
+                <Sparkles class="size-4 text-accent-text" />
+                AI summary
               </p>
               {#if poller.status === 'idle' && !poller.summary && hasAuthToken}
                 <button
                   onclick={() => poller.retry()}
                   disabled={poller.isRegenerating}
-                  class="btn btn-primary btn-sm flex items-center gap-2 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="btn btn-secondary btn-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Regenerate AI summary (may take a few minutes)"
                 >
                   {#if poller.isRegenerating}
-                    <Loader2 class="w-3.5 h-3.5 animate-spin" />
+                    <Loader2 class="size-3.5 animate-spin" />
                     <span>Regenerating...</span>
                   {:else}
-                    <RefreshCw class="w-3.5 h-3.5" />
+                    <RefreshCw class="size-3.5" />
                     <span>Retry</span>
                   {/if}
                 </button>
@@ -431,13 +397,13 @@
 
             {#if poller.status === 'pending' || (!poller.summary && poller.status === null)}
               <!-- pending, or first fetch in flight -->
-              <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                <Loader2 class="w-4 h-4 animate-spin text-warning-600 dark:text-primary-400" />
+              <div class="flex items-center gap-2 text-body-sm text-ink-muted">
+                <Loader2 class="size-4 animate-spin text-accent-text" />
                 <span>Summarizing…</span>
               </div>
             {:else if poller.summary}
               <!-- done (or have a summary) — preserve bullets/newlines -->
-              <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap break-words">
+              <p class="text-body-sm text-ink whitespace-pre-wrap break-words">
                 {isSummaryFull || poller.summary.length <= 150
                   ? poller.summary
                   : poller.summary.slice(0, 150) + '...'}
@@ -445,19 +411,19 @@
               {#if poller.summary.length > 150}
                 <button
                   onclick={() => (isSummaryFull = !isSummaryFull)}
-                  class="quick-btn text-xs text-warning-700 dark:text-primary-300 hover:text-warning-800 dark:hover:text-primary-200 font-medium transition-colors mt-1"
+                  class="quick-btn text-accent-text mt-1"
                 >
                   {isSummaryFull ? 'Show less' : 'Show more'}
                 </button>
               {/if}
             {:else if poller.status === 'idle'}
               <!-- not ready; retry button (if any) is in the header above -->
-              <p class="text-sm text-gray-500 dark:text-gray-400 italic">
+              <p class="text-body-sm text-ink-muted italic">
                 Summary not ready yet. It will retry automatically.
               </p>
             {:else}
               <!-- done but empty -->
-              <p class="text-sm text-gray-500 dark:text-gray-400 italic">
+              <p class="text-body-sm text-ink-muted italic">
                 No summary available.
               </p>
             {/if}
@@ -468,42 +434,34 @@
       <!-- Images Section -->
       {#if note.files && note.files.filter(f => f?.mime_type?.startsWith('image/')).length > 0}
         <div class="mb-6">
-          <h3
-            class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2"
-          >
-            <ImageIcon class="w-5 h-5 text-warning-600 dark:text-primary-400" />
+          <h3 class="section-title mb-3 flex items-center gap-2">
+            <ImageIcon class="size-5 text-accent-text" />
             Images ({note.files.filter(f => f?.mime_type?.startsWith('image/')).length})
           </h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {#each note.files.filter( f => f?.mime_type?.startsWith('image/') ) as file, index (file.id + '-' + index)}
-              <div
-                class="group relative bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 overflow-hidden hover:shadow-lg transition-all"
-              >
+              <div class="group relative bg-sunken rounded-md overflow-hidden">
                 <!-- Image Container -->
-                <div class="aspect-square bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
+                <div class="aspect-square bg-sunken overflow-hidden">
                   <img
                     src={getFileUrl(file)}
                     alt={file.metadata?.alt || file.original_name}
-                    class="w-full h-full object-cover rounded-lg"
+                    class="w-full h-full object-cover"
                     onerror={handleImageError}
                   />
                   <!-- Fallback for broken images -->
-                  <div
-                    class="hidden w-full h-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center rounded-lg"
-                  >
-                    <ImageIcon class="w-12 h-12 text-gray-500" />
+                  <div class="hidden w-full h-full bg-sunken flex items-center justify-center">
+                    <ImageIcon class="size-12 text-ink-muted" />
                   </div>
                 </div>
 
                 <!-- Image Info Overlay -->
-                <div
-                  class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                >
-                  <div class="absolute bottom-0 left-0 right-0 p-3 text-white">
-                    <h3 class="font-medium truncate text-sm" title={file.original_name}>
+                <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                  <div class="absolute bottom-0 left-0 right-0 p-3 bg-tile-void/90 text-ink-on-dark">
+                    <h3 class="text-body-sm font-medium truncate" title={file.original_name}>
                       {file.metadata?.title || file.original_name}
                     </h3>
-                    <div class="flex items-center gap-2 text-xs opacity-90">
+                    <div class="flex items-center gap-2 text-code text-ink-on-dark-muted">
                       <span>{formatFileSize(file.size)}</span>
                       {#if file.metadata?.width && file.metadata?.height}
                         <span>•</span>
@@ -514,23 +472,23 @@
                 </div>
 
                 <!-- Image Actions -->
-                <div
-                  class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                >
+                <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
                   <div class="flex gap-1">
                     <button
                       onclick={() => viewFile(file)}
-                      class="btn-icon w-8 h-8 bg-white/90 hover:bg-white dark:bg-black/80 hover:dark:bg-black/90 rounded-lg flex items-center justify-center transition-colors"
+                      class="btn-icon bg-raised text-ink hover:bg-control-hover"
                       title="View image"
+                      aria-label="View image"
                     >
-                      <Eye class="w-4 h-4 text-gray-800 dark:text-gray-200" />
+                      <Eye class="size-4" />
                     </button>
                     <button
                       onclick={() => downloadFile(file)}
-                      class="btn-icon w-8 h-8 bg-white/90 hover:bg-white dark:bg-black/80 hover:dark:bg-black/90 rounded-lg flex items-center justify-center transition-colors"
+                      class="btn-icon bg-raised text-ink hover:bg-control-hover"
                       title="Download image"
+                      aria-label="Download image"
                     >
-                      <Download class="w-4 h-4 text-gray-800 dark:text-gray-200" />
+                      <Download class="size-4" />
                     </button>
                   </div>
                 </div>
@@ -543,7 +501,7 @@
       <!-- Description Section -->
       {#if note.description}
         <div class="mb-6">
-          <div class="prose prose-sm max-w-none dark:prose-invert text-gray-700 dark:text-gray-300">
+          <div class="prose prose-sm max-w-none text-ink">
             {@html note.description}
           </div>
         </div>
@@ -552,46 +510,37 @@
       <!-- Other Files Section -->
       {#if note.files && note.files.filter(f => !f?.mime_type?.startsWith('image/')).length > 0}
         <div class="mb-6">
-          <h3
-            class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2"
-          >
-            <File class="w-5 h-5 text-warning-600 dark:text-primary-400" />
+          <h3 class="section-title mb-3 flex items-center gap-2">
+            <File class="size-5 text-accent-text" />
             Files ({note.files.filter(f => !f?.mime_type?.startsWith('image/')).length})
           </h3>
           <div class="space-y-3">
             {#each note.files.filter(f => !f?.mime_type?.startsWith('image/')) as file, index (file.id + '-' + index)}
-              <div
-                class="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 hover:shadow-md transition-all"
-              >
+              <div class="flex items-center gap-4 p-4 bg-sunken rounded-md">
                 <!-- File Icon -->
                 <div class="flex-shrink-0">
                   <div
-                    class="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center"
+                    class="size-16 rounded-md flex items-center justify-center {file?.mime_type === 'application/pdf'
+                      ? 'bg-tile-violet text-ink-on-dark'
+                      : file?.mime_type?.includes('document')
+                        ? 'bg-tile-deep text-ink-on-dark'
+                        : file?.mime_type?.includes('text')
+                          ? 'bg-tile-lilac text-ink-on-bright'
+                          : 'bg-control text-ink'}"
                   >
-                    {#if file?.mime_type === 'application/pdf'}
-                      <File class="w-8 h-8 text-red-600 dark:text-red-400" />
-                    {:else if file?.mime_type?.includes('document')}
-                      <File class="w-8 h-8 text-blue-600 dark:text-blue-400" />
-                    {:else if file?.mime_type?.includes('text')}
-                      <File class="w-8 h-8 text-green-600 dark:text-green-400" />
-                    {:else}
-                      <File class="w-8 h-8 text-gray-500 dark:text-gray-400" />
-                    {/if}
+                    <File class="size-8" />
                   </div>
                 </div>
 
                 <!-- File Info -->
                 <div class="flex-1 min-w-0">
-                  <h3
-                    class="font-medium text-gray-900 dark:text-white mb-1 truncate"
-                    title={file.original_name}
-                  >
+                  <h3 class="text-body font-medium text-ink mb-1 truncate" title={file.original_name}>
                     {file.metadata?.title || file.original_name}
                   </h3>
-                  <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  <p class="text-body-sm text-ink-muted mb-2">
                     {file.original_name}
                   </p>
-                  <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-500">
+                  <div class="flex items-center gap-4 text-code text-ink-muted">
                     <span class="capitalize">
                       {file?.mime_type?.split('/')[1] || file?.mime_type}
                     </span>
@@ -602,7 +551,7 @@
                   </div>
 
                   {#if file.metadata?.description}
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2">
+                    <p class="text-body-sm text-ink-muted mt-2 line-clamp-2">
                       {file.metadata.description}
                     </p>
                   {/if}
@@ -610,18 +559,12 @@
 
                 <!-- Actions -->
                 <div class="flex items-center gap-2">
-                  <button
-                    onclick={() => viewFile(file)}
-                    class="btn btn-sm flex items-center gap-1 px-3 py-1.5 text-sm bg-warning-50 dark:bg-primary-900/20 hover:bg-warning-100 dark:hover:bg-primary-900/30 text-warning-700 dark:text-primary-300 rounded transition-colors"
-                  >
-                    <Eye class="w-3 h-3" />
+                  <button onclick={() => viewFile(file)} class="btn btn-ghost btn-sm">
+                    <Eye class="size-4" />
                     View
                   </button>
-                  <button
-                    onclick={() => downloadFile(file)}
-                    class="btn btn-secondary btn-sm flex items-center gap-1 px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded transition-colors"
-                  >
-                    <Download class="w-3 h-3" />
+                  <button onclick={() => downloadFile(file)} class="btn btn-secondary btn-sm">
+                    <Download class="size-4" />
                     Download
                   </button>
                 </div>
@@ -636,24 +579,14 @@
         <div class="mb-6">
           <div class="flex flex-wrap gap-2">
             {#each note.tags as tag, index (index)}
-              <div
-                class="flex items-center gap-1.5 px-3 py-2 hover:bg-opacity-80 rounded-full border transition-colors {!tag.color
-                  ? 'bg-warning-50 text-warning-700 border-warning-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700'
-                  : ''}"
-                style="background-color: {tag.color
-                  ? tag.color + '20'
-                  : undefined}; color: {tag.color || undefined}; border-color: {tag.color
-                  ? tag.color + '40'
-                  : undefined}"
-              >
-                <div
-                  class="w-3 h-3 rounded-full {!tag.color
-                    ? 'bg-warning-600 dark:bg-primary-600'
-                    : ''}"
-                  style="background-color: {tag.color || undefined}"
-                ></div>
-                <span class="text-sm font-medium">{tag.name || tag.tag}</span>
-              </div>
+              {#if tag.color}
+                <Tag>
+                  <span class="size-2 rounded-pill" style="background-color: {tag.color}" aria-hidden="true"></span>
+                  {tag.name || tag.tag}
+                </Tag>
+              {:else}
+                <Tag dot>{tag.name || tag.tag}</Tag>
+              {/if}
             {/each}
           </div>
         </div>
@@ -662,12 +595,10 @@
       <!-- Empty State if no content -->
       {#if !note.description && (!note.tags || note.tags.length === 0) && !note.link && (!note.files || note.files.length === 0)}
         <div class="text-center py-12">
-          <div
-            class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4"
-          >
-            <Calendar class="w-8 h-8 text-gray-400" />
+          <div class="size-16 bg-sunken rounded-pill flex items-center justify-center mx-auto mb-4">
+            <Calendar class="size-8 text-ink-muted" />
           </div>
-          <p class="text-gray-500 dark:text-gray-400">No additional content available</p>
+          <p class="text-body text-ink-muted">No additional content available</p>
         </div>
       {/if}
     </div>

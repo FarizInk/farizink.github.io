@@ -8,9 +8,10 @@
     "/notes?id=boneyard-capture",
     "/notes/edit/boneyard-capture",
     "/finance",
-    "/files/boneyard"
+    "/files/boneyard",
+    "/?view=diary"
   ],
-  "color": "#e2e8f0",
-  "darkColor": "#334155",
-  "animate": "pulse"
+  "color": "#e6e0f2",
+  "darkColor": "#30284a",
+  "animate": "shimmer"
 }

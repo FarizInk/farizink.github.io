@@ -319,7 +319,7 @@
   <form id="note-form" class="space-y-4 sm:space-y-5" onsubmit={handleSubmitInternal}>
     <!-- Name -->
     <div>
-      <label for="name" class="label">Title <span class="text-red-500">*</span></label>
+      <label for="name" class="label">Title <span class="text-negative" aria-hidden="true">*</span></label>
       <input
         id="name"
         type="text"
@@ -337,7 +337,7 @@
       <label for="link" class="label">Link</label>
       <div class="relative">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <Link2 class="w-4 h-4 text-secondary-400" />
+          <Link2 class="size-4 text-ink-muted" />
         </div>
         <input
           id="link"
@@ -372,7 +372,7 @@
           <button
             type="button"
             onclick={() => (showTagModal = true)}
-            class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-purple-400 transition-colors group"
+            class="inline-flex items-center gap-1.5 rounded-pill text-body-sm text-ink-muted transition-colors duration-150 hover:text-accent-text"
           >
             <Settings2 class="w-3.5 h-3.5" />
             <span>Manage tags</span>
@@ -391,25 +391,25 @@
     </div>
 
     <!-- Files Section Toggle -->
-    <div class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+    <div class="overflow-hidden rounded-md">
       <button
         type="button"
         onclick={() => (localShowFileSection = !localShowFileSection)}
-        class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        class="flex w-full items-center justify-between bg-control px-4 py-3 text-body-sm font-medium text-ink transition-colors duration-150 hover:bg-control-hover"
       >
         <div class="flex items-center gap-2">
-          <Paperclip class="w-4 h-4 text-gray-400" />
-          <span>{mode === 'edit' ? 'Files' : 'Attach Files'}</span>
+          <Paperclip class="size-4 text-ink-muted" />
+          <span>{mode === 'edit' ? 'Files' : 'Attach files'}</span>
           {#if (localFiles && localFiles.length > 0) || (mode === 'edit' && note?.files && note.files.length > 0)}
             <span
-              class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700 dark:bg-purple-900/40 dark:text-purple-300"
+              class="inline-flex h-5 min-w-[20px] items-center justify-center rounded-pill bg-accent px-1.5 font-mono text-xs font-medium text-ink-on-accent"
             >
               {(localFiles?.length || 0) + (mode === 'edit' && note?.files ? note.files.length : 0)}
             </span>
           {/if}
         </div>
         <ChevronDown
-          class="w-4 h-4 text-gray-400 transition-transform duration-200 {localShowFileSection
+          class="size-4 text-ink-muted transition-transform duration-150 {localShowFileSection
             ? 'rotate-180'
             : ''}"
         />
@@ -424,9 +424,9 @@
         {/if}
 
         <!-- New Files Upload -->
-        <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4">
-          <div class="text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2">
-            {mode === 'edit' ? 'Add New Files' : 'Upload Files'}
+        <div class="rounded-md bg-sunken p-4">
+          <div class="mb-2 text-body-sm font-medium text-ink">
+            {mode === 'edit' ? 'Add new files' : 'Upload files'}
           </div>
           <FileUpload
             bind:files={localFiles}

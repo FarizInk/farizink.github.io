@@ -1,5 +1,6 @@
 <script lang="ts">
   import ToolLayout from '../../components/ToolLayout.svelte';
+  import { EmptyState } from '$lib/components/ds';
   import { API_BASE_URL } from '../../lib/constants';
   import { toast } from 'svelte-sonner';
   import { onMount } from 'svelte';
@@ -366,17 +367,17 @@
   icon={Upload}
   color="primary"
 >
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
     <!-- Main Upload Section -->
-    <div class="lg:col-span-2 space-y-5">
+    <div class="lg:col-span-2 flex flex-col gap-4">
       {#if uploadedFiles.length === 0}
         <!-- Dropzone -->
         <div
           role="button"
           tabindex="-1"
-          class="tool-card relative overflow-hidden transition-all duration-200 {dragActive
-            ? 'border-2 border-dashed !border-primary-400 dark:!border-primary-500 !bg-primary-50/50 dark:!bg-primary-900/10'
-            : ''}"
+          class="relative overflow-hidden rounded-lg p-6 transition-colors {dragActive
+            ? 'bg-tile-deep text-ink-on-dark'
+            : 'bg-control text-ink hover:bg-control-hover'}"
           ondragenter={handleDragEnter}
           ondragleave={handleDragLeave}
           ondragover={handleDragOver}
@@ -384,18 +385,16 @@
         >
           <div class="text-center py-8">
             <div
-              class="w-14 h-14 mx-auto mb-4 rounded-2xl {dragActive
-                ? 'bg-primary-200 dark:bg-primary-800/40 scale-110'
-                : 'bg-primary-100 dark:bg-primary-900/20'} flex items-center justify-center transition-transform duration-200"
+              class="w-14 h-14 mx-auto mb-4 rounded-md flex items-center justify-center {dragActive
+                ? 'bg-accent text-ink-on-accent'
+                : 'bg-tile-deep text-ink-on-dark'}"
             >
-              <Upload
-                class="w-7 h-7 text-primary-600 dark:text-primary-400 {dragActive ? 'animate-bounce' : ''}"
-              />
+              <Upload class="w-7 h-7" />
             </div>
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-              {dragActive ? 'Drop files here!' : 'Upload Files'}
+            <h2 class="text-title mb-1">
+              {dragActive ? 'Drop files here' : 'Upload files'}
             </h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            <p class="text-body-sm mb-4 {dragActive ? 'text-ink-on-dark-muted' : 'text-ink-muted'}">
               {dragActive ? 'Release to add your files' : 'Drag & drop files here, or click to browse'}
             </p>
             <label
@@ -403,7 +402,7 @@
             >
               <input type="file" multiple accept="*" onchange={handleFileSelect} class="hidden" />
               <Upload class="w-4 h-4" />
-              Choose Files
+              Choose files
             </label>
           </div>
         </div>
@@ -413,8 +412,8 @@
           <div class="tool-card">
             <div class="card-header">
               <div>
-                <h3 class="section-title !mb-1">Selected Files</h3>
-                <p class="text-xs text-gray-500 dark:text-gray-400">
+                <h3 class="section-title mb-1!">Selected files</h3>
+                <p class="text-count">
                   {selectedFiles.length}/{MAX_FILES} files &middot; {formatFileSize(selectedFiles.reduce((sum, f) => sum + f.size, 0))} total
                 </p>
               </div>
@@ -425,7 +424,7 @@
               >
                 {#if isUploading}
                   <span class="flex items-center gap-2">
-                    <span class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                    <span class="w-3.5 h-3.5 border-2 border-ink-on-accent/30 border-t-ink-on-accent rounded-pill animate-spin"></span>
                     Uploading...
                   </span>
                 {:else}
@@ -438,17 +437,19 @@
               {#each selectedFiles as file, index (file.name + index)}
                 <div class="result-row group">
                   <div class="flex items-center gap-3 flex-1 min-w-0">
-                    <div class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-600/50 flex items-center justify-center flex-shrink-0">
-                      <File class="w-4 h-4 text-gray-400" />
+                    <div class="w-8 h-8 rounded-sm bg-control flex items-center justify-center flex-shrink-0">
+                      <File class="w-4 h-4 text-ink-muted" />
                     </div>
                     <div class="min-w-0 flex-1">
-                      <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{file.name}</p>
-                      <p class="text-xs text-gray-500 dark:text-gray-400">{formatFileSize(file.size)}</p>
+                      <p class="text-sm font-medium text-ink truncate">{file.name}</p>
+                      <p class="text-count">{formatFileSize(file.size)}</p>
                     </div>
                   </div>
                   <button
                     onclick={() => removeFile(index)}
-                    class="btn-icon text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-all"
+                    class="btn-icon hover:text-negative opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity"
+                    title="Remove file"
+                    aria-label="Remove file"
                   >
                     <X class="w-4 h-4" />
                   </button>
@@ -462,9 +463,9 @@
         <div class="tool-card">
           <div class="card-header">
             <div>
-              <h3 class="section-title !mb-1">Uploaded Files</h3>
+              <h3 class="section-title mb-1!">Uploaded files</h3>
               {#if currentExpiresAt}
-                <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-0.5">
+                <p class="text-count flex items-center gap-1 mt-0.5">
                   <Clock class="w-3 h-3" />
                   {formatExpiresAt(currentExpiresAt)}
                 </p>
@@ -472,7 +473,7 @@
             </div>
             <button class="btn btn-secondary btn-sm" onclick={resetUpload}>
               <Upload class="w-4 h-4" />
-              Upload More
+              Upload more
             </button>
           </div>
 
@@ -480,15 +481,15 @@
             {#each uploadedFiles as file (file.id)}
               <div class="result-row group">
                 <div class="flex items-center gap-3 flex-1 min-w-0">
-                  <div class="w-8 h-8 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
-                    <File class="w-4 h-4 text-primary-500" />
+                  <div class="w-8 h-8 rounded-sm bg-tile-deep text-ink-on-dark flex items-center justify-center flex-shrink-0">
+                    <File class="w-4 h-4 text-ink" />
                   </div>
                   <div class="min-w-0 flex-1">
-                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{file.original_name}</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">{formatFileSize(file.size)}</p>
+                    <p class="text-sm font-medium text-ink truncate">{file.original_name}</p>
+                    <p class="text-count">{formatFileSize(file.size)}</p>
                   </div>
                 </div>
-                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                   <a
                     href={file.presigned_url}
                     target="_blank"
@@ -512,14 +513,14 @@
 
           <!-- Create Shortlink Section -->
           {#if !currentShortlink}
-            <div class="mt-5 p-4 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700/30 dark:to-gray-700/50 border border-gray-200 dark:border-gray-600/50">
+            <div class="mt-5 p-4 rounded-md bg-sunken">
               <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-lg bg-white dark:bg-gray-600/50 flex items-center justify-center shadow-sm flex-shrink-0">
-                  <LinkIcon class="w-4 h-4 text-primary-500" />
+                <div class="w-9 h-9 rounded-sm bg-tile-deep text-ink-on-dark flex items-center justify-center flex-shrink-0">
+                  <LinkIcon class="w-4 h-4" />
                 </div>
                 <div class="flex-1 min-w-0">
-                  <h4 class="text-sm font-medium text-gray-900 dark:text-white">Create Share Link</h4>
-                  <p class="text-xs text-gray-500 dark:text-gray-400">One link for all files</p>
+                  <h4 class="text-sm font-medium text-ink">Create share link</h4>
+                  <p class="text-body-sm text-ink-muted">One link for all files</p>
                 </div>
                 <button
                   class="btn btn-primary btn-sm"
@@ -528,7 +529,7 @@
                 >
                   {#if isCreatingShortlink}
                     <span class="flex items-center gap-2">
-                      <span class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                      <span class="w-3.5 h-3.5 border-2 border-ink-on-accent/30 border-t-ink-on-accent rounded-pill animate-spin"></span>
                       Creating...
                     </span>
                   {:else}
@@ -539,20 +540,20 @@
             </div>
           {:else}
             <!-- Shortlink Result -->
-            <div class="mt-5 p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/60">
+            <div class="mt-5 p-4 rounded-md bg-sunken">
               <div class="flex items-center gap-2 mb-3">
-                <div class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
-                  <Check class="w-3.5 h-3.5 text-white" />
+                <div class="w-6 h-6 rounded-pill bg-live flex items-center justify-center">
+                  <Check class="w-3.5 h-3.5 text-ink-on-accent" />
                 </div>
-                <h4 class="text-sm font-medium text-green-900 dark:text-green-100">Share Link Ready</h4>
+                <h4 class="text-sm font-medium text-ink">Share link ready</h4>
               </div>
               <div class="flex items-center gap-2">
                 <input
                   readonly
                   value={currentShortlink.shortlink_url}
-                  class="tool-input flex-1 font-mono text-sm !bg-white dark:!bg-gray-800 !border-green-300 dark:!border-green-700"
+                  class="tool-input flex-1 font-mono text-sm"
                 />
-                <button class="btn btn-primary btn-sm" onclick={copyShortlink}>
+                <button class="btn btn-primary btn-sm" onclick={copyShortlink} title="Copy link" aria-label="Copy link">
                   <Copy class="w-4 h-4" />
                 </button>
                 <a
@@ -565,7 +566,7 @@
                   <ExternalLink class="w-4 h-4" />
                 </a>
               </div>
-              <p class="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center gap-1">
+              <p class="text-count mt-2 flex items-center gap-1">
                 <Clock class="w-3 h-3" />
                 {formatExpiresAt(currentShortlink.expires_at)}
               </p>
@@ -579,7 +580,7 @@
     <div>
       <div class="tool-card">
         <div class="card-header">
-          <h3 class="section-title">Recent Uploads</h3>
+          <h3 class="section-title mb-0!">Recent uploads</h3>
           {#if uploadHistory.length > 0}
             <button
               class="btn-icon"
@@ -596,17 +597,14 @@
         </div>
 
         {#if uploadHistory.length === 0}
-          <div class="flex flex-col items-center justify-center py-10">
-            <File class="w-10 h-10 text-gray-200 dark:text-gray-700 mb-2" />
-            <p class="text-sm text-gray-400 dark:text-gray-600">No uploads yet</p>
-          </div>
+          <EmptyState title="No uploads yet" text="Files you upload here show up for 24 hours." />
         {:else}
           <div class="space-y-2 max-h-[500px] overflow-y-auto custom-scrollbar">
             {#each uploadHistory as item (item.uploadId)}
               <div
                 role="button"
                 tabindex="0"
-                class="p-3 rounded-xl bg-gray-50 dark:bg-gray-700/40 hover:bg-gray-100 dark:hover:bg-gray-700/70 transition-all cursor-pointer group border border-transparent hover:border-gray-200 dark:hover:border-gray-600/50"
+                class="p-3 rounded-md bg-control hover:bg-control-hover transition-colors cursor-pointer group"
                 onclick={() => loadFromHistory(item)}
                 onkeydown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
@@ -619,22 +617,22 @@
                   <div class="flex-1 min-w-0">
                     <div class="flex items-center gap-2">
                       {#if item.shortlinkUrl}
-                        <LinkIcon class="w-3.5 h-3.5 text-primary-500 flex-shrink-0" />
+                        <LinkIcon class="w-3.5 h-3.5 text-accent-text flex-shrink-0" />
                       {:else}
-                        <File class="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                        <File class="w-3.5 h-3.5 text-ink-muted flex-shrink-0" />
                       {/if}
-                      <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                      <p class="text-sm font-medium text-ink truncate">
                         {item.files.length} file{item.files.length > 1 ? 's' : ''}
                       </p>
-                      <span class="text-[10px] px-1.5 py-0.5 rounded-md bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300 flex-shrink-0">
+                      <span class="badge h-5! px-1.5! text-[10px]! flex-shrink-0 bg-card">
                         {formatFileSize(item.files.reduce((s, f) => s + f.size, 0))}
                       </span>
                     </div>
-                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                    <p class="text-count mt-1">
                       {new Date(item.uploadedAt).toLocaleDateString()} {new Date(item.uploadedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                     </p>
                     {#if item.shortlinkUrl}
-                      <p class="text-xs text-primary-600 dark:text-primary-400 mt-0.5 truncate">
+                      <p class="text-xs font-mono text-accent-text mt-0.5 truncate">
                         /{item.shortlinkCode}
                       </p>
                     {/if}
@@ -644,7 +642,9 @@
                       e.stopPropagation();
                       deleteFromHistory(item.uploadId);
                     }}
-                    class="btn-icon text-gray-400 hover:text-red-500 p-1 opacity-0 group-hover:opacity-100 transition-all"
+                    class="btn-icon hover:text-negative p-1 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity"
+                    title="Remove from history"
+                    aria-label="Remove from history"
                   >
                     <Trash2 class="w-3.5 h-3.5" />
                   </button>

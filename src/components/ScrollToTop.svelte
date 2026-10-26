@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { ChevronUp } from '@lucide/svelte';
+  import { scrollTopButton } from '../lib/scrollTop.svelte';
 
   let showScrollTop = $state(false);
 
@@ -10,22 +11,27 @@
 
   function onScroll() {
     showScrollTop = (window.pageYOffset || document.documentElement.scrollTop) > 300;
+    scrollTopButton.visible = showScrollTop;
   }
 
   onMount(() => {
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      scrollTopButton.visible = false;
+    };
   });
 </script>
 
 <!-- Scroll to Top Button -->
 <button
   onclick={scrollToTop}
-  class="!p-0 btn fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full shadow-2xl hover:shadow-3xl group flex items-center justify-center transition-all duration-300 bg-warning-600 text-white hover:bg-yellow-700 dark:bg-primary-600 dark:hover:bg-primary-700 {showScrollTop
-    ? 'opacity-100 translate-y-0'
-    : 'opacity-0 translate-y-16 pointer-events-none'}"
+  class="fixed right-5 bottom-6 z-40 grid size-11 place-items-center rounded-pill bg-raised text-ink shadow-pop transition-[opacity,background-color,color] duration-150 hover:bg-tile-lime hover:text-ink-on-bright {showScrollTop
+    ? 'opacity-100'
+    : 'pointer-events-none opacity-0'}"
+  aria-label="Scroll to top"
   title="Scroll to top"
 >
-  <ChevronUp class="w-6 h-6 group-hover:-translate-y-0.5 transition-transform" />
+  <ChevronUp class="size-5" />
 </button>

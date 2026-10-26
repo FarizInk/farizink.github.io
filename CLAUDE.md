@@ -22,7 +22,7 @@ Deployed as a static site on GitHub Pages with SPA routing support. No server-si
 
 - **Framework**: Svelte 5 with TypeScript and Runes (`$state`, `$derived`)
 - **Build Tool**: Vite 7 with Svelte plugin
-- **Styling**: Tailwind CSS 4 with `@theme`-based design system
+- **Styling**: Tailwind CSS 4 + Fariz design system (tokens in `src/styles/fariz-tokens.css`, Svelte components in `src/lib/components/ds/`) — see DESIGN.md
 - **Rich Text**: TipTap editor (`@tiptap/*`) for note editing
 - **Icons**: Lucide Svelte (`@lucide/svelte`)
 - **Notifications**: svelte-sonner
@@ -39,6 +39,7 @@ Deployed as a static site on GitHub Pages with SPA routing support. No server-si
 - `npm run check` — Svelte type checking
 - `npm run lint` — ESLint
 - `npm run format` — Prettier
+- `npm test` — Node test runner for pure helpers in `tests/` (`node --test`, no extra deps)
 
 **Important**: No Git commands that modify the repository (read-only access policy).
 
@@ -51,26 +52,27 @@ Loading states use [boneyard-js](https://boneyard.vercel.app) — auto-generated
 - **Auth-gated pages** (Notes/Finance/Dashboard): the headless browser can't log in, so each data-driven `<Skeleton>` wraps a `fixture`-rendered version of its content (mock data from `src/lib/fixtures.ts`). Fixtures render only during capture, never at runtime.
 - **`isBoneyardCapture`** (`src/lib/boneyard.ts`): true only inside the plugin's headless browser (`window.__BONEYARD_BUILD`). Auth pages OR it into their loading branches (`{#if isLoading || isBoneyardCapture}`) to force-mount the fixture skeleton during capture, and early-return from `onMount` fetches. Route `/notes?id=boneyard-capture` forces the detail view; `/files/boneyard` matches the `/files/:code` route.
 - **Routes**: `boneyard.config.json → routes` lists the pages to snapshot (default `['/']`). Add a route there when a new `<Skeleton>` lives on a page not yet listed.
-- **Runtime colors**: `configureBoneyard({ color, darkColor, animate })` in `src/main.ts` — the JSON config's colors are dev/capture-time only; the Svelte runtime reads them from `main.ts`. Keep both in sync (`#e2e8f0` / `#334155`, matching `--color-secondary-200/700`).
+- **Runtime colors**: `configureBoneyard({ color, darkColor, animate })` in `src/main.ts` — the JSON config's colors are dev/capture-time only; the Svelte runtime reads them from `main.ts`. Keep both in sync (`#e6e0f2` / `#30284a`, matching the `--bg-control` token in light/dark).
 - **Bootstrap**: `src/main.ts` imports `./bones/registry`. If `src/bones/` is ever wiped, recreate a stub `registry.ts` exporting `registerBones({})` so the app loads — the plugin overwrites it after the first successful capture.
 - **Workflow after layout changes**: whenever you change the layout of a component wrapped in `<Skeleton>`, run `npm run dev` to re-capture bones, then commit `src/bones/`. Stale bones look wrong; missing bones fall back to empty/loading content.
 - **First-time setup**: run `npx playwright install chromium` once (downloads the Chromium binary boneyard drives).
-- **Config**: `boneyard.config.json` (breakpoints, colors matching `--color-secondary-*` tokens, `animate: pulse`).
-- **perf-mode**: skeletons are static under the default perf-mode (pulse disabled), consistent with the old hand-built skeleton. Toggle `localStorage.perf-mode='fancy'` to see animations.
+- **Config**: `boneyard.config.json` (breakpoints, colors matching the `--bg-control` token, `animate: shimmer`).
+- **Skeleton motion**: bones use `animate: 'shimmer'` — the design system's only looping animation, shown only while loading. Boneyard detects dark mode via a `.dark` class on `<html>`, so `index.html` and `src/lib/theme.svelte.ts` keep that class in sync with the theme even though styling uses `data-theme`.
 
 ## Project Structure
 
 ```
 src/
 ├── main.ts                    # Application entry point
-├── app.css                    # Global styles + @theme design tokens
+├── app.css                    # Global styles + DS component classes (@layer components)
+├── styles/fariz-tokens.css    # Fariz design tokens (dark default, light via data-theme)
 ├── App.svelte                 # Root component
 ├── routes/
 │   ├── index.ts               # Route aggregator
 │   ├── main.ts                # Main site routes (Home, Notes, Finance, Login, Files)
 │   └── tools.ts               # 34 tool routes
 ├── components/
-│   ├── Navigation.svelte      # Floating bottom nav with theme toggle
+│   ├── Navigation.svelte      # Floating theme toggle + menu drawer
 │   ├── CommandPalette.svelte  # Ctrl+K keyboard navigation
 │   ├── Modal.svelte           # Reusable modal
 │   ├── ToolLayout.svelte      # Consistent tool page wrapper
@@ -112,11 +114,12 @@ src/
 - **WebSocket manager** for real-time Spotify activity (Pusher protocol, auto-reconnect)
 
 ### Styling
-- Tailwind CSS 4 with custom `@theme` tokens in `app.css`
-- Color palette: Purple primary (`--color-primary-*`), Slate secondary, semantic colors
-- Component CSS classes: `.btn`, `.input`, `.card`, `.badge`, `.label`
-- Dark mode: system detection + manual toggle, persisted in localStorage
-- Google Fonts: Outfit family
+- Fariz design system ("Bento Grid Playful × Blackhole") — full guide in DESIGN.md, source package in `design-2027/`
+- Tokens only: `bg-canvas`, `bg-card`, `text-ink`, `text-ink-muted`, `bg-accent`, `text-accent-text`, `bg-tile-{deep,violet,lilac,lime,void}` (paired with `text-ink-on-dark` / `text-ink-on-bright`), `live`, `negative` … No Tailwind palette colors, no gradients, no `dark:` color variants
+- DS components in `src/lib/components/ds/` (import from `'$lib/components/ds'`); permanent CSS classes (`.btn`, `.input`, `.card`, `.label`, `.badge`, tabs, prose) in `app.css`
+- Flat: no borders/shadows between surfaces — ladder `bg-canvas` → `bg-card` → `bg-control` → `bg-raised` (`line`/`line-strong`/`shadow-card` tokens no longer exist); DS component CSS in `src/styles/fariz-components.css`
+- Theme: modes dark (default) / light (`<html data-theme="light">`) / system, state in `src/lib/theme.svelte.ts`, persisted in `localStorage.theme`
+- Fonts: Space Grotesk (sans/display) + IBM Plex Mono (labels, code), loaded in `index.html`
 
 ### Build Configuration
 - Vite: manual chunk splitting (vendor, router, notifications)
@@ -138,6 +141,7 @@ Organized in 4 categories, configured centrally in `src/lib/toolsConfig.ts`:
 - Skills and experience showcase
 - Real-time Spotify activity (via Soul WebSocket)
 - Notes management (CRUD via Soul API)
+- Diary (Home view when logged in: Profile / Dashboard / Diary) — status-style quick notes over the Notes API, filtered by tags saved in `localStorage.diaryTagIds`; helpers in `src/lib/diary.ts` (tested with `npm test`), components in `src/components/diary/`
 - Finance tracking (via Soul API)
 - File sharing (via Soul API)
 - Command palette (Ctrl+K)
@@ -155,7 +159,7 @@ Organized in 4 categories, configured centrally in `src/lib/toolsConfig.ts`:
 ## Documentation
 
 - **ARCHITECTURE.md** — Full system architecture: routing flow, state management (PaginatedStore), API client setup, WebSocket integration, build pipeline, component hierarchy, tool page pattern, SEO strategy, deployment pipeline
-- **DESIGN.md** — UI design system: Tailwind CSS 4 @theme tokens, color palette (purple primary), spacing/radius/shadow scales, component CSS classes, dark mode colors, typography, tool page layout pattern
+- **DESIGN.md** — Fariz design system: how tokens/components/theme are wired here, token table, brand book, component specs and props
 - **AGENTS.md** — Agent-friendly instructions (Codex, Copilot, Cursor): quick reference, tech stack, API endpoints consumed, conventions checklist
 
 ## Constraints
@@ -163,5 +167,5 @@ Organized in 4 categories, configured centrally in `src/lib/toolsConfig.ts`:
 - No server-side code — purely static frontend
 - Git commands are read-only
 - Must maintain visual consistency across all 34 tools
-- Dark mode must work on all components
+- Both themes (dark default, light) must work on all components; use tokens only
 - All new code must use TypeScript

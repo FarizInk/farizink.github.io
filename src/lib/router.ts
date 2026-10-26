@@ -1,6 +1,5 @@
 import type { Component } from 'svelte';
 import { writable } from 'svelte/store';
-import { withViewTransition } from './motion';
 
 export interface Route {
   path: string;
@@ -70,6 +69,10 @@ export function createRouter(routeList: Route[]) {
   // Listen for browser navigation
   window.addEventListener('popstate', handlePopState);
 
+  // Plain same-origin <a href> clicks (e.g. design-system cards and buttons)
+  // navigate client-side instead of reloading the page.
+  document.addEventListener('click', handleLinkClick);
+
   return router;
 }
 
@@ -80,17 +83,20 @@ function resetScroll(): void {
 
 // Navigate to a new path
 export function navigate(path: string) {
-  if (path === getCurrentPath()) {
+  if (path === window.location.pathname + window.location.search) {
+    return;
+  }
+  // Same route, different query: the page reads its query on mount and would not
+  // re-render, so load it fresh.
+  const next = new URL(path, window.location.origin);
+  if (next.pathname === window.location.pathname) {
+    window.location.assign(path);
     return;
   }
 
-  const swap = () => {
-    window.history.pushState({}, '', path);
-    handleLocationChange();
-    resetScroll();
-  };
-
-  withViewTransition(swap);
+  window.history.pushState({}, '', path);
+  handleLocationChange();
+  resetScroll();
 }
 
 // Get current path
@@ -146,9 +152,33 @@ function updateMetaTags(route: Route) {
   }
 }
 
-// Back/forward navigation — also wrapped in a view transition
+function handleLinkClick(event: MouseEvent) {
+  if (
+    event.defaultPrevented ||
+    event.button !== 0 ||
+    event.metaKey ||
+    event.ctrlKey ||
+    event.shiftKey ||
+    event.altKey
+  ) {
+    return;
+  }
+  const anchor = (event.target as Element | null)?.closest?.('a');
+  if (!anchor || !anchor.href || anchor.target || anchor.hasAttribute('download')) return;
+  // Links inside editors (TipTap / contenteditable) must not navigate away.
+  if (anchor.closest('[contenteditable="true"], .ProseMirror')) return;
+
+  const url = new URL(anchor.href);
+  if (url.origin !== window.location.origin || url.hash) return;
+  // Only routes this router knows; static files (robots.txt, uploads…) load normally.
+  if (!findMatchingRoute(url.pathname)) return;
+  event.preventDefault();
+  navigate(url.pathname + url.search);
+}
+
+// Back/forward navigation
 function handlePopState() {
-  withViewTransition(handleLocationChange);
+  handleLocationChange();
 }
 
 // Handle location changes

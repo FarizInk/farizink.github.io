@@ -265,42 +265,21 @@
   icon={Calculator}
   color="warning"
 >
-  <!-- Hero Section -->
-  <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
-  >
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
-          <Calculator class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Percentage Calculator</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            Calculate percentages and changes with ease
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Mode Selection -->
-  <div
-    class="tool-card mb-6"
-  >
-    <h3 class="section-title">Choose Calculator</h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <div class="tool-card">
+    <h3 class="section-title">Choose calculator</h3>
+    <div class="flex flex-wrap gap-2">
       {#each modes as mode (mode.id)}
         <button
           onclick={() => {
             activeMode = mode.id;
             resetCurrentMode();
           }}
-          class="mode-btn {activeMode === mode.id ? 'active' : ''}"
+          class="preset-btn inline-flex items-center gap-2 {activeMode === mode.id ? 'active' : ''}"
+          title={mode.description}
         >
-          <mode.icon class="w-6 h-6 mb-2 text-warning-600 dark:text-primary-400" />
-          <h3 class="font-medium text-gray-900 dark:text-white mb-1">{mode.name}</h3>
-          <p class="text-sm text-gray-600 dark:text-gray-400">{mode.description}</p>
+          <mode.icon class="w-4 h-4" />
+          {mode.name}
         </button>
       {/each}
     </div>
@@ -310,23 +289,33 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
     <!-- Main Calculator -->
     <div class="lg:col-span-2 space-y-4">
-      <div
-        class="tool-card"
-      >
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+      <div class="tool-card">
+        <div class="card-header gap-3">
+          <div class="min-w-0">
+            <h3 class="section-title mb-0 flex items-center gap-2">
+              {#each modes as mode (mode.id)}
+                {#if mode.id === activeMode}
+                  <mode.icon class="w-5 h-5 text-accent-text" />
+                  {mode.name}
+                {/if}
+              {/each}
+            </h3>
             {#each modes as mode (mode.id)}
               {#if mode.id === activeMode}
-                <mode.icon class="w-6 h-6 mr-2 text-warning-600 dark:text-primary-400" />
-                {mode.name}
+                <p class="text-body-sm text-ink-muted mt-1">{mode.description}</p>
               {/if}
             {/each}
-          </h3>
-          <div class="flex gap-2">
+          </div>
+          <div class="flex gap-2 shrink-0">
             <button class="btn btn-sm btn-secondary" onclick={() => loadExample(activeMode)}>
               Example
             </button>
-            <button class="btn btn-sm btn-secondary" onclick={resetCurrentMode}>
+            <button
+              class="btn btn-sm btn-ghost"
+              onclick={resetCurrentMode}
+              aria-label="Reset"
+              title="Reset"
+            >
               <RotateCcw class="w-4 h-4" />
             </button>
           </div>
@@ -336,7 +325,7 @@
         {#if activeMode === 'basic'}
           <div class="space-y-6">
             <div>
-              <label class="label">
+              <label class="label text-ink">
                 What is <input
                   type="number" inputmode="decimal"
                   bind:value={percentage}
@@ -351,12 +340,12 @@
             </div>
 
             <!-- Quick percentages -->
-            <div class="flex flex-wrap gap-2">
-              <span class="text-sm text-gray-600 dark:text-gray-400">Quick:</span>
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-body-sm text-ink-muted">Quick:</span>
               {#each commonPercentages as percent (percent)}
                 <button
                   onclick={() => setPercentage(percent.toString())}
-                  class="quick-btn"
+                  class="quick-btn font-mono"
                 >
                   {percent}%
                 </button>
@@ -364,21 +353,21 @@
             </div>
 
             {#if result}
-              <div
-                class="p-4 rounded-lg border-2 bg-warning-50 dark:bg-yellow-900/20 border-warning-200 dark:border-yellow-800"
-              >
-                <div class="flex items-center justify-between">
-                  <div>
-                    <p class="text-sm text-warning-600 dark:text-warning-400 mb-1">Result</p>
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{result}</p>
-                  </div>
-                  <button
-                    onclick={() => copyToClipboard(result)}
-                    class="btn btn-secondary p-2"
-                  >
-                    <Copy class="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                  </button>
+              <div class="result-card flex items-center justify-between gap-3">
+                <div>
+                  <p class="text-label text-ink-muted mb-1">Result</p>
+                  <p class="font-display text-[32px] leading-9 font-bold tracking-tight tabular-nums text-ink">
+                    {result}
+                  </p>
                 </div>
+                <button
+                  onclick={() => copyToClipboard(result)}
+                  class="btn-icon"
+                  aria-label="Copy to clipboard"
+                  title="Copy to clipboard"
+                >
+                  <Copy class="w-5 h-5" />
+                </button>
               </div>
             {/if}
           </div>
@@ -388,7 +377,7 @@
         {#if activeMode === 'increase'}
           <div class="space-y-6">
             <div>
-              <label class="label">
+              <label class="label text-ink">
                 Increase <input
                   type="number" inputmode="decimal"
                   bind:value={originalValue}
@@ -404,30 +393,28 @@
             </div>
 
             {#if changedResult}
-              <div
-                class="p-4 rounded-lg border-2 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800"
-              >
-                <div class="flex items-center justify-between">
-                  <div>
-                    <p class="text-sm text-green-600 dark:text-green-400 mb-1">New Value</p>
-                    <p class="text-2xl font-bold text-green-700 dark:text-green-300">
-                      {changedResult}
-                    </p>
-                    <p class="text-sm mt-1 text-green-600 dark:text-green-400">
-                      (+{(
-                        ((parseFloat(changedResult) - parseFloat(originalValue)) /
-                          parseFloat(originalValue)) *
-                        100
-                      ).toFixed(2)}%)
-                    </p>
-                  </div>
-                  <button
-                    onclick={() => copyToClipboard(changedResult)}
-                    class="btn-icon"
-                  >
-                    <Copy class="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                  </button>
+              <div class="result-card flex items-center justify-between gap-3">
+                <div>
+                  <p class="text-label text-ink-muted mb-1">New value</p>
+                  <p class="font-display text-[32px] leading-9 font-bold tracking-tight tabular-nums text-ink">
+                    {changedResult}
+                  </p>
+                  <p class="font-mono text-[13px] leading-5 font-medium mt-1 text-live">
+                    ▲ +{(
+                      ((parseFloat(changedResult) - parseFloat(originalValue)) /
+                        parseFloat(originalValue)) *
+                      100
+                    ).toFixed(2)}%
+                  </p>
                 </div>
+                <button
+                  onclick={() => copyToClipboard(changedResult)}
+                  class="btn-icon"
+                  aria-label="Copy to clipboard"
+                  title="Copy to clipboard"
+                >
+                  <Copy class="w-5 h-5" />
+                </button>
               </div>
             {/if}
           </div>
@@ -437,7 +424,7 @@
         {#if activeMode === 'decrease'}
           <div class="space-y-6">
             <div>
-              <label class="label">
+              <label class="label text-ink">
                 Decrease <input
                   type="number" inputmode="decimal"
                   bind:value={originalValue}
@@ -453,30 +440,28 @@
             </div>
 
             {#if changedResult}
-              <div
-                class="p-4 rounded-lg border-2 bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800"
-              >
-                <div class="flex items-center justify-between">
-                  <div>
-                    <p class="text-sm text-orange-600 dark:text-orange-400 mb-1">New Value</p>
-                    <p class="text-2xl font-bold text-orange-700 dark:text-orange-300">
-                      {changedResult}
-                    </p>
-                    <p class="text-sm mt-1 text-orange-600 dark:text-orange-400">
-                      (-{(
-                        ((parseFloat(originalValue) - parseFloat(changedResult)) /
-                          parseFloat(originalValue)) *
-                        100
-                      ).toFixed(2)}%)
-                    </p>
-                  </div>
-                  <button
-                    onclick={() => copyToClipboard(changedResult)}
-                    class="btn-icon"
-                  >
-                    <Copy class="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                  </button>
+              <div class="result-card flex items-center justify-between gap-3">
+                <div>
+                  <p class="text-label text-ink-muted mb-1">New value</p>
+                  <p class="font-display text-[32px] leading-9 font-bold tracking-tight tabular-nums text-ink">
+                    {changedResult}
+                  </p>
+                  <p class="font-mono text-[13px] leading-5 font-medium mt-1 text-negative">
+                    ▼ −{(
+                      ((parseFloat(originalValue) - parseFloat(changedResult)) /
+                        parseFloat(originalValue)) *
+                      100
+                    ).toFixed(2)}%
+                  </p>
                 </div>
+                <button
+                  onclick={() => copyToClipboard(changedResult)}
+                  class="btn-icon"
+                  aria-label="Copy to clipboard"
+                  title="Copy to clipboard"
+                >
+                  <Copy class="w-5 h-5" />
+                </button>
               </div>
             {/if}
           </div>
@@ -487,11 +472,7 @@
           <div class="space-y-6">
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label
-                  for="first-value"
-                  class="label"
-                  >First Value</label
-                >
+                <label for="first-value" class="label">First value</label>
                 <input
                   id="first-value"
                   type="number" inputmode="decimal"
@@ -500,11 +481,7 @@
                 />
               </div>
               <div>
-                <label
-                  for="second-value"
-                  class="label"
-                  >Second Value</label
-                >
+                <label for="second-value" class="label">Second value</label>
                 <input
                   id="second-value"
                   type="number" inputmode="decimal"
@@ -515,25 +492,21 @@
             </div>
 
             {#if differenceResult}
-              <div
-                class="p-4 rounded-lg border-2 bg-purple-50 dark:bg-primary-900/20 border-purple-200 dark:border-primary-800"
-              >
-                <div class="flex items-center justify-between">
-                  <div>
-                    <p class="text-sm text-purple-600 dark:text-primary-400 mb-1">
-                      Percentage Difference
-                    </p>
-                    <p class="text-2xl font-bold text-purple-700 dark:text-primary-300">
-                      {differenceResult}%
-                    </p>
-                  </div>
-                  <button
-                    onclick={() => copyToClipboard(differenceResult + '%')}
-                    class="btn btn-secondary p-2"
-                  >
-                    <Copy class="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                  </button>
+              <div class="result-card flex items-center justify-between gap-3">
+                <div>
+                  <p class="text-label text-ink-muted mb-1">Percentage difference</p>
+                  <p class="font-display text-[32px] leading-9 font-bold tracking-tight tabular-nums text-ink">
+                    {differenceResult}%
+                  </p>
                 </div>
+                <button
+                  onclick={() => copyToClipboard(differenceResult + '%')}
+                  class="btn-icon"
+                  aria-label="Copy to clipboard"
+                  title="Copy to clipboard"
+                >
+                  <Copy class="w-5 h-5" />
+                </button>
               </div>
             {/if}
           </div>
@@ -544,13 +517,9 @@
           <div class="space-y-6">
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label
-                  for="original-price"
-                  class="label"
-                  >Original Price</label
-                >
+                <label for="original-price" class="label">Original price</label>
                 <div class="relative">
-                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted">$</span>
                   <input
                     id="original-price"
                     type="number" inputmode="decimal"
@@ -561,11 +530,7 @@
               </div>
 
               <div>
-                <label
-                  for="discount-percent"
-                  class="label"
-                  >Discount (%)</label
-                >
+                <label for="discount-percent" class="label">Discount (%)</label>
                 <input
                   id="discount-percent"
                   type="number" inputmode="decimal"
@@ -576,31 +541,27 @@
             </div>
 
             {#if discountedPrice}
-              <div class="grid grid-cols-2 gap-4">
-                <div
-                  class="p-4 rounded-lg border-2 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800"
-                >
-                  <div class="flex items-center justify-between">
-                    <div>
-                      <p class="text-sm text-red-600 dark:text-red-400 mb-1">Final Price</p>
-                      <p class="text-2xl font-bold text-red-700 dark:text-red-300">
-                        {formatCurrency(discountedPrice)}
-                      </p>
-                    </div>
-                    <button
-                      onclick={() => copyToClipboard(discountedPrice)}
-                      class="btn btn-secondary p-2"
-                    >
-                      <Copy class="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                    </button>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="result-card flex items-center justify-between gap-3">
+                  <div>
+                    <p class="text-label text-ink-muted mb-1">Final price</p>
+                    <p class="font-display text-2xl font-bold tracking-tight tabular-nums text-ink">
+                      {formatCurrency(discountedPrice)}
+                    </p>
                   </div>
+                  <button
+                    onclick={() => copyToClipboard(discountedPrice)}
+                    class="btn-icon"
+                    aria-label="Copy to clipboard"
+                    title="Copy to clipboard"
+                  >
+                    <Copy class="w-5 h-5" />
+                  </button>
                 </div>
 
-                <div
-                  class="p-4 rounded-lg border-2 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800"
-                >
-                  <p class="text-sm text-green-600 dark:text-green-400 mb-1">You Save</p>
-                  <p class="text-2xl font-bold text-green-700 dark:text-green-300">
+                <div class="result-card">
+                  <p class="text-label text-ink-muted mb-1">You save</p>
+                  <p class="font-display text-2xl font-bold tracking-tight tabular-nums text-ink">
                     {formatCurrency(savedAmount)}
                   </p>
                 </div>
@@ -613,13 +574,9 @@
         {#if activeMode === 'tip'}
           <div class="space-y-6">
             <div>
-              <label
-                for="bill-amount"
-                class="label"
-                >Bill Amount</label
-              >
+              <label for="bill-amount" class="label">Bill amount</label>
               <div class="relative">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted">$</span>
                 <input
                   id="bill-amount"
                   type="number" inputmode="decimal"
@@ -631,11 +588,7 @@
 
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label
-                  for="tip-percentage"
-                  class="label"
-                  >Tip Percentage</label
-                >
+                <label for="tip-percentage" class="label">Tip percentage</label>
                 <input
                   id="tip-percentage"
                   type="number" inputmode="decimal"
@@ -647,7 +600,7 @@
                   {#each commonTips as tip (tip)}
                     <button
                       onclick={() => setTipPercentage(tip.toString())}
-                      class="quick-btn"
+                      class="quick-btn font-mono"
                     >
                       {tip}%
                     </button>
@@ -655,11 +608,7 @@
                 </div>
               </div>
               <div>
-                <label
-                  for="number-of-people"
-                  class="label"
-                  >Number of People</label
-                >
+                <label for="number-of-people" class="label">Number of people</label>
                 <input
                   id="number-of-people"
                   type="number" inputmode="decimal"
@@ -672,43 +621,37 @@
 
             {#if tipAmount}
               <div class="space-y-4">
-                <div class="grid grid-cols-2 gap-4">
-                  <div
-                    class="p-4 rounded-lg border-2 bg-warning-50 dark:bg-yellow-900/20 border-warning-200 dark:border-yellow-800"
-                  >
-                    <p class="text-sm text-warning-600 dark:text-warning-400 mb-1">Tip Amount</p>
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div class="result-card">
+                    <p class="text-label text-ink-muted mb-1">Tip amount</p>
+                    <p class="font-display text-2xl font-bold tracking-tight tabular-nums text-ink">
                       {formatCurrency(tipAmount)}
                     </p>
                   </div>
-                  <div
-                    class="p-4 rounded-lg border-2 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800"
-                  >
-                    <p class="text-sm text-green-600 dark:text-green-400 mb-1">Total with Tip</p>
-                    <p class="text-2xl font-bold text-green-700 dark:text-green-300">
+                  <div class="result-card">
+                    <p class="text-label text-ink-muted mb-1">Total with tip</p>
+                    <p class="font-display text-2xl font-bold tracking-tight tabular-nums text-ink">
                       {formatCurrency(totalWithTip)}
                     </p>
                   </div>
                 </div>
 
                 {#if parseInt(numberOfPeople) > 1}
-                  <div
-                    class="p-4 rounded-lg border-2 bg-purple-50 dark:bg-primary-900/20 border-purple-200 dark:border-primary-800"
-                  >
-                    <div class="flex items-center justify-between">
-                      <div>
-                        <p class="text-sm text-purple-600 dark:text-primary-400 mb-1">Per Person</p>
-                        <p class="text-2xl font-bold text-purple-700 dark:text-primary-300">
-                          {formatCurrency(amountPerPerson)}
-                        </p>
-                      </div>
-                      <button
-                        onclick={() => copyToClipboard(amountPerPerson)}
-                        class="btn btn-secondary p-2"
-                      >
-                        <Copy class="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                      </button>
+                  <div class="rounded-md bg-tile-deep text-ink-on-dark p-4 flex items-center justify-between gap-3">
+                    <div>
+                      <p class="text-label mb-1">Per person</p>
+                      <p class="font-display text-[32px] leading-9 font-bold tracking-tight tabular-nums">
+                        {formatCurrency(amountPerPerson)}
+                      </p>
                     </div>
+                    <button
+                      onclick={() => copyToClipboard(amountPerPerson)}
+                      class="btn-icon text-current hover:bg-current/10"
+                      aria-label="Copy to clipboard"
+                      title="Copy to clipboard"
+                    >
+                      <Copy class="w-5 h-5" />
+                    </button>
                   </div>
                 {/if}
               </div>
@@ -721,84 +664,72 @@
     <!-- Sidebar -->
     <div class="space-y-4">
       <!-- Formulas -->
-      <div
-        class="tool-card"
-      >
-        <h3 class="section-title flex items-center">
-          <Calculator class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
+      <div class="tool-card">
+        <h3 class="section-title flex items-center gap-2">
+          <Calculator class="w-5 h-5 text-accent-text" />
           Formulas
         </h3>
 
         {#if activeMode === 'basic'}
-          <div class="space-y-2 text-sm">
-            <p class="font-medium text-gray-900 dark:text-white">Basic Percentage</p>
-            <p class="text-gray-600 dark:text-gray-400">Result = (Percentage × Number) ÷ 100</p>
+          <div class="space-y-2 text-body-sm">
+            <p class="font-medium text-ink">Basic percentage</p>
+            <p class="font-mono text-code text-ink-muted">Result = (Percentage × Number) ÷ 100</p>
           </div>
         {:else if activeMode === 'increase'}
-          <div class="space-y-2 text-sm">
-            <p class="font-medium text-gray-900 dark:text-white">Increase</p>
-            <p class="text-gray-600 dark:text-gray-400">
+          <div class="space-y-2 text-body-sm">
+            <p class="font-medium text-ink">Increase</p>
+            <p class="font-mono text-code text-ink-muted">
               New = Original + (Original × Percentage ÷ 100)
             </p>
           </div>
         {:else if activeMode === 'decrease'}
-          <div class="space-y-2 text-sm">
-            <p class="font-medium text-gray-900 dark:text-white">Decrease</p>
-            <p class="text-gray-600 dark:text-gray-400">
+          <div class="space-y-2 text-body-sm">
+            <p class="font-medium text-ink">Decrease</p>
+            <p class="font-mono text-code text-ink-muted">
               New = Original - (Original × Percentage ÷ 100)
             </p>
           </div>
         {:else if activeMode === 'difference'}
-          <div class="space-y-2 text-sm">
-            <p class="font-medium text-gray-900 dark:text-white">Percentage Difference</p>
-            <p class="text-gray-600 dark:text-gray-400">
+          <div class="space-y-2 text-body-sm">
+            <p class="font-medium text-ink">Percentage difference</p>
+            <p class="font-mono text-code text-ink-muted">
               Diff = |Value2 - Value1| ÷ ((Value1 + Value2) ÷ 2) × 100
             </p>
           </div>
         {:else if activeMode === 'discount'}
-          <div class="space-y-2 text-sm">
-            <p class="font-medium text-gray-900 dark:text-white">Discount</p>
-            <p class="text-gray-600 dark:text-gray-400">Final = Price - (Price × Discount ÷ 100)</p>
-            <p class="text-gray-600 dark:text-gray-400">Saved = Price × Discount ÷ 100</p>
+          <div class="space-y-2 text-body-sm">
+            <p class="font-medium text-ink">Discount</p>
+            <p class="font-mono text-code text-ink-muted">Final = Price - (Price × Discount ÷ 100)</p>
+            <p class="font-mono text-code text-ink-muted">Saved = Price × Discount ÷ 100</p>
           </div>
         {:else if activeMode === 'tip'}
-          <div class="space-y-2 text-sm">
-            <p class="font-medium text-gray-900 dark:text-white">Tip Calculator</p>
-            <p class="text-gray-600 dark:text-gray-400">Tip = Bill × Tip ÷ 100</p>
-            <p class="text-gray-600 dark:text-gray-400">Total = Bill + Tip</p>
-            <p class="text-gray-600 dark:text-gray-400">Per Person = Total ÷ Number of People</p>
+          <div class="space-y-2 text-body-sm">
+            <p class="font-medium text-ink">Tip calculator</p>
+            <p class="font-mono text-code text-ink-muted">Tip = Bill × Tip ÷ 100</p>
+            <p class="font-mono text-code text-ink-muted">Total = Bill + Tip</p>
+            <p class="font-mono text-code text-ink-muted">Per Person = Total ÷ Number of People</p>
           </div>
         {/if}
       </div>
 
       <!-- Tips -->
-      <div
-        class="tool-card"
-      >
-        <h3 class="section-title">Quick Tips</h3>
-        <div class="space-y-3 text-sm text-gray-600 dark:text-gray-400">
+      <div class="tool-card">
+        <h3 class="section-title">Quick tips</h3>
+        <div class="space-y-3 text-body-sm text-ink-muted">
           <div class="flex items-start">
-            <div
-              class="w-2 h-2 bg-warning-500 dark:bg-primary-500 rounded-full mt-1.5 mr-2 flex-shrink-0"
-            ></div>
+            <div class="w-2 h-2 bg-accent rounded-pill mt-1.5 mr-2 flex-shrink-0"></div>
             <p>Use common percentages for quick calculations (10%, 25%, 50%, etc.)</p>
           </div>
           <div class="flex items-start">
-            <div
-              class="w-2 h-2 bg-warning-500 dark:bg-primary-500 rounded-full mt-1.5 mr-2 flex-shrink-0"
-            ></div>
+            <div class="w-2 h-2 bg-accent rounded-pill mt-1.5 mr-2 flex-shrink-0"></div>
             <p>For tips, 15-20% is standard in most countries</p>
           </div>
           <div class="flex items-start">
-            <div
-              class="w-2 h-2 bg-warning-500 dark:bg-primary-500 rounded-full mt-1.5 mr-2 flex-shrink-0"
-            ></div>
+            <div class="w-2 h-2 bg-accent rounded-pill mt-1.5 mr-2 flex-shrink-0"></div>
             <p>Percentage difference uses the average of two values as the base</p>
           </div>
           <div class="flex items-start">
-            <div
-              class="w-2 h-2 bg-warning-500 dark:bg-primary-500 rounded-full mt-1.5 mr-2 flex-shrink-0"
-            ></div>
+            <div class="w-2 h-2 bg-accent rounded-pill mt-1.5 mr-2 flex-shrink-0"></div>
             <p>Double-check discount calculations to avoid errors</p>
           </div>
         </div>
@@ -807,45 +738,33 @@
   </div>
 
   <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Percent class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+  <div class="features-grid mt-4">
+    <div class="card">
+      <div class="feature-icon">
+        <Percent class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Multiple Modes</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Multiple modes</h3>
+      <p class="feature-description">
         Six different calculators for all percentage-related needs
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <Zap class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Instant Results</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Instant results</h3>
+      <p class="feature-description">
         Real-time calculations as you type with no need to press enter
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Check class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <Check class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Quick Actions</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Quick actions</h3>
+      <p class="feature-description">
         Copy results to clipboard and use example values for quick testing
       </p>
     </div>

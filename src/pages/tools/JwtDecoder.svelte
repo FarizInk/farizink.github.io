@@ -159,46 +159,25 @@
   icon={FileText}
   color="warning"
 >
-  <!-- Hero Section -->
-  <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
-  >
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
-          <FileText class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">JWT Decoder</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            Decode and validate JSON Web Tokens
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Controls -->
-  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
-    <button class="btn btn-copy" onclick={loadExample}>
-      <RefreshCw class="w-4 h-4 mr-2" />
-      Load Example
+  <div class="flex flex-wrap gap-2">
+    <button class="btn btn-secondary btn-sm" onclick={loadExample}>
+      <RefreshCw class="w-4 h-4" />
+      Load example
     </button>
-    <button class="btn btn-secondary" onclick={clearAll}>
+    <button class="btn btn-ghost btn-sm" onclick={clearAll}>
       Clear
     </button>
   </div>
 
   <!-- Input Section -->
-  <div
-    class="tool-card mb-6"
-  >
+  <div class="tool-card">
     <div class="mb-4">
       <label
         for="jwt-token-input"
         class="label"
       >
-        JWT Token
+        JWT token
       </label>
       <div class="relative">
         <textarea
@@ -210,7 +189,7 @@
         ></textarea>
         <button
           onclick={() => (showToken = !showToken)}
-          class="btn-icon absolute right-3 top-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+          class="btn-icon absolute right-3 top-3"
         >
           {#if showToken}
             <EyeOff class="w-5 h-5" />
@@ -219,7 +198,7 @@
           {/if}
         </button>
       </div>
-      <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+      <p class="text-body-sm text-ink-muted mt-2">
         Token will be decoded in real-time. No data is sent to any server.
       </p>
     </div>
@@ -227,28 +206,22 @@
     <!-- Validation Status -->
     {#if isValid !== null}
       <div
-        class="flex items-center p-3 rounded-lg {isValid
-          ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
-          : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'}"
+        class="flex items-center p-3 rounded-md {isValid ? 'status-success' : 'status-error'}"
       >
         {#if isValid}
-          <Check class="w-5 h-5 text-green-600 dark:text-green-400 mr-2" />
-          <span class="text-sm text-green-700 dark:text-green-300">Valid JWT format</span>
+          <Check class="w-5 h-5 mr-2" />
+          <span class="text-sm">Valid JWT format</span>
         {:else}
-          <X class="w-5 h-5 text-red-600 dark:text-red-400 mr-2" />
-          <span class="text-sm text-red-700 dark:text-red-300">Invalid JWT format</span>
+          <X class="w-5 h-5 mr-2" />
+          <span class="text-sm">Invalid JWT format</span>
         {/if}
       </div>
     {/if}
 
     {#if errorMessage}
-      <div
-        class="flex items-start p-3 mt-3 rounded-lg bg-warning-50 dark:bg-yellow-900/20 border border-warning-200 dark:border-yellow-800"
-      >
-        <AlertCircle
-          class="w-5 h-5 text-warning-600 dark:text-warning-400 mr-2 mt-0.5 flex-shrink-0"
-        />
-        <span class="text-sm text-warning-700 dark:text-warning-300">{errorMessage}</span>
+      <div class="flex items-start p-3 mt-3 rounded-md status-warning">
+        <AlertCircle class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
+        <span class="text-sm">{errorMessage}</span>
       </div>
     {/if}
   </div>
@@ -256,39 +229,42 @@
   <!-- Token Info Card -->
   {#if isValid && getPayloadInfo()}
     {@const payload = getPayloadInfo()}
-    <div
-      class="tool-card mb-6"
-    >
+    <div class="tool-card">
       <h2 class="section-title flex items-center">
-        <Info class="w-5 h-5 mr-2 text-warning-600 dark:text-primary-400" />
-        Token Information
+        <Info class="w-5 h-5 mr-2 text-accent-text" />
+        Token information
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-          <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Subject</p>
-          <p class="text-sm font-medium text-gray-900 dark:text-white">
+        <div class="info-card p-3">
+          <p class="text-label text-ink-muted mb-1">Subject</p>
+          <p class="text-sm font-medium font-mono text-ink">
             {payload.sub || 'N/A'}
           </p>
         </div>
-        <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-          <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Issued At</p>
-          <p class="text-sm font-medium text-gray-900 dark:text-white">
+        <div class="info-card p-3">
+          <p class="text-label text-ink-muted mb-1">Issued at</p>
+          <p class="text-sm font-medium font-mono text-ink">
             {payload.iat ? formatTimestamp(payload.iat) : 'N/A'}
           </p>
         </div>
-        <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-          <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Expires At</p>
-          <p class="text-sm font-medium text-gray-900 dark:text-white">
+        <div class="info-card p-3">
+          <p class="text-label text-ink-muted mb-1">Expires at</p>
+          <p class="text-sm font-medium font-mono text-ink">
             {payload.exp ? formatTimestamp(payload.exp) : 'N/A'}
           </p>
         </div>
-        <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-          <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Status</p>
+        <div class="info-card p-3">
+          <p class="text-label text-ink-muted mb-1">Status</p>
           <p
-            class="text-sm font-medium {isTokenExpired()
-              ? 'text-red-600 dark:text-red-400'
-              : 'text-green-600 dark:text-green-400'}"
+            class="flex items-center gap-1 text-sm font-medium {isTokenExpired()
+              ? 'text-negative'
+              : 'text-live'}"
           >
+            {#if isTokenExpired()}
+              <X class="w-4 h-4 flex-shrink-0" />
+            {:else}
+              <Check class="w-4 h-4 flex-shrink-0" />
+            {/if}
             {isTokenExpired() ? 'Expired' : `Valid (${getTokenValidityTime()})`}
           </p>
         </div>
@@ -298,54 +274,48 @@
 
   <!-- Decoded Sections -->
   {#if isValid}
-    <div
-      class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm"
-    >
+    <div class="tool-card">
       <!-- Tab Navigation -->
-      <div class="flex flex-wrap border-b border-gray-200 dark:border-gray-700">
+      <div class="tab-nav">
         <button
           onclick={() => (activeTab = 'header')}
-          class="px-4 py-3 text-sm font-medium border-b-2 transition-colors {activeTab === 'header'
-            ? 'border-warning-500 dark:border-primary-500 text-warning-600 dark:text-primary-400'
-            : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
+          class="tab-btn {activeTab === 'header' ? 'active' : ''}"
         >
           Header
         </button>
         <button
           onclick={() => (activeTab = 'payload')}
-          class="px-4 py-3 text-sm font-medium border-b-2 transition-colors {activeTab === 'payload'
-            ? 'border-warning-500 dark:border-primary-500 text-warning-600 dark:text-primary-400'
-            : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
+          class="tab-btn {activeTab === 'payload' ? 'active' : ''}"
         >
           Payload
         </button>
         <button
           onclick={() => (activeTab = 'signature')}
-          class="px-4 py-3 text-sm font-medium border-b-2 transition-colors {activeTab ===
-          'signature'
-            ? 'border-warning-500 dark:border-primary-500 text-warning-600 dark:text-primary-400'
-            : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
+          class="tab-btn {activeTab === 'signature' ? 'active' : ''}"
         >
           Signature
         </button>
       </div>
 
-      <div class="p-6">
+      <div>
         <!-- Header Tab -->
         {#if activeTab === 'header'}
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Decoded Header</h3>
+            <h3 class="section-title-sm mb-0! flex items-center gap-2">
+              <span class="badge bg-tile-violet text-ink-on-dark">Header</span>
+              Decoded header
+            </h3>
             <button
               onclick={() => copyToClipboard(decodedHeader)}
-              class="inline-flex items-center justify-center px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
+              class="btn btn-ghost btn-sm"
             >
-              <Copy class="w-4 h-4 mr-1" />
+              <Copy class="w-4 h-4" />
               {copied ? 'Copied!' : 'Copy'}
             </button>
           </div>
 
           <pre
-            class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm text-gray-700 dark:text-gray-300"><code
+            class="bg-tile-violet text-ink-on-dark p-4 rounded-md overflow-x-auto font-mono text-code"><code
               >{decodedHeader}</code
             ></pre>
         {/if}
@@ -353,18 +323,21 @@
         <!-- Payload Tab -->
         {#if activeTab === 'payload'}
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Decoded Payload</h3>
+            <h3 class="section-title-sm mb-0! flex items-center gap-2">
+              <span class="badge bg-tile-deep text-ink-on-dark">Payload</span>
+              Decoded payload
+            </h3>
             <button
               onclick={() => copyToClipboard(decodedPayload)}
-              class="inline-flex items-center justify-center px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
+              class="btn btn-ghost btn-sm"
             >
-              <Copy class="w-4 h-4 mr-1" />
+              <Copy class="w-4 h-4" />
               {copied ? 'Copied!' : 'Copy'}
             </button>
           </div>
 
           <pre
-            class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm text-gray-700 dark:text-gray-300"><code
+            class="bg-tile-deep text-ink-on-dark p-4 rounded-md overflow-x-auto font-mono text-code"><code
               >{decodedPayload}</code
             ></pre>
         {/if}
@@ -372,28 +345,27 @@
         <!-- Signature Tab -->
         {#if activeTab === 'signature'}
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Signature</h3>
+            <h3 class="section-title-sm mb-0! flex items-center gap-2">
+              <span class="badge bg-tile-lime text-ink-on-bright">Signature</span>
+              Signature
+            </h3>
             <button
               onclick={() => copyToClipboard(signature)}
-              class="inline-flex items-center justify-center px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
+              class="btn btn-ghost btn-sm"
             >
-              <Copy class="w-4 h-4 mr-1" />
+              <Copy class="w-4 h-4" />
               {copied ? 'Copied!' : 'Copy'}
             </button>
           </div>
 
-          <div
-            class="bg-warning-50 dark:bg-yellow-900/20 border border-warning-200 dark:border-yellow-800 rounded-lg p-4 mb-4"
-          >
+          <div class="status-warning rounded-md p-4 mb-4">
             <div class="flex items-start">
-              <Info
-                class="w-5 h-5 text-warning-600 dark:text-warning-400 mr-2 mt-0.5 flex-shrink-0"
-              />
+              <Info class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
               <div>
-                <p class="text-sm text-warning-700 dark:text-warning-300 font-medium mb-1">
-                  Security Note
+                <p class="text-sm font-medium mb-1">
+                  Security note
                 </p>
-                <p class="text-xs text-warning-600 dark:text-warning-400">
+                <p class="text-body-sm">
                   The signature cannot be verified in the browser for security reasons. Always
                   verify JWT signatures on your server using a proper secret key.
                 </p>
@@ -402,7 +374,7 @@
           </div>
 
           <pre
-            class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm text-gray-700 dark:text-gray-300 break-all"><code
+            class="bg-tile-lime text-ink-on-bright p-4 rounded-md overflow-x-auto font-mono text-code break-all whitespace-pre-wrap"><code
               >{signature}</code
             ></pre>
         {/if}
@@ -411,45 +383,33 @@
   {/if}
 
   <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Check class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="tool-card">
+      <div class="feature-icon">
+        <Check class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Real-time Decoding</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Real-time decoding</h3>
+      <p class="feature-description">
         Instantly decode JWT tokens as you type with automatic format validation
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <AlertCircle class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="tool-card">
+      <div class="feature-icon">
+        <AlertCircle class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Token Validation</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Token validation</h3>
+      <p class="feature-description">
         Check token expiration and validity status with detailed information display
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Copy class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="tool-card">
+      <div class="feature-icon">
+        <Copy class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Easy Copy</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Easy copy</h3>
+      <p class="feature-description">
         Copy decoded header, payload, or signature with a single click
       </p>
     </div>

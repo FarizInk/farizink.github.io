@@ -4,7 +4,7 @@
   import Router from './lib/Router.svelte';
   import Navigation from './components/Navigation.svelte';
   import ScrollToTop from './components/ScrollToTop.svelte';
-  import WavesBackground from './components/WavesBackground.svelte';
+  import { theme } from './lib/theme.svelte';
   import LoveIcon from './components/icons/LoveIcon.svelte';
   import Thanks from './components/Thanks.svelte';
   import Modal from './components/Modal.svelte';
@@ -14,44 +14,7 @@
   import { allRoutes } from './routes/index';
   import { router } from './lib/router';
 
-  let isDark = $state(false);
   let currentPath = $state('/');
-
-  onMount(() => {
-    // Check for saved theme preference or default to light mode
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
-
-    // Listen for theme changes
-    const handleThemeChange = () => {
-      const theme = localStorage.getItem('theme');
-      isDark =
-        theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    };
-
-    // Listen for storage changes and system theme changes
-    window.addEventListener('storage', handleThemeChange);
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', handleThemeChange);
-
-    // Also listen for custom theme changes
-    const observer = new MutationObserver(() => {
-      isDark = document.documentElement.classList.contains('dark');
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-
-    return () => {
-      window.removeEventListener('storage', handleThemeChange);
-      window
-        .matchMedia('(prefers-color-scheme: dark)')
-        .removeEventListener('change', handleThemeChange);
-      observer.disconnect();
-    };
-  });
 
   // Use split routes
   const routes = allRoutes;
@@ -81,31 +44,30 @@
 </script>
 
 <div
-  class="min-h-screen flex flex-col justify-between relative bg-secondary-50 dark:bg-secondary-900 transition-colors duration-300"
+  class="relative flex min-h-screen flex-col justify-between bg-canvas text-ink"
   style="isolation: isolate;"
 >
-  <WavesBackground />
   <Navigation />
   <ScrollToTop />
   <RouteSkeletons />
   <div class="flex-1">
-    <div class="container mx-auto px-px sm:px-6 lg:px-8">
+    <div class="mx-auto w-full max-w-[1184px] px-4 md:px-8">
       <Router />
     </div>
   </div>
 
   {#if currentPath !== '/'}
     <footer
-      class="flex justify-center items-center text-secondary-600 dark:text-secondary-400 py-8 mt-12 border-t border-secondary-200 dark:border-secondary-800 bg-white/50 dark:bg-black/20 backdrop-blur-sm"
+      class="mt-12 flex items-center justify-center py-8 text-body-sm font-normal text-ink-muted"
     >
       Made with
       <button
         type="button"
         onclick={openThanksModal}
         aria-label="View credits"
-        class="inline-flex items-center align-middle mx-1 text-rose-500 dark:text-rose-400 transition-transform duration-200 ease-out hover:scale-125 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/60 rounded-full"
+        class="mx-1 inline-flex items-center rounded-pill align-middle text-negative transition-transform duration-150 hover:-rotate-6"
       >
-        <LoveIcon class="w-4 h-4" />
+        <LoveIcon class="size-4" />
       </button>
       at Sidoarjo.
     </footer>
@@ -119,4 +81,4 @@
 <!-- PWA Components -->
 <OfflineIndicator />
 
-<Toaster position="top-center" theme={isDark ? 'dark' : 'light'} />
+<Toaster position="top-center" theme={theme.light ? 'light' : 'dark'} />

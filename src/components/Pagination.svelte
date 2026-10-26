@@ -90,10 +90,10 @@
       <button
         onclick={handlePrevious}
         disabled={!canGoPrevious()}
-        class="btn btn-sm btn-secondary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="btn btn-sm btn-secondary"
         title="Previous page"
       >
-        <ChevronLeft class="w-4 h-4" />
+        <ChevronLeft class="size-4" />
         Previous
       </button>
 
@@ -102,13 +102,14 @@
         <div class="flex items-center gap-1">
           {#each getVisiblePages() as page (page)}
             {#if page === '...'}
-              <span class="px-3 py-1 text-secondary-500 dark:text-secondary-400">...</span>
+              <span class="px-2 py-1 font-mono text-ink-muted">...</span>
             {:else}
               <button
                 onclick={() => handlePageClick(page as number)}
-              class="preset-btn w-8 h-8 rounded-lg {page === currentPage
-                  ? 'bg-primary-600 text-white'
-                  : 'border border-secondary-300 dark:border-secondary-600 text-secondary-700 dark:text-secondary-300 hover:bg-secondary-50 dark:hover:bg-secondary-800'} transition-colors"
+                class="inline-flex h-9 min-w-9 items-center justify-center rounded-pill px-3 font-mono text-sm transition-colors duration-150 {page === currentPage
+                  ? 'bg-ink text-card'
+                  : 'bg-control text-ink hover:bg-control-hover'}"
+                aria-current={page === currentPage ? 'page' : undefined}
                 title={`Go to page ${page}`}
               >
                 {page}
@@ -122,11 +123,11 @@
       <button
         onclick={handleNext}
         disabled={!canGoNext()}
-        class="btn btn-sm btn-secondary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="btn btn-sm btn-secondary"
         title="Next page"
       >
         Next
-        <ChevronRight class="w-4 h-4" />
+        <ChevronRight class="size-4" />
       </button>
     </div>
   </div>

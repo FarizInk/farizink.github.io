@@ -7,7 +7,6 @@
     Download,
     Copy,
     Clock,
-    AlertCircle,
     File,
     Package,
     Loader2,
@@ -15,6 +14,7 @@
     Upload
   } from '@lucide/svelte';
   import Skeleton from 'boneyard-js/svelte';
+  import { Button, EmptyState, PageHeader } from '$lib/components/ds';
   import { fixtureShortlinkData as fixtureData } from '../lib/fixtures';
   import { isBoneyardCapture } from '../lib/boneyard';
 
@@ -201,13 +201,13 @@
 
   function getFileColor(type: string): string {
     switch (type) {
-      case 'image': return 'text-purple-500 bg-purple-50 dark:bg-purple-900/20';
-      case 'video': return 'text-red-500 bg-red-50 dark:bg-red-900/20';
-      case 'audio': return 'text-pink-500 bg-pink-50 dark:bg-pink-900/20';
-      case 'document': return 'text-blue-500 bg-blue-50 dark:bg-blue-900/20';
-      case 'code': return 'text-green-500 bg-green-50 dark:bg-green-900/20';
-      case 'archive': return 'text-amber-500 bg-amber-50 dark:bg-amber-900/20';
-      default: return 'text-gray-500 bg-gray-50 dark:bg-gray-900/20';
+      case 'image': return 'bg-tile-deep text-ink-on-dark';
+      case 'video': return 'bg-tile-violet text-ink-on-dark';
+      case 'audio': return 'bg-tile-violet text-ink-on-dark';
+      case 'document': return 'bg-tile-violet text-ink-on-dark';
+      case 'code': return 'bg-tile-lilac text-ink-on-bright';
+      case 'archive': return 'bg-tile-lilac text-ink-on-bright';
+      default: return 'bg-sunken text-ink';
     }
   }
 </script>
@@ -218,36 +218,29 @@
   <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="notes-page">
-  <!-- Hero Section -->
-  <div class="notes-hero-section">
-    <div class="notes-hero-badge">
-      <span class="badge badge-success">Temp Share</span>
-    </div>
-    <h1 class="notes-hero-title">Shared Files</h1>
-    <p class="notes-hero-description">
-      {#if data}
-        {data.files.length} file{data.files.length > 1 ? 's' : ''} shared with you
-      {:else if !shortlinkCode}
-        Enter your shortlink code to access shared files
-      {:else}
-        Loading shared files...
-      {/if}
-    </p>
-  </div>
+<div class="mx-auto flex max-w-[1120px] flex-col gap-6 pt-16 pb-12">
+  <PageHeader
+    align="center"
+    badge="TEMP SHARE"
+    title="Shared"
+    highlight="files"
+    subtitle={data
+      ? `${data.files.length} file${data.files.length > 1 ? 's' : ''} shared with you.`
+      : !shortlinkCode
+        ? 'Enter your shortlink code to access shared files.'
+        : 'Loading shared files…'}
+  />
 
   <!-- Input Code Form (when no code provided) -->
   {#if !shortlinkCode && !isLoading && !error}
-    <div class="max-w-md mx-auto">
+    <div class="mx-auto w-full max-w-md">
       <div class="card">
         <div class="text-center mb-6">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary-100 dark:bg-primary-900/20 flex items-center justify-center">
-            <Package class="w-8 h-8 text-primary-600 dark:text-primary-400" />
+          <div class="mx-auto mb-4 grid size-14 place-items-center rounded-md bg-tile-deep text-ink-on-dark">
+            <Package class="size-6" />
           </div>
-          <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-            Enter Shortlink Code
-          </h2>
-          <p class="text-gray-600 dark:text-gray-400 text-sm">
+          <h2 class="text-title mb-2">Enter shortlink code</h2>
+          <p class="text-body-sm font-normal text-ink-muted">
             Paste the code from your shared link to access the files
           </p>
         </div>
@@ -259,20 +252,17 @@
             placeholder="e.g., lf64h4vm"
             class="tool-input flex-1 font-mono"
           />
-          <button
-            onclick={handleSubmitCode}
-            class="btn btn-primary"
-          >
-            <ArrowRight class="w-4 h-4" />
+          <button onclick={handleSubmitCode} class="btn btn-primary px-4" aria-label="Open files">
+            <ArrowRight class="size-4" />
           </button>
         </div>
 
         <div class="mt-4 text-center">
           <a
             href="/tools/temp-upload"
-            class="inline-flex items-center gap-1.5 text-sm text-primary-600 dark:text-primary-400 hover:underline"
+            class="inline-flex items-center gap-1.5 text-body-sm text-accent-text hover:underline"
           >
-            <Upload class="w-4 h-4" />
+            <Upload class="size-4" />
             Upload your own files
           </a>
         </div>
@@ -281,22 +271,20 @@
 
   <!-- Loading State -->
   {:else if isLoading}
-    <div class="max-w-4xl mx-auto">
+    <div class="mx-auto w-full max-w-4xl">
       <!-- Info Card -->
       <div class="card mb-6">
         <div class="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-              Files Ready to Download
-            </h2>
-            <p class="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1.5">
-              <Clock class="w-4 h-4" />
+            <h2 class="section-title mb-1">Files ready to download</h2>
+            <p class="text-code flex items-center gap-1.5 text-ink-muted">
+              <Clock class="size-4" />
               {formatExpiresAt(fixtureData.expires_at)}
             </p>
           </div>
           <div class="btn btn-secondary">
-            <Copy class="w-4 h-4" />
-            Copy All Links
+            <Copy class="size-4" />
+            Copy all links
           </div>
         </div>
       </div>
@@ -307,35 +295,35 @@
           {#each fixtureData.files as file (file.id)}
             {@const iconType = getFileIcon(file.original_name)}
             {@const iconColor = getFileColor(iconType)}
-            <div class="card card-hover overflow-hidden">
+            <div class="card overflow-hidden p-4">
               <div class="flex items-center gap-4 min-w-0">
                 <div class="flex-shrink-0">
-                  <div class={`w-12 h-12 rounded-xl flex items-center justify-center ${iconColor}`}>
+                  <div class={`grid size-12 place-items-center rounded-md ${iconColor}`}>
                     {#if iconType === 'image'}
-                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <rect x="3" y="3" width="18" height="18" rx="2" stroke-width="2"/>
                         <circle cx="8.5" cy="8.5" r="1.5" stroke-width="2"/>
                         <path d="M21 15l-5-5L5 21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                       </svg>
                     {:else}
-                      <File class="w-6 h-6" />
+                      <File class="size-6" />
                     {/if}
                   </div>
                 </div>
                 <div class="flex-1 min-w-0 overflow-hidden">
-                  <h3 class="font-semibold text-gray-900 dark:text-white break-all text-sm leading-tight">
+                  <h3 class="text-body-sm leading-tight break-all">
                     {file.original_name}
                   </h3>
-                  <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
+                  <p class="text-code truncate text-ink-muted">
                     {getExtension(file.original_name).toUpperCase()} file
                   </p>
                 </div>
                 <div class="flex items-center gap-2">
                   <div class="btn-icon">
-                    <Copy class="w-4 h-4" />
+                    <Copy class="size-4" />
                   </div>
-                  <div class="btn btn-primary">
-                    <Download class="w-4 h-4" />
+                  <div class="btn btn-secondary">
+                    <Download class="size-4" />
                     <span class="hidden sm:inline">Download</span>
                   </div>
                 </div>
@@ -348,50 +336,33 @@
 
   <!-- Error State -->
   {:else if error}
-    <div class="max-w-md mx-auto">
-      <div class="card status-error">
-        <div class="flex flex-col items-center text-center py-8">
-          <AlertCircle class="w-16 h-16 text-red-500 mb-4" />
-          <h2 class="text-xl font-semibold text-red-900 dark:text-red-100 mb-2">
-            Unable to Load Files
-          </h2>
-          <p class="text-red-700 dark:text-red-300 mb-4">
-            {error}
-          </p>
-          <div class="flex gap-2 flex-wrap justify-center">
-            <button
-              class="btn btn-outline"
-              onclick={() => {
-                error = null;
-                inputCode = '';
-              }}
-            >
-              Try Different Code
-            </button>
-            <a
-              href="/tools/temp-upload"
-              class="btn btn-secondary"
-            >
-              Go to Upload Page
-            </a>
-          </div>
-        </div>
-      </div>
+    <div class="mx-auto w-full max-w-md rounded-lg bg-card">
+      <EmptyState title="Unable to load files" text={error}>
+        {#snippet actions()}
+          <Button
+            onclick={() => {
+              error = null;
+              inputCode = '';
+            }}
+          >
+            Try a different code
+          </Button>
+          <Button variant="secondary" href="/tools/temp-upload">Go to upload page</Button>
+        {/snippet}
+      </EmptyState>
     </div>
 
   <!-- Files List -->
   {:else if data}
-    <div class="max-w-4xl mx-auto">
+    <div class="mx-auto w-full max-w-4xl">
       <!-- Info Card -->
       <div class="card mb-6">
         <div class="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-              Files Ready to Download
-            </h2>
+            <h2 class="section-title mb-1">Files ready to download</h2>
             {#if data.expires_at}
-              <p class="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1.5">
-                <Clock class="w-4 h-4" />
+              <p class="text-code flex items-center gap-1.5 text-ink-muted">
+                <Clock class="size-4" />
                 {formatExpiresAt(data.expires_at)}
               </p>
             {/if}
@@ -400,8 +371,8 @@
             class="btn btn-secondary"
             onclick={copyAllLinks}
           >
-            <Copy class="w-4 h-4" />
-            Copy All Links
+            <Copy class="size-4" />
+            Copy all links
           </button>
         </div>
       </div>
@@ -412,51 +383,51 @@
           {@const iconType = getFileIcon(file.original_name)}
           {@const iconColor = getFileColor(iconType)}
 
-          <div class="card card-hover overflow-hidden">
+          <div class="card overflow-hidden p-4">
             <div class="flex items-center gap-4 min-w-0">
               <!-- File Icon -->
               <div class="flex-shrink-0">
-                <div class={`w-12 h-12 rounded-xl flex items-center justify-center ${iconColor}`}>
+                <div class={`grid size-12 place-items-center rounded-md ${iconColor}`}>
                   {#if iconType === 'image'}
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <rect x="3" y="3" width="18" height="18" rx="2" stroke-width="2"/>
                       <circle cx="8.5" cy="8.5" r="1.5" stroke-width="2"/>
                       <path d="M21 15l-5-5L5 21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   {:else if iconType === 'video'}
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   {:else if iconType === 'audio'}
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path d="M9 18V5l12-2v13" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                       <circle cx="6" cy="18" r="3" stroke-width="2"/>
                       <circle cx="18" cy="16" r="3" stroke-width="2"/>
                     </svg>
                   {:else if iconType === 'document'}
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   {:else if iconType === 'code'}
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   {:else if iconType === 'archive'}
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   {:else}
-                    <File class="w-6 h-6" />
+                    <File class="size-6" />
                   {/if}
                 </div>
               </div>
 
               <!-- File Info -->
               <div class="flex-1 min-w-0 overflow-hidden">
-                <h3 class="font-semibold text-gray-900 dark:text-white break-all text-sm leading-tight" title={file.original_name}>
+                <h3 class="text-body-sm leading-tight break-all" title={file.original_name}>
                   {file.original_name}
                 </h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
+                <p class="text-code truncate text-ink-muted">
                   {getExtension(file.original_name).toUpperCase()} file
                 </p>
               </div>
@@ -468,16 +439,16 @@
                   class="btn-icon"
                   title="Copy download link"
                 >
-                  <Copy class="w-4 h-4" />
+                  <Copy class="size-4" />
                 </button>
                 <a
                   href={file.presigned_url}
                   target="_blank"
                   rel="noopener"
-                  class="btn btn-primary"
+                  class="btn btn-secondary"
                   title="Download file"
                 >
-                  <Download class="w-4 h-4" />
+                  <Download class="size-4" />
                   <span class="hidden sm:inline">Download</span>
                 </a>
               </div>
@@ -488,14 +459,14 @@
 
       <!-- Footer Info -->
       <div class="mt-8 text-center">
-        <p class="text-sm text-gray-500 dark:text-gray-400">
+        <p class="text-body-sm font-normal text-ink-muted">
           Files are hosted temporarily and will be automatically deleted after 24 hours.
         </p>
         <a
           href="/tools/temp-upload"
-          class="inline-flex items-center gap-1.5 mt-2 text-sm text-primary-600 dark:text-primary-400 hover:underline"
+          class="mt-2 inline-flex items-center gap-1.5 text-body-sm text-accent-text hover:underline"
         >
-          <Package class="w-4 h-4" />
+          <Package class="size-4" />
           Upload your own files
         </a>
       </div>

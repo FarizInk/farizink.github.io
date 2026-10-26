@@ -247,8 +247,7 @@
   <button
     bind:this={triggerElement}
     type="button"
-    class="input flex items-center gap-2 min-h-10 text-left cursor-pointer disabled:cursor-not-allowed"
-    class:border-warning-500={isOpen}
+    class="input flex items-center gap-2 min-h-10 text-left cursor-pointer disabled:cursor-not-allowed {isOpen ? 'outline-2 outline-offset-2 outline-focus-ring' : ''}"
     onclick={toggleDropdown}
     onkeydown={handleKeydown}
     {disabled}
@@ -259,30 +258,22 @@
     <!-- Selected Items Display -->
     <div class="flex-1 flex flex-wrap items-center gap-1">
       {#if selectedOptions.length === 0}
-        <span class="text-secondary-400">{placeholder}</span>
+        <span class="text-ink-muted">{placeholder}</span>
       {:else}
         {#each selectedOptions as option (option.value)}
           <span
-            class="text-xs flex items-center gap-1 px-2 py-1 rounded-full border {!option.color
-              ? 'bg-warning-100 text-warning-700 border-warning-200 dark:bg-primary-900/20 dark:text-primary-300 dark:border-primary-700'
-              : ''}"
-            style="background-color: {option.color
-              ? option.color + '20'
-              : undefined}; color: {option.color || undefined}; border-color: {option.color
-              ? option.color + '40'
-              : undefined}"
+            class="inline-flex h-7 items-center gap-1.5 rounded-pill bg-sunken pr-1.5 pl-3 text-code text-ink"
           >
-            <div
-              class="w-2 h-2 rounded-full {!option.color
-                ? 'bg-warning-600 dark:bg-primary-600'
-                : ''}"
+            <span
+              class="size-2 shrink-0 rounded-pill {!option.color ? 'bg-accent' : ''}"
               style="background-color: {option.color || undefined}"
-            ></div>
+              aria-hidden="true"
+            ></span>
             {option.label}
             <span
               role="button"
               tabindex="0"
-              class="hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full p-0.5 transition-colors cursor-pointer"
+              class="cursor-pointer rounded-pill p-0.5 text-ink-muted transition-colors hover:bg-control-hover hover:text-ink"
               onclick={e => {
                 e.stopPropagation();
                 removeValue(option.value);
@@ -295,7 +286,7 @@
               }}
               aria-label={`Remove ${option.label}`}
             >
-              <X class="w-3 h-3" />
+              <X class="size-3" />
             </span>
           </span>
         {/each}
@@ -304,7 +295,7 @@
 
     <!-- Dropdown Arrow -->
     <ChevronDown
-      class={`w-4 h-4 text-secondary-400 transition-transform flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
+      class={`size-4 shrink-0 text-ink-muted transition-transform ${isOpen ? 'rotate-180' : ''}`}
     />
   </button>
 
@@ -312,7 +303,7 @@
   {#if selectedOptions.length > 0}
     <button
       type="button"
-      class="quick-btn absolute top-2 right-8 text-xs text-secondary-400 hover:text-danger-500 transition-colors"
+      class="quick-btn absolute top-2 right-8 text-xs text-ink-muted transition-colors hover:text-negative"
       onclick={e => {
         e.stopPropagation();
         clearAll();
@@ -334,15 +325,15 @@
         id={portalId}
         role="listbox"
         tabindex="-1"
-        class="fixed z-[9999] bg-white dark:bg-secondary-800 border border-secondary-200 dark:border-secondary-600 rounded-lg shadow-lg overflow-hidden"
+        class="fixed z-[9999] overflow-hidden rounded-md bg-raised shadow-pop"
         style="top: {dropdownPosition.top}px; left: {dropdownPosition.left}px; width: {dropdownPosition.width}px; min-width: 200px;"
       >
         <!-- Search Input -->
         {#if searchable}
-          <div class="p-3 border-b border-secondary-200 dark:border-secondary-600">
+          <div class="p-3">
             <div class="relative">
               <Search
-                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-secondary-400"
+                class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-muted"
               />
               <input
                 bind:this={searchInputElement}
@@ -360,7 +351,7 @@
         <!-- Options List -->
         <div class={`${maxHeight} overflow-y-auto`}>
           {#if filteredOptions.length === 0}
-            <div class="p-4 text-center text-secondary-500 text-sm">
+            <div class="p-4 text-center text-body-sm text-ink-muted">
               {searchQuery ? 'No options found' : 'No options available'}
             </div>
           {:else}
@@ -368,10 +359,10 @@
               {#each filteredOptions as option, index (option.value)}
                 <button
                   type="button"
-                  class="w-full px-3 py-2 text-left text-sm transition-colors flex items-center gap-3 border-b border-secondary-100 dark:border-secondary-700 last:border-b-0 {focusedIndex ===
+                  class="flex w-full items-center gap-3 px-3 py-2 text-left text-body-sm transition-colors {focusedIndex ===
                   index
-                    ? 'bg-warning-50 dark:bg-primary-900/20'
-                    : 'hover:bg-secondary-50 dark:hover:bg-secondary-700'}"
+                    ? 'bg-control'
+                    : 'hover:bg-control'}"
                   onclick={() => selectOption(option)}
                   onmouseenter={() => (focusedIndex = index)}
                   role="option"
@@ -380,32 +371,26 @@
                   <!-- Checkbox/Icon -->
                   <div class="flex-shrink-0">
                     {#if selectedValues.includes(option.value)}
-                      <div
-                        class="w-4 h-4 bg-warning-600 dark:bg-primary-600 rounded flex items-center justify-center"
-                      >
-                        <Check class="w-3 h-3 text-white" />
+                      <div class="flex size-4 items-center justify-center rounded-[4px] bg-accent">
+                        <Check class="size-3 text-ink-on-accent" />
                       </div>
                     {:else}
-                      <div
-                        class="w-4 h-4 border border-secondary-300 dark:border-secondary-600 rounded"
-                      ></div>
+                      <div class="size-4 rounded-[4px] bg-control"></div>
                     {/if}
                   </div>
 
                   <!-- Option Content -->
                   <div class="flex-1 min-w-0 flex items-center gap-2">
                     <div
-                      class="w-3 h-3 rounded-full flex-shrink-0 {!option.color
-                        ? 'bg-warning-600 dark:bg-primary-600'
-                        : ''}"
+                      class="size-2.5 shrink-0 rounded-pill {!option.color ? 'bg-accent' : ''}"
                       style="background-color: {option.color || undefined}"
                     ></div>
                     <div class="flex-1 min-w-0">
-                      <div class="font-medium text-secondary-900 dark:text-white truncate">
+                      <div class="truncate font-medium text-ink">
                         {option.label}
                       </div>
                       {#if option.description}
-                        <div class="text-xs text-secondary-500 dark:text-secondary-400 truncate">
+                        <div class="truncate text-xs text-ink-muted">
                           {option.description}
                         </div>
                       {/if}
@@ -419,10 +404,8 @@
 
         <!-- Footer with selection count -->
         {#if selectedOptions.length > 0}
-          <div
-            class="p-2 border-t border-secondary-200 dark:border-secondary-600 bg-secondary-50 dark:bg-secondary-700"
-          >
-            <p class="text-xs text-secondary-600 dark:text-secondary-400 text-center">
+          <div class="bg-sunken p-2">
+            <p class="text-center font-mono text-xs text-ink-muted">
               {selectedOptions.length} of {options.length} selected
             </p>
           </div>

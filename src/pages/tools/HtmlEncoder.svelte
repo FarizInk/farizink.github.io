@@ -51,78 +51,51 @@
   icon={FileText}
   color="warning"
 >
-  <!-- Hero Section -->
-  <div
-    class="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl border border-warning-200 dark:border-primary-800 p-4 sm:p-6 mb-6"
-  >
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-warning-500 dark:bg-primary-500 rounded-xl">
-          <Code class="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">HTML Entity Encoder</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            Encode and decode HTML entities safely
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Tab Navigation -->
-  <div
-    class="tool-card mb-6"
-  >
-    <div
-      class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1"
+  <div class="tab-nav" role="tablist">
+    <button
+      role="tab"
+      aria-selected={activeTab === 'encode'}
+      onclick={() => (activeTab = 'encode')}
+      class="tab-btn {activeTab === 'encode' ? 'active' : ''}"
     >
-      <button
-        onclick={() => (activeTab = 'encode')}
-        class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'encode'
-          ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
-          : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
-      >
-        Encode HTML
-      </button>
-      <button
-        onclick={() => (activeTab = 'decode')}
-        class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'decode'
-          ? 'bg-warning-100 dark:bg-primary-900/20 text-warning-700 dark:text-primary-300'
-          : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}"
-      >
-        Decode HTML
-      </button>
-    </div>
+      Encode HTML
+    </button>
+    <button
+      role="tab"
+      aria-selected={activeTab === 'decode'}
+      onclick={() => (activeTab = 'decode')}
+      class="tab-btn {activeTab === 'decode' ? 'active' : ''}"
+    >
+      Decode HTML
+    </button>
   </div>
 
   <!-- Controls -->
-  <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
+  <div class="flex flex-wrap gap-2 items-center">
     <button
       onclick={activeTab === 'encode' ? encodeHtml : decodeHtml}
       disabled={!inputText.trim()}
-      class="btn btn-copy"
+      class="btn btn-primary"
     >
       {activeTab === 'encode' ? 'Encode HTML' : 'Decode HTML'}
     </button>
     <button class="btn btn-secondary" onclick={loadSampleText}>
-      <RefreshCw class="w-4 h-4 mr-2" />
-      Load Sample
+      <RefreshCw class="w-4 h-4" />
+      Load sample
     </button>
-    <button class="btn btn-secondary" onclick={clearAll}>
-      Clear All
+    <button class="btn btn-ghost" onclick={clearAll}>
+      Clear all
     </button>
   </div>
 
   <!-- Input and Output -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <!-- Input Section -->
-    <div
-      class="tool-card"
-    >
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Input</h2>
-        <span class="text-sm text-gray-500 dark:text-gray-400">
+    <div class="tool-card">
+      <div class="card-header">
+        <h2 class="section-title !mb-0">Input</h2>
+        <span class="text-count">
           {inputText.length} characters
         </span>
       </div>
@@ -137,20 +110,18 @@
     </div>
 
     <!-- Results Section -->
-    <div
-      class="tool-card"
-    >
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-          {activeTab === 'encode' ? 'Encoded' : 'Decoded'} Result
+    <div class="tool-card">
+      <div class="card-header">
+        <h2 class="section-title !mb-0">
+          {activeTab === 'encode' ? 'Encoded' : 'Decoded'} result
         </h2>
         {#if (activeTab === 'encode' && encodedText) || (activeTab === 'decode' && decodedText)}
           <button
             onclick={() =>
               copyToClipboard(activeTab === 'encode' ? encodedText : decodedText, 'result')}
-            class="btn btn-copy btn-sm inline-flex items-center justify-center px-3 py-1.5 text-sm bg-warning-500 hover:bg-warning-600 dark:bg-primary-500 dark:hover:bg-primary-600 text-white rounded-lg transition-all"
+            class="btn btn-copy btn-sm"
           >
-            <Copy class="w-4 h-4 mr-1" />
+            <Copy class="w-4 h-4" />
             {copiedText === 'result' ? 'Copied!' : 'Copy'}
           </button>
         {/if}
@@ -161,24 +132,24 @@
           <textarea
             bind:value={encodedText}
             placeholder="Encoded HTML will appear here..."
-            class="tool-textarea h-64 bg-gray-50 dark:bg-gray-900 resize-none"
+            class="code-editor h-64"
             readonly
           ></textarea>
           {#if !encodedText}
             <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <p class="text-gray-400 dark:text-gray-600">Enter text above to see encoded result</p>
+              <p class="text-body-sm text-ink-muted">Enter text above to see encoded result</p>
             </div>
           {/if}
         {:else}
           <textarea
             bind:value={decodedText}
             placeholder="Decoded HTML will appear here..."
-            class="tool-textarea h-64 bg-gray-50 dark:bg-gray-900 resize-none"
+            class="code-editor h-64"
             readonly
           ></textarea>
           {#if !decodedText}
             <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <p class="text-gray-400 dark:text-gray-600">
+              <p class="text-body-sm text-ink-muted">
                 Enter HTML entities above to see decoded result
               </p>
             </div>
@@ -189,64 +160,54 @@
   </div>
 
   <!-- Common HTML Entities Reference -->
-  <div
-    class="tool-card mb-6"
-  >
-    <h3 class="section-title">Common HTML Entities</h3>
+  <div class="tool-card">
+    <h3 class="section-title">Common HTML entities</h3>
     <div class="overflow-x-auto">
-      <table class="w-full text-sm">
+      <table class="w-full text-body-sm">
         <thead>
-          <tr class="border-b border-gray-200 dark:border-gray-700">
-            <th class="text-left py-2 px-3 font-medium text-gray-700 dark:text-gray-300"
-              >Character</th
-            >
-            <th class="text-left py-2 px-3 font-medium text-gray-700 dark:text-gray-300"
-              >Entity Name</th
-            >
-            <th class="text-left py-2 px-3 font-medium text-gray-700 dark:text-gray-300"
-              >Entity Number</th
-            >
-            <th class="text-left py-2 px-3 font-medium text-gray-700 dark:text-gray-300"
-              >Description</th
-            >
+          <tr>
+            <th class="text-left py-2 px-3 text-label text-ink-muted">Character</th>
+            <th class="text-left py-2 px-3 text-label text-ink-muted">Entity name</th>
+            <th class="text-left py-2 px-3 text-label text-ink-muted">Entity number</th>
+            <th class="text-left py-2 px-3 text-label text-ink-muted">Description</th>
           </tr>
         </thead>
-        <tbody>
-          <tr class="border-b border-gray-100 dark:border-gray-800">
+        <tbody class="text-ink">
+          <tr class="odd:bg-sunken">
             <td class="py-2 px-3 font-mono">&lt;</td>
-            <td class="py-2 px-3 font-mono">&amp;lt;</td>
+            <td class="py-2 px-3 font-mono text-accent-text">&amp;lt;</td>
             <td class="py-2 px-3 font-mono">&amp;#60;</td>
-            <td class="py-2 px-3 text-gray-600 dark:text-gray-400">Less than</td>
+            <td class="py-2 px-3 text-ink-muted">Less than</td>
           </tr>
-          <tr class="border-b border-gray-100 dark:border-gray-800">
+          <tr class="odd:bg-sunken">
             <td class="py-2 px-3 font-mono">&gt;</td>
-            <td class="py-2 px-3 font-mono">&amp;gt;</td>
+            <td class="py-2 px-3 font-mono text-accent-text">&amp;gt;</td>
             <td class="py-2 px-3 font-mono">&amp;#62;</td>
-            <td class="py-2 px-3 text-gray-600 dark:text-gray-400">Greater than</td>
+            <td class="py-2 px-3 text-ink-muted">Greater than</td>
           </tr>
-          <tr class="border-b border-gray-100 dark:border-gray-800">
+          <tr class="odd:bg-sunken">
             <td class="py-2 px-3 font-mono">&amp;</td>
-            <td class="py-2 px-3 font-mono">&amp;amp;</td>
+            <td class="py-2 px-3 font-mono text-accent-text">&amp;amp;</td>
             <td class="py-2 px-3 font-mono">&amp;#38;</td>
-            <td class="py-2 px-3 text-gray-600 dark:text-gray-400">Ampersand</td>
+            <td class="py-2 px-3 text-ink-muted">Ampersand</td>
           </tr>
-          <tr class="border-b border-gray-100 dark:border-gray-800">
+          <tr class="odd:bg-sunken">
             <td class="py-2 px-3 font-mono">"</td>
-            <td class="py-2 px-3 font-mono">&amp;quot;</td>
+            <td class="py-2 px-3 font-mono text-accent-text">&amp;quot;</td>
             <td class="py-2 px-3 font-mono">&amp;#34;</td>
-            <td class="py-2 px-3 text-gray-600 dark:text-gray-400">Quotation mark</td>
+            <td class="py-2 px-3 text-ink-muted">Quotation mark</td>
           </tr>
-          <tr class="border-b border-gray-100 dark:border-gray-800">
+          <tr class="odd:bg-sunken">
             <td class="py-2 px-3 font-mono">'</td>
-            <td class="py-2 px-3 font-mono">&amp;apos;</td>
+            <td class="py-2 px-3 font-mono text-accent-text">&amp;apos;</td>
             <td class="py-2 px-3 font-mono">&amp;#39;</td>
-            <td class="py-2 px-3 text-gray-600 dark:text-gray-400">Apostrophe</td>
+            <td class="py-2 px-3 text-ink-muted">Apostrophe</td>
           </tr>
-          <tr class="border-b border-gray-100 dark:border-gray-800">
+          <tr class="odd:bg-sunken">
             <td class="py-2 px-3 font-mono"> </td>
-            <td class="py-2 px-3 font-mono">&amp;nbsp;</td>
+            <td class="py-2 px-3 font-mono text-accent-text">&amp;nbsp;</td>
             <td class="py-2 px-3 font-mono">&amp;#160;</td>
-            <td class="py-2 px-3 text-gray-600 dark:text-gray-400">Non-breaking space</td>
+            <td class="py-2 px-3 text-ink-muted">Non-breaking space</td>
           </tr>
         </tbody>
       </table>
@@ -254,45 +215,33 @@
   </div>
 
   <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Code class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+    <div class="card">
+      <div class="feature-icon">
+        <Code class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Encode HTML</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Encode HTML</h3>
+      <p class="feature-description">
         Convert HTML tags and special characters to entities for safe display
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <FileText class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <FileText class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Decode HTML</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Decode HTML</h3>
+      <p class="feature-description">
         Convert HTML entities back to readable characters
       </p>
     </div>
 
-    <div
-      class="group p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-warning-300 dark:hover:border-primary-400"
-    >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 bg-warning-100 dark:bg-primary-900/20 group-hover:bg-yellow-200 dark:group-hover:bg-purple-900/30 transition-colors"
-      >
-        <Zap class="w-6 h-6 text-warning-600 dark:text-primary-400" />
+    <div class="card">
+      <div class="feature-icon">
+        <Zap class="w-5 h-5" />
       </div>
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Unicode Support</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+      <h3 class="feature-title">Unicode support</h3>
+      <p class="feature-description">
         Full support for Unicode characters and special symbols
       </p>
     </div>

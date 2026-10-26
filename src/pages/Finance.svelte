@@ -6,19 +6,13 @@
     Plus,
     ArrowUpRight,
     ArrowDownRight,
-    DollarSign,
-    TrendingUp,
-    TrendingDown,
     Search,
-    Filter,
     RefreshCw,
-    Calculator,
     Trash2,
     Pencil,
     X,
     Save,
     Calendar,
-    Tag as TagIcon,
     Loader2,
     ChevronLeft,
     ChevronRight,
@@ -38,6 +32,7 @@
   } from '../lib/finance';
   import { getTags, type Tag } from '../lib/tags';
   import Skeleton from 'boneyard-js/svelte';
+  import { Button, EmptyState, FilterTabs, PageHeader, StatTile } from '$lib/components/ds';
   import { fixtureTransactions, fixtureFinanceSummary } from '../lib/fixtures';
   import { isBoneyardCapture } from '../lib/boneyard';
   import Modal from '../components/Modal.svelte';
@@ -286,318 +281,187 @@
   <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="min-h-screen">
-  {#if isCheckingAuth}
-    <div class="flex items-center justify-center py-20">
-      <div class="w-12 h-12 border-4 border-warning-500 border-t-transparent rounded-full animate-spin"></div>
-    </div>
-  {:else if !hasAuthToken && !isBoneyardCapture}
-    <div class="flex items-center justify-center min-h-[60vh] px-4">
-      <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
-        <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Wallet class="w-8 h-8 text-red-600 dark:text-red-400" />
-        </div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Login Required</h1>
-        <p class="text-gray-600 dark:text-gray-400 mb-6">You need to be logged in to access finance.</p>
-        <button
-          onclick={() => document.dispatchEvent(new CustomEvent('open-login-modal'))}
-          class="btn btn-primary"
-        >
-          Login
-        </button>
-      </div>
-    </div>
-  {:else}
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Header -->
-      <div class="flex items-center justify-between mb-8">
-        <div class="flex items-center gap-4">
-          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-warning-500 to-amber-500 dark:from-purple-500 dark:to-purple-600 flex items-center justify-center shadow-lg shadow-amber-500/20 dark:shadow-purple-500/20">
-            <Wallet class="w-7 h-7 text-white" />
-          </div>
-          <div>
-            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Finance</h1>
-            <p class="text-gray-500 dark:text-gray-400 text-sm">Track income & expenses</p>
-          </div>
-        </div>
-        <button
-          onclick={openCreateModal}
-          class="btn btn-primary"
-        >
-          <Plus class="w-4 h-4" />
-          <span class="hidden sm:inline">Add</span>
-        </button>
-      </div>
+{#snippet summaryRow(data: FinanceSummary)}
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <StatTile label="Income" value={formatAmount(data.total_income)} delta={{ direction: 'up', text: 'Money in' }} />
+    <StatTile label="Expense" value={formatAmount(data.total_expense)} delta={{ direction: 'down', text: 'Money out' }} />
+    <StatTile
+      label="Balance"
+      value={formatAmount(data.balance)}
+      tone={data.balance < 0 ? 'surface' : 'violet'}
+      delta={data.balance < 0 ? { direction: 'down', text: 'Negative balance' } : undefined}
+      caption={data.balance < 0 ? undefined : 'All accounts'}
+    />
+  </div>
+{/snippet}
 
-      <!-- Summary Cards -->
-      {#if isLoading && !summary}
-        <Skeleton name="finance-summary" loading={true}>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
-              <div class="flex items-center gap-3 mb-2">
-                <div class="w-9 h-9 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                  <ArrowUpRight class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                </div>
-                <span class="text-sm text-gray-500 dark:text-gray-400">Income</span>
-              </div>
-              <p class="text-xl font-bold text-emerald-600 dark:text-emerald-400">
-                {formatAmount(fixtureFinanceSummary.total_income)}
-              </p>
-            </div>
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
-              <div class="flex items-center gap-3 mb-2">
-                <div class="w-9 h-9 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                  <ArrowDownRight class="w-5 h-5 text-red-600 dark:text-red-400" />
-                </div>
-                <span class="text-sm text-gray-500 dark:text-gray-400">Expense</span>
-              </div>
-              <p class="text-xl font-bold text-red-600 dark:text-red-400">
-                {formatAmount(fixtureFinanceSummary.total_expense)}
-              </p>
-            </div>
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
-              <div class="flex items-center gap-3 mb-2">
-                <div class="w-9 h-9 rounded-lg bg-warning-100 dark:bg-purple-900/30 flex items-center justify-center">
-                  <DollarSign class="w-5 h-5 text-warning-600 dark:text-purple-400" />
-                </div>
-                <span class="text-sm text-gray-500 dark:text-gray-400">Balance</span>
-              </div>
-              <p class="text-xl font-bold text-warning-600 dark:text-purple-400">
-                {formatAmount(fixtureFinanceSummary.balance)}
-              </p>
-            </div>
-          </div>
-        </Skeleton>
-      {:else if summary}
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <div class="flex items-center gap-3 mb-2">
-              <div class="w-9 h-9 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                <ArrowUpRight class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-              </div>
-              <span class="text-sm text-gray-500 dark:text-gray-400">Income</span>
-            </div>
-            <p class="text-xl font-bold text-emerald-600 dark:text-emerald-400">
-              {formatAmount(summary.total_income)}
-            </p>
-          </div>
-          <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <div class="flex items-center gap-3 mb-2">
-              <div class="w-9 h-9 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                <ArrowDownRight class="w-5 h-5 text-red-600 dark:text-red-400" />
-              </div>
-              <span class="text-sm text-gray-500 dark:text-gray-400">Expense</span>
-            </div>
-            <p class="text-xl font-bold text-red-600 dark:text-red-400">
-              {formatAmount(summary.total_expense)}
-            </p>
-          </div>
-          <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <div class="flex items-center gap-3 mb-2">
-              <div class="w-9 h-9 rounded-lg bg-warning-100 dark:bg-purple-900/30 flex items-center justify-center">
-                <DollarSign class="w-5 h-5 text-warning-600 dark:text-purple-400" />
-              </div>
-              <span class="text-sm text-gray-500 dark:text-gray-400">Balance</span>
-            </div>
-            <p class="text-xl font-bold {summary.balance >= 0 ? 'text-warning-600 dark:text-purple-400' : 'text-red-600 dark:text-red-400'}">
-              {formatAmount(summary.balance)}
-            </p>
-          </div>
+{#snippet transactionRow(transaction: Transaction, interactive: boolean)}
+  <div class="group flex items-center justify-between gap-4 rounded-lg bg-card p-4">
+    <div class="flex min-w-0 items-center gap-4">
+      <span
+        class="grid size-11 flex-none place-items-center rounded-md {transaction.type === 'income'
+          ? 'bg-tile-lilac text-ink-on-bright'
+          : 'bg-tile-deep text-ink-on-dark'}"
+        role="img"
+        aria-label={transaction.type === 'income' ? 'Income' : 'Expense'}
+      >
+        {#if transaction.type === 'income'}
+          <ArrowUpRight class="size-5" />
+        {:else}
+          <ArrowDownRight class="size-5" />
+        {/if}
+      </span>
+      <div class="min-w-0">
+        <p class="truncate text-body-sm">{transaction.description || 'No description'}</p>
+        <div class="mt-1 flex flex-wrap items-center gap-2">
+          <span class="text-code flex items-center gap-1 text-ink-muted">
+            <Calendar class="size-3" />
+            {formatDate(transaction.transaction_date)}
+          </span>
+          {#each transaction.tags || [] as tag (tag.id)}
+            <span class="inline-flex h-6 items-center gap-1.5 rounded-pill bg-sunken px-2.5 text-code text-ink">
+              <span
+                class="size-1.5 rounded-pill bg-accent"
+                style={tag.color ? `background-color: ${tag.color}` : undefined}
+                aria-hidden="true"
+              ></span>
+              {tag.name || tag.tag}
+            </span>
+          {/each}
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <span
+        class="font-mono text-sm font-medium whitespace-nowrap tabular-nums sm:text-base {transaction.type === 'income'
+          ? 'text-live'
+          : 'text-negative'}"
+      >
+        {transaction.type === 'income' ? '+' : '−'}{formatAmount(transaction.amount)}
+      </span>
+      {#if interactive}
+        <div class="flex items-center opacity-100 transition-opacity sm:opacity-0 sm:group-focus-within:opacity-100 sm:group-hover:opacity-100">
+          <button onclick={() => openEditModal(transaction)} class="btn-icon" title="Edit" aria-label="Edit transaction">
+            <Pencil class="size-4" />
+          </button>
+          <button
+            onclick={() => handleDelete(transaction)}
+            class="btn-icon hover:text-negative"
+            title="Delete"
+            aria-label="Delete transaction"
+          >
+            <Trash2 class="size-4" />
+          </button>
         </div>
       {/if}
+    </div>
+  </div>
+{/snippet}
 
-      <!-- Filters -->
-      <div class="flex flex-wrap items-center gap-3 mb-6">
-        <div class="flex rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <button
-            onclick={() => handleFilterChange('all')}
-            class="tab-btn px-4 py-2 text-sm font-medium transition-colors {filterType === 'all'
-              ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900'
-              : 'bg-white text-gray-600 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}"
-          >
-            All
-          </button>
-          <button
-            onclick={() => handleFilterChange('income')}
-            class="tab-btn px-4 py-2 text-sm font-medium transition-colors flex items-center gap-1.5 {filterType === 'income'
-              ? 'bg-emerald-600 text-white'
-              : 'bg-white text-gray-600 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}"
-          >
-            <TrendingUp class="w-3.5 h-3.5" />
-            Income
-          </button>
-          <button
-            onclick={() => handleFilterChange('expense')}
-            class="tab-btn px-4 py-2 text-sm font-medium transition-colors flex items-center gap-1.5 {filterType === 'expense'
-              ? 'bg-red-600 text-white'
-              : 'bg-white text-gray-600 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}"
-          >
-            <TrendingDown class="w-3.5 h-3.5" />
-            Expense
-          </button>
-        </div>
+<div class="mx-auto max-w-[1120px] pt-16 pb-12">
+  {#if isCheckingAuth}
+    <div class="flex items-center justify-center py-20">
+      <div class="size-12 animate-spin rounded-pill border-4 border-control border-t-accent"></div>
+    </div>
+  {:else if !hasAuthToken && !isBoneyardCapture}
+    <div class="flex min-h-[60vh] items-center justify-center">
+      <EmptyState title="Login required" text="You need to be logged in to access finance.">
+        {#snippet actions()}
+          <Button onclick={() => document.dispatchEvent(new CustomEvent('open-login-modal'))}>Log in</Button>
+        {/snippet}
+      </EmptyState>
+    </div>
+  {:else}
+    <div class="flex flex-col gap-6">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <PageHeader title="Personal" highlight="finance" subtitle="Track income and expenses." />
+        <Button onclick={openCreateModal} class="mb-8">
+          <Plus class="size-4" /> Add transaction
+        </Button>
+      </div>
 
-        <!-- Search -->
-        <div class="flex-1 min-w-[200px] relative">
-          <Search class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+      {#if isLoading && !summary}
+        <Skeleton name="finance-summary" loading={true}>
+          {@render summaryRow(fixtureFinanceSummary)}
+        </Skeleton>
+      {:else if summary}
+        {@render summaryRow(summary)}
+      {/if}
+
+      <div class="flex flex-wrap items-center gap-3">
+        <FilterTabs
+          items={[
+            { id: 'all', label: 'All' },
+            { id: 'income', label: 'Income' },
+            { id: 'expense', label: 'Expense' }
+          ]}
+          value={filterType}
+          onchange={id => handleFilterChange(id as 'all' | 'income' | 'expense')}
+        />
+
+        <label class="relative min-w-[200px] flex-1">
+          <Search class="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-ink-muted" />
           <input
-            type="text"
-            placeholder="Search transactions..."
+            type="search"
+            placeholder="Search transactions…"
+            aria-label="Search transactions"
             bind:value={searchQuery}
-            onkeydown={(e) => e.key === 'Enter' && handleSearch()}
-            class="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-warning-500/20 focus:border-warning-500 dark:focus:ring-purple-500/20 dark:focus:border-purple-500 outline-none transition-all"
+            onkeydown={e => e.key === 'Enter' && handleSearch()}
+            class="h-10 w-full rounded-pill bg-control pr-4 pl-10 text-body-sm font-normal text-ink placeholder:text-ink-muted focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
           />
-        </div>
+        </label>
 
         <button
           onclick={handleRefresh}
           disabled={isLoading}
-          class="btn-icon p-2 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+          class="btn-icon"
           title="Refresh"
+          aria-label="Refresh"
         >
-          <RefreshCw class="w-4 h-4 text-gray-500 dark:text-gray-400" />
+          <RefreshCw class="size-4 {isLoading ? 'animate-spin' : ''}" />
         </button>
       </div>
 
-      <!-- Transactions List -->
       {#if isLoading}
         <Skeleton name="finance-transactions" loading={true}>
           <div class="space-y-3">
             {#each fixtureTransactions as transaction (transaction.id)}
-              <div class="group bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between">
-                <div class="flex items-center gap-4 min-w-0">
-                  <div
-                    class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 {transaction.type === 'income' ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-red-100 dark:bg-red-900/30'}"
-                  >
-                    {#if transaction.type === 'income'}
-                      <ArrowUpRight class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                    {:else}
-                      <ArrowDownRight class="w-5 h-5 text-red-600 dark:text-red-400" />
-                    {/if}
-                  </div>
-                  <div class="min-w-0">
-                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
-                      {transaction.description || 'No description'}
-                    </p>
-                    <div class="flex items-center gap-2 mt-0.5">
-                      <span class="text-xs text-gray-400 flex items-center gap-1">
-                        <Calendar class="w-3 h-3" />
-                        {formatDate(transaction.transaction_date)}
-                      </span>
-                      {#each (transaction.tags || []) as tag}
-                        <span
-                          class="text-xs px-1.5 py-0.5 rounded-full font-medium"
-                          style="background-color: {(tag.color || '#6b7280') + '20'}; color: {tag.color || '#6b7280'}"
-                        >
-                          {tag.name || tag.tag}
-                        </span>
-                      {/each}
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-center gap-3">
-                  <span
-                    class="text-sm sm:text-base font-bold whitespace-nowrap {transaction.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}"
-                  >
-                    {transaction.type === 'income' ? '+' : '-'}{formatAmount(transaction.amount)}
-                  </span>
-                </div>
-              </div>
+              {@render transactionRow(transaction, false)}
             {/each}
           </div>
         </Skeleton>
       {:else if transactions.length === 0}
-        <div class="text-center py-16 bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-600">
-          <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Wallet class="w-8 h-8 text-gray-400" />
-          </div>
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">No transactions yet</h3>
-          <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">Start tracking your finances</p>
-          <button
-            onclick={openCreateModal}
-            class="btn btn-primary"
-          >
-            <Plus class="w-4 h-4" />
-            Add Transaction
-          </button>
+        <div class="rounded-lg bg-card">
+          <EmptyState title="No transactions yet" text="Start tracking your finances.">
+            {#snippet actions()}
+              <Button onclick={openCreateModal}><Plus class="size-4" /> Add transaction</Button>
+            {/snippet}
+          </EmptyState>
         </div>
       {:else}
         <div class="space-y-3">
           {#each transactions as transaction (transaction.id)}
-            <div class="group bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-all flex items-center justify-between">
-              <div class="flex items-center gap-4 min-w-0">
-                <div
-                  class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 {transaction.type === 'income' ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-red-100 dark:bg-red-900/30'}"
-                >
-                  {#if transaction.type === 'income'}
-                    <ArrowUpRight class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                  {:else}
-                    <ArrowDownRight class="w-5 h-5 text-red-600 dark:text-red-400" />
-                  {/if}
-                </div>
-                <div class="min-w-0">
-                  <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
-                    {transaction.description || 'No description'}
-                  </p>
-                  <div class="flex items-center gap-2 mt-0.5">
-                    <span class="text-xs text-gray-400 flex items-center gap-1">
-                      <Calendar class="w-3 h-3" />
-                      {formatDate(transaction.transaction_date)}
-                    </span>
-                    {#each (transaction.tags || []) as tag}
-                      <span
-                        class="text-xs px-1.5 py-0.5 rounded-full font-medium"
-                        style="background-color: {(tag.color || '#6b7280') + '20'}; color: {tag.color || '#6b7280'}"
-                      >
-                        {tag.name || tag.tag}
-                      </span>
-                    {/each}
-                  </div>
-                </div>
-              </div>
-              <div class="flex items-center gap-3">
-                <span
-                  class="text-sm sm:text-base font-bold whitespace-nowrap {transaction.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}"
-                >
-                  {transaction.type === 'income' ? '+' : '-'}{formatAmount(transaction.amount)}
-                </span>
-                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button
-                    onclick={() => openEditModal(transaction)}
-                    class="btn-icon p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                    title="Edit"
-                  >
-                    <Pencil class="w-3.5 h-3.5 text-gray-500" />
-                  </button>
-                  <button
-                    onclick={() => handleDelete(transaction)}
-                    class="btn-icon p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                    title="Delete"
-                  >
-                    <Trash2 class="w-3.5 h-3.5 text-red-500" />
-                  </button>
-                </div>
-              </div>
-            </div>
+            {@render transactionRow(transaction, true)}
           {/each}
         </div>
 
-        <!-- Pagination -->
         {#if totalPages > 1}
-          <div class="flex items-center justify-center gap-2 mt-8">
+          <nav class="mt-4 flex flex-wrap items-center justify-center gap-2" aria-label="Pagination">
             <button
               onclick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage <= 1}
-              class="btn-icon p-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              class="btn-icon"
+              aria-label="Previous page"
             >
-              <ChevronLeft class="w-4 h-4" />
+              <ChevronLeft class="size-4" />
             </button>
-            {#each Array.from({ length: totalPages }, (_, i) => i + 1) as page}
+            {#each Array.from({ length: totalPages }, (_, i) => i + 1) as page (page)}
               <button
                 onclick={() => handlePageChange(page)}
-                class="w-9 h-9 rounded-lg text-sm font-medium transition-colors {page === currentPage
-                  ? 'bg-emerald-600 text-white shadow-md'
-                  : 'border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}"
+                aria-current={page === currentPage ? 'page' : undefined}
+                class="grid size-9 place-items-center rounded-pill font-mono text-sm transition-colors {page === currentPage
+                  ? 'bg-accent text-ink-on-accent'
+                  : 'bg-control text-ink hover:bg-control-hover'}"
               >
                 {page}
               </button>
@@ -605,11 +469,12 @@
             <button
               onclick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage >= totalPages}
-              class="btn-icon p-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              class="btn-icon"
+              aria-label="Next page"
             >
-              <ChevronRight class="w-4 h-4" />
+              <ChevronRight class="size-4" />
             </button>
-          </div>
+          </nav>
         {/if}
       {/if}
     </div>
@@ -619,120 +484,83 @@
 <!-- Create/Edit Modal -->
 {#if showModal}
 <Modal isOpen={showModal} onClose={closeModal} maxW="max-w-md">
-  <div class="flex items-center justify-between mb-6">
-    <h2 class="text-lg font-bold text-gray-900 dark:text-white">
-      {modalMode === 'create' ? 'Add Transaction' : 'Edit Transaction'}
-    </h2>
-    <button onclick={closeModal} class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700">
-      <X class="w-5 h-5 text-gray-500" />
+  <div class="mb-6 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="grid size-10 place-items-center rounded-md bg-tile-deep text-ink-on-dark"><Wallet class="size-5" /></span>
+      <h2 class="text-title">{modalMode === 'create' ? 'Add transaction' : 'Edit transaction'}</h2>
+    </div>
+    <button onclick={closeModal} class="btn-icon" aria-label="Close">
+      <X class="size-5" />
     </button>
   </div>
 
   <div class="space-y-5">
-          <!-- Type -->
-          <div>
-            <span class="label">Type</span>
-            <div class="flex gap-3" role="group" aria-label="Transaction type">
-              <button
-                type="button"
-                onclick={() => (formType = 'income')}
-                class="mode-btn flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border text-sm font-medium transition-all {formType === 'income'
-                  ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-500'
-                  : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}"
-              >
-                <ArrowUpRight class="w-4 h-4" />
-                Income
-              </button>
-              <button
-                type="button"
-                onclick={() => (formType = 'expense')}
-                class="mode-btn flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border text-sm font-medium transition-all {formType === 'expense'
-                  ? 'border-red-500 bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400 dark:border-red-500'
-                  : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}"
-              >
-                <ArrowDownRight class="w-4 h-4" />
-                Expense
-              </button>
-            </div>
-          </div>
+    <div>
+      <span class="label">Type</span>
+      <div class="mode-toggle flex w-full" role="group" aria-label="Transaction type">
+        <button
+          type="button"
+          onclick={() => (formType = 'income')}
+          aria-pressed={formType === 'income'}
+          class="mode-btn flex flex-1 items-center justify-center gap-2 {formType === 'income' ? 'active' : ''}"
+        >
+          <ArrowUpRight class="size-4" /> Income
+        </button>
+        <button
+          type="button"
+          onclick={() => (formType = 'expense')}
+          aria-pressed={formType === 'expense'}
+          class="mode-btn flex flex-1 items-center justify-center gap-2 {formType === 'expense' ? 'active' : ''}"
+        >
+          <ArrowDownRight class="size-4" /> Expense
+        </button>
+      </div>
+    </div>
 
-          <!-- Amount -->
-          <div>
-            <label for="amount-input" class="label">Amount (IDR) *</label>
-            <input
-              id="amount-input"
-              type="number"
-              min="1"
-              placeholder="e.g. 50000"
-              bind:value={formAmount}
-              class="input"
-            />
-          </div>
+    <div>
+      <label for="amount-input" class="label">Amount (IDR) *</label>
+      <input id="amount-input" type="number" min="1" placeholder="e.g. 50000" bind:value={formAmount} class="input font-mono" />
+    </div>
 
-          <!-- Description -->
-          <div>
-            <label for="description-input" class="label">Description</label>
-            <input
-              id="description-input"
-              type="text"
-              placeholder="e.g. Makan siang"
-              bind:value={formDescription}
-              class="input"
-            />
-          </div>
+    <div>
+      <label for="description-input" class="label">Description</label>
+      <input id="description-input" type="text" placeholder="e.g. Makan siang" bind:value={formDescription} class="input" />
+    </div>
 
-          <!-- Date -->
-          <div>
-            <label for="date-input" class="label">Date</label>
-            <input
-              id="date-input"
-              type="datetime-local"
-              bind:value={formDate}
-              class="input"
-            />
-          </div>
+    <div>
+      <label for="date-input" class="label">Date</label>
+      <input id="date-input" type="datetime-local" bind:value={formDate} class="input" />
+    </div>
 
-          <!-- Tags -->
-          {#if tags.length > 0}
-            <div>
-              <span class="label">Tags</span>
-              <div class="flex flex-wrap gap-2" role="group" aria-label="Select tags">
-                {#each tags as tag}
-                  <button
-                    type="button"
-                    onclick={() => toggleTag(tag.id)}
-                    class="preset-btn text-xs px-3 py-1.5 rounded-full border font-medium transition-all {formTagIds.includes(tag.id)
-                      ? 'border-warning-500 bg-warning-50 text-warning-700 dark:border-purple-500 dark:bg-purple-900/20 dark:text-purple-400'
-                      : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}"
-                  >
-                    {tag.name || tag.tag}
-                  </button>
-                {/each}
-              </div>
-            </div>
-          {/if}
-
-          <!-- Actions -->
-          <div class="flex items-center justify-end gap-3 pt-2">
+    {#if tags.length > 0}
+      <div>
+        <span class="label">Tags</span>
+        <div class="flex flex-wrap gap-2" role="group" aria-label="Select tags">
+          {#each tags as tag (tag.id)}
             <button
-              onclick={closeModal}
-              class="btn btn-secondary"
+              type="button"
+              onclick={() => toggleTag(tag.id)}
+              aria-pressed={formTagIds.includes(tag.id)}
+              class="quick-btn {formTagIds.includes(tag.id) ? 'active' : ''}"
             >
-              Cancel
+              {tag.name || tag.tag}
             </button>
-            <button
-              onclick={handleSubmit}
-              disabled={isSubmitting}
-              class="btn btn-primary"
-            >
-              {#if isSubmitting}
-                <Loader2 class="w-4 h-4 animate-spin" />
-              {:else}
-                <Save class="w-4 h-4" />
-              {/if}
-              {isSubmitting ? 'Saving...' : modalMode === 'create' ? 'Add Transaction' : 'Save Changes'}
-            </button>
-          </div>
+          {/each}
+        </div>
+      </div>
+    {/if}
+
+    <div class="flex items-center justify-end gap-3 pt-2">
+      <Button variant="secondary" onclick={closeModal}>Cancel</Button>
+      <Button onclick={handleSubmit} disabled={isSubmitting}>
+        {#if isSubmitting}
+          <Loader2 class="size-4 animate-spin" />
+        {:else}
+          <Save class="size-4" />
+        {/if}
+        {isSubmitting ? 'Saving…' : modalMode === 'create' ? 'Add transaction' : 'Save changes'}
+      </Button>
+    </div>
   </div>
 </Modal>
 {/if}

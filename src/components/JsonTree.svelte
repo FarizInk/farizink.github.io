@@ -106,7 +106,7 @@
         aria-label={collapsed ? 'Expand' : 'Collapse'}
       >
         <ChevronRight
-          class="w-3 h-3 text-gray-400 dark:text-gray-500 transition-transform duration-150 {collapsed
+          class="w-3 h-3 text-ink-muted transition-transform duration-150 {collapsed
             ? ''
             : 'rotate-90'}"
         />
@@ -179,12 +179,13 @@
 </div>
 
 <style>
+  /* Colors use Fariz DS tokens (CSS vars switch with data-theme automatically). */
+
   /* Node wrapper: provides indent guide per nesting level. */
   .jt-node {
     position: relative;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
-      'Courier New', monospace;
-    font-size: 0.8125rem;
+    font-family: var(--font-mono);
+    font-size: 13px;
     line-height: 1.5;
     padding-left: calc(var(--level) * 0.875rem);
   }
@@ -202,10 +203,7 @@
     bottom: 0;
     left: 0;
     width: 1px;
-    background-color: rgba(156, 163, 175, 0.3);
-  }
-  :global(.dark) .jt-children::before {
-    background-color: rgba(148, 163, 184, 0.2);
+    background-color: var(--bg-control);
   }
 
   /* Each logical line (key/value pair or array item). */
@@ -219,15 +217,12 @@
     position: relative;
     display: inline-flex;
     align-items: baseline;
-    border-radius: 0.25rem;
+    border-radius: 6px;
     padding-right: 1.75rem; /* room for hover copy button */
     transition: background-color 0.12s ease;
   }
   .jt-row:hover {
-    background-color: rgba(156, 163, 175, 0.12);
-  }
-  :global(.dark) .jt-row:hover {
-    background-color: rgba(148, 163, 184, 0.1);
+    background-color: var(--bg-card);
   }
 
   .jt-closing {
@@ -235,66 +230,40 @@
   }
 
   .jt-key {
-    color: #6b7280; /* gray-500 */
+    color: var(--accent-text);
   }
-  :global(.dark) .jt-key {
-    color: #9ca3af; /* gray-400 */
-  }
-  .jt-colon {
-    color: #6b7280;
+  .jt-colon,
+  .jt-comma {
+    color: var(--ink-muted);
   }
   .jt-bracket {
-    color: #4b5563; /* gray-600 */
+    color: var(--ink-muted);
     font-weight: 500;
-  }
-  :global(.dark) .jt-bracket {
-    color: #d1d5db; /* gray-300 */
   }
 
   /* Collapsed badge — a small pill. */
   .jt-badge {
     margin: 0 0.25rem;
     padding: 0.05rem 0.375rem;
-    font-size: 0.75rem;
+    font-size: 12px;
     line-height: 1.25rem;
-    border-radius: var(--radius-sm, 0.375rem);
-    background-color: rgba(156, 163, 175, 0.2);
-    color: #6b7280; /* gray-500 */
-  }
-  :global(.dark) .jt-badge {
-    background-color: rgba(148, 163, 184, 0.18);
-    color: #9ca3af; /* gray-400 */
+    border-radius: var(--radius-pill);
+    background-color: var(--bg-control);
+    color: var(--ink-muted);
   }
 
-  .jt-comma {
-    color: #6b7280;
-  }
-
-  /* Type coloring — amber accent light / purple accent dark, matching design system. */
+  /* Type coloring. */
   .jt-string {
-    color: #16a34a; /* green-600 */
+    color: var(--live);
   }
-  :global(.dark) .jt-string {
-    color: #4ade80; /* green-400 */
-  }
-  .jt-number {
-    color: #d97706; /* warning-600 / amber accent */
-  }
-  :global(.dark) .jt-number {
-    color: #a78bfa; /* primary-400 / purple accent */
-  }
+  .jt-number,
   .jt-boolean {
-    color: #d97706;
-  }
-  :global(.dark) .jt-boolean {
-    color: #a78bfa;
+    color: var(--ink);
+    font-weight: 600;
   }
   .jt-null {
-    color: #6b7280;
+    color: var(--ink-muted);
     font-style: italic;
-  }
-  :global(.dark) .jt-null {
-    color: #9ca3af;
   }
 
   .jt-toggle {
@@ -306,7 +275,7 @@
     margin-left: -1rem;
     padding: 0;
     border: none;
-    border-radius: 0.25rem;
+    border-radius: 6px;
     background: transparent;
     cursor: pointer;
     vertical-align: baseline;
@@ -314,10 +283,7 @@
     transition: background-color 0.12s ease;
   }
   .jt-toggle:hover {
-    background-color: rgba(156, 163, 175, 0.2);
-  }
-  :global(.dark) .jt-toggle:hover {
-    background-color: rgba(148, 163, 184, 0.2);
+    background-color: var(--bg-card);
   }
 
   /* Hover copy button — anchored to the right edge of the row. */
@@ -330,22 +296,15 @@
     align-items: center;
     justify-content: center;
     padding: 0.25rem;
-    border-radius: 0.375rem;
-    color: #6b7280; /* gray-500 */
+    border-radius: var(--radius-pill);
+    color: var(--ink-muted);
     background: transparent;
     border: none;
     cursor: pointer;
     transition: opacity 0.12s ease, background-color 0.12s ease, color 0.12s ease;
   }
   .jt-copy:hover {
-    color: #b45309; /* warning-700 */
-    background-color: rgba(251, 191, 36, 0.15);
-  }
-  :global(.dark) .jt-copy {
-    color: #9ca3af; /* gray-400 */
-  }
-  :global(.dark) .jt-copy:hover {
-    color: #c4b5fd; /* primary-300 */
-    background-color: rgba(139, 92, 246, 0.18);
+    color: var(--accent-text);
+    background-color: var(--bg-sunken);
   }
 </style>

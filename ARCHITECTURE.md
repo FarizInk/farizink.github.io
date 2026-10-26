@@ -62,7 +62,8 @@ farizink.github.io/
 ├── index.html                      # HTML template with SEO meta tags
 ├── src/
 │   ├── main.ts                     # App entry point
-│   ├── app.css                     # Global styles + @theme design tokens
+│   ├── app.css                     # Global styles + DS component classes
+│   ├── styles/fariz-tokens.css     # Fariz design tokens
 │   ├── App.svelte                  # Root component (theme, router, layout)
 │   │
 │   ├── routes/                     # Route definitions
@@ -79,12 +80,11 @@ farizink.github.io/
 │   │   └── Link.svelte             # Enhanced link component
 │   │
 │   ├── components/                 # Reusable components
-│   │   ├── Navigation.svelte       # Floating bottom nav + theme toggle
+│   │   ├── Navigation.svelte       # Floating theme toggle + menu drawer
 │   │   ├── CommandPalette.svelte   # Ctrl+K tool search
 │   │   ├── Modal.svelte            # Reusable modal dialog
 │   │   ├── ToolLayout.svelte       # Tool page wrapper (consistent layout)
 │   │   ├── ScrollToTop.svelte      # Floating scroll button
-│   │   ├── WavesBackground.svelte  # Animated background
 │   │   ├── SpotifyActivity.svelte  # Now playing display
 │   │   ├── NoteCard.svelte         # Note preview card
 │   │   ├── NoteForm.svelte         # Note creation/edit form
@@ -299,18 +299,18 @@ PaginatedStore (abstract base class)
 App.svelte
 ├── Theme Provider (dark/light/system)
 ├── Router.svelte
-│   ├── Navigation.svelte (floating bottom bar)
+│   ├── Navigation.svelte (floating toggle + drawer)
 │   │   ├── Theme Toggle
 │   │   └── Nav Links
 │   ├── CommandPalette.svelte (Ctrl+K)
 │   ├── ScrollToTop.svelte
-│   └── WavesBackground.svelte
 │
 ├── [Page Components]
 │   ├── Home.svelte
 │   │   ├── SpotifyActivity.svelte
 │   │   ├── ConnectWithMe.svelte
-│   │   └── DashboardView.svelte
+│   │   ├── DashboardView.svelte
+│   │   └── diary/DiaryView.svelte (+ DiaryComposer, DiaryItem, DiaryEditModal; helpers in lib/diary.ts)
 │   │
 │   ├── Notes.svelte
 │   │   ├── NoteCard.svelte (per note)

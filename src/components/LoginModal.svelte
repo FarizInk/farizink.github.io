@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Mail, Lock, Eye, EyeOff, User, Sparkles, X } from '@lucide/svelte';
+  import { Mail, Lock, Eye, EyeOff, User, X, LoaderCircle } from '@lucide/svelte';
   import { saveAuth, login } from '../lib/auth';
   import { toast } from 'svelte-sonner';
   import Modal from './Modal.svelte';
@@ -80,35 +80,35 @@
 </script>
 
 <Modal bind:isOpen={isOpen} onClose={closeModal} maxW="max-w-md">
-  <div class="flex items-center justify-between mb-6">
+  <div class="mb-6 flex items-center justify-between">
     <div class="flex items-center gap-3">
-      <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-amber-400 dark:from-purple-500 dark:to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-        <User class="w-6 h-6 text-white" />
+      <div class="flex size-10 items-center justify-center rounded-md bg-tile-deep text-ink-on-dark">
+        <User class="size-5" />
       </div>
       <div>
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Welcome Back</h2>
-        <p class="text-sm text-gray-600 dark:text-gray-400">Sign in to your account</p>
+        <h2 class="text-title text-ink">Welcome back</h2>
+        <p class="text-body-sm text-ink-muted">Log in to your account</p>
       </div>
     </div>
-    <button onclick={closeModal} class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700">
-      <X class="w-5 h-5 text-gray-500" />
+    <button type="button" onclick={closeModal} class="btn-icon" aria-label="Close">
+      <X class="size-5" />
     </button>
   </div>
 
   <form onsubmit={handleLogin} class="space-y-5">
     <div>
       <label for="email" class="label">
-        Email Address
+        Email address
       </label>
       <div class="relative">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <Mail class="w-5 h-5 text-gray-400" />
+          <Mail class="size-5 text-ink-muted" />
         </div>
         <input
           id="email"
           type="email"
           placeholder="you@example.com"
-          class="input !pl-11 !py-3"
+          class="input !pl-11"
           bind:value={email}
           bind:this={emailInput}
           disabled={isLoading}
@@ -124,13 +124,13 @@
       </label>
       <div class="relative">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <Lock class="w-5 h-5 text-gray-400" />
+          <Lock class="size-5 text-ink-muted" />
         </div>
         <input
           id="password"
           type={showPassword ? 'text' : 'password'}
           placeholder="Enter your password"
-          class="input !pl-11 !pr-12 !py-3"
+          class="input !pl-11 !pr-12"
           bind:value={password}
           disabled={isLoading}
           autocomplete="current-password"
@@ -139,7 +139,7 @@
         <button
           type="button"
           onclick={() => (showPassword = !showPassword)}
-          class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+          class="absolute inset-y-0 right-0 flex items-center pr-3 text-ink-muted transition-colors duration-150 hover:text-ink"
           aria-label={showPassword ? 'Hide password' : 'Show password'}
         >
           {#if showPassword}
@@ -154,14 +154,13 @@
     <button
       type="submit"
       disabled={isLoading || !email.trim() || !password.trim()}
-      class="btn btn-primary w-full flex items-center justify-center gap-2 py-3.5   font-semibold rounded-xl transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-md"
+      class="btn btn-primary w-full"
     >
       {#if isLoading}
-        <div class="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
-        <span>Signing in...</span>
+        <LoaderCircle class="size-5 animate-spin" />
+        <span>Logging in...</span>
       {:else}
-        <Sparkles class="w-5 h-5" />
-        <span>Sign In</span>
+        <span>Log in</span>
       {/if}
     </button>
   </form>

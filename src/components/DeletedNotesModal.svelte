@@ -113,34 +113,39 @@
 </script>
 
 <Modal {isOpen} onClose={closeModal} maxW="max-w-4xl">
-  <div class="flex items-center justify-between mb-5">
-    <div>
-      <h2 class="text-lg font-bold text-gray-900 dark:text-white">Deleted Notes</h2>
-      <p class="text-sm text-gray-500 dark:text-gray-400">
+  <div class="flex items-center justify-between gap-3 mb-5">
+    <div class="flex items-center gap-3">
+      <div class="flex size-10 shrink-0 items-center justify-center rounded-md bg-tile-violet text-ink-on-dark">
+        <Trash2 class="size-5" />
+      </div>
+      <div>
+      <h2 class="text-title text-ink">Deleted notes</h2>
+      <p class="text-body-sm text-ink-muted">
         {#if $deletedCount > 0}
           {$deletedCount} note{ $deletedCount === 1 ? '' : 's'} in trash
         {:else}
           Trash is empty
         {/if}
       </p>
+      </div>
     </div>
     <div class="flex items-center gap-2">
       <button
         type="button"
         onclick={handleRefresh}
         disabled={$isLoadingDeletedNotes}
-       class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
+       class="btn-icon disabled:opacity-50"
        title="Refresh"
       >
-        <RefreshCw class="w-4 h-4 { $isLoadingDeletedNotes ? 'animate-spin' : ''}" />
+        <RefreshCw class="size-4 { $isLoadingDeletedNotes ? 'animate-spin' : ''}" />
       </button>
       <button
         type="button"
         onclick={closeModal}
-       class="btn-icon hover:bg-gray-100 dark:hover:bg-gray-700"
+       class="btn-icon"
        aria-label="Close modal"
       >
-        <X class="w-5 h-5 text-gray-500" />
+        <X class="size-5" />
       </button>
     </div>
   </div>
@@ -158,11 +163,11 @@
       </div>
     {:else if $deletedNotes.length === 0}
       <div class="text-center py-12">
-        <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Trash2 class="w-8 h-8 text-gray-400" />
+        <div class="size-16 bg-sunken rounded-pill flex items-center justify-center mx-auto mb-4">
+          <Trash2 class="size-8 text-ink-muted" />
         </div>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Trash is empty</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400">
+        <h3 class="text-title text-ink mb-2">Trash is empty</h3>
+        <p class="text-body-sm text-ink-muted">
           Notes in trash will appear here temporarily
         </p>
       </div>
@@ -187,20 +192,20 @@
           <button
             onclick={handleLoadMore}
             disabled={$isLoadingDeletedNotes}
-              class="btn btn-secondary flex items-center gap-2 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="btn btn-secondary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {#if $isLoadingDeletedNotes}
-              <RotateCw class="w-4 h-4 animate-spin" />
+              <RotateCw class="size-4 animate-spin" />
               Loading more...
             {:else}
-              <Plus class="w-4 h-4" />
-              Load More
+              <Plus class="size-4" />
+              Load more
             {/if}
           </button>
         {:else if $deletedNotes.length > 0}
-          <div class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full">
-            <div class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full"></div>
-            <span class="text-sm text-gray-600 dark:text-gray-400">
+          <div class="inline-flex items-center gap-2 px-4 py-2 bg-sunken rounded-pill">
+            <div class="size-2 bg-ink-muted rounded-pill"></div>
+            <span class="text-code text-ink-muted">
               Showing all {$deletedNotes.length} of {$deletedCount} notes
             </span>
           </div>

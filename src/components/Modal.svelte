@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { fade } from 'svelte/transition';
   import { X } from '@lucide/svelte';
   import type { Snippet } from 'svelte';
+  import { fade, scale } from 'svelte/transition';
+  import { dur, EASE } from '$lib/components/ds';
   import { preventBodyScroll, restoreBodyScroll, isTopmostModal, getModalZIndex, getOpenModalCount } from '../lib/modalScroll';
-  import { tvModal } from '../lib/motion';
 
   function portal(node: HTMLElement) {
     document.body.appendChild(node);
@@ -75,8 +75,8 @@
   >
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <div
-      class="fixed inset-0 {isNestedModal ? 'bg-black/60' : 'bg-black/50'} backdrop-blur-sm"
-      transition:fade
+      class="fz-overlay z-0 {isNestedModal ? 'motion-safe:animate-none' : ''}"
+      out:fade={{ duration: dur(140), easing: EASE.exit }}
       role="button"
       tabindex="0"
       onclick={() => {
@@ -93,8 +93,8 @@
     ></div>
 
     <div
-      class="relative w-full {maxW} bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-h-[90vh] overflow-hidden flex flex-col"
-      transition:tvModal
+      out:scale={{ start: 0.98, opacity: 0, duration: dur(140), easing: EASE.exit }}
+      class="relative z-10 w-full {maxW} bg-raised text-ink rounded-lg max-h-[90vh] overflow-hidden flex flex-col motion-safe:animate-[fz-pop_var(--duration-base)_var(--fz-ease-soft)]"
     >
       <div class="p-6 flex-1 min-h-0 {locked ? 'overflow-hidden' : 'overflow-y-auto'}">
         {#if children}
