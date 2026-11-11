@@ -3,7 +3,8 @@
   import { EmptyState } from '$lib/components/ds';
   import { API_BASE_URL } from '../../lib/constants';
   import { toast } from 'svelte-sonner';
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
+  import { readApiError, isPresignedUrlFresh, withFreshUrls } from '../../lib/tempUpload';
   import {
     Upload,
     File,
@@ -14,7 +15,8 @@
     Trash2,
     Check,
     Download,
-    ExternalLink
+    ExternalLink,
+    RefreshCw
   } from '@lucide/svelte';
 
   // Types
@@ -58,6 +60,8 @@
     files: UploadedFile[];
     uploadedAt: string;
     expiresAt: string;
+    /** When the stored presigned URLs were issued (they live 1h). Older entries lack it → falls back to uploadedAt. */
+    urlsIssuedAt?: string;
     shortlinkCode?: string;
     shortlinkUrl?: string;
   }
@@ -70,6 +74,11 @@
   let currentUploadId = $state<string>('');
   let currentExpiresAt = $state<string>('');
   let currentShortlink = $state<ShortlinkResponse['data'] | null>(null);
+  let currentUrlsIssuedAt = $state<string>('');
+  let isRefreshingUrls = $state(false);
+  // Ticks so link freshness / expiry labels update while the page stays open.
+  let now = $state(Date.now());
+  const urlsFresh = $derived(isPresignedUrlFresh(currentUrlsIssuedAt, now));
   let uploadHistory = $state<StoredUpload[]>([]);
   let dragActive = $state(false);
 
@@ -77,10 +86,71 @@
   const MAX_FILES = 10;
   const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB in bytes
 
+  let tick: ReturnType<typeof setInterval> | undefined;
+
   onMount(() => {
     loadHistory();
     cleanupExpiredHistory();
+    tick = setInterval(() => (now = Date.now()), 30_000);
   });
+
+  onDestroy(() => clearInterval(tick));
+
+  function persistHistory() {
+    localStorage.setItem('temp-upload-history', JSON.stringify(uploadHistory));
+  }
+
+  /**
+   * Presigned URLs expire after 1h but files live 24h. A shortlink GET returns
+   * freshly signed URLs, so use it to revive links for an upload.
+   */
+  async function refreshUrls(uploadId: string, code: string): Promise<boolean> {
+    isRefreshingUrls = true;
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/temp-upload/shortlink/${encodeURIComponent(code)}`);
+      if (!response.ok) {
+        const msg =
+          response.status === 404
+            ? 'Share link not found or expired — files are no longer available'
+            : await readApiError(response, 'Failed to refresh download links');
+        throw new Error(msg);
+      }
+      const result = await response.json();
+      const fresh: { id: string; presigned_url: string | null }[] = result.data?.files ?? [];
+      const issuedAt = new Date().toISOString();
+
+      const item = uploadHistory.find(h => h.uploadId === uploadId);
+      const base = currentUploadId === uploadId ? uploadedFiles : (item?.files ?? []);
+      const { files, missing } = withFreshUrls(
+        base,
+        fresh.filter((f): f is { id: string; presigned_url: string } => !!f.presigned_url)
+      );
+
+      if (item) {
+        item.files = files;
+        item.urlsIssuedAt = issuedAt;
+        persistHistory();
+      }
+      // Ignore if the user switched to another upload meanwhile.
+      if (currentUploadId === uploadId) {
+        uploadedFiles = files;
+        currentUrlsIssuedAt = issuedAt;
+        now = Date.now();
+      }
+      if (missing > 0) {
+        toast.warning(`${missing} file${missing > 1 ? 's are' : ' is'} no longer available`);
+      }
+      return true;
+    } catch (error) {
+      console.error('Refresh links error:', error);
+      if (currentUploadId === uploadId) {
+        toast.error(error instanceof Error ? error.message : 'Failed to refresh download links');
+      }
+      return false;
+    } finally {
+      isRefreshingUrls = false;
+    }
+  }
 
   function loadHistory() {
     const stored = localStorage.getItem('temp-upload-history');
@@ -227,8 +297,7 @@
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Upload failed');
+        throw new Error(await readApiError(response, 'Upload failed'));
       }
 
       const result: UploadResponse = await response.json();
@@ -237,6 +306,8 @@
       currentUploadId = result.data.id;
       currentExpiresAt = result.data.data.expires_at;
       currentShortlink = null;
+      currentUrlsIssuedAt = new Date().toISOString();
+      now = Date.now();
 
       toast.success(`Successfully uploaded ${result.data.files.length} file${result.data.files.length > 1 ? 's' : ''}`);
 
@@ -245,7 +316,8 @@
         uploadId: result.data.id,
         files: result.data.files,
         uploadedAt: result.data.data.uploaded_at,
-        expiresAt: result.data.data.expires_at
+        expiresAt: result.data.data.expires_at,
+        urlsIssuedAt: currentUrlsIssuedAt
       });
 
       // Clear selected files
@@ -278,8 +350,7 @@
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to create shortlink');
+        throw new Error(await readApiError(response, 'Failed to create shortlink'));
       }
 
       const result: ShortlinkResponse = await response.json();
@@ -299,7 +370,12 @@
       if (historyItem) {
         historyItem.shortlinkCode = result.data.shortlink_code;
         historyItem.shortlinkUrl = frontendUrl;
-        localStorage.setItem('temp-upload-history', JSON.stringify(uploadHistory));
+        persistHistory();
+      }
+
+      // Download links had already expired: the new shortlink can re-sign them.
+      if (!urlsFresh) {
+        await refreshUrls(currentUploadId, result.data.shortlink_code);
       }
     } catch (error) {
       console.error('Shortlink error:', error);
@@ -327,6 +403,7 @@
     currentUploadId = '';
     currentExpiresAt = '';
     currentShortlink = null;
+    currentUrlsIssuedAt = '';
   }
 
   function deleteFromHistory(uploadId: string) {
@@ -339,6 +416,8 @@
     uploadedFiles = item.files;
     currentUploadId = item.uploadId;
     currentExpiresAt = item.expiresAt;
+    currentUrlsIssuedAt = item.urlsIssuedAt ?? item.uploadedAt;
+    now = Date.now();
 
     // Reconstruct shortlink URL using current frontend domain
     if (item.shortlinkCode) {
@@ -353,7 +432,11 @@
 
       // Update the stored item with the correct URL
       item.shortlinkUrl = frontendUrl;
-      localStorage.setItem('temp-upload-history', JSON.stringify(uploadHistory));
+      persistHistory();
+
+      if (!urlsFresh) {
+        refreshUrls(item.uploadId, item.shortlinkCode);
+      }
     } else {
       currentShortlink = null;
     }
@@ -477,6 +560,33 @@
             </button>
           </div>
 
+          {#if !urlsFresh}
+            <div class="mb-3 p-3 rounded-md bg-sunken flex items-start gap-3" role="status">
+              {#if isRefreshingUrls}
+                <RefreshCw class="w-4 h-4 mt-0.5 text-ink-muted flex-shrink-0 animate-spin" />
+                <p class="text-body-sm text-ink-muted">Refreshing download links…</p>
+              {:else if currentShortlink}
+                <Clock class="w-4 h-4 mt-0.5 text-ink-muted flex-shrink-0" />
+                <p class="text-body-sm text-ink-muted flex-1">
+                  Download links expire after 1 hour and couldn't be refreshed. The share link below may still work.
+                </p>
+                <button
+                  class="btn btn-secondary btn-sm"
+                  onclick={() => currentShortlink && refreshUrls(currentUploadId, currentShortlink.shortlink_code)}
+                >
+                  <RefreshCw class="w-4 h-4" />
+                  Retry
+                </button>
+              {:else}
+                <Clock class="w-4 h-4 mt-0.5 text-ink-muted flex-shrink-0" />
+                <p class="text-body-sm text-ink-muted">
+                  Download links expired — they're only valid for 1 hour after upload. Generate a share link below to
+                  get fresh links, or upload the files again.
+                </p>
+              {/if}
+            </div>
+          {/if}
+
           <div class="space-y-2">
             {#each uploadedFiles as file (file.id)}
               <div class="result-row group">
@@ -489,6 +599,9 @@
                     <p class="text-count">{formatFileSize(file.size)}</p>
                   </div>
                 </div>
+                {#if !urlsFresh || !file.presigned_url}
+                  <span class="text-count flex-shrink-0">{isRefreshingUrls ? 'Refreshing…' : 'Link expired'}</span>
+                {:else}
                 <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                   <a
                     href={file.presigned_url}
@@ -507,6 +620,7 @@
                     <Copy class="w-4 h-4" />
                   </button>
                 </div>
+                {/if}
               </div>
             {/each}
           </div>
@@ -630,6 +744,9 @@
                     </div>
                     <p class="text-count mt-1">
                       {new Date(item.uploadedAt).toLocaleDateString()} {new Date(item.uploadedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      {#if !item.shortlinkCode && !isPresignedUrlFresh(item.urlsIssuedAt ?? item.uploadedAt, now)}
+                        &middot; links expired
+                      {/if}
                     </p>
                     {#if item.shortlinkUrl}
                       <p class="text-xs font-mono text-accent-text mt-0.5 truncate">

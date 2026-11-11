@@ -1,5 +1,6 @@
 <script lang="ts">
   import { API_BASE_URL } from '../lib/constants';
+  import { readApiError } from '../lib/tempUpload';
   import { toast } from 'svelte-sonner';
   import { onMount, onDestroy } from 'svelte';
   import { router, getCurrentRouterState, navigate } from '../lib/router';
@@ -115,14 +116,13 @@
     error = null;
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/temp-upload/shortlink/${shortlinkCode}`);
+      const response = await fetch(`${API_BASE_URL}/api/temp-upload/shortlink/${encodeURIComponent(shortlinkCode)}`);
 
       if (!response.ok) {
         if (response.status === 404) {
           throw new Error('Shortlink not found or has expired');
         }
-        const err = await response.json();
-        throw new Error(err.message || 'Failed to load files');
+        throw new Error(await readApiError(response, 'Failed to load files'));
       }
 
       const result = await response.json();
