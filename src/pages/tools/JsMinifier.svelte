@@ -1,372 +1,307 @@
 <script lang="ts">
-  import { Zap, Download, FileText, RefreshCw, Copy, AlertCircle } from '@lucide/svelte';
+  import { FileText, Download } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
-  import { toast } from 'svelte-sonner';
+  import { Button, CopyChip, EmptyState, Segmented, Switch, Textarea } from '$lib/components/ds';
+  import {
+    DEFAULT_BEAUTIFY,
+    DEFAULT_MINIFY,
+    PRINT_WIDTHS,
+    SAMPLE_JS,
+    byteSize,
+    formatBytes,
+    sanitizeBeautify,
+    sanitizeMinify,
+    savedPercent,
+    transformJs,
+    type BeautifyOptions,
+    type MinifyOptions,
+    type Mode
+  } from '$lib/tools/jsminify';
 
-  let jsInput = $state('');
-  let jsOutput = $state('');
-  let minified = $state(false);
-  let originalSize = $state(0);
-  let minifiedSize = $state(0);
-  let compressionRatio = $state(0);
-  let error = $state('');
+  const STORAGE_KEY = 'jsMinifier';
+  /** Inputs larger than this (in characters) are not persisted. */
+  const MAX_STORED_INPUT = 200_000;
+  const DEBOUNCE_MS = 300;
 
-  function processJs() {
-    if (!jsInput.trim()) {
-      jsOutput = '';
-      originalSize = 0;
-      minifiedSize = 0;
-      compressionRatio = 0;
-      error = '';
-      return;
-    }
+  const MODES = [
+    { value: 'minify', label: 'Minify' },
+    { value: 'beautify', label: 'Beautify' }
+  ];
+  const COMMENTS = [
+    { value: 'license', label: 'License' },
+    { value: 'none', label: 'None' }
+  ];
+  const ECMAS = [
+    { value: '2015', label: 'ES2015' },
+    { value: '2020', label: 'ES2020' },
+    { value: 'latest', label: 'Latest' }
+  ];
+  const SOURCES = [
+    { value: 'script', label: 'Script' },
+    { value: 'module', label: 'Module' }
+  ];
+  const INDENTS = [
+    { value: '2', label: '2 spaces' },
+    { value: '4', label: '4 spaces' },
+    { value: 'tab', label: 'Tab' }
+  ];
+  const QUOTES = [
+    { value: 'single', label: 'Single' },
+    { value: 'double', label: 'Double' }
+  ];
+  const WIDTHS = PRINT_WIDTHS.map(w => ({ value: String(w), label: String(w) }));
 
-    originalSize = new Blob([jsInput]).size;
+  interface Stored {
+    mode?: unknown;
+    input?: unknown;
+    minify?: unknown;
+    beautify?: unknown;
+  }
 
+  function load(): Stored {
     try {
-      if (minified) {
-        // Minify JavaScript
-        let processed = jsInput
-          // Remove single-line comments (but keep // URLs)
-          .replace(/(?:^|\n|\r)\s*\/\/.*$/gm, '')
-          // Remove multi-line comments
-          .replace(/\/\*[\s\S]*?\*\//g, '')
-          // Remove extra whitespace
-          .replace(/\s+/g, ' ')
-          // Remove spaces around operators and punctuation
-          .replace(/\s*([+\-*/=<>!&|,;:{}()[\]])\s*/g, '$1')
-          // Remove leading/trailing whitespace
-          .trim();
-
-        jsOutput = processed;
-        minifiedSize = new Blob([processed]).size;
-      } else {
-        // Beautify JavaScript
-        let processed = jsInput
-          // Add spacing around operators
-          .replace(/([+\-*/=<>!&|,;:{}()[\]])/g, ' $1 ')
-          // Fix multiple spaces
-          .replace(/\s+/g, ' ')
-          // Add newlines after semicolons and braces
-          .replace(/;/g, ';\n')
-          .replace(/{/g, '{\n')
-          .replace(/}/g, '\n}\n')
-          // Add indentation
-          .split('\n')
-          .map((line, index, array) => {
-            let trimmed = line.trim();
-            if (!trimmed) return '';
-
-            let indent = 0;
-            let currentIndent = 0;
-
-            // Calculate current indentation based on previous lines
-            for (let i = 0; i < index; i++) {
-              const prevLine = array[i].trim();
-              if (prevLine === '{') currentIndent++;
-              if (prevLine === '}') currentIndent--;
-            }
-
-            indent = Math.max(0, currentIndent);
-
-            // Reduce indentation for closing braces
-            if (trimmed === '}') {
-              indent = Math.max(0, indent - 1);
-            }
-
-            return '  '.repeat(indent) + trimmed;
-          })
-          .filter(line => line.trim())
-          .join('\n');
-
-        jsOutput = processed;
-        minifiedSize = new Blob([processed]).size;
-      }
-
-      compressionRatio =
-        originalSize > 0 ? Math.round(((originalSize - minifiedSize) / originalSize) * 100) : 0;
-      error = '';
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const parsed: unknown = raw ? JSON.parse(raw) : null;
+      return parsed && typeof parsed === 'object' ? (parsed as Stored) : {};
     } catch {
-      error = 'Error processing JavaScript. Please check your syntax.';
-      jsOutput = '';
+      return {};
     }
   }
 
-  function loadSampleJs() {
-    jsInput = `// Sample JavaScript function
-function calculateTotal(items, tax = 0.08) {
-    let subtotal = 0;
+  const saved = load();
+  let mode = $state<Mode>(saved.mode === 'beautify' ? 'beautify' : 'minify');
+  let input = $state(typeof saved.input === 'string' ? saved.input : '');
+  let minifyOpts = $state<MinifyOptions>(sanitizeMinify(saved.minify ?? DEFAULT_MINIFY));
+  let beautifyOpts = $state<BeautifyOptions>(sanitizeBeautify(saved.beautify ?? DEFAULT_BEAUTIFY));
 
-    // Calculate subtotal
-    for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-        subtotal += item.price * item.quantity;
+  let output = $state('');
+  let error = $state('');
+  let busy = $state(false);
+  let gzipSize = $state<number | null>(null);
+  /** Which libraries have finished their first (lazy) load. */
+  let loaded = $state<Record<Mode, boolean>>({ minify: false, beautify: false });
+  // Bumped on every new run; an async result is only applied if it belongs to the latest run.
+  let run = 0;
+
+  const canGzip = typeof CompressionStream !== 'undefined';
+
+  async function gzipBytes(text: string): Promise<number | null> {
+    if (!canGzip) return null;
+    try {
+      const stream = new Blob([text]).stream().pipeThrough(new CompressionStream('gzip'));
+      return (await new Response(stream).arrayBuffer()).byteLength;
+    } catch {
+      return null;
+    }
+  }
+
+  function persist() {
+    try {
+      const data = {
+        mode,
+        input: input.length <= MAX_STORED_INPUT ? input : '',
+        minify: minifyOpts,
+        beautify: beautifyOpts
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch {
+      /* storage full or blocked: not critical */
+    }
+  }
+
+  $effect(() => {
+    const code = input;
+    const currentMode = mode;
+    const mOpts = $state.snapshot(minifyOpts);
+    const bOpts = $state.snapshot(beautifyOpts);
+    const id = ++run;
+
+    if (!code.trim()) {
+      output = '';
+      error = '';
+      gzipSize = null;
+      busy = false;
+      const timer = setTimeout(persist, DEBOUNCE_MS);
+      return () => clearTimeout(timer);
     }
 
-    // Calculate tax and total
-    const taxAmount = subtotal * tax;
-    const total = subtotal + taxAmount;
+    busy = true;
+    const timer = setTimeout(async () => {
+      persist();
+      try {
+        const res = await transformJs(currentMode, code, mOpts, bOpts);
+        if (id !== run) return;
+        loaded[currentMode] = true;
+        if (res.ok) {
+          output = res.code;
+          error = '';
+          const gz = await gzipBytes(res.code);
+          if (id === run) gzipSize = gz;
+        } else {
+          output = '';
+          gzipSize = null;
+          error = res.line != null ? `Line ${res.line}, column ${res.column}: ${res.message}` : res.message;
+        }
+      } catch (e) {
+        if (id !== run) return;
+        output = '';
+        gzipSize = null;
+        error = `Could not load the ${currentMode === 'minify' ? 'minifier' : 'formatter'}: ${e instanceof Error ? e.message : String(e)}`;
+      } finally {
+        if (id === run) busy = false;
+      }
+    }, DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  });
 
-    return {
-        subtotal: subtotal,
-        tax: taxAmount,
-        total: total,
-        currency: 'USD'
-    };
-}
+  const inputBytes = $derived(byteSize(input));
+  const outputBytes = $derived(byteSize(output));
+  const saving = $derived(savedPercent(inputBytes, outputBytes));
+  const loadingLib = $derived(busy && !loaded[mode]);
+  const fileName = $derived(mode === 'minify' ? 'script.min.js' : 'script.js');
 
-// Example usage
-const cartItems = [
-    { name: 'Book', price: 15.99, quantity: 2 },
-    { name: 'Pen', price: 2.49, quantity: 5 },
-    { name: 'Notebook', price: 8.99, quantity: 1 }
-];
-
-const result = calculateTotal(cartItems);
-console.log('Total amount:', result.total);`;
-
-    minified = true;
-    processJs();
-    toast.success('Sample JavaScript loaded');
-  }
-
-  function copyToClipboard(text: string) {
-    navigator.clipboard.writeText(text);
-    toast.success('Copied to clipboard');
-  }
-
-  function downloadJs() {
-    const blob = new Blob([jsOutput], { type: 'text/javascript' });
-    const url = URL.createObjectURL(blob);
+  function download() {
+    const url = URL.createObjectURL(new Blob([output], { type: 'text/javascript' }));
     const a = document.createElement('a');
     a.href = url;
-    a.download = minified ? 'script.min.js' : 'script.js';
+    a.download = fileName;
     a.click();
-    URL.revokeObjectURL(url);
-    toast.success('JavaScript downloaded');
+    setTimeout(() => URL.revokeObjectURL(url), 0);
   }
-
-  function clearAll() {
-    jsInput = '';
-    jsOutput = '';
-    originalSize = 0;
-    minifiedSize = 0;
-    compressionRatio = 0;
-    error = '';
-    toast.success('Cleared all');
-  }
-
-  function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }
-
-  // React to changes in JS input
-  $effect(() => {
-    if (jsInput) {
-      processJs();
-    }
-  });
-  // Size tracking
-  const inputSize = $derived(new Blob([jsInput]).size);
-  const outputSize = $derived(jsOutput ? new Blob([jsOutput]).size : 0);
-  const savingsPercent = $derived(inputSize > 0 ? Math.round(((inputSize - outputSize) / inputSize) * 100) : 0);
-
-  function formatBytes(bytes: number): string {
-    if (bytes === 0) return '0 B';
-    if (bytes < 1024) return bytes + ' B';
-    return (bytes / 1024).toFixed(1) + ' KB';
-  }
-
 </script>
+
+{#snippet group(label: string)}
+  <span class="text-label font-mono text-ink-muted" aria-hidden="true">{label}</span>
+{/snippet}
 
 <ToolLayout
   title="JavaScript Minifier"
-  description="Minify or beautify JavaScript code with real-time preview and size comparison."
+  description="Minify JavaScript with terser or beautify it with Prettier, right in your browser. Nothing is uploaded."
   icon={FileText}
   color="warning"
 >
-  <!-- Mode Toggle -->
-  <div class="tab-nav" role="tablist">
-    <button
-      role="tab"
-      aria-selected={!minified}
-      onclick={() => (minified = false)}
-      class="tab-btn {!minified ? 'active' : ''}"
-    >
-      Beautify JavaScript
-    </button>
-    <button
-      role="tab"
-      aria-selected={minified}
-      onclick={() => (minified = true)}
-      class="tab-btn {minified ? 'active' : ''}"
-    >
-      Minify JavaScript
-    </button>
-  </div>
+  <section class="flex min-w-0 flex-col gap-5 rounded-lg bg-card p-6" aria-label="Mode and options">
+    <div class="w-full sm:w-64">
+      <Segmented label="Mode" options={MODES} bind:value={mode as string} />
+    </div>
 
-  <!-- Controls -->
-  <div class="flex flex-wrap gap-2 items-center">
-    {#if jsOutput}
-      <button
-        onclick={() => copyToClipboard(jsOutput)}
-        class="btn btn-primary"
-      >
-        <Copy class="w-4 h-4" />
-        Copy result
-      </button>
-      <button
-        onclick={downloadJs}
-        class="btn btn-secondary"
-      >
-        <Download class="w-4 h-4" />
-        Download JavaScript
-      </button>
+    {#if mode === 'minify'}
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+        <Switch label="Compress" description="Rewrite code to be shorter" bind:checked={minifyOpts.compress} />
+        <Switch label="Mangle names" description="Shorten local variable names" bind:checked={minifyOpts.mangle} />
+      </div>
+      <div class="flex flex-wrap gap-x-6 gap-y-4">
+        <div class="flex flex-col gap-2">
+          {@render group('Keep comments')}
+          <Segmented label="Keep comments" options={COMMENTS} bind:value={minifyOpts.comments as string} />
+        </div>
+        <div class="flex flex-col gap-2">
+          {@render group('Output target')}
+          <Segmented label="Output target" options={ECMAS} bind:value={minifyOpts.ecma as string} />
+        </div>
+        <div class="flex flex-col gap-2">
+          {@render group('Source type')}
+          <Segmented label="Source type" options={SOURCES} bind:value={minifyOpts.sourceType as string} />
+        </div>
+      </div>
+    {:else}
+      <Switch label="Semicolons" description="Add semicolons at the end of statements" bind:checked={beautifyOpts.semicolons} />
+      <div class="flex flex-wrap gap-x-6 gap-y-4">
+        <div class="flex flex-col gap-2">
+          {@render group('Indent')}
+          <Segmented label="Indent" options={INDENTS} bind:value={beautifyOpts.indent as string} />
+        </div>
+        <div class="flex flex-col gap-2">
+          {@render group('Quotes')}
+          <Segmented label="Quotes" options={QUOTES} bind:value={beautifyOpts.quotes as string} />
+        </div>
+        <div class="flex flex-col gap-2">
+          {@render group('Print width')}
+          <Segmented
+            label="Print width"
+            options={WIDTHS}
+            value={String(beautifyOpts.printWidth)}
+            onchange={v => (beautifyOpts.printWidth = Number(v))}
+          />
+        </div>
+      </div>
     {/if}
-    <button
-      onclick={loadSampleJs}
-      class="btn btn-secondary"
-    >
-      <RefreshCw class="w-4 h-4" />
-      Load sample JavaScript
-    </button>
-    <button
-      onclick={clearAll}
-      class="btn btn-ghost"
-    >
-      Clear all
-    </button>
-  </div>
+  </section>
 
-  <!-- Error Display -->
-  {#if error}
-    <div class="status-error flex items-start gap-2 p-3 rounded-md">
-      <AlertCircle class="w-5 h-5 text-negative flex-shrink-0 mt-0.5" />
-      <p class="text-body-sm text-negative">{error}</p>
-    </div>
-  {/if}
-
-  <!-- Statistics -->
-  {#if originalSize > 0}
-    <div class="stats-card">
-      <div class="stat-item">
-        <p class="text-label text-ink-muted">Original size</p>
-        <p class="stat-value font-mono">
-          {formatFileSize(originalSize)}
-        </p>
+  <div class="grid min-w-0 gap-4 lg:grid-cols-2">
+    <section class="flex min-w-0 flex-col gap-4 rounded-lg bg-card p-6" aria-label="Input">
+      <Textarea
+        label="JavaScript input"
+        bind:value={input}
+        rows={14}
+        mono
+        wrap="off"
+        spellcheck={false}
+        autocomplete="off"
+        placeholder="Paste JavaScript here…"
+        error={error || undefined}
+        hint={input ? `${input.length.toLocaleString()} characters · ${formatBytes(inputBytes)}` : 'Processed as you type.'}
+      />
+      <div class="flex flex-wrap gap-2">
+        <Button variant="secondary" size="sm" onclick={() => (input = SAMPLE_JS)}>Load sample</Button>
+        <Button variant="ghost" size="sm" onclick={() => (input = '')} disabled={!input}>Clear</Button>
       </div>
+    </section>
 
-      <div class="stat-item">
-        <p class="text-label text-ink-muted">Processed size</p>
-        <p class="stat-value font-mono">
-          {formatFileSize(minifiedSize)}
-        </p>
-      </div>
+    <section class="flex min-w-0 flex-col gap-4 rounded-lg bg-card p-6" aria-label="Output">
+      <p class="sr-only" aria-live="polite">
+        {#if loadingLib}Loading {mode === 'minify' ? 'minifier' : 'formatter'}…{:else if output && !busy}Output updated{/if}
+      </p>
 
-      <div class="stat-item">
-        <p class="text-label text-ink-muted">Size change</p>
-        <p
-          class="stat-value font-mono {minifiedSize < originalSize
-            ? '!text-live'
-            : '!text-negative'}"
-        >
-          {minifiedSize < originalSize ? '-' : '+'}{formatFileSize(
-            Math.abs(minifiedSize - originalSize)
-          )}
-        </p>
-      </div>
-
-      <div class="stat-item">
-        <p class="text-label text-ink-muted">Compression</p>
-        <p class="stat-value font-mono">{compressionRatio}%</p>
-      </div>
-    </div>
-  {/if}
-
-  <!-- JavaScript Input and Output -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-    <!-- Input Section -->
-    <div class="tool-card">
-      <div class="card-header">
-        <h2 class="section-title !mb-0">Input JavaScript</h2>
-        <span class="text-count">
-          {jsInput.length} characters
-        </span>
-      </div>
-
-      <textarea
-        bind:value={jsInput}
-        placeholder="Enter your JavaScript code here..."
-        class="code-editor min-h-[200px] sm:min-h-[300px] lg:min-h-[500px]"
-      ></textarea>
-    </div>
-
-    <!-- Output Section -->
-    <div class="tool-card">
-      <div class="card-header">
-        <h2 class="section-title !mb-0">
-          {minified ? 'Minified' : 'Beautified'} JavaScript
-        </h2>
-        <span class="text-count">
-          {jsOutput.length} characters
-        </span>
-      </div>
-
-      <div class="relative">
-        <textarea
-          bind:value={jsOutput}
-          placeholder="{minified ? 'Minified' : 'Beautified'} JavaScript will appear here..."
+      {#if !input.trim()}
+        <EmptyState
+          title="Nothing to {mode} yet"
+          text="Paste JavaScript on the left, or load the sample to try it."
+        />
+      {:else if loadingLib}
+        <p class="text-body-sm text-ink-muted">Loading {mode === 'minify' ? 'minifier' : 'formatter'}…</p>
+      {:else if error && !output}
+        <EmptyState code="ERR" title="Fix the error to see output" text="The input could not be parsed." />
+      {:else}
+        <Textarea
+          label={mode === 'minify' ? 'Minified output' : 'Beautified output'}
+          value={output}
           readonly
-          class="code-editor min-h-[200px] sm:min-h-[300px] lg:min-h-[500px]"
-        ></textarea>
-        {#if !jsOutput}
-          <div
-            class="absolute inset-0 flex flex-col items-center justify-center p-6 pointer-events-none"
-          >
-            <FileText class="w-12 h-12 mb-2 opacity-50 text-ink-muted" />
-            <p class="text-body-sm text-ink-muted">
-              Enter JavaScript code to see {minified ? 'minified' : 'beautified'} result
-            </p>
+          rows={14}
+          mono
+          wrap={mode === 'minify' ? 'soft' : 'off'}
+          spellcheck={false}
+          aria-busy={busy}
+        />
+
+        <dl class="flex flex-wrap gap-x-6 gap-y-2 text-body-sm">
+          <div class="flex gap-2">
+            <dt class="text-ink-muted">Size</dt>
+            <dd class="font-mono text-ink">{formatBytes(inputBytes)} → {formatBytes(outputBytes)}</dd>
           </div>
-        {/if}
-      </div>
-    </div>
-  </div>
+          <div class="flex gap-2">
+            <dt class="text-ink-muted">{saving >= 0 ? 'Saved' : 'Grew'}</dt>
+            <dd class="font-mono {saving > 0 ? 'text-live' : saving < 0 ? 'text-negative' : 'text-ink'}">
+              {saving > 0 ? '▼' : saving < 0 ? '▲' : ''}
+              {Math.abs(saving)}%
+            </dd>
+          </div>
+          {#if gzipSize != null}
+            <div class="flex gap-2">
+              <dt class="text-ink-muted">Gzip</dt>
+              <dd class="font-mono text-ink">≈ {formatBytes(gzipSize)}</dd>
+            </div>
+          {/if}
+        </dl>
 
-  <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-    <div class="card">
-      <div class="feature-icon">
-        <Zap class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Minify JavaScript</h3>
-      <p class="feature-description">
-        Reduce file size by removing whitespace, comments, and unnecessary characters
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon">
-        <FileText class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Beautify JavaScript</h3>
-      <p class="feature-description">
-        Format JavaScript with proper indentation and line breaks for better readability
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon">
-        <Download class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Export results</h3>
-      <p class="feature-description">
-        Copy to clipboard or download processed JavaScript as a file for immediate use
-      </p>
-    </div>
+        <div class="flex flex-wrap gap-2">
+          <CopyChip value={output}>Copy output</CopyChip>
+          <Button variant="secondary" onclick={download}>
+            {#snippet icon()}<Download class="size-4" aria-hidden="true" />{/snippet}
+            Download {fileName}
+          </Button>
+        </div>
+      {/if}
+    </section>
   </div>
 </ToolLayout>

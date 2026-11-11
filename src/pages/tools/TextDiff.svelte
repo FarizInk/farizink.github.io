@@ -1,166 +1,211 @@
 <script lang="ts">
   import ToolLayout from '../../components/ToolLayout.svelte';
-  import { GitCompare, FileText, Zap, Download, Copy, Check } from '@lucide/svelte';
-  import { toast } from 'svelte-sonner';
+  import { GitCompare, ArrowLeftRight, Download, FileText, X } from '@lucide/svelte';
+  import {
+    Button,
+    CopyChip,
+    EmptyState,
+    IconButton,
+    Segmented,
+    Switch,
+    Textarea
+  } from '$lib/components/ds';
+  import {
+    computeDiff,
+    toSplitRows,
+    collapseRows,
+    unifiedPatch,
+    splitLines,
+    type DiffRow,
+    type SplitRow
+  } from '$lib/tools/diff';
 
-  let text1 = $state('');
-  let text2 = $state('');
-  let diffResult = $state<{ added: string[]; removed: string[]; unchanged: string[] } | null>(null);
-  let showLineNumbers = $state(true);
+  const DEBOUNCE_OVER = 50_000; // chars (both sides) before typing is debounced
+  const CONTEXT = 3;
+
+  let original = $state('');
+  let changed = $state('');
   let ignoreWhitespace = $state(false);
   let ignoreCase = $state(false);
-  let copiedText = $state('');
-  let isProcessing = $state(false);
+  let charLevel = $state(false);
+  let view = $state('unified');
 
-  function calculateDiff() {
-    isProcessing = true;
-
-    try {
-      let lines1 = text1.split('\n');
-      let lines2 = text2.split('\n');
-
-      if (ignoreWhitespace) {
-        lines1 = lines1.map(line => line.trim());
-        lines2 = lines2.map(line => line.trim());
-      }
-
-      if (ignoreCase) {
-        lines1 = lines1.map(line => line.toLowerCase());
-        lines2 = lines2.map(line => line.toLowerCase());
-      }
-
-      const result = {
-        added: [] as string[],
-        removed: [] as string[],
-        unchanged: [] as string[]
-      };
-
-      const maxLines = Math.max(lines1.length, lines2.length);
-
-      for (let i = 0; i < maxLines; i++) {
-        const line1 = lines1[i] || '';
-        const line2 = lines2[i] || '';
-
-        if (i >= lines1.length) {
-          result.added.push(line2);
-        } else if (i >= lines2.length) {
-          result.removed.push(line1);
-        } else if (line1 === line2) {
-          result.unchanged.push(line1);
-        } else {
-          result.removed.push(line1);
-          result.added.push(line2);
-        }
-      }
-
-      diffResult = result;
-    } catch (error) {
-      console.error('Error calculating diff:', error);
-    } finally {
-      isProcessing = false;
+  // Inputs the diff runs on: immediate for normal sizes, debounced for large ones.
+  let a = $state('');
+  let b = $state('');
+  $effect(() => {
+    const x = original;
+    const y = changed;
+    if (x.length + y.length <= DEBOUNCE_OVER) {
+      a = x;
+      b = y;
+      return;
     }
+    const t = setTimeout(() => {
+      a = x;
+      b = y;
+    }, 300);
+    return () => clearTimeout(t);
+  });
+  const pending = $derived(a !== original || b !== changed);
+
+  // Side by side needs room; below md it falls back to unified.
+  let wide = $state(true);
+  $effect(() => {
+    const mq = window.matchMedia('(min-width: 768px)');
+    wide = mq.matches;
+    const on = (e: MediaQueryListEvent) => (wide = e.matches);
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  });
+  const effectiveView = $derived(view === 'split' && wide ? 'split' : 'unified');
+
+  const bothEmpty = $derived(a === '' && b === '');
+  const result = $derived(
+    computeDiff(a, b, { ignoreWhitespace, ignoreCase, inline: charLevel ? 'char' : 'word' })
+  );
+  const patch = $derived(
+    bothEmpty ? '' : unifiedPatch(a, b, 'original.txt', 'changed.txt', CONTEXT)
+  );
+  const textsDiffer = $derived(a.replace(/\r\n?/g, '\n') !== b.replace(/\r\n?/g, '\n'));
+
+  const unifiedItems = $derived(collapseRows(result.rows, r => r.type === 'equal', CONTEXT));
+  const splitRows = $derived(toSplitRows(result.rows));
+  const splitItems = $derived(collapseRows(splitRows, r => r.left?.type === 'equal', CONTEXT));
+
+  // Expanded gaps belong to one diff result + view; a new result collapses everything again.
+  let expandedFor = $state.raw<object | null>(null);
+  let expanded = $state<string[]>([]);
+  const isOpen = (key: string) => expandedFor === result && expanded.includes(key);
+  function expand(key: string) {
+    if (expandedFor !== result) {
+      expandedFor = result;
+      expanded = [];
+    }
+    expanded.push(key);
   }
 
-  function loadSampleText() {
-    text1 = `function calculateSum(a, b) {
+  const originalLines = $derived(splitLines(original).length);
+  const changedLines = $derived(splitLines(changed).length);
+  const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
+
+  function swap() {
+    [original, changed] = [changed, original];
+  }
+  function clearAll() {
+    original = '';
+    changed = '';
+  }
+  function loadSample() {
+    original = `function calculateSum(a, b) {
   return a + b;
 }
 
+// Example usage
 const result = calculateSum(5, 3);
-console.log(result);`;
+console.log(result);
 
-    text2 = `function calculateSum(a, b, c) {
+export default calculateSum;`;
+    changed = `/** Adds numbers together. */
+function calculateSum(a, b, c = 0) {
   return a + b + c;
 }
 
+// Example usage
 const result = calculateSum(5, 3, 2);
-console.log('Result:', result);`;
+console.log('Result:', result);
 
-    calculateDiff();
-    toast.success('Sample text loaded');
+export default calculateSum;`;
   }
-
-  function copyDiff() {
-    if (!diffResult) return;
-
-    let diffText = '';
-
-    diffResult.removed?.forEach((line, index) => {
-      diffText += `- ${line}\n`;
-      if (diffResult?.added?.[index]) {
-        diffText += `+ ${diffResult.added[index]}\n`;
-      }
-    });
-
-    diffResult.unchanged?.forEach(line => {
-      diffText += `  ${line}\n`;
-    });
-
-    // Add remaining added lines
-    if (diffResult.added.length > diffResult.removed.length) {
-      for (let i = diffResult.removed.length; i < diffResult.added.length; i++) {
-        diffText += `+ ${diffResult.added[i]}\n`;
-      }
-    }
-
-    navigator.clipboard.writeText(diffText);
-    copiedText = 'diff';
-    setTimeout(() => {
-      copiedText = '';
-    }, 2000);
-    toast.success('Diff copied to clipboard');
-  }
-
-  function downloadDiff() {
-    if (!diffResult) return;
-
-    let diffText = '';
-
-    diffResult.removed?.forEach((line, index) => {
-      diffText += `- ${line}\n`;
-      if (diffResult?.added?.[index]) {
-        diffText += `+ ${diffResult.added[index]}\n`;
-      }
-    });
-
-    diffResult.unchanged?.forEach(line => {
-      diffText += `  ${line}\n`;
-    });
-
-    if (diffResult.added.length > diffResult.removed.length) {
-      for (let i = diffResult.removed.length; i < diffResult.added.length; i++) {
-        diffText += `+ ${diffResult.added[i]}\n`;
-      }
-    }
-
-    const blob = new Blob([diffText], { type: 'text/plain' });
+  function downloadPatch() {
+    const blob = new Blob([patch], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'diff-result.txt';
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success('Diff downloaded');
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'diff.patch';
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
   }
 
-  function clearAll() {
-    text1 = '';
-    text2 = '';
-    diffResult = null;
-    toast.success('Cleared all');
-  }
+  const viewOptions = [
+    { value: 'unified', label: 'Unified' },
+    { value: 'split', label: 'Side by side' }
+  ];
 
-  function getStats() {
-    if (!diffResult) return null;
-
-    return {
-      added: diffResult.added.length,
-      removed: diffResult.removed.length,
-      unchanged: diffResult.unchanged.length,
-      total: diffResult.added.length + diffResult.removed.length + diffResult.unchanged.length
-    };
-  }
+  const rowTone = (row: DiffRow | null) =>
+    row === null
+      ? 'bg-control/40'
+      : row.type === 'added'
+        ? 'bg-live/10'
+        : row.type === 'removed'
+          ? 'bg-negative/10'
+          : '';
+  const markText = (row: DiffRow) =>
+    row.type === 'added' ? '+' : row.type === 'removed' ? '−' : '';
+  const markTone = (row: DiffRow) =>
+    row.type === 'added' ? 'text-live' : row.type === 'removed' ? 'text-negative' : '';
+  const srLabel = (row: DiffRow) =>
+    row.type === 'added' ? 'Added: ' : row.type === 'removed' ? 'Removed: ' : '';
 </script>
+
+{#snippet lineText(row: DiffRow, oldSide: boolean)}
+  <span class="min-w-0 py-0.5 pr-3 whitespace-pre-wrap [overflow-wrap:anywhere]">
+    <span class="sr-only">{srLabel(row)}</span>
+    {#if row.segments}
+      {#each row.segments as seg, s (s)}
+        {#if seg.changed && row.type === 'added'}
+          <ins class="rounded-[4px] bg-live/30 text-ink no-underline">{seg.text}</ins>
+        {:else if seg.changed}
+          <del class="rounded-[4px] bg-negative/30 text-ink no-underline">{seg.text}</del>
+        {:else}{seg.text}{/if}
+      {/each}
+    {:else}{oldSide && row.oldText !== undefined ? row.oldText : row.text}{/if}
+  </span>
+{/snippet}
+
+{#snippet gap(key: string, count: number)}
+  <button
+    type="button"
+    onclick={() => expand(key)}
+    class="col-span-full flex cursor-pointer items-center gap-2 bg-control px-3 py-1.5 text-left text-label text-ink-muted transition-colors duration-fast hover:bg-control-hover hover:text-ink"
+  >
+    <span aria-hidden="true">⋯</span>
+    Show {plural(count, 'unchanged line')}
+  </button>
+{/snippet}
+
+{#snippet unifiedRow(row: DiffRow)}
+  <div class="col-span-full grid grid-cols-subgrid {rowTone(row)}">
+    <span class="px-2 py-0.5 text-right text-ink-muted select-none">{row.oldNo ?? ''}</span>
+    <span class="px-2 py-0.5 text-right text-ink-muted select-none">{row.newNo ?? ''}</span>
+    <span class="py-0.5 pr-2 font-bold select-none {markTone(row)}" aria-hidden="true"
+      >{markText(row)}</span
+    >
+    {@render lineText(row, false)}
+  </div>
+{/snippet}
+
+{#snippet splitHalf(row: DiffRow | null, oldSide: boolean)}
+  <span class="py-0.5 pl-2 text-right text-ink-muted select-none {rowTone(row)}">
+    {row ? (oldSide ? row.oldNo : row.newNo) : ''}
+  </span>
+  <span
+    class="px-2 py-0.5 font-bold select-none {rowTone(row)} {row ? markTone(row) : ''}"
+    aria-hidden="true"
+  >
+    {row ? markText(row) : ''}
+  </span>
+  <span class="flex min-w-0 {rowTone(row)}">
+    {#if row}{@render lineText(row, oldSide)}{/if}
+  </span>
+{/snippet}
+
+{#snippet splitRow(r: SplitRow)}
+  <div class="col-span-full grid grid-cols-subgrid">
+    {@render splitHalf(r.left, true)}
+    {@render splitHalf(r.right, false)}
+  </div>
+{/snippet}
 
 <ToolLayout
   title="Text Diff Tool"
@@ -168,194 +213,150 @@ console.log('Result:', result);`;
   icon={GitCompare}
   color="warning"
 >
-  <!-- Options -->
-  <div class="tool-card">
-    <h3 class="section-title">Diff options</h3>
-    <div class="flex flex-wrap gap-4">
-      <label class="custom-checkbox">
-        <input type="checkbox" bind:checked={showLineNumbers} />
-        <span class="checkmark"></span>
-        <span class="label-text">Show line numbers</span>
-      </label>
-      <label class="custom-checkbox">
-        <input type="checkbox" bind:checked={ignoreWhitespace} />
-        <span class="checkmark"></span>
-        <span class="label-text">Ignore whitespace</span>
-      </label>
-      <label class="custom-checkbox">
-        <input type="checkbox" bind:checked={ignoreCase} />
-        <span class="checkmark"></span>
-        <span class="label-text">Ignore case</span>
-      </label>
+  <!-- Inputs -->
+  <section aria-label="Texts to compare" class="flex flex-col gap-4 rounded-lg bg-card p-6">
+    <div class="flex flex-wrap items-center gap-2">
+      <Button variant="secondary" size="sm" onclick={loadSample}>
+        {#snippet icon()}<FileText class="size-4" />{/snippet}
+        Load sample
+      </Button>
+      <Button variant="ghost" size="sm" onclick={clearAll} disabled={!original && !changed}>
+        {#snippet icon()}<X class="size-4" />{/snippet}
+        Clear
+      </Button>
+      <span class="ml-auto">
+        <IconButton label="Swap original and changed" onclick={swap}>
+          <ArrowLeftRight />
+        </IconButton>
+      </span>
     </div>
-  </div>
-
-  <!-- Controls -->
-  <div class="flex flex-wrap gap-2 items-center">
-    <button
-      onclick={calculateDiff}
-      disabled={isProcessing || !text1 || !text2}
-      class="btn btn-primary"
-    >
-      {isProcessing ? 'Calculating...' : 'Compare text'}
-    </button>
-    <button onclick={loadSampleText} class="btn btn-secondary">Load sample text</button>
-    <button onclick={clearAll} class="btn btn-ghost">Clear all</button>
-    {#if diffResult}
-      <button onclick={copyDiff} class="btn btn-secondary">
-        {#if copiedText === 'diff'}
-          <Check class="w-4 h-4" />
-          Copied
-        {:else}
-          <Copy class="w-4 h-4" />
-          Copy diff
-        {/if}
-      </button>
-      <button onclick={downloadDiff} class="btn btn-secondary">
-        <Download class="w-4 h-4" />
-        Download diff
-      </button>
-    {/if}
-  </div>
-
-  <!-- Input Text Areas -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-    <div class="tool-card">
-      <div class="card-header">
-        <h3 class="section-title mb-0">Original text</h3>
-        <span class="text-count">
-          {text1.split('\n').length} lines
-        </span>
-      </div>
-
-      <textarea
-        bind:value={text1}
-        placeholder="Enter the original text here..."
-        class="code-editor min-h-[400px]"
-      ></textarea>
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <Textarea
+        label="Original"
+        bind:value={original}
+        mono
+        rows={12}
+        spellcheck={false}
+        autocomplete="off"
+        placeholder="Paste the original text…"
+        hint={plural(originalLines, 'line')}
+      />
+      <Textarea
+        label="Changed"
+        bind:value={changed}
+        mono
+        rows={12}
+        spellcheck={false}
+        autocomplete="off"
+        placeholder="Paste the changed text…"
+        hint={plural(changedLines, 'line')}
+      />
     </div>
-
-    <div class="tool-card">
-      <div class="card-header">
-        <h3 class="section-title mb-0">Modified text</h3>
-        <span class="text-count">
-          {text2.split('\n').length} lines
-        </span>
-      </div>
-
-      <textarea
-        bind:value={text2}
-        placeholder="Enter the modified text here..."
-        class="code-editor min-h-[400px]"
-      ></textarea>
+    <div class="flex flex-wrap gap-x-6 gap-y-3">
+      <Switch
+        label="Ignore whitespace"
+        description="Leading, trailing and repeated spaces"
+        bind:checked={ignoreWhitespace}
+      />
+      <Switch label="Ignore case" bind:checked={ignoreCase} />
+      <Switch
+        label="Character highlights"
+        description="Off: highlight whole words"
+        bind:checked={charLevel}
+      />
     </div>
-  </div>
+  </section>
 
-  <!-- Diff Result -->
-  {#if diffResult}
-    <div class="tool-card">
-      <div class="card-header flex-wrap gap-2">
-        <h3 class="section-title mb-0">Diff result</h3>
-        {#if getStats()}
-          <div class="flex gap-4 font-mono text-code">
-            <span class="text-live">+{getStats()!.added} added</span>
-            <span class="text-negative">-{getStats()!.removed} removed</span>
-            <span class="text-ink-muted">{getStats()!.unchanged} unchanged</span>
-          </div>
-        {/if}
-      </div>
-
-      <div class="overflow-x-auto rounded-md bg-sunken p-3">
-        <div class="min-w-full font-mono text-code">
-          {#each diffResult.removed as line, index (line + index + 'removed')}
-            <div class="flex items-start gap-2 py-0.5">
-              {#if showLineNumbers}
-                <span class="text-ink-muted w-8 text-right py-1">
-                  {index + 1}
-                </span>
-              {/if}
-              <span class="text-negative py-1">-</span>
-              <pre
-                class="font-mono text-code px-2 py-1 rounded-sm flex-1 text-ink bg-negative/15">{line ||
-                  ' '}</pre>
-            </div>
-            {#if diffResult.added[index]}
-              <div class="flex items-start gap-2 py-0.5">
-                {#if showLineNumbers}
-                  <span class="text-ink-muted w-8 text-right py-1">
-                    {index + 1}
-                  </span>
-                {/if}
-                <span class="text-live py-1">+</span>
-                <pre
-                  class="font-mono text-code px-2 py-1 rounded-sm flex-1 text-ink bg-live/15">{diffResult
-                    .added[index] || ' '}</pre>
-              </div>
-            {/if}
-          {/each}
-
-          {#each diffResult.unchanged as line, index (line + index + 'unchanged')}
-            <div class="flex items-start gap-2 py-0.5">
-              {#if showLineNumbers}
-                <span class="text-ink-muted w-8 text-right py-1">
-                  {diffResult.removed.length + index + 1}
-                </span>
-              {/if}
-              <span class="text-ink-muted py-1"> </span>
-              <pre class="font-mono text-code px-2 py-1 rounded-sm flex-1 text-ink-muted">{line ||
-                  ' '}</pre>
-            </div>
-          {/each}
-
-          {#each diffResult.added.slice(diffResult.removed.length) as line, index (line + index + 'added')}
-            <div class="flex items-start gap-2 py-0.5">
-              {#if showLineNumbers}
-                <span class="text-ink-muted w-8 text-right py-1">
-                  {diffResult.removed.length + diffResult.unchanged.length + index + 1}
-                </span>
-              {/if}
-              <span class="text-live py-1">+</span>
-              <pre
-                class="font-mono text-code px-2 py-1 rounded-sm flex-1 text-ink bg-live/15">{line ||
-                  ' '}</pre>
-            </div>
-          {/each}
+  <!-- Result -->
+  <section
+    aria-labelledby="diff-result-title"
+    class="flex min-w-0 flex-col gap-4 rounded-lg bg-card p-6"
+  >
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <h2 id="diff-result-title" class="text-title text-ink">Differences</h2>
+      {#if !bothEmpty && !result.identical}
+        <div class="hidden md:block">
+          <Segmented label="Diff view" options={viewOptions} bind:value={view} />
         </div>
-      </div>
-    </div>
-  {/if}
-
-  <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <div class="card">
-      <div class="feature-icon">
-        <GitCompare class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Side by side comparison</h3>
-      <p class="feature-description">
-        Compare two text blocks and easily identify added, removed, and unchanged lines
-      </p>
+      {/if}
     </div>
 
-    <div class="card">
-      <div class="feature-icon">
-        <FileText class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Flexible options</h3>
-      <p class="feature-description">
-        Configure diff comparison with options to ignore whitespace, case sensitivity, and line
-        numbers
+    {#if bothEmpty}
+      <EmptyState
+        title="Nothing to compare yet"
+        text="Paste text into Original and Changed — differences show up as you type."
+      >
+        {#snippet actions()}
+          <Button variant="secondary" onclick={loadSample}>Load sample</Button>
+        {/snippet}
+      </EmptyState>
+    {:else}
+      <p class="text-body-sm text-ink-muted" role="status">
+        {#if pending}
+          Comparing…
+        {:else if result.identical}
+          <span class="text-ink">No differences</span>{#if textsDiffer}
+            · texts differ only in {[ignoreWhitespace && 'whitespace', ignoreCase && 'case']
+              .filter(Boolean)
+              .join(' or ')}{/if}
+          · {plural(result.stats.unchanged, 'line')}
+        {:else}
+          <span class="font-mono text-live">+{result.stats.added}</span> added ·
+          <span class="font-mono text-negative">−{result.stats.removed}</span> removed ·
+          <span class="font-mono">{result.stats.unchanged}</span> unchanged
+          {#if result.approximate}· too large for a line-by-line match, showing a full replace{/if}
+        {/if}
       </p>
-    </div>
 
-    <div class="card">
-      <div class="feature-icon">
-        <Zap class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Export & share</h3>
-      <p class="feature-description">
-        Copy diff results to clipboard or download as a text file for easy sharing
-      </p>
-    </div>
-  </div>
+      {#if !result.identical}
+        <div class="flex flex-wrap items-center gap-2">
+          <CopyChip value={patch}>Copy patch</CopyChip>
+          <Button variant="secondary" onclick={downloadPatch}>
+            {#snippet icon()}<Download class="size-4" />{/snippet}
+            Download .patch
+          </Button>
+        </div>
+
+        <div class="overflow-hidden rounded-md bg-sunken font-mono text-code text-ink">
+          {#if effectiveView === 'unified'}
+            <div
+              class="grid grid-cols-[auto_auto_auto_minmax(0,1fr)] py-1"
+              role="region"
+              aria-label="Unified diff"
+            >
+              {#each unifiedItems as item (item.kind === 'gap' ? `g${item.start}` : `r${item.index}`)}
+                {#if item.kind === 'row'}
+                  {@render unifiedRow(item.row)}
+                {:else if isOpen(`u${item.start}`)}
+                  {#each result.rows.slice(item.start, item.end) as row, k (item.start + k)}
+                    {@render unifiedRow(row)}
+                  {/each}
+                {:else}
+                  {@render gap(`u${item.start}`, item.count)}
+                {/if}
+              {/each}
+            </div>
+          {:else}
+            <div
+              class="grid grid-cols-[auto_auto_minmax(0,1fr)_auto_auto_minmax(0,1fr)] py-1"
+              role="region"
+              aria-label="Side by side diff"
+            >
+              {#each splitItems as item (item.kind === 'gap' ? `g${item.start}` : `r${item.index}`)}
+                {#if item.kind === 'row'}
+                  {@render splitRow(item.row)}
+                {:else if isOpen(`s${item.start}`)}
+                  {#each splitRows.slice(item.start, item.end) as r, k (item.start + k)}
+                    {@render splitRow(r)}
+                  {/each}
+                {:else}
+                  {@render gap(`s${item.start}`, item.count)}
+                {/if}
+              {/each}
+            </div>
+          {/if}
+        </div>
+      {/if}
+    {/if}
+  </section>
 </ToolLayout>
