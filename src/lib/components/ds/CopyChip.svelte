@@ -5,9 +5,11 @@
     copiedText?: string;
     resetMs?: number;
     oncopy?: (value: string) => void;
+    /** Idle glyph: 'copy' (default) for values, 'mail' for an email address. */
+    glyph?: 'copy' | 'mail';
     children?: Snippet;
   }
-  let { value, copiedText = 'Copied!', resetMs = 1600, oncopy, children }: Props = $props();
+  let { value, copiedText = 'Copied!', resetMs = 1600, oncopy, glyph = 'copy', children }: Props = $props();
   let copied = $state(false);
   let timer: ReturnType<typeof setTimeout> | undefined;
 
@@ -32,8 +34,10 @@
   >
     {#if copied}
       <svg viewBox="0 0 24 24" class="fz-pop-icon size-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10" /></svg>
-    {:else}
+    {:else if glyph === 'mail'}
       <svg viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z" /><path d="M4 7l8 6 8-6" /></svg>
+    {:else}
+      <svg viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2" /><path d="M5 15V6a2 2 0 0 1 2-2h9" /></svg>
     {/if}
   </span>
   <span aria-live="polite">{#if copied}{copiedText}{:else if children}{@render children()}{:else}{value}{/if}</span>

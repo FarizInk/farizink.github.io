@@ -210,13 +210,17 @@ IconButton is a 44px round button for one icon: social links, the menu toggle, s
 - Hover fills with `tile-lime` and tilts −6°, the system's one playful micro-motion.
 - Consumer provides the icon (24px viewBox, 2px stroke, `currentColor`). Brand marks (GitHub, Spotify, Unsplash) come from the official brand assets or Simple Icons; never redraw them.
 
+### Segmented
+
+Pill of mutually exclusive options (`role="radiogroup"`). Buttons grow to fill the pill; when the options don't fit (narrow screens, many options) the pill scrolls horizontally inside itself instead of widening the page. Prefer ≤ 4 short labels; use `Select` beyond that when scrolling would hide important choices.
+
 ### CopyChip
 
-CopyChip copies a value (the email) to the clipboard and confirms in place.
+CopyChip copies a value to the clipboard and confirms in place — the standard copy control for tool outputs and the email on the home hero.
 
-- Purple disc with a mail glyph; after copying it turns `live` green with a check and reads "Copied!" for 1.6s.
+- Purple disc with a copy glyph (`glyph="mail"` for the email); after copying it turns `live` green with a check and reads "Copied!" for 1.6s.
 - The confirmation is announced (`aria-live`). Do not also show a toast.
-- One per page: the primary contact on the home hero.
+- Shows the value by default; pass children (e.g. "Copy" + an sr-only name) when the value is already visible next to it.
 
 ### Tag
 
@@ -415,7 +419,7 @@ export interface ButtonProps { variant?: "primary" | "secondary" | "ghost"; size
 /** Round 44px button for a single icon; label is required (aria-label + tooltip). */
 export interface IconButtonProps { label: string; href?: string; target?: string; onClick?: () => void; children: ReactNode }
 /** Pill that copies value to the clipboard and confirms inline. */
-export interface CopyChipProps { value: string; children?: ReactNode; copiedText?: string; resetMs?: number; onCopy?: (v: string) => void }
+export interface CopyChipProps { value: string; children?: ReactNode; copiedText?: string; resetMs?: number; onCopy?: (v: string) => void; glyph?: "copy" | "mail" }
 export interface TagProps { tone?: "neutral" | "accent"; dot?: boolean; children: ReactNode }
 /** Spotify now-playing tile (tone void). Times in seconds. */
 export interface NowPlayingProps { isPlaying: boolean; title?: string; artist?: string; albumArt?: string; progress?: number; duration?: number; href?: string; colSpan?: 1 | 2 | 3 | 4 }

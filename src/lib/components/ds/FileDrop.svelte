@@ -18,7 +18,7 @@
     <span class="fz-drop-icon"><Icon name="upload" /></span>
     <p class="fz-drop-title">{#if over}Release to upload{:else}Drop files or <u>browse</u>{/if}</p>
     <p class="fz-drop-hint">{hint}</p>
-    <input bind:this={input} type="file" {multiple} {accept} hidden onchange={(e) => { const f = e.currentTarget.files; if (f?.length) onfiles?.(f); }} />
+    <input bind:this={input} type="file" {multiple} {accept} hidden onchange={(e) => { const el = e.currentTarget; const f = el.files; if (f?.length) onfiles?.(f); el.value = ''; /* so picking the same file again fires change */ }} />
   </div>
   {#if files.length}
     <div class="fz-files">

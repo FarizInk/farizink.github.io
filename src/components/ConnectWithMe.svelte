@@ -16,7 +16,7 @@
 </script>
 
 <div class="flex flex-wrap items-center gap-3">
-  <CopyChip value="me@fariz.dev" />
+  <CopyChip value="me@fariz.dev" glyph="mail" />
   {#each socials as social (social.label)}
     <IconButton label={social.label} href={social.href} target="_blank">
       <social.icon class="size-5" />
