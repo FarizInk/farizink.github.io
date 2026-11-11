@@ -1,166 +1,102 @@
 <script lang="ts">
   import ToolLayout from '../../components/ToolLayout.svelte';
-  import { Calendar, Zap, Copy, RefreshCw, Clock, Check } from '@lucide/svelte';
-  import { toast } from 'svelte-sonner';
+  import { Clock, ArrowUp, CornerLeftUp } from '@lucide/svelte';
+  import { Button, CopyChip, Segmented, TextField } from '$lib/components/ds';
+  import {
+    parseTimeInput,
+    describeParse,
+    isNumericInput,
+    formatAll,
+    toDateTimeLocal,
+    fromDateTimeLocal,
+    type TimeUnit,
+    type WallZone
+  } from '$lib/tools/timestamp';
 
-  let unixTimestamp = $state('');
-  let formattedDate = $state('');
-  let selectedFormat = $state('iso');
+  const INPUT_ID = 'timestamp-input';
+  const localTz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
 
-  function formatDate(date: Date, format: string): string {
-    switch (format) {
-      case 'iso':
-        return date.toISOString();
-      case 'us':
-        return date.toLocaleString('en-US');
-      case 'european':
-        return date.toLocaleString('en-GB');
-      case 'readable':
-        return date.toLocaleString('en-US', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
-        });
-      case 'short':
-        return date.toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric'
-        });
-      case 'time':
-        return date.toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
-        });
-      case 'date':
-        return date.toISOString().split('T')[0];
-      default:
-        return date.toISOString();
-    }
-  }
-
-  let copiedText = $state('');
-  let currentTimestamp = $state('');
-  let isoString = $state('');
-
-  function getCurrentTimestamp() {
-    const now = new Date();
-    currentTimestamp = Math.floor(now.getTime() / 1000).toString();
-    unixTimestamp = currentTimestamp;
-    convertFromTimestamp();
-  }
-
-  function convertFromTimestamp() {
-    if (!unixTimestamp) {
-      formattedDate = '';
-      isoString = '';
-      return;
-    }
-
-    try {
-      const timestamp = parseInt(unixTimestamp);
-      const date = new Date(timestamp * 1000);
-
-      if (isNaN(date.getTime())) {
-        formattedDate = 'Invalid timestamp';
-        isoString = '';
-        return;
-      }
-
-      isoString = date.toISOString();
-      formattedDate = formatDate(date, selectedFormat);
-    } catch {
-      formattedDate = 'Invalid timestamp';
-      isoString = '';
-    }
-  }
-
-  function convertFromDate() {
-    if (!isoString) {
-      unixTimestamp = '';
-      formattedDate = '';
-      return;
-    }
-
-    try {
-      const date = new Date(isoString);
-
-      if (isNaN(date.getTime())) {
-        unixTimestamp = 'Invalid date';
-        formattedDate = '';
-        return;
-      }
-
-      unixTimestamp = Math.floor(date.getTime() / 1000).toString();
-      formattedDate = formatDate(date, selectedFormat);
-    } catch {
-      unixTimestamp = 'Invalid date';
-      formattedDate = '';
-    }
-  }
-
-  function copyToClipboard(text: string, field: string) {
-    navigator.clipboard.writeText(text);
-    copiedText = field;
-    setTimeout(() => {
-      copiedText = '';
-    }, 2000);
-  }
-
-  function loadSampleTimestamp() {
-    unixTimestamp = '1704067200'; // 2024-01-01 00:00:00 UTC
-    convertFromTimestamp();
-  }
-
-  function copyISO() {
-    const iso = new Date(parseInt(unixTimestamp) * 1000 || Date.now()).toISOString();
-    navigator.clipboard.writeText(iso);
-    toast.success('ISO string copied!');
-  }
-
-  function setNow() {
-    const now = Math.floor(Date.now() / 1000);
-    unixTimestamp = now.toString();
-    convertFromTimestamp();
-    toast.success('Set to current time');
-  }
-
-  function clearAll() {
-    unixTimestamp = '';
-    formattedDate = '';
-    isoString = '';
-  }
-
-  // Get current timestamp on mount
-  getCurrentTimestamp();
-
-  // React to changes in inputs
+  // Live clock: drives the Now card, "now" input and relative time.
+  let nowMs = $state(Date.now());
   $effect(() => {
-    if (unixTimestamp) {
-      convertFromTimestamp();
-    }
+    const id = setInterval(() => (nowMs = Date.now()), 1000);
+    return () => clearInterval(id);
+  });
+  const nowDate = $derived(new Date(nowMs));
+  const nowSeconds = $derived(String(Math.floor(nowMs / 1000)));
+
+  // --- Main converter ----------------------------------------------------
+  let input = $state(String(Math.floor(Date.now() / 1000)));
+  let unitChoice = $state('auto');
+  let zoneMode = $state('local');
+
+  const unitOptions = [
+    { value: 'auto', label: 'Auto' },
+    { value: 's', label: 's' },
+    { value: 'ms', label: 'ms' },
+    { value: 'us', label: 'µs' },
+    { value: 'ns', label: 'ns' }
+  ];
+  const zoneOptions = [
+    { value: 'local', label: 'Local' },
+    { value: 'utc', label: 'UTC' }
+  ];
+
+  const numeric = $derived(isNumericInput(input));
+  const result = $derived(
+    input.trim()
+      ? parseTimeInput(input, nowDate, numeric ? (unitChoice as TimeUnit | 'auto') : 'auto')
+      : null
+  );
+  const parsed = $derived(result?.ok ? result.value : null);
+  const error = $derived(result && !result.ok ? result.error : undefined);
+  const hint = $derived(
+    parsed ? describeParse(parsed) : 'Unix seconds, ms, µs or ns · ISO 8601 · RFC 2822 · "now"'
+  );
+
+  const formatZone = $derived(zoneMode === 'utc' ? 'UTC' : localTz);
+  const out = $derived(parsed ? formatAll(parsed.date, formatZone, nowDate) : null);
+  const rows = $derived.by(() => {
+    if (!out) return [];
+    const local = zoneMode === 'local';
+    return [
+      { label: 'Unix seconds', value: out.unixSeconds },
+      { label: 'Unix milliseconds', value: out.unixMilliseconds },
+      { label: 'ISO 8601 (UTC)', value: out.isoUtc },
+      { label: local ? 'ISO 8601 (local offset)' : 'ISO 8601 (+00:00)', value: out.isoOffset },
+      { label: 'RFC 2822 / HTTP', value: out.rfc2822 },
+      ...(local ? [{ label: 'Local time', value: out.human }] : []),
+      { label: 'UTC time', value: out.humanUtc },
+      { label: 'Relative', value: out.relative },
+      { label: 'Day of week', value: out.dayOfWeek },
+      { label: 'ISO week', value: out.isoWeek },
+      { label: 'Day of year', value: out.dayOfYear }
+    ];
   });
 
-  $effect(() => {
-    if (isoString) {
-      convertFromDate();
-    }
-  });
+  function useNow() {
+    input = nowSeconds;
+    unitChoice = 'auto';
+  }
 
-  $effect(() => {
-    if (isoString) {
-      const date = new Date(isoString);
-      if (!isNaN(date.getTime())) {
-        formattedDate = formatDate(date, selectedFormat);
-      }
-    }
-  });
+  // --- Pick a date (independent state) -----------------------------------
+  let pickZone = $state('local');
+  let pickValue = $state(toDateTimeLocal(new Date(), 'local'));
+
+  const pickDate = $derived(pickValue ? fromDateTimeLocal(pickValue, pickZone as WallZone) : null);
+  const pickError = $derived(pickValue && !pickDate ? 'Enter a full date and time.' : undefined);
+  const pickSeconds = $derived(pickDate ? String(Math.floor(pickDate.getTime() / 1000)) : '');
+  const pickMillis = $derived(pickDate ? String(pickDate.getTime()) : '');
+
+  function sendToConverter() {
+    if (!pickDate) return;
+    input = pickSeconds;
+    unitChoice = 'auto';
+    document.getElementById(INPUT_ID)?.focus();
+  }
 </script>
+
+{#snippet copyLabel(label: string)}Copy<span class="sr-only"> {label}</span>{/snippet}
 
 <ToolLayout
   title="Timestamp Converter"
@@ -168,198 +104,119 @@
   icon={Clock}
   color="warning"
 >
-  <!-- Current Timestamp -->
-  <div class="tool-card">
-    <div class="flex flex-wrap items-center justify-between gap-4">
-      <div>
-        <p class="text-label mb-2 text-ink-muted">Current timestamp</p>
-        <p class="text-body-sm mb-2 text-ink-muted">Current Unix timestamp and date</p>
-        <div class="mt-2 flex flex-wrap items-center gap-4">
-          <span class="font-mono text-lg text-ink">{currentTimestamp}</span>
-          <span class="text-body-sm text-ink-muted">({new Date().toLocaleString()})</span>
+  <!-- Now -->
+  <section aria-labelledby="ts-now-title" class="flex flex-col gap-4 rounded-lg bg-card p-6">
+    <div class="flex flex-wrap items-baseline justify-between gap-2">
+      <h2 id="ts-now-title" class="text-title text-ink">Now</h2>
+      <p class="text-body-sm text-ink-muted">{nowDate.toLocaleString()} · {localTz}</p>
+    </div>
+    <div class="flex flex-wrap items-end gap-4">
+      <div class="flex flex-col gap-2">
+        <span class="text-label text-ink-muted">Unix seconds</span>
+        <CopyChip value={nowSeconds}><span class="font-mono">{nowSeconds}</span></CopyChip>
+      </div>
+      <div class="flex flex-col gap-2">
+        <span class="text-label text-ink-muted">Unix milliseconds</span>
+        <CopyChip value={String(nowMs)}><span class="font-mono">{nowMs}</span></CopyChip>
+      </div>
+      <Button variant="secondary" onclick={useNow} class="sm:ml-auto">
+        {#snippet icon()}<ArrowUp class="size-4" />{/snippet}
+        Use now
+      </Button>
+    </div>
+  </section>
+
+  <!-- Converter -->
+  <section aria-labelledby="ts-convert-title" class="flex flex-col gap-5 rounded-lg bg-card p-6">
+    <h2 id="ts-convert-title" class="text-title text-ink">Convert</h2>
+
+    <TextField
+      id={INPUT_ID}
+      label="Timestamp or date"
+      bind:value={input}
+      mono
+      {error}
+      {hint}
+      placeholder="1704067200, 2024-01-01T00:00:00Z, now…"
+      autocomplete="off"
+      spellcheck={false}
+    />
+
+    {#if numeric}
+      <div class="flex flex-col gap-2 sm:max-w-sm">
+        <span class="text-label text-ink-muted" aria-hidden="true">Unit</span>
+        <Segmented label="Timestamp unit" options={unitOptions} bind:value={unitChoice} />
+      </div>
+    {/if}
+
+    {#if out}
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+        <div class="flex flex-col gap-1">
+          <h3 class="text-body font-medium text-ink">Results</h3>
+          <p class="text-body-sm text-ink-muted">
+            Local time zone: <span class="font-mono">{localTz}</span>
+          </p>
+        </div>
+        <div class="w-full sm:w-56">
+          <Segmented label="Show calendar fields in" options={zoneOptions} bind:value={zoneMode} />
         </div>
       </div>
-      <button class="btn btn-secondary" onclick={getCurrentTimestamp}>
-        <RefreshCw class="size-4" />
-        Refresh
-      </button>
-    </div>
-  </div>
 
-  <!-- Controls -->
-  <div class="flex flex-wrap gap-2">
-    <button class="btn btn-primary" onclick={loadSampleTimestamp}>Load sample timestamp</button>
-    <button class="btn btn-ghost" onclick={clearAll}>Clear all</button>
-  </div>
-
-  <!-- Conversion Tools -->
-  <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-    <!-- Unix Timestamp to Date -->
-    <div class="tool-card">
-      <h2 class="section-title">Unix timestamp → Date</h2>
-
-      <div class="space-y-4">
-        <div>
-          <label for="unix-timestamp" class="label">Unix timestamp</label>
-          <input
-            id="unix-timestamp"
-            type="text"
-            bind:value={unixTimestamp}
-            placeholder="1704067200"
-            class="tool-input font-mono! text-sm!"
-          />
-        </div>
-
-        {#if isoString}
-          <div>
-            <label for="iso-string" class="label">ISO string</label>
-            <div class="flex items-center gap-2">
-              <input
-                id="iso-string"
-                type="text"
-                bind:value={isoString}
-                class="tool-input flex-1 font-mono! text-sm!"
-                readonly
-              />
-              <button class="btn btn-sm btn-secondary" onclick={() => copyToClipboard(isoString, 'iso')}>
-                {#if copiedText === 'iso'}
-                  <Check class="size-4" />
-                  Copied
-                {:else}
-                  <Copy class="size-4" />
-                  Copy
-                {/if}
-              </button>
-            </div>
+      <dl class="flex flex-col gap-2">
+        {#each rows as row (row.label)}
+          <div
+            class="flex flex-col gap-2 rounded-md bg-sunken px-4 py-3 sm:flex-row sm:items-center sm:gap-4"
+          >
+            <dt class="text-label shrink-0 text-ink-muted sm:w-48">{row.label}</dt>
+            <dd class="flex min-w-0 flex-1 items-center justify-between gap-3">
+              <span class="text-code min-w-0 break-all font-mono text-ink">{row.value}</span>
+              <CopyChip value={row.value}>{@render copyLabel(row.label)}</CopyChip>
+            </dd>
           </div>
-        {/if}
+        {/each}
+      </dl>
+    {/if}
+  </section>
+
+  <!-- Pick a date -->
+  <section aria-labelledby="ts-pick-title" class="flex flex-col gap-5 rounded-lg bg-card p-6">
+    <div class="flex flex-col gap-1">
+      <h2 id="ts-pick-title" class="text-title text-ink">Pick a date</h2>
+      <p class="text-body-sm text-ink-muted">Choose a date and time to get its Unix timestamp.</p>
+    </div>
+
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
+      <div class="flex-1">
+        <TextField
+          label="Date and time"
+          type="datetime-local"
+          step="1"
+          bind:value={pickValue}
+          mono
+          error={pickError}
+        />
+      </div>
+      <div class="flex flex-col gap-2 sm:w-56">
+        <span class="text-label text-ink-muted" aria-hidden="true">Read as</span>
+        <Segmented label="Read the date and time as" options={zoneOptions} bind:value={pickZone} />
       </div>
     </div>
 
-    <!-- Date to Unix Timestamp -->
-    <div class="tool-card">
-      <h2 class="section-title">Date → Unix timestamp</h2>
-
-      <div class="space-y-4">
-        <div>
-          <label for="date-iso" class="label">Date (ISO format)</label>
-          <input
-            id="date-iso"
-            type="datetime-local"
-            bind:value={isoString}
-            class="tool-input"
-          />
+    {#if pickDate}
+      <div class="flex flex-wrap items-end gap-4">
+        <div class="flex flex-col gap-2">
+          <span class="text-label text-ink-muted">Unix seconds</span>
+          <CopyChip value={pickSeconds}><span class="font-mono">{pickSeconds}</span></CopyChip>
         </div>
-
-        {#if unixTimestamp && !isNaN(parseInt(unixTimestamp))}
-          <div>
-            <label for="unix-timestamp-result" class="label">Unix timestamp</label>
-            <div class="flex items-center gap-2">
-              <input
-                id="unix-timestamp-result"
-                type="text"
-                bind:value={unixTimestamp}
-                class="tool-input flex-1 font-mono! text-sm!"
-                readonly
-              />
-              <button class="btn btn-sm btn-secondary" onclick={() => copyToClipboard(unixTimestamp, 'timestamp')}>
-                {#if copiedText === 'timestamp'}
-                  <Check class="size-4" />
-                  Copied
-                {:else}
-                  <Copy class="size-4" />
-                  Copy
-                {/if}
-              </button>
-            </div>
-          </div>
-        {/if}
-      </div>
-    </div>
-  </div>
-
-  <!-- Formatted Results -->
-  {#if formattedDate}
-    <div class="tool-card">
-      <h2 class="section-title">Formatted results</h2>
-
-      <div class="space-y-4">
-        <div>
-          <label for="date-format" class="label">Date format</label>
-          <select id="date-format" bind:value={selectedFormat} class="tool-select">
-            <option value="iso">ISO 8601</option>
-            <option value="us">US Format</option>
-            <option value="european">European Format</option>
-            <option value="readable">Readable</option>
-            <option value="short">Short Date</option>
-            <option value="time">Time Only</option>
-            <option value="date">Date Only</option>
-          </select>
+        <div class="flex flex-col gap-2">
+          <span class="text-label text-ink-muted">Unix milliseconds</span>
+          <CopyChip value={pickMillis}><span class="font-mono">{pickMillis}</span></CopyChip>
         </div>
-
-        <div class="flex items-center gap-2">
-          <input
-            type="text"
-            bind:value={formattedDate}
-            class="tool-input flex-1 font-mono! text-sm!"
-            readonly
-          />
-          <button class="btn btn-sm btn-secondary" onclick={() => copyToClipboard(formattedDate, 'formatted')}>
-                {#if copiedText === 'formatted'}
-                  <Check class="size-4" />
-                  Copied!
-                {:else}
-                  <Copy class="size-4" />
-                  Copy
-                {/if}
-              </button>
-        </div>
+        <Button variant="secondary" onclick={sendToConverter} class="sm:ml-auto">
+          {#snippet icon()}<CornerLeftUp class="size-4" />{/snippet}
+          Send to converter
+        </Button>
       </div>
-    </div>
-  {/if}
-
-  <!-- Timestamp Information -->
-  <div class="tool-card">
-    <h2 class="section-title">About Unix timestamps</h2>
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <div class="info-card">
-        <h3 class="section-title-sm">What is a Unix timestamp?</h3>
-        <p class="text-body-sm text-ink-muted">
-          A Unix timestamp is the number of seconds that have elapsed since January 1, 1970
-          (midnight UTC/GMT).
-        </p>
-      </div>
-
-      <div class="info-card">
-        <h3 class="section-title-sm">Common uses</h3>
-        <p class="text-body-sm text-ink-muted">
-          Used in programming, databases, APIs, and systems for consistent date/time representation
-          across timezones.
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Features Section -->
-  <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-    <div class="card">
-      <div class="feature-icon"><Calendar class="size-5" /></div>
-      <h3 class="feature-title">Unix timestamps</h3>
-      <p class="feature-description">
-        Convert between Unix timestamps and human-readable dates instantly
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon"><Copy class="size-5" /></div>
-      <h3 class="feature-title">Multiple formats</h3>
-      <p class="feature-description">Support for ISO, US, European, and custom date formats</p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon"><Zap class="size-5" /></div>
-      <h3 class="feature-title">Real-time updates</h3>
-      <p class="feature-description">Get current timestamp and live updates as you type</p>
-    </div>
-  </div>
+    {/if}
+  </section>
 </ToolLayout>

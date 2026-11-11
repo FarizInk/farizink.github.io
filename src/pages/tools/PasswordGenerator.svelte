@@ -1,469 +1,342 @@
 <script lang="ts">
+  import { Lock, RefreshCw } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
+  import { Button, Checkbox, CopyChip, IconButton, Segmented, Slider, Switch, TextField } from '$lib/components/ds';
   import {
-    Lock,
-    Shield,
-    Settings2,
-    Copy,
-    RefreshCw,
-    History,
-    Trash2,
-  } from '@lucide/svelte';
-  import { toast } from 'svelte-sonner';
+    AMBIGUOUS,
+    charset,
+    entropyBits,
+    generatePassphrase,
+    generatePassword,
+    strengthOf,
+    type CharOptions
+  } from '$lib/tools/password';
+  import { WORDS } from '$lib/tools/wordlist';
 
-  let password = $state('');
-  let passwordLength = $state(16);
-  let includeUppercase = $state(true);
-  let includeLowercase = $state(true);
-  let includeNumbers = $state(true);
-  let includeSymbols = $state(true);
-  let excludeSimilar = $state(false);
-  let excludeAmbiguous = $state(false);
-  let passwordHistory = $state<Array<{ id: string; password: string; timestamp: Date; strength: string }>>([]);
-  let customCharacters = $state('');
-  let useCustomCharacters = $state(false);
+  /** Every option the generator has. Presets replace the whole object, so nothing leaks between them. */
+  interface Settings {
+    mode: string; // 'chars' | 'passphrase' (string because Segmented binds a string)
+    length: number;
+    upper: boolean;
+    lower: boolean;
+    digits: boolean;
+    symbols: boolean;
+    excludeAmbiguous: boolean;
+    custom: string;
+    words: number;
+    separator: string;
+    capitalize: boolean;
+    appendDigit: boolean;
+  }
 
-  const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
-  const numberChars = '0123456789';
-  const symbolChars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-  const similarChars = 'il1Lo0O';
-  const ambiguousChars = '{}[]()/\\\'"`~,;.<>';
+  const BASE: Settings = {
+    mode: 'chars',
+    length: 20,
+    upper: true,
+    lower: true,
+    digits: true,
+    symbols: true,
+    excludeAmbiguous: false,
+    custom: '',
+    words: 6,
+    separator: '-',
+    capitalize: false,
+    appendDigit: false
+  };
 
-  function generatePassword() {
-    let charset = '';
-
-    if (includeUppercase) charset += uppercaseChars;
-    if (includeLowercase) charset += lowercaseChars;
-    if (includeNumbers) charset += numberChars;
-    if (includeSymbols) charset += symbolChars;
-    if (useCustomCharacters) charset += customCharacters;
-
-    if (excludeSimilar) {
-      charset = charset
-        .split('')
-        .filter(char => !similarChars.includes(char))
-        .join('');
+  const PRESETS: { id: string; label: string; settings: Settings }[] = [
+    { id: 'strong', label: 'Strong', settings: { ...BASE } },
+    {
+      id: 'readable',
+      label: 'Easy to read',
+      settings: { ...BASE, length: 16, symbols: false, excludeAmbiguous: true }
+    },
+    { id: 'max', label: 'Maximum', settings: { ...BASE, length: 64 } },
+    { id: 'passphrase', label: 'Passphrase', settings: { ...BASE, mode: 'passphrase' } },
+    {
+      id: 'memorable',
+      label: 'Memorable',
+      settings: { ...BASE, mode: 'passphrase', words: 5, separator: ' ', capitalize: true, appendDigit: true }
     }
+  ];
 
-    if (excludeAmbiguous) {
-      charset = charset
-        .split('')
-        .filter(char => !ambiguousChars.includes(char))
-        .join('');
-    }
+  const MODES = [
+    { value: 'chars', label: 'Characters' },
+    { value: 'passphrase', label: 'Passphrase' }
+  ];
 
-    if (charset === '') {
-      password = '';
-      toast.error('Please select at least one character type');
-      return;
-    }
+  const SEPARATORS = [
+    { value: '-', label: 'Hyphen' },
+    { value: '.', label: 'Dot' },
+    { value: '_', label: 'Underscore' },
+    { value: ' ', label: 'Space' },
+    { value: '', label: 'None' }
+  ];
 
-    let result = '';
-    for (let i = 0; i < passwordLength; i++) {
-      result += charset.charAt(Math.floor(Math.random() * charset.length));
-    }
+  const BATCH_SIZE = 5;
+  const HISTORY_SIZE = 10;
 
-    password = result;
-    addToHistory(result);
+  let s = $state<Settings>({ ...BASE });
+  // Bumping a nonce re-runs the derived generator without changing any option.
+  let nonce = $state(0);
+  let batchOpen = $state(false);
+  let batchNonce = $state(0);
+  // Copied passwords, in memory only: never written to storage.
+  let history = $state<string[]>([]);
+
+  const charOpts = $derived<CharOptions>({
+    length: s.length,
+    upper: s.upper,
+    lower: s.lower,
+    digits: s.digits,
+    symbols: s.symbols,
+    custom: s.custom,
+    excludeAmbiguous: s.excludeAmbiguous
+  });
+  const isPassphrase = $derived(s.mode === 'passphrase');
+  const poolSize = $derived(charset(charOpts).length);
+
+  function makeOne(): string {
+    return isPassphrase
+      ? generatePassphrase(
+          { words: s.words, separator: s.separator, capitalize: s.capitalize, appendDigit: s.appendDigit },
+          WORDS
+        )
+      : generatePassword(charOpts);
   }
 
-  function addToHistory(pwd: string) {
-    const strength = calculatePasswordStrength(pwd);
-    passwordHistory.unshift({
-      id: crypto.randomUUID(),
-      password: pwd,
-      timestamp: new Date(),
-      strength
-    });
-    if (passwordHistory.length > 10) {
-      passwordHistory = passwordHistory.slice(0, 10);
-    }
-  }
-
-  function calculatePasswordStrength(pwd: string): string {
-    if (pwd.length === 0) return 'none';
-
-    let strength = 0;
-
-    // Length bonus
-    if (pwd.length >= 8) strength++;
-    if (pwd.length >= 12) strength++;
-    if (pwd.length >= 16) strength++;
-
-    // Character variety bonus
-    if (/[a-z]/.test(pwd)) strength++;
-    if (/[A-Z]/.test(pwd)) strength++;
-    if (/[0-9]/.test(pwd)) strength++;
-    if (/[^a-zA-Z0-9]/.test(pwd)) strength++;
-
-    if (strength <= 2) return 'weak';
-    if (strength <= 4) return 'medium';
-    if (strength <= 6) return 'strong';
-    return 'very-strong';
-  }
-
-  function getStrengthColor(strength: string): string {
-    switch (strength) {
-      case 'weak':
-        return 'text-negative';
-      case 'medium':
-        return 'text-ink';
-      case 'strong':
-        return 'text-live';
-      case 'very-strong':
-        return 'text-live';
-      default:
-        return 'text-ink-muted';
-    }
-  }
-
-  function getStrengthBgColor(strength: string): string {
-    switch (strength) {
-      case 'medium':
-        return 'bg-tile-lilac text-ink-on-bright';
-      default:
-        return `bg-sunken ${getStrengthColor(strength)}`;
-    }
-  }
-
-  function copyToClipboard() {
-    if (!password) return;
-    navigator.clipboard.writeText(password);
-    toast.success('Password copied to clipboard');
-  }
-
-  function copyHistoryPassword(pwd: string) {
-    navigator.clipboard.writeText(pwd);
-    toast.success('Password copied to clipboard');
-  }
-
-  function clearAll() {
-    password = '';
-    passwordHistory = [];
-    toast.success('Cleared history');
-  }
-
-  function getStrengthText(strength: string): string {
-    switch (strength) {
-      case 'weak':
-        return 'Weak';
-      case 'medium':
-        return 'Medium';
-      case 'strong':
-        return 'Strong';
-      case 'very-strong':
-        return 'Very Strong';
-      default:
-        return 'No Password';
-    }
-  }
-
-  function generateMultiplePasswords(count: number) {
-    for (let i = 0; i < count; i++) {
-      generatePassword();
-    }
-    toast.success(`Generated ${count} passwords`);
-  }
-
-  function usePreset(preset: 'strong' | 'memorable' | 'pin' | 'passphrase') {
-    switch (preset) {
-      case 'strong':
-        passwordLength = 16;
-        includeUppercase = true;
-        includeLowercase = true;
-        includeNumbers = true;
-        includeSymbols = true;
-        excludeSimilar = true;
-        excludeAmbiguous = false;
-        break;
-      case 'memorable':
-        passwordLength = 12;
-        includeUppercase = true;
-        includeLowercase = true;
-        includeNumbers = true;
-        includeSymbols = false;
-        excludeSimilar = false;
-        excludeAmbiguous = false;
-        break;
-      case 'pin':
-        passwordLength = 4;
-        includeUppercase = false;
-        includeLowercase = false;
-        includeNumbers = true;
-        includeSymbols = false;
-        excludeSimilar = false;
-        excludeAmbiguous = false;
-        break;
-      case 'passphrase':
-        passwordLength = 32;
-        includeUppercase = false;
-        includeLowercase = true;
-        includeNumbers = false;
-        includeSymbols = true;
-        excludeSimilar = false;
-        excludeAmbiguous = false;
-        customCharacters = ' -_';
-        useCustomCharacters = true;
-        break;
-    }
-    generatePassword();
-    toast.success(`Applied ${preset} preset`);
-  }
-
-  // Generate initial password once on mount
-  let hasInitialized = $state(false);
-  $effect(() => {
-    if (!hasInitialized) {
-      generatePassword();
-      hasInitialized = true;
+  // Live: any option change (or a nonce bump) produces a fresh password.
+  const result = $derived.by(() => {
+    void nonce;
+    try {
+      return { value: makeOne(), error: '' };
+    } catch (e) {
+      return { value: '', error: e instanceof Error ? e.message : String(e) };
     }
   });
+
+  const batch = $derived.by(() => {
+    void batchNonce;
+    if (!batchOpen) return [];
+    try {
+      return Array.from({ length: BATCH_SIZE }, makeOne);
+    } catch {
+      return [];
+    }
+  });
+
+  const bits = $derived(
+    isPassphrase
+      ? entropyBits({ mode: 'passphrase', words: s.words, listSize: WORDS.length, appendDigit: s.appendDigit })
+      : entropyBits({ mode: 'chars', length: s.length, charsetSize: poolSize })
+  );
+  const strength = $derived(strengthOf(bits));
+  const activePreset = $derived(
+    PRESETS.find(p => (Object.keys(BASE) as (keyof Settings)[]).every(k => p.settings[k] === s[k]))?.id
+  );
+
+  function applyPreset(settings: Settings) {
+    s = { ...settings };
+  }
+
+  function remember(value: string) {
+    history = [value, ...history.filter(v => v !== value)].slice(0, HISTORY_SIZE);
+  }
+
+  function showBatch() {
+    batchOpen = true;
+    batchNonce++;
+  }
+
+  /** Splits a password so digits and symbols can be tinted (letters stay ink). */
+  function kind(c: string): string {
+    if (/[a-z]/i.test(c)) return '';
+    return /\d/.test(c) ? 'text-accent-text' : 'text-ink-muted';
+  }
 </script>
 
 <ToolLayout
   title="Password Generator"
-  description="Generate secure and random passwords with customizable options for maximum security."
+  description="Random passwords and word passphrases made in your browser with the Web Crypto API. Nothing is sent or saved."
   icon={Lock}
   color="warning"
 >
-  <!-- Toolbar -->
-  <div class="flex flex-wrap gap-2">
-    <button class="btn btn-secondary" onclick={() => generateMultiplePasswords(5)}>
-      Generate 5
-    </button>
-    <button class="btn btn-ghost" onclick={clearAll}>
-      <Trash2 class="size-4" />
-      Clear
-    </button>
-  </div>
+  <!-- Result -->
+  <section class="flex flex-col gap-5 rounded-lg bg-card p-6" aria-labelledby="pw-result-title">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <h2 id="pw-result-title" class="text-label text-ink-muted">
+        {isPassphrase ? 'Your passphrase' : 'Your password'}
+      </h2>
+      <div class="w-full sm:w-72">
+        <Segmented label="Generator type" options={MODES} bind:value={s.mode} />
+      </div>
+    </div>
 
-  <!-- Presets -->
-  <div class="flex flex-wrap gap-2">
-    {#each ['strong', 'memorable', 'pin', 'passphrase'] as preset (preset)}
-      <button
-        onclick={() => usePreset(preset as 'strong' | 'memorable' | 'pin' | 'passphrase')}
-        class="preset-btn capitalize"
+    {#if result.error}
+      <p class="text-body text-negative" role="alert">▼ {result.error}</p>
+    {:else}
+      <output
+        class="block rounded-md bg-sunken px-5 py-4 font-mono text-title break-all text-ink"
+        aria-label={isPassphrase ? 'Generated passphrase' : 'Generated password'}
       >
-        {preset}
-      </button>
-    {/each}
-  </div>
+        {#each [...result.value] as c, i (i)}<span class={kind(c)}>{c}</span>{/each}
+      </output>
+    {/if}
 
-  <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-    <!-- Settings Panel -->
-    <div class="flex flex-col gap-4 lg:col-span-2">
-      <!-- Main Password Display -->
-      <div class="tool-card">
-        <div class="card-header">
-          <h2 class="section-title mb-0!">Generated password</h2>
-          <div class="flex items-center gap-2">
-            {#if password}
-              <span
-                class="text-body-sm inline-flex items-center gap-1 font-medium {getStrengthColor(calculatePasswordStrength(password))}"
-              >
-                <Shield class="size-4" />
-                {getStrengthText(calculatePasswordStrength(password))}
-              </span>
-            {/if}
-            <button class="btn btn-sm btn-secondary" onclick={copyToClipboard}>
-              <Copy class="size-3.5" />
-              Copy
-            </button>
-          </div>
+    <div class="flex flex-wrap items-center gap-3">
+      {#if result.value}
+        <CopyChip value={result.value} oncopy={remember}>Copy</CopyChip>
+      {/if}
+      <IconButton label={isPassphrase ? 'Generate a new passphrase' : 'Generate a new password'} onclick={() => nonce++}>
+        <RefreshCw />
+      </IconButton>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <div class="flex flex-wrap items-baseline justify-between gap-2">
+        <p class="text-body text-ink">
+          <span class="font-medium {strength.band === 'weak' ? 'text-negative' : 'text-ink'}">{strength.label}</span>
+          <span class="text-ink-muted"> · {Math.round(bits)} bits of entropy</span>
+        </p>
+        <p class="text-body-sm text-ink-muted">
+          {#if isPassphrase}
+            {s.words} words × log2({WORDS.length}){s.appendDigit ? ' + log2(10)' : ''}
+          {:else}
+            {s.length} chars × log2({poolSize})
+          {/if}
+        </p>
+      </div>
+      <div class="h-2 overflow-hidden rounded-pill bg-sunken" aria-hidden="true">
+        <div
+          class="h-full rounded-pill transition-[width] duration-base ease-smooth {strength.band === 'weak' ? 'bg-negative' : 'bg-accent'}"
+          style="width: {Math.max(strength.ratio * 100, 2)}%"
+        ></div>
+      </div>
+      <p class="text-body-sm text-ink-muted">
+        Under 40 bits weak · 40–59 fair · 60–79 strong · 80+ very strong. Entropy measures the generator, so it
+        assumes an attacker knows these settings.
+      </p>
+    </div>
+  </section>
+
+  <div class="grid gap-4 lg:grid-cols-[3fr_2fr]">
+    <!-- Options -->
+    <section class="flex flex-col gap-6 rounded-lg bg-card p-6" aria-labelledby="pw-options-title">
+      <h2 id="pw-options-title" class="text-label text-ink-muted">Options</h2>
+
+      <div class="flex flex-col gap-2" role="group" aria-labelledby="pw-presets-label">
+        <span id="pw-presets-label" class="fz-field-label">Presets</span>
+        <div class="flex flex-wrap gap-2">
+          {#each PRESETS as p (p.id)}
+            <Button
+              size="sm"
+              variant={activePreset === p.id ? 'primary' : 'secondary'}
+              aria-pressed={activePreset === p.id}
+              onclick={() => applyPreset(p.settings)}
+            >
+              {p.label}
+            </Button>
+          {/each}
+        </div>
+      </div>
+
+      {#if isPassphrase}
+        <Slider label="Words" min={3} max={12} bind:value={s.words} marks={['3', '12']} />
+
+        <div class="flex flex-col gap-2">
+          <span class="fz-field-label" aria-hidden="true">Separator</span>
+          <Segmented label="Separator" options={SEPARATORS} bind:value={s.separator} />
         </div>
 
-        <input
-          bind:value={password}
-          readonly
-          placeholder="Click 'Generate Password' to create a secure password"
-          class="tool-input w-full py-3! font-mono! text-lg!"
+        <div class="flex flex-col gap-3">
+          <Switch label="Capitalize words" bind:checked={s.capitalize} />
+          <Switch
+            label="Add a digit at the end"
+            description="Adds about 3.3 bits; helps with sites that demand a number"
+            bind:checked={s.appendDigit}
+          />
+        </div>
+        <p class="text-body-sm text-ink-muted">
+          Words are drawn from a list of {WORDS.length} common English words, each one adding about
+          {Math.log2(WORDS.length).toFixed(1)} bits.
+        </p>
+      {:else}
+        <Slider label="Length" min={8} max={128} bind:value={s.length} marks={['8', '128']} />
+
+        <div class="grid gap-3 sm:grid-cols-2">
+          <Checkbox label="Uppercase" description="A–Z" bind:checked={s.upper} />
+          <Checkbox label="Lowercase" description="a–z" bind:checked={s.lower} />
+          <Checkbox label="Digits" description="0–9" bind:checked={s.digits} />
+          <Checkbox label="Symbols" description="!@#$%^&amp;* …" bind:checked={s.symbols} />
+        </div>
+
+        <Switch
+          label="Exclude look-alikes"
+          description={`Leaves out ${AMBIGUOUS.split('').join(' ')}`}
+          bind:checked={s.excludeAmbiguous}
         />
 
-        <!-- Strength Indicator -->
-        {#if password}
-          <div class="mt-4">
-            <div class="h-2 w-full overflow-hidden rounded-pill bg-sunken">
-              <div
-                class="h-full rounded-pill transition-[width] duration-150 {calculatePasswordStrength(password) ===
-                'weak'
-                  ? 'w-1/4 bg-negative'
-                  : calculatePasswordStrength(password) === 'medium'
-                    ? 'w-2/4 bg-tile-lilac'
-                    : calculatePasswordStrength(password) === 'strong'
-                      ? 'w-3/4 bg-live'
-                      : 'w-full bg-live'}"
-              ></div>
-            </div>
-          </div>
+        <TextField
+          label="Extra characters"
+          optional
+          mono
+          hint="Added as their own group; at least one will appear. Duplicates and spaces are ignored."
+          bind:value={s.custom}
+          autocomplete="off"
+          spellcheck={false}
+        />
+        <p class="text-body-sm text-ink-muted">
+          Every enabled group appears at least once; the rest is drawn from all {poolSize} characters and shuffled.
+        </p>
+      {/if}
+    </section>
+
+    <div class="flex flex-col gap-4">
+      <!-- Several at once -->
+      <section class="flex flex-col gap-4 rounded-lg bg-card p-6" aria-labelledby="pw-batch-title">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <h2 id="pw-batch-title" class="text-label text-ink-muted">Several at once</h2>
+          <Button size="sm" variant="secondary" onclick={showBatch} disabled={!!result.error}>
+            {#snippet icon()}<RefreshCw class="size-4" />{/snippet}
+            Generate {BATCH_SIZE}
+          </Button>
+        </div>
+        {#if batch.length > 0}
+          <ul class="flex flex-col gap-2">
+            {#each batch as pw, i (i)}
+              <li class="flex items-center gap-3 rounded-md bg-sunken py-1.5 pr-1.5 pl-4">
+                <span class="min-w-0 flex-1 font-mono text-body-sm break-all text-ink">{pw}</span>
+                <CopyChip value={pw} oncopy={remember}>Copy<span class="sr-only"> option {i + 1}</span></CopyChip>
+              </li>
+            {/each}
+          </ul>
+        {:else}
+          <p class="text-body-sm text-ink-muted">Pick from a few candidates with the same settings.</p>
         {/if}
-      </div>
+      </section>
 
-      <!-- Settings -->
-      <div class="tool-card">
-        <h2 class="section-title">Password settings</h2>
-
-        <!-- Length Slider -->
-        <div class="mb-6">
-          <div class="mb-2 flex items-center justify-between">
-            <label for="password-length-slider" class="label mb-0!">Password length</label>
-            <span class="font-mono text-sm font-semibold text-ink">
-              {passwordLength}
-            </span>
-          </div>
-          <input
-            id="password-length-slider"
-            type="range"
-            min="4"
-            max="64"
-            bind:value={passwordLength}
-            class="slider"
-            style="--p: {((passwordLength - 4) / (64 - 4)) * 100}%"
-          />
-          <div class="text-count mt-1 flex justify-between">
-            <span>4</span>
-            <span>32</span>
-            <span>64</span>
-          </div>
-        </div>
-
-        <!-- Character Options -->
-        <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-          <label class="custom-checkbox">
-            <input type="checkbox" bind:checked={includeUppercase} />
-            <span class="checkmark"></span>
-            <span class="label-text">Uppercase (A-Z)</span>
-          </label>
-          <label class="custom-checkbox">
-            <input type="checkbox" bind:checked={includeLowercase} />
-            <span class="checkmark"></span>
-            <span class="label-text">Lowercase (a-z)</span>
-          </label>
-          <label class="custom-checkbox">
-            <input type="checkbox" bind:checked={includeNumbers} />
-            <span class="checkmark"></span>
-            <span class="label-text">Numbers (0-9)</span>
-          </label>
-          <label class="custom-checkbox">
-            <input type="checkbox" bind:checked={includeSymbols} />
-            <span class="checkmark"></span>
-            <span class="label-text">Symbols (!@#$%)</span>
-          </label>
-          <label class="custom-checkbox">
-            <input type="checkbox" bind:checked={useCustomCharacters} />
-            <span class="checkmark"></span>
-            <span class="label-text">Custom characters</span>
-          </label>
-        </div>
-
-        {#if useCustomCharacters}
-          <div class="mb-6">
-            <input
-              bind:value={customCharacters}
-              placeholder="Enter custom characters..."
-              class="tool-input w-full py-2! font-mono! text-sm!"
-            />
-          </div>
-        {/if}
-
-        <!-- Exclusion Options -->
-        <div class="flex flex-col gap-4 pt-4">
-          <label class="custom-checkbox">
-            <input type="checkbox" bind:checked={excludeSimilar} />
-            <span class="checkmark"></span>
-            <span class="label-text">Exclude similar characters (i, l, 1, L, o, 0, O)</span>
-          </label>
-          <label class="custom-checkbox">
-            <input type="checkbox" bind:checked={excludeAmbiguous} />
-            <span class="checkmark"></span>
-            <span class="label-text">Exclude ambiguous characters</span>
-          </label>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="mt-6 flex gap-3">
-          <button class="btn btn-primary flex-1" onclick={generatePassword}>
-            <RefreshCw class="size-4" />
-            Generate password
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Password History -->
-    <div>
-      <div class="tool-card">
-        <div class="card-header">
-          <h2 class="section-title mb-0!">History</h2>
-          {#if passwordHistory.length > 0}
-            <button class="btn btn-sm btn-ghost" onclick={clearAll}>Clear</button>
+      <!-- Copied this session -->
+      <section class="flex flex-col gap-4 rounded-lg bg-card p-6" aria-labelledby="pw-history-title">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <h2 id="pw-history-title" class="text-label text-ink-muted">Copied this visit</h2>
+          {#if history.length > 0}
+            <Button size="sm" variant="ghost" onclick={() => (history = [])}>Clear</Button>
           {/if}
         </div>
-
-        {#if passwordHistory.length === 0}
-          <div class="flex flex-col items-center justify-center py-8 text-ink-muted">
-            <History class="mb-2 size-8" />
-            <p class="text-body-sm">No passwords generated yet</p>
-          </div>
-        {:else}
-          <div class="max-h-[400px] space-y-2 overflow-y-auto">
-            {#each passwordHistory as item (item.id)}
-              <div class="rounded-md bg-sunken p-3">
-                <div class="mr-2 min-w-0 flex-1">
-                  <div class="font-mono text-sm break-all text-ink">
-                    {item.password}
-                  </div>
-                  <div class="mt-2 flex items-center justify-between">
-                    <span class="text-count">
-                      {item.timestamp.toLocaleTimeString()}
-                    </span>
-                    <div class="flex items-center gap-2">
-                      <span
-                        class="inline-flex h-6 items-center rounded-pill px-2.5 font-mono text-xs font-medium {getStrengthBgColor(item.strength)}"
-                      >
-                        {getStrengthText(item.strength)}
-                      </span>
-                      <button
-                        class="btn-icon"
-                        onclick={() => copyHistoryPassword(item.password)}
-                        aria-label="Copy password"
-                        title="Copy password"
-                      >
-                        <Copy class="size-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        {#if history.length > 0}
+          <ul class="flex flex-col gap-2">
+            {#each history as pw, i (pw)}
+              <li class="flex items-center gap-3 rounded-md bg-sunken py-1.5 pr-1.5 pl-4">
+                <span class="min-w-0 flex-1 font-mono text-body-sm break-all text-ink">{pw}</span>
+                <CopyChip value={pw}>Copy<span class="sr-only"> copied item {i + 1}</span></CopyChip>
+              </li>
             {/each}
-          </div>
+          </ul>
         {/if}
-      </div>
-    </div>
-  </div>
-
-  <!-- Features Section -->
-  <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-    <div class="card">
-      <div class="feature-icon"><Shield class="size-5" /></div>
-      <h3 class="feature-title">Strong security</h3>
-      <p class="feature-description">
-        Generate cryptographically secure passwords with customizable complexity
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon"><Settings2 class="size-5" /></div>
-      <h3 class="feature-title">Customizable options</h3>
-      <p class="feature-description">
-        Fine-tune character sets, length, and exclusions for your specific needs
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon"><History class="size-5" /></div>
-      <h3 class="feature-title">Password history</h3>
-      <p class="feature-description">Keep track of generated passwords with strength analysis</p>
+        <p class="text-body-sm text-ink-muted">
+          Kept in memory only, never saved. Gone when you leave or reload the page.
+        </p>
+      </section>
     </div>
   </div>
 </ToolLayout>
