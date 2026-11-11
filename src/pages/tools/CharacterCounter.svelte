@@ -1,431 +1,200 @@
 <script lang="ts">
+  import { Calculator } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
+  import { Button, CopyChip, Segmented, StatTile, Textarea, TextField } from '$lib/components/ds';
   import {
-    Copy,
-    FileText,
-    Calculator,
-    Hash,
-    Clock,
-    Type,
-    BarChart3,
-    Sparkles,
-    Zap,
-    Check
-  } from '@lucide/svelte';
+    LIMITS,
+    READING_WPM,
+    SPEAKING_WPM,
+    formatBytes,
+    formatCount,
+    formatDuration,
+    limitStatus,
+    parseLimit,
+    plural,
+    smsInfo,
+    statsSummary,
+    textStats,
+    type LimitStatus
+  } from '$lib/tools/textstats';
 
-  // Component state
-  let inputText = $state('');
+  const SAMPLE = `Café notes — draft 2 ✍️
 
-  // Calculate text statistics
-  const stats = $derived(
-    inputText
-      ? {
-          // Character counts
-          totalChars: inputText.length,
-          charsNoSpaces: inputText.replace(/\s/g, '').length,
-          charsIncludingSpaces: inputText.length,
+Ship the résumé to São Paulo by Friday! The config lives in C:\\Users\\fariz\\app.json, and the build is 3.2 MB.
 
-          // Word counts
-          words: inputText.trim() ? inputText.trim().split(/\s+/).length : 0,
-          uniqueWords: inputText.trim()
-            ? new Set(inputText.toLowerCase().trim().split(/\s+/)).size
-            : 0,
+Does 👍🏽 count as one character? Here it does: that's what people see, even though it's 2 code points, 4 UTF-16 units and 8 UTF-8 bytes.`;
 
-          // Sentence and paragraph counts
-          sentences: inputText.trim()
-            ? inputText.split(/[\\.!?]+/).filter(s => s.trim().length > 0).length
-            : 0,
-          paragraphs: inputText.trim()
-            ? inputText.split(/\n\n+/).filter(p => p.trim().length > 0).length
-            : 0,
-          lines: inputText.split('\n').length,
+  /** Above this many UTF-16 units, wait for a typing pause before recounting. */
+  const DEBOUNCE_ABOVE = 100_000;
 
-          // Reading time calculations
-          readingTimeSlow: Math.ceil(inputText.trim().split(/\s+/).length / 130), // 130 WPM (slow)
-          readingTimeAvg: Math.ceil(inputText.trim().split(/\s+/).length / 200), // 200 WPM (average)
-          readingTimeFast: Math.ceil(inputText.trim().split(/\s+/).length / 300), // 300 WPM (fast)
+  let text = $state('');
+  let analysed = $state('');
+  let customInput = $state('');
+  let customUnit = $state('graphemes');
 
-          // Character type breakdown
-          letters: (inputText.match(/[a-zA-Z]/g) || []).length,
-          numbers: (inputText.match(/[0-9]/g) || []).length,
-          spaces: (inputText.match(/\s/g) || []).length,
-          punctuation: (inputText.match(/[.,!?;:'"\-()[\]{}]/g) || []).length,
-          specialChars:
-            inputText.length - (inputText.match(/[a-zA-Z0-9\s.,!?;:'"\-()[\]{}]/g) || []).length,
+  $effect(() => {
+    const t = text;
+    if (t.length <= DEBOUNCE_ABOVE) {
+      analysed = t;
+      return;
+    }
+    const id = setTimeout(() => (analysed = t), 250);
+    return () => clearTimeout(id);
+  });
 
-          // Most frequent words
-          wordFrequency: inputText.trim() ? getWordFrequency(inputText.toLowerCase()) : {}
-        }
-      : null
+  const stats = $derived(textStats(analysed));
+  const sms = $derived(smsInfo(analysed));
+  const pending = $derived(text !== analysed);
+  const customMax = $derived(parseLimit(customInput));
+  const customError = $derived(
+    customInput.trim() && customMax === null ? 'Enter a whole number above 0' : undefined
   );
 
-  function getWordFrequency(text: string): Record<string, number> {
-    const words = text.split(/\s+/);
-    const frequency: Record<string, number> = {};
-
-    words.forEach(word => {
-      // Clean word from punctuation
-      const cleanWord = word.replace(/[.,!?;:'"()[\]{}]/g, '');
-      if (cleanWord.length > 0) {
-        frequency[cleanWord] = (frequency[cleanWord] || 0) + 1;
-      }
-    });
-
-    // Sort by frequency and return top 10
-    const sorted = Object.entries(frequency)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 10);
-
-    return Object.fromEntries(sorted);
-  }
-
-  function copyToClipboard(text: string) {
-    navigator.clipboard.writeText(text);
-  }
-
-  function getLimitPercent(current: number, limit: number): number {
-    return Math.min((current / limit) * 100, 100);
-  }
-
-  function clearAll() {
-    inputText = '';
-  }
-
-  function loadSampleText() {
-    inputText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-This sample text contains 123 numbers and various punctuation marks! It's designed to test the character counter functionality comprehensively.`;
-  }
-
-  function downloadReport() {
-    if (!stats) return;
-
-    const report = `Character Counter Report
-====================
-
-Text Length: ${stats.totalChars} characters
-Words: ${stats.words} words
-Sentences: ${stats.sentences} sentences
-Paragraphs: ${stats.paragraphs} paragraphs
-
-Detailed Breakdown:
-- Characters (with spaces): ${stats.charsIncludingSpaces}
-- Characters (no spaces): ${stats.charsNoSpaces}
-- Letters: ${stats.letters}
-- Numbers: ${stats.numbers}
-- Spaces: ${stats.spaces}
-- Punctuation: ${stats.punctuation}
-- Special characters: ${stats.specialChars}
-- Lines: ${stats.lines}
-- Unique words: ${stats.uniqueWords}
-
-Reading Time:
-- Slow reader (130 WPM): ${stats.readingTimeSlow} minutes
-- Average reader (200 WPM): ${stats.readingTimeAvg} minutes
-- Fast reader (300 WPM): ${stats.readingTimeFast} minutes
-
-${
-  Object.keys(stats.wordFrequency).length > 0
-    ? `
-Top 10 Most Frequent Words:
-${Object.entries(stats.wordFrequency)
-  .map(([word, count]) => `- ${word}: ${count} times`)
-  .join('\n')}
-`
-    : ''
-}
-
-Original Text:
-${inputText}
-`;
-
-    const blob = new Blob([report], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'character-counter-report.txt';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
-
-  // Character limit indicators
-  const commonLimits = [
-    { name: 'Twitter', limit: 280 },
-    { name: 'SMS', limit: 160 },
-    { name: 'LinkedIn Post', limit: 3000 },
-    { name: 'Facebook Post', limit: 63206 },
-    { name: 'Instagram Caption', limit: 2200 }
+  const UNITS = [
+    { value: 'graphemes', label: 'Characters' },
+    { value: 'words', label: 'Words' },
+    { value: 'utf8Bytes', label: 'UTF-8 bytes' }
   ];
+  const unitCount = $derived(
+    customUnit === 'words' ? stats.words : customUnit === 'utf8Bytes' ? stats.utf8Bytes : stats.graphemes
+  );
+  const unitName = $derived(
+    customUnit === 'words' ? 'word' : customUnit === 'utf8Bytes' ? 'byte' : 'character'
+  );
+
+  interface Row {
+    label: string;
+    status: LimitStatus;
+    unit: string;
+    note?: string;
+  }
+  const rows = $derived<Row[]>([
+    ...LIMITS.map(l => ({
+      label: l.label,
+      note: l.note,
+      unit: 'character',
+      status: limitStatus(stats.graphemes, l.max)
+    })),
+    ...(customMax ? [{ label: 'Custom', unit: unitName, status: limitStatus(unitCount, customMax) }] : [])
+  ]);
+  const smsStatus = $derived(limitStatus(sms.units, Math.max(sms.segments, 1) * sms.perSegment));
+
+  const details = $derived([
+    { label: 'Code points', value: formatCount(stats.codePoints) },
+    { label: 'UTF-16 units', value: formatCount(stats.utf16Units) },
+    { label: 'Sentences', value: formatCount(stats.sentences) },
+    { label: 'Paragraphs', value: formatCount(stats.paragraphs) },
+    { label: 'Letters', value: formatCount(stats.letters) },
+    { label: 'Digits', value: formatCount(stats.digits) },
+    { label: 'Whitespace', value: formatCount(stats.whitespace) },
+    { label: 'Punctuation', value: formatCount(stats.punctuation) },
+    { label: 'Symbols & emoji', value: formatCount(stats.symbols) },
+    { label: `Reading · ${READING_WPM} wpm`, value: formatDuration(stats.readingSeconds) },
+    { label: `Speaking · ${SPEAKING_WPM} wpm`, value: formatDuration(stats.speakingSeconds) }
+  ]);
 </script>
+
+{#snippet bar(label: string, s: LimitStatus, unit: string, note?: string, extra?: string)}
+  <li class="flex flex-col gap-2">
+    <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+      <span class="text-body-sm text-ink">{label}</span>
+      <span class="font-mono text-code tabular-nums text-ink">
+        {formatCount(s.count)} / {formatCount(s.max)}
+        {#if s.over}
+          <span class="text-negative">· over by {plural(s.diff, unit)}</span>
+        {:else}
+          <span class="text-ink-muted">· {formatCount(s.diff)} left</span>
+        {/if}
+      </span>
+    </div>
+    <div class="h-2 overflow-hidden rounded-pill bg-sunken" aria-hidden="true">
+      <div
+        class="h-full rounded-pill transition-[width] duration-base ease-soft {s.over ? 'bg-negative' : 'bg-accent'}"
+        style="width: {s.percent}%"
+      ></div>
+    </div>
+    {#if extra}<span class="text-body-sm text-ink-muted">{extra}</span>{/if}
+    {#if note}<span class="text-body-sm text-ink-muted">{note}</span>{/if}
+  </li>
+{/snippet}
 
 <ToolLayout
   title="Character Counter"
-  description="Count characters, words, and analyze text with detailed statistics including reading time and frequency analysis"
+  description="Count characters the way people see them, plus words, UTF-8 bytes, lines, SMS segments and common length limits."
   icon={Calculator}
   color="warning"
 >
-  <!-- Toolbar -->
-  <div class="flex flex-wrap gap-2">
-    <button class="btn btn-secondary btn-sm" onclick={loadSampleText}>Load sample</button>
-    <button class="btn btn-ghost btn-sm" onclick={clearAll}>Clear</button>
+  <section class="flex flex-col gap-4 rounded-lg bg-card p-6">
+    <Textarea
+      label="Text"
+      bind:value={text}
+      rows={10}
+      placeholder="Type or paste text…"
+      hint="Characters are counted as you see them: 👍🏽 and é count as 1."
+    />
+    <div class="flex flex-wrap items-center gap-2">
+      <Button variant="secondary" size="sm" onclick={() => (text = SAMPLE)}>Load sample</Button>
+      <Button variant="ghost" size="sm" onclick={() => (text = '')} disabled={!text}>Clear</Button>
+      {#if pending}<span class="text-body-sm text-ink-muted" role="status">Counting…</span>{/if}
+      <span class="ml-auto"><CopyChip value={statsSummary(stats)}>Copy stats</CopyChip></span>
+    </div>
+  </section>
+
+  <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+    <StatTile label="Characters" tone="lilac" value={formatCount(stats.graphemes)} caption="as displayed" />
+    <StatTile
+      label="Words"
+      value={formatCount(stats.words)}
+      caption="{formatDuration(stats.readingSeconds)} to read"
+    />
+    <StatTile label="UTF-8 bytes" value={formatCount(stats.utf8Bytes)} caption={formatBytes(stats.utf8Bytes)} />
+    <StatTile label="Lines" value={formatCount(stats.lines)} caption={plural(stats.paragraphs, 'paragraph')} />
   </div>
 
-  <!-- Main Content Grid -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-    <!-- Text Input Area -->
-    <div class="lg:col-span-2">
-      <div class="tool-card">
-        <div class="card-header">
-          <h2 class="section-title mb-0">Input text</h2>
-          <div class="text-count">
-            {inputText.length} chars
+  <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+    <section class="flex flex-col gap-4 rounded-lg bg-card p-6" aria-labelledby="cc-details">
+      <h2 id="cc-details" class="text-title m-0 text-ink">Details</h2>
+      <dl class="m-0 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {#each details as d (d.label)}
+          <div class="flex flex-col gap-1 rounded-md bg-control px-4 py-3">
+            <dt class="text-label text-ink-muted">{d.label}</dt>
+            <dd class="m-0 font-mono text-body tabular-nums text-ink">{d.value}</dd>
           </div>
-        </div>
+        {/each}
+      </dl>
+    </section>
 
-        <textarea
-          class="code-editor min-h-[320px]"
-          bind:value={inputText}
-          placeholder="Enter your text here to count characters, words, and analyze..."
-        ></textarea>
-
-        <!-- Character Limit Indicators -->
-        {#if stats && stats.totalChars > 0}
-          <div class="mt-4 space-y-2">
-            {#each commonLimits as limit (limit.name)}
-              {@const percentage = (stats.totalChars / limit.limit) * 100}
-              <div class="flex items-center justify-between text-body-sm">
-                <span class="text-ink-muted min-w-[100px]">{limit.name}</span>
-                <div class="flex items-center gap-2 flex-1">
-                  <div class="w-32 bg-sunken rounded-pill h-2">
-                    <div
-                      class="h-2 rounded-pill transition-[width] {percentage > 100
-                        ? 'bg-negative'
-                        : 'bg-accent'}"
-                      style="width: {Math.min(percentage, 100)}%"
-                    ></div>
-                  </div>
-                  <span class="font-mono text-code text-ink-muted min-w-[60px] text-right">
-                    {stats.totalChars}/{limit.limit}
-                  </span>
-                  {#if percentage > 100}
-                    <span class="text-label text-negative">Over</span>
-                  {/if}
-                </div>
-              </div>
-            {/each}
-          </div>
-        {/if}
+    <section class="flex flex-col gap-4 rounded-lg bg-card p-6" aria-labelledby="cc-limits">
+      <h2 id="cc-limits" class="text-title m-0 text-ink">Limits</h2>
+      <ul class="m-0 flex list-none flex-col gap-5 p-0">
+        {#each rows.slice(0, 1) as r (r.label)}
+          {@render bar(r.label, r.status, r.unit, r.note)}
+        {/each}
+        {@render bar(
+          'SMS',
+          smsStatus,
+          'unit',
+          sms.encoding === 'UCS-2'
+            ? `Unicode forced by: ${sms.unicodeChars.slice(0, 8).join(' ')}${sms.unicodeChars.length > 8 ? ' …' : ''}`
+            : '€ { } [ ] \\ ~ ^ | count as 2.',
+          `${sms.encoding} · ${plural(sms.segments, 'segment')} of ${sms.perSegment}`
+        )}
+        {#each rows.slice(1) as r (r.label)}
+          {@render bar(r.label, r.status, r.unit, r.note)}
+        {/each}
+      </ul>
+      <div class="flex flex-col gap-3">
+        <TextField
+          label="Custom limit"
+          type="text"
+          inputmode="numeric"
+          placeholder="e.g. 500"
+          optional
+          bind:value={customInput}
+          error={customError}
+        />
+        <Segmented label="Custom limit counts" options={UNITS} bind:value={customUnit} />
       </div>
-    </div>
-
-    <!-- Statistics Panel -->
-    <div class="space-y-4">
-      <!-- Quick Stats -->
-      <div class="tool-card">
-        <h2 class="section-title">Quick stats</h2>
-
-        {#if stats}
-          <div class="space-y-3">
-            <div class="result-row">
-              <div class="flex items-center">
-                <Type class="w-5 h-5 mr-2 text-accent-text" />
-                <span class="text-body-sm text-ink">Characters</span>
-              </div>
-              <span class="result-value">{stats.totalChars}</span>
-            </div>
-
-            <div class="result-row">
-              <div class="flex items-center">
-                <FileText class="w-5 h-5 mr-2 text-accent-text" />
-                <span class="text-body-sm text-ink">Words</span>
-              </div>
-              <span class="result-value">{stats.words}</span>
-            </div>
-
-            <div class="result-row">
-              <div class="flex items-center">
-                <Hash class="w-5 h-5 mr-2 text-accent-text" />
-                <span class="text-body-sm text-ink">Sentences</span>
-              </div>
-              <span class="result-value">{stats.sentences}</span>
-            </div>
-
-            <div class="result-row">
-              <div class="flex items-center">
-                <Clock class="w-5 h-5 mr-2 text-accent-text" />
-                <span class="text-body-sm text-ink">Reading time</span>
-              </div>
-              <span class="result-value">{stats.readingTimeAvg}m</span>
-            </div>
-          </div>
-        {:else}
-          <p class="text-body text-ink-muted text-center py-8">Enter text to see statistics</p>
-        {/if}
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="tool-card">
-        <h2 class="section-title">Actions</h2>
-
-        <div class="space-y-3">
-          <button
-            class="btn btn-secondary w-full"
-            onclick={() => copyToClipboard(inputText)}
-            disabled={!inputText}
-          >
-            <Copy class="w-4 h-4" />
-            Copy text
-          </button>
-
-          <button class="btn btn-primary w-full" onclick={downloadReport} disabled={!stats}>
-            <Calculator class="w-4 h-4" />
-            Download report
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Detailed Statistics -->
-  {#if stats}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <!-- Character Breakdown -->
-      <div class="tool-card">
-        <h3 class="section-title">Character breakdown</h3>
-        <div class="space-y-2">
-          <div class="flex justify-between text-body-sm">
-            <span class="text-ink-muted">Letters</span>
-            <span class="font-mono text-ink">{stats.letters}</span>
-          </div>
-          <div class="flex justify-between text-body-sm">
-            <span class="text-ink-muted">Numbers</span>
-            <span class="font-mono text-ink">{stats.numbers}</span>
-          </div>
-          <div class="flex justify-between text-body-sm">
-            <span class="text-ink-muted">Spaces</span>
-            <span class="font-mono text-ink">{stats.spaces}</span>
-          </div>
-          <div class="flex justify-between text-body-sm">
-            <span class="text-ink-muted">Punctuation</span>
-            <span class="font-mono text-ink">{stats.punctuation}</span>
-          </div>
-          <div class="flex justify-between text-body-sm">
-            <span class="text-ink-muted">Special chars</span>
-            <span class="font-mono text-ink">{stats.specialChars}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Reading Time -->
-      <div class="tool-card">
-        <h3 class="section-title">Reading time</h3>
-        <div class="space-y-3">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <Clock class="w-4 h-4 text-ink-muted mr-2" />
-              <span class="text-body-sm text-ink-muted">Slow (130 WPM)</span>
-            </div>
-            <span class="font-mono text-ink">{stats.readingTimeSlow} min</span>
-          </div>
-          <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <Clock class="w-4 h-4 text-ink-muted mr-2" />
-              <span class="text-body-sm text-ink-muted">Average (200 WPM)</span>
-            </div>
-            <span class="font-mono text-ink">{stats.readingTimeAvg} min</span>
-          </div>
-          <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <Clock class="w-4 h-4 text-ink-muted mr-2" />
-              <span class="text-body-sm text-ink-muted">Fast (300 WPM)</span>
-            </div>
-            <span class="font-mono text-ink">{stats.readingTimeFast} min</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Structure Analysis -->
-      <div class="tool-card">
-        <h3 class="section-title">Structure analysis</h3>
-        <div class="space-y-2">
-          <div class="flex justify-between text-body-sm">
-            <span class="text-ink-muted">Paragraphs</span>
-            <span class="font-mono text-ink">{stats.paragraphs}</span>
-          </div>
-          <div class="flex justify-between text-body-sm">
-            <span class="text-ink-muted">Lines</span>
-            <span class="font-mono text-ink">{stats.lines}</span>
-          </div>
-          <div class="flex justify-between text-body-sm">
-            <span class="text-ink-muted">Unique words</span>
-            <span class="font-mono text-ink">{stats.uniqueWords}</span>
-          </div>
-          <div class="flex justify-between text-body-sm">
-            <span class="text-ink-muted">Avg word length</span>
-            <span class="font-mono text-ink">
-              {stats.words > 0 ? (stats.charsNoSpaces / stats.words).toFixed(1) : 0}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Word Frequency -->
-    {#if Object.keys(stats.wordFrequency).length > 0}
-      <div class="tool-card">
-        <div class="card-header">
-          <h3 class="section-title mb-0">Most frequent words</h3>
-          <BarChart3 class="w-5 h-5 text-ink-muted" />
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {#each Object.entries(stats.wordFrequency) as [word, count] (word)}
-            <div class="result-row">
-              <span class="text-body-sm text-ink capitalize">
-                {word}
-              </span>
-              <span class="font-mono text-code text-ink-muted">{count}x</span>
-            </div>
-          {/each}
-        </div>
-      </div>
-    {/if}
-  {/if}
-
-  <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <div class="card">
-      <div class="feature-icon">
-        <Sparkles class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Comprehensive analysis</h3>
-      <p class="feature-description">
-        Get detailed statistics including character counts, word counts, and reading time estimates.
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon">
-        <Zap class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Real-time updates</h3>
-      <p class="feature-description">
-        All statistics update instantly as you type with accurate calculations.
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon">
-        <Check class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Platform limits</h3>
-      <p class="feature-description">
-        Check character limits for popular platforms like Twitter, SMS, and social media.
-      </p>
-    </div>
+    </section>
   </div>
 </ToolLayout>

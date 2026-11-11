@@ -1,438 +1,147 @@
 <script lang="ts">
-  import { Copy, RefreshCw, FileText, Hash, Type, Sparkles, Zap, Check } from '@lucide/svelte';
+  import { FileText, Shuffle } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
+  import { Button, CopyChip, Segmented, Slider, Switch, TextField } from '$lib/components/ds';
+  import { clampAmount, generate, LIMITS, type LoremFormat, type LoremUnit } from '$lib/tools/lorem';
 
-  // Component state
-  let amount = $state(5);
-  let unit = $state('paragraphs');
+  const UNITS = [
+    { value: 'words', label: 'Words' },
+    { value: 'sentences', label: 'Sentences' },
+    { value: 'paragraphs', label: 'Paragraphs' },
+    { value: 'list', label: 'List' }
+  ];
+  const FORMATS = [
+    { value: 'text', label: 'Text' },
+    { value: 'html', label: 'HTML' },
+    { value: 'markdown', label: 'Markdown' }
+  ];
+  const UNIT_NOUN: Record<LoremUnit, string> = {
+    words: 'Words',
+    sentences: 'Sentences',
+    paragraphs: 'Paragraphs',
+    list: 'List items'
+  };
+
+  const newSeed = () => Math.floor(Math.random() * 2 ** 32);
+
+  let unit = $state<string>('paragraphs');
+  let format = $state<string>('text');
   let startWithLorem = $state(true);
-  let generatedText = $state('');
-  let copied = $state(false);
+  let seed = $state(newSeed());
+  // Each unit remembers its own amount, so switching units never lands out of range.
+  let amounts = $state<Record<LoremUnit, number>>({ words: 50, sentences: 5, paragraphs: 3, list: 5 });
 
-  // Lorem ipsum word pool
-  const words = [
-    'lorem',
-    'ipsum',
-    'dolor',
-    'sit',
-    'amet',
-    'consectetur',
-    'adipiscing',
-    'elit',
-    'sed',
-    'do',
-    'eiusmod',
-    'tempor',
-    'incididunt',
-    'ut',
-    'labore',
-    'et',
-    'dolore',
-    'magna',
-    'aliqua',
-    'enim',
-    'ad',
-    'minim',
-    'veniam',
-    'quis',
-    'nostrud',
-    'exercitation',
-    'ullamco',
-    'laboris',
-    'nisi',
-    'ut',
-    'aliquip',
-    'ex',
-    'ea',
-    'commodo',
-    'consequat',
-    'duis',
-    'aute',
-    'irure',
-    'dolor',
-    'in',
-    'reprehenderit',
-    'voluptate',
-    'velit',
-    'esse',
-    'cillum',
-    'fugiat',
-    'nulla',
-    'pariatur',
-    'excepteur',
-    'sint',
-    'occaecat',
-    'cupidatat',
-    'non',
-    'proident',
-    'sunt',
-    'in',
-    'culpa',
-    'qui',
-    'officia',
-    'deserunt',
-    'mollit',
-    'anim',
-    'id',
-    'est',
-    'laborum'
-  ];
+  const u = $derived(unit as LoremUnit);
+  const range = $derived(LIMITS[u]);
+  const result = $derived(
+    generate({ unit: u, amount: amounts[u], startWithLorem, format: format as LoremFormat, seed })
+  );
+  const isCode = $derived(format !== 'text');
+  const paragraphs = $derived(result.text.split(/\n+/));
 
-  const sentenceWords = [
-    'at',
-    'vero',
-    'eos',
-    'et',
-    'accusamus',
-    'et',
-    'iusto',
-    'odio',
-    'dignissimos',
-    'ducimus',
-    'qui',
-    'blanditiis',
-    'praesentium',
-    'voluptatum',
-    'deleniti',
-    'atque',
-    'corrupti',
-    'quos',
-    'dolores',
-    'et',
-    'quas',
-    'molestias',
-    'excepturi',
-    'sint',
-    'obcaecati',
-    'cupiditate',
-    'non',
-    'provident',
-    'similique',
-    'sunt',
-    'in',
-    'culpa',
-    'qui',
-    'officia',
-    'deserunt',
-    'mollitia',
-    'animi',
-    'id',
-    'est',
-    'laborum',
-    'et',
-    'dolorum',
-    'fuga',
-    'et',
-    'harum',
-    'quidem',
-    'rerum',
-    'facilis',
-    'est',
-    'et',
-    'expedita',
-    'distinctio',
-    'nam',
-    'libero',
-    'tempore',
-    'cum',
-    'soluta',
-    'nobis',
-    'est',
-    'eligendi',
-    'optio',
-    'cumque',
-    'nihil',
-    'impedit',
-    'quo',
-    'porro',
-    'quisquam',
-    'est',
-    'qui',
-    'minus',
-    'id',
-    'quod',
-    'maxime',
-    'placeat',
-    'facere',
-    'possimus',
-    'omnis',
-    'voluptas',
-    'assumenda',
-    'est',
-    'omnis',
-    'dolor',
-    'repellendus',
-    'temporibus',
-    'autem',
-    'quibusdam',
-    'et',
-    'aut',
-    'consequatur',
-    'vel',
-    'illum',
-    'qui',
-    'dolorem',
-    'eum',
-    'fugiat',
-    'quo',
-    'voluptas',
-    'nulla',
-    'pariatur',
-    'at',
-    'vero',
-    'eos',
-    'et',
-    'accusamus',
-    'et',
-    'iusto',
-    'odio',
-    'dignissimos',
-    'ducimus',
-    'qui',
-    'blanditiis',
-    'praesentium',
-    'voluptatum'
-  ];
-
-  function getRandomWord() {
-    const allWords = [...words, ...sentenceWords];
-    return allWords[Math.floor(Math.random() * allWords.length)];
+  /** Snap the typed value back into range once the field loses focus. */
+  function commitAmount() {
+    amounts[u] = clampAmount(u, Number(amounts[u]));
   }
-
-  function generateSentence() {
-    const sentenceLength = Math.floor(Math.random() * 10) + 5; // 5-15 words
-    const sentence = [];
-
-    for (let i = 0; i < sentenceLength; i++) {
-      const word = getRandomWord();
-      sentence.push(i === 0 ? word.charAt(0).toUpperCase() + word.slice(1) : word);
-    }
-
-    return sentence.join(' ') + '.';
-  }
-
-  function generateParagraph() {
-    const paragraphLength = Math.floor(Math.random() * 5) + 3; // 3-8 sentences
-    const paragraph = [];
-
-    for (let i = 0; i < paragraphLength; i++) {
-      paragraph.push(generateSentence());
-    }
-
-    return paragraph.join(' ');
-  }
-
-  function generateLoremText() {
-    let result = '';
-
-    if (startWithLorem && unit !== 'words') {
-      result =
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n';
-
-      // Adjust amount since we already generated one paragraph
-      const adjustedAmount = Math.max(0, amount - 1);
-
-      switch (unit) {
-        case 'paragraphs':
-          for (let i = 0; i < adjustedAmount; i++) {
-            result += generateParagraph() + '\n\n';
-          }
-          break;
-        case 'sentences':
-          for (let i = 0; i < adjustedAmount; i++) {
-            result += generateSentence() + ' ';
-          }
-          break;
-        case 'words':
-          // Handle words case separately
-          result = generateWords(amount);
-          break;
-      }
-    } else {
-      switch (unit) {
-        case 'paragraphs':
-          for (let i = 0; i < amount; i++) {
-            result += generateParagraph() + '\n\n';
-          }
-          break;
-        case 'sentences':
-          for (let i = 0; i < amount; i++) {
-            result += generateSentence() + ' ';
-          }
-          break;
-        case 'words':
-          result = generateWords(amount);
-          break;
-      }
-    }
-
-    // Clean up trailing whitespace
-    generatedText = result.trim();
-  }
-
-  function generateWords(count: number) {
-    const wordList = [];
-    for (let i = 0; i < count; i++) {
-      const word = getRandomWord();
-      wordList.push(i === 0 ? word.charAt(0).toUpperCase() + word.slice(1) : word);
-    }
-    return wordList.join(' ') + '.';
-  }
-
-  function copyToClipboard() {
-    navigator.clipboard.writeText(generatedText).then(() => {
-      copied = true;
-      setTimeout(() => {
-        copied = false;
-      }, 2000);
-    });
-  }
-
-  function downloadAsFile() {
-    const blob = new Blob([generatedText], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'lorem-ipsum.txt';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
-
-  // Generate initial text
-  generateLoremText();
 </script>
 
 <svelte:head>
   <title>Lorem Ipsum Generator - Developer Tools</title>
   <meta
     name="description"
-    content="Generate Lorem Ipsum placeholder text for design and testing purposes"
+    content="Generate Lorem Ipsum placeholder text as words, sentences, paragraphs or a list — plain text, HTML or Markdown."
   />
 </svelte:head>
 
 <ToolLayout
   title="Lorem Ipsum Generator"
-  description="Generate placeholder text with customizable length and formatting options."
+  description="Placeholder text as words, sentences, paragraphs or a list — plain text, HTML or Markdown. Updates as you change the options."
   icon={FileText}
   color="warning"
 >
-  <!-- Controls -->
-  <div class="tool-card">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      <!-- Amount Input -->
-      <div class="flex flex-col">
-        <label for="amount-input" class="label">Amount</label>
-        <input
-          class="tool-input"
-          id="amount-input"
-          type="number" inputmode="decimal"
-          bind:value={amount}
-          min="1"
-          max="100"
+  <div class="grid gap-4 lg:grid-cols-[2fr_3fr]">
+    <!-- Options -->
+    <section class="flex min-w-0 flex-col gap-6 rounded-lg bg-card p-6" aria-labelledby="lorem-options-title">
+      <h2 id="lorem-options-title" class="text-label text-ink-muted">Options</h2>
+
+      <div class="flex flex-col gap-2">
+        <span class="fz-field-label" aria-hidden="true">Unit</span>
+        <Segmented label="Unit" options={UNITS} bind:value={unit} />
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <Slider
+          label={UNIT_NOUN[u]}
+          min={range.min}
+          max={range.max}
+          bind:value={amounts[u]}
+          marks={[String(range.min), String(range.max)]}
+        />
+        <TextField
+          label="Exact amount"
+          hint={`${range.min}–${range.max}`}
+          type="number"
+          inputmode="numeric"
+          min={range.min}
+          max={range.max}
+          step="1"
+          bind:value={amounts[u]}
+          onblur={commitAmount}
         />
       </div>
 
-      <!-- Unit Selector -->
-      <div class="flex flex-col">
-        <label for="unit-select" class="label">Unit</label>
-        <select id="unit-select" bind:value={unit} class="tool-select">
-          <option value="paragraphs">Paragraphs</option>
-          <option value="sentences">Sentences</option>
-          <option value="words">Words</option>
-        </select>
+      <Switch
+        label="Start with “Lorem ipsum…”"
+        description="Open with the classic “Lorem ipsum dolor sit amet, consectetur adipiscing elit”"
+        bind:checked={startWithLorem}
+      />
+
+      <div class="flex flex-col gap-2">
+        <span class="fz-field-label" aria-hidden="true">Format</span>
+        <Segmented label="Format" options={FORMATS} bind:value={format} />
+      </div>
+    </section>
+
+    <!-- Output -->
+    <section class="flex min-w-0 flex-col gap-4 rounded-lg bg-card p-6" aria-labelledby="lorem-output-title">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="lorem-output-title" class="text-label text-ink-muted">Generated text</h2>
+        <Button variant="secondary" size="sm" onclick={() => (seed = newSeed())}>
+          {#snippet icon()}<Shuffle class="size-4" aria-hidden="true" />{/snippet}
+          Shuffle
+        </Button>
       </div>
 
-      <!-- Start with Lorem -->
-      <div class="flex items-end pb-3">
-        <label class="custom-checkbox">
-          <input type="checkbox" bind:checked={startWithLorem} />
-          <span class="checkmark"></span>
-          <span class="label-text">Start with "Lorem ipsum"</span>
-        </label>
+      <!-- Focusable so keyboard users can scroll long output. -->
+      <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+      <div
+        class="max-h-[32rem] overflow-auto rounded-md bg-sunken p-5 text-ink"
+        role="region"
+        aria-label="Generated text"
+        tabindex="0"
+      >
+        {#if isCode}
+          <pre class="font-mono text-code whitespace-pre-wrap break-words">{result.text}</pre>
+        {:else if u === 'list'}
+          <ul class="flex list-disc flex-col gap-1 pl-5 text-body">
+            {#each paragraphs as line, i (i)}<li>{line}</li>{/each}
+          </ul>
+        {:else}
+          <div class="flex flex-col gap-4 text-body">
+            {#each paragraphs as p, i (i)}<p>{p}</p>{/each}
+          </div>
+        {/if}
       </div>
 
-      <!-- Generate Button -->
-      <div class="flex items-end">
-        <button class="btn btn-primary w-full" onclick={generateLoremText}>
-          <RefreshCw class="w-4 h-4" />
-          Generate
-        </button>
+      <div class="flex flex-wrap items-center gap-3">
+        <CopyChip value={result.text}>Copy</CopyChip>
+        <p class="text-body-sm text-ink-muted" aria-live="polite">
+          <span class="font-mono text-ink">{result.words.toLocaleString()}</span>
+          {result.words === 1 ? 'word' : 'words'} ·
+          <span class="font-mono text-ink">{result.characters.toLocaleString()}</span>
+          {result.characters === 1 ? 'character' : 'characters'}
+        </p>
       </div>
-    </div>
-
-    <!-- Statistics -->
-    <div class="flex flex-wrap gap-4 text-body-sm text-ink-muted">
-      <div class="flex items-center">
-        <FileText class="w-4 h-4 mr-1" />
-        <span><span class="font-mono text-ink">{generatedText.split(/\s+/).filter(word => word.length > 0).length}</span> words</span>
-      </div>
-      <div class="flex items-center">
-        <Type class="w-4 h-4 mr-1" />
-        <span>
-          <span class="font-mono text-ink">{generatedText.split(/[.!?]+/).filter(sentence => sentence.trim().length > 0).length}</span> sentences
-        </span>
-      </div>
-      <div class="flex items-center">
-        <Hash class="w-4 h-4 mr-1" />
-        <span>
-          <span class="font-mono text-ink">{generatedText.split(/\n\n+/).filter(paragraph => paragraph.trim().length > 0).length}</span> paragraphs
-        </span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Generated Text -->
-  <div class="tool-card">
-    <div class="card-header">
-      <h2 class="section-title !mb-0">Generated text</h2>
-      <div class="flex gap-2">
-        <button class="btn btn-sm btn-secondary" onclick={copyToClipboard}>
-          <Copy class="w-3.5 h-3.5" />
-          {copied ? 'Copied!' : 'Copy'}
-        </button>
-        <button class="btn btn-sm btn-ghost" onclick={downloadAsFile}>Download</button>
-      </div>
-    </div>
-
-    <div class="max-w-none rounded-md bg-sunken p-4">
-      <div class="whitespace-pre-wrap text-body text-ink">
-        {generatedText}
-      </div>
-    </div>
-  </div>
-
-  <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-    <div class="card">
-      <div class="feature-icon">
-        <Sparkles class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Customizable length</h3>
-      <p class="feature-description">
-        Generate text by paragraphs, sentences, or words with precise control over the amount.
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon">
-        <Zap class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Instant generation</h3>
-      <p class="feature-description">
-        Generate fresh Lorem Ipsum text instantly with a single click for your design mockups.
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon">
-        <Check class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Download support</h3>
-      <p class="feature-description">
-        Download the generated text as a text file for use in your design projects.
-      </p>
-    </div>
+    </section>
   </div>
 </ToolLayout>

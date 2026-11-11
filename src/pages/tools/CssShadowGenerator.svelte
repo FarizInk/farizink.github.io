@@ -1,785 +1,323 @@
 <script lang="ts">
-  import { Copy, Download, Plus, X, Settings2, Sparkles, Zap } from '@lucide/svelte';
-  import { toast } from 'svelte-sonner';
+  import { ArrowDown, ArrowUp, ChevronDown, Copy, Plus, Settings2, Trash2 } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
+  import { Button, CopyChip, IconButton, Segmented, Slider, Switch, TextField } from '$lib/components/ds';
+  import {
+    LIMITS,
+    addLayer,
+    duplicateLayer,
+    moveLayer,
+    normalizeModel,
+    parseHexColor,
+    presetModel,
+    presetsFor,
+    removeLayer,
+    toCss,
+    toCssValue,
+    type ShadowKind,
+    type ShadowLayer,
+    type ShadowModel,
+    type ShadowPreset
+  } from '$lib/tools/shadow';
 
-  // Shadow properties
-  let shadows = $state([
-    {
-      id: 1,
-      x: 0,
-      y: 4,
-      blur: 6,
-      spread: -1,
-      color: '#000000',
-      opacity: 20,
-      inset: false
+  const STORAGE_KEY = 'cssShadowGenerator.state';
+  const KINDS = [
+    { value: 'box', label: 'Box shadow' },
+    { value: 'text', label: 'Text shadow' }
+  ];
+  // Preview colors are output data (what the shadow is rendered on), not UI chrome.
+  const BACKGROUNDS = [
+    { name: 'White', value: '#ffffff' },
+    { name: 'Slate', value: '#f1f5f9' },
+    { name: 'Night', value: '#0b0714' },
+    { name: 'Violet', value: '#6a4bf0' }
+  ];
+
+  interface Saved {
+    kind: ShadowKind;
+    box: ShadowModel;
+    text: ShadowModel;
+    background: string;
+    foreground: { box: string; text: string };
+  }
+
+  function load(): Saved {
+    let raw: Partial<Saved> = {};
+    try {
+      raw = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}') ?? {};
+    } catch {
+      /* storage blocked or corrupt: start fresh */
     }
-  ]);
+    return {
+      kind: raw.kind === 'text' ? 'text' : 'box',
+      box: normalizeModel(raw.box ? { ...raw.box, kind: 'box' } : null, 'box'),
+      text: normalizeModel(raw.text ? { ...raw.text, kind: 'text' } : null, 'text'),
+      background: parseHexColor(String(raw.background ?? '')) ?? '#f1f5f9',
+      foreground: {
+        box: parseHexColor(String(raw.foreground?.box ?? '')) ?? '#ffffff',
+        text: parseHexColor(String(raw.foreground?.text ?? '')) ?? '#1f2937'
+      }
+    };
+  }
 
-  // Text shadow properties
-  let textShadows = $state([
-    {
-      id: 1,
-      x: 2,
-      y: 2,
-      blur: 4,
-      color: '#000000',
-      opacity: 50
+  const saved = load();
+  let kind = $state<ShadowKind>(saved.kind);
+  let models = $state<Record<ShadowKind, ShadowModel>>({ box: saved.box, text: saved.text });
+  let background = $state(saved.background);
+  let foreground = $state(saved.foreground);
+  let sampleText = $state('Shadow');
+  let expanded = $state<number[]>([saved[saved.kind].layers[0].id]);
+  /** In-progress hex text per layer while it isn't a valid color yet. */
+  let hexDrafts = $state<Record<string, string>>({});
+
+  $effect(() => {
+    const data = JSON.stringify({ kind, ...models, background, foreground });
+    try {
+      localStorage.setItem(STORAGE_KEY, data);
+    } catch {
+      /* storage blocked: settings just won't persist */
     }
-  ]);
-
-  // Preview settings
-  let showText = $state(true);
-  let showBox = $state(true);
-  let backgroundColor = $state('#ffffff');
-  let textColor = $state('#374151');
-  let borderRadius = $state(8);
-  let previewText = $state('Shadow Effect');
-  let activeTab = $state('box');
-
-  // Derived CSS output
-  const boxShadowCSS = $derived.by(() => {
-    return shadows
-      .map(shadow => {
-        const colorHex =
-          shadow.color +
-          Math.round(shadow.opacity * 2.55)
-            .toString(16)
-            .padStart(2, '0');
-        const values = [shadow.x + 'px', shadow.y + 'px', shadow.blur + 'px'];
-        if (shadow.spread !== 0) values.push(shadow.spread + 'px');
-        if (shadow.inset) values.push('inset');
-        return `${values.join(' ')} ${colorHex}`;
-      })
-      .join(', ');
   });
 
-  const textShadowCSS = $derived.by(() => {
-    return textShadows
-      .map(shadow => {
-        const colorHex =
-          shadow.color +
-          Math.round(shadow.opacity * 2.55)
-            .toString(16)
-            .padStart(2, '0');
-        return `${shadow.x}px ${shadow.y}px ${shadow.blur}px ${colorHex}`;
-      })
-      .join(', ');
-  });
+  const model = $derived(models[kind]);
+  const cssValue = $derived(toCssValue(model));
+  const cssCode = $derived(toCss(model));
+  const presets = $derived(presetsFor(kind));
 
-  function addBoxShadow() {
-    const newId = Math.max(...shadows.map(s => s.id)) + 1;
-    shadows = [
-      ...shadows,
-      {
-        id: newId,
-        x: 0,
-        y: 4,
-        blur: 6,
-        spread: -1,
-        color: '#000000',
-        opacity: 20,
-        inset: false
-      }
-    ];
+  function update(fn: (m: ShadowModel) => ShadowModel) {
+    models[kind] = fn(models[kind]);
   }
 
-  function removeBoxShadow(id: number) {
-    if (shadows.length > 1) {
-      shadows = shadows.filter(s => s.id !== id);
+  function switchKind(v: string) {
+    kind = v as ShadowKind;
+    hexDrafts = {};
+    expanded = [models[kind].layers[0].id];
+  }
+
+  function add() {
+    update(addLayer);
+    const last = models[kind].layers.at(-1);
+    if (last) expanded = [...expanded, last.id];
+  }
+
+  function applyPreset(p: ShadowPreset) {
+    models[kind] = presetModel(p);
+    if (p.preview) {
+      background = p.preview.background;
+      foreground[kind] = p.preview.foreground;
+    }
+    hexDrafts = {};
+    expanded = [];
+  }
+
+  function toggle(id: number) {
+    expanded = expanded.includes(id) ? expanded.filter(x => x !== id) : [...expanded, id];
+  }
+
+  const draftKey = (layer: ShadowLayer) => `${kind}-${layer.id}`;
+
+  function onHexInput(layer: ShadowLayer, value: string) {
+    const hex = parseHexColor(value);
+    if (hex) {
+      layer.color = hex;
+      delete hexDrafts[draftKey(layer)];
+    } else {
+      hexDrafts[draftKey(layer)] = value;
     }
   }
 
-  function addTextShadow() {
-    const newId = Math.max(...textShadows.map(s => s.id)) + 1;
-    textShadows = [
-      ...textShadows,
-      {
-        id: newId,
-        x: 2,
-        y: 2,
-        blur: 4,
-        color: '#000000',
-        opacity: 50
-      }
-    ];
+  function setNumber(layer: ShadowLayer, key: 'x' | 'y' | 'blur' | 'spread', value: number, min: number, max: number) {
+    if (Number.isFinite(value)) layer[key] = Math.min(max, Math.max(min, Math.round(value)));
   }
 
-  function removeTextShadow(id: number) {
-    if (textShadows.length > 1) {
-      textShadows = textShadows.filter(s => s.id !== id);
-    }
-  }
-
-  function copyToClipboard(text: string) {
-    navigator.clipboard.writeText(text);
-    toast.success('Copied to clipboard');
-  }
-
-  function downloadCSS() {
-    const cssContent = `/* CSS Shadow Generator Output */
-
-/* Box Shadow */
-.box-shadow {
-  box-shadow: ${boxShadowCSS};
-}
-
-/* Text Shadow */
-.text-shadow {
-  text-shadow: ${textShadowCSS};
-}`;
-
-    const blob = new Blob([cssContent], { type: 'text/css' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'shadows.css';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    toast.success('CSS downloaded');
-  }
-
-  function loadPreset(type: string) {
-    switch (type) {
-      case 'card':
-        shadows = [
-          {
-            id: 1,
-            x: 0,
-            y: 10,
-            blur: 15,
-            spread: -3,
-            color: '#000000',
-            opacity: 10,
-            inset: false
-          }
-        ];
-        borderRadius = 12;
-        break;
-      case 'button':
-        shadows = [
-          {
-            id: 1,
-            x: 0,
-            y: 4,
-            blur: 6,
-            spread: -2,
-            color: '#000000',
-            opacity: 15,
-            inset: false
-          },
-          {
-            id: 2,
-            x: 0,
-            y: 1,
-            blur: 2,
-            spread: 0,
-            color: '#000000',
-            opacity: 10,
-            inset: false
-          }
-        ];
-        borderRadius = 6;
-        break;
-      case 'neon':
-        shadows = [
-          {
-            id: 1,
-            x: 0,
-            y: 0,
-            blur: 20,
-            spread: 0,
-            color: '#3b82f6',
-            opacity: 60,
-            inset: false
-          },
-          {
-            id: 2,
-            x: 0,
-            y: 0,
-            blur: 40,
-            spread: 0,
-            color: '#3b82f6',
-            opacity: 40,
-            inset: false
-          }
-        ];
-        textShadows = [
-          {
-            id: 1,
-            x: 0,
-            y: 0,
-            blur: 10,
-            color: '#3b82f6',
-            opacity: 80
-          }
-        ];
-        break;
-      case 'inset':
-        shadows = [
-          {
-            id: 1,
-            x: 2,
-            y: 2,
-            blur: 4,
-            spread: 0,
-            color: '#000000',
-            opacity: 15,
-            inset: true
-          }
-        ];
-        break;
-    }
-    toast.success(`Applied ${type} preset`);
-  }
-
-  function randomizeColor() {
-    shadows = shadows.map(shadow => ({
-      ...shadow,
-      color:
-        '#' +
-        Math.floor(Math.random() * 16777215)
-          .toString(16)
-          .padStart(6, '0')
-    }));
-    toast.success('Randomized color');
-  }
-
-  function resetAll() {
-    shadows = [
-      {
-        id: 1,
-        x: 0,
-        y: 4,
-        blur: 6,
-        spread: -1,
-        color: '#000000',
-        opacity: 20,
-        inset: false
-      }
-    ];
-    textShadows = [
-      {
-        id: 1,
-        x: 2,
-        y: 2,
-        blur: 4,
-        color: '#000000',
-        opacity: 50
-      }
-    ];
-    showText = true;
-    showBox = true;
-    backgroundColor = '#ffffff';
-    textColor = '#374151';
-    borderRadius = 8;
-    previewText = 'Shadow Effect';
-    toast.success('Reset all');
-  }
+  type NumKey = 'x' | 'y' | 'blur' | 'spread';
+  const FIELDS: { key: NumKey; label: string; min: number; max: number; boxOnly?: boolean }[] = [
+    { key: 'x', label: 'X offset', ...LIMITS.offset },
+    { key: 'y', label: 'Y offset', ...LIMITS.offset },
+    { key: 'blur', label: 'Blur', ...LIMITS.blur },
+    { key: 'spread', label: 'Spread', ...LIMITS.spread, boxOnly: true }
+  ];
 </script>
 
 <ToolLayout
   title="CSS Shadow Generator"
-  description="Generate beautiful CSS box-shadow and text-shadow effects with real-time preview."
+  description="Build multi-layer CSS box-shadow and text-shadow effects with a live preview."
   icon={Settings2}
   color="warning"
 >
-  <!-- Presets -->
-  <div class="tool-card">
-    <h2 class="section-title">Quick presets</h2>
-    <div class="flex flex-wrap gap-2">
-      <button
-        onclick={() => loadPreset('card')}
-        class="preset-btn">Card shadow</button
-      >
-      <button
-        onclick={() => loadPreset('button')}
-        class="preset-btn">Button shadow</button
-      >
-      <button
-        onclick={() => loadPreset('neon')}
-        class="preset-btn">Neon effect</button
-      >
-      <button
-        onclick={() => loadPreset('inset')}
-        class="preset-btn">Inset shadow</button
-      >
-      <button
-        onclick={randomizeColor}
-        class="btn btn-sm btn-secondary"
-      >
-        <Sparkles class="w-4 h-4" />
-        Random color
-      </button>
-      <button
-        onclick={resetAll}
-        class="btn btn-sm btn-ghost"
-        >Reset all</button
-      >
-    </div>
-  </div>
+  <div class="flex flex-col gap-4">
+    <Segmented label="Shadow type" options={KINDS} value={kind} onchange={switchKind} />
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-    <!-- Controls Panel -->
-    <div class="space-y-4">
-      <!-- Tab Navigation -->
-      <div class="tool-card">
-        <div class="tab-nav" role="tablist">
-          <button
-            role="tab"
-            aria-selected={activeTab === 'box'}
-            onclick={() => (activeTab = 'box')}
-            class="tab-btn flex-1 {activeTab === 'box' ? 'active' : ''}"
-          >
-            Box shadow
-          </button>
-          <button
-            role="tab"
-            aria-selected={activeTab === 'text'}
-            onclick={() => (activeTab = 'text')}
-            class="tab-btn flex-1 {activeTab === 'text' ? 'active' : ''}"
-          >
-            Text shadow
-          </button>
+    <div class="grid gap-4 lg:grid-cols-[2fr_3fr]">
+      <!-- Preview + output -->
+      <section class="flex min-w-0 flex-col gap-5 rounded-lg bg-card p-6 lg:sticky lg:top-4 lg:self-start" aria-labelledby="sh-preview">
+        <h2 id="sh-preview" class="text-label text-ink-muted">Preview</h2>
+        <div class="grid h-64 place-items-center overflow-hidden rounded-md p-8 sm:h-72" style:background-color={background}>
+          {#if kind === 'box'}
+            <div
+              class="size-36 rounded-lg"
+              role="img"
+              aria-label="Box shadow preview"
+              style:background-color={foreground.box}
+              style:box-shadow={cssValue}
+            ></div>
+          {:else}
+            <p class="font-display text-display break-all text-center" style:color={foreground.text} style:text-shadow={cssValue}>
+              {sampleText || 'Shadow'}
+            </p>
+          {/if}
         </div>
 
-        <!-- Box Shadow Controls -->
-        {#if activeTab === 'box'}
-          <div class="space-y-4">
-            {#each shadows as shadow, index (shadow.id)}
-              <div class="result-card">
-                <div class="flex items-center justify-between mb-4">
-                  <h3 class="text-label text-ink-muted">
-                    Shadow {index + 1}
-                  </h3>
-                  {#if shadows.length > 1}
-                    <button
-                      onclick={() => removeBoxShadow(shadow.id)}
-                      class="btn-icon hover:!text-negative"
-                      aria-label="Remove shadow {index + 1}"
-                      title="Remove shadow"
-                    >
-                      <X class="w-4 h-4" />
-                    </button>
-                  {/if}
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <span class="label">X offset</span>
-                    <input
-                      type="range"
-                      bind:value={shadow.x}
-                      min="-50"
-                      max="50"
-                      class="slider w-full"
-                      style="--p: {((shadow.x + 50) / 100) * 100}%"
-                    />
-                    <span class="text-code text-ink-muted">{shadow.x}px</span>
-                  </div>
-
-                  <div>
-                    <span class="label">Y offset</span>
-                    <input
-                      type="range"
-                      bind:value={shadow.y}
-                      min="-50"
-                      max="50"
-                      class="slider w-full"
-                      style="--p: {((shadow.y + 50) / 100) * 100}%"
-                    />
-                    <span class="text-code text-ink-muted">{shadow.y}px</span>
-                  </div>
-
-                  <div>
-                    <span class="label">Blur</span>
-                    <input
-                      type="range"
-                      bind:value={shadow.blur}
-                      min="0"
-                      max="100"
-                      class="slider w-full"
-                      style="--p: {(shadow.blur / 100) * 100}%"
-                    />
-                    <span class="text-code text-ink-muted">{shadow.blur}px</span>
-                  </div>
-
-                  <div>
-                    <span class="label">Spread</span>
-                    <input
-                      type="range"
-                      bind:value={shadow.spread}
-                      min="-50"
-                      max="50"
-                      class="slider w-full"
-                      style="--p: {((shadow.spread + 50) / 100) * 100}%"
-                    />
-                    <span class="text-code text-ink-muted">{shadow.spread}px</span>
-                  </div>
-
-                  <div>
-                    <span class="label">Color</span>
-                    <div class="flex gap-2">
-                      <input
-                        type="color"
-                        bind:value={shadow.color}
-                        class="w-12 h-10 rounded-sm bg-control p-1 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
-                      />
-                      <input
-                        type="text"
-                        bind:value={shadow.color}
-                        class="inline-input flex-1 min-w-0 font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <span class="label">Opacity</span>
-                    <input
-                      type="range"
-                      bind:value={shadow.opacity}
-                      min="0"
-                      max="100"
-                      class="slider w-full"
-                      style="--p: {(shadow.opacity / 100) * 100}%"
-                    />
-                    <span class="text-code text-ink-muted">{shadow.opacity}%</span>
-                  </div>
-                </div>
-
-                <div class="flex items-center mt-4">
-                  <label class="custom-checkbox">
-                    <input
-                      type="checkbox"
-                      bind:checked={shadow.inset}
-                      id="box-inset-{index}"
-                    />
-                    <span class="checkmark"></span>
-                    <span class="label-text">Inset shadow</span>
-                  </label>
-                </div>
-              </div>
+        <div class="flex flex-wrap items-end gap-3">
+          <div class="flex items-center gap-2" role="group" aria-label="Preview background">
+            {#each BACKGROUNDS as bg (bg.value)}
+              <button
+                type="button"
+                class="size-8 cursor-pointer rounded-pill transition-[scale] duration-fast ease-spring active:scale-90 aria-pressed:outline-2 aria-pressed:outline-offset-2 aria-pressed:outline-accent"
+                style:background-color={bg.value}
+                aria-label="{bg.name} background"
+                aria-pressed={background === bg.value}
+                onclick={() => (background = bg.value)}
+              ></button>
             {/each}
-
-            <button
-              onclick={addBoxShadow}
-              class="btn btn-secondary w-full"
-            >
-              <Plus class="w-4 h-4" />
-              Add shadow layer
-            </button>
           </div>
+          <label class="flex items-center gap-2 text-body-sm text-ink-muted">
+            <input type="color" class="h-9 w-12 cursor-pointer rounded-pill bg-control p-1" bind:value={background} />
+            Background
+          </label>
+          <label class="flex items-center gap-2 text-body-sm text-ink-muted">
+            <input type="color" class="h-9 w-12 cursor-pointer rounded-pill bg-control p-1" bind:value={foreground[kind]} />
+            {kind === 'box' ? 'Element' : 'Text'}
+          </label>
+        </div>
+        {#if kind === 'text'}
+          <TextField label="Sample text" bind:value={sampleText} maxlength={40} />
         {/if}
 
-        <!-- Text Shadow Controls -->
-        {#if activeTab === 'text'}
-          <div class="space-y-4">
-            {#each textShadows as shadow, index (shadow.id)}
-              <div class="result-card">
-                <div class="flex items-center justify-between mb-4">
-                  <h3 class="text-label text-ink-muted">
-                    Text shadow {index + 1}
-                  </h3>
-                  {#if textShadows.length > 1}
-                    <button
-                      onclick={() => removeTextShadow(shadow.id)}
-                      class="btn-icon hover:!text-negative"
-                      aria-label="Remove text shadow {index + 1}"
-                      title="Remove text shadow"
-                    >
-                      <X class="w-4 h-4" />
-                    </button>
-                  {/if}
-                </div>
-
-                <div class="grid grid-cols-3 gap-4">
-                  <div>
-                    <span class="label">X offset</span>
-                    <input
-                      type="range"
-                      bind:value={shadow.x}
-                      min="-50"
-                      max="50"
-                      class="slider w-full"
-                      style="--p: {((shadow.x + 50) / 100) * 100}%"
-                    />
-                    <span class="text-code text-ink-muted">{shadow.x}px</span>
-                  </div>
-
-                  <div>
-                    <span class="label">Y offset</span>
-                    <input
-                      type="range"
-                      bind:value={shadow.y}
-                      min="-50"
-                      max="50"
-                      class="slider w-full"
-                      style="--p: {((shadow.y + 50) / 100) * 100}%"
-                    />
-                    <span class="text-code text-ink-muted">{shadow.y}px</span>
-                  </div>
-
-                  <div>
-                    <span class="label">Blur</span>
-                    <input
-                      type="range"
-                      bind:value={shadow.blur}
-                      min="0"
-                      max="50"
-                      class="slider w-full"
-                      style="--p: {(shadow.blur / 50) * 100}%"
-                    />
-                    <span class="text-code text-ink-muted">{shadow.blur}px</span>
-                  </div>
-
-                  <div class="col-span-3">
-                    <span class="label">Color</span>
-                    <div class="flex items-center gap-2">
-                      <input
-                        type="color"
-                        bind:value={shadow.color}
-                        class="w-12 h-10 rounded-sm bg-control p-1 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
-                      />
-                      <input
-                        type="text"
-                        bind:value={shadow.color}
-                        class="inline-input flex-1 min-w-0 font-mono"
-                      />
-                      <input
-                        type="range"
-                        bind:value={shadow.opacity}
-                        min="0"
-                        max="100"
-                        class="slider w-24"
-                        style="--p: {(shadow.opacity / 100) * 100}%"
-                      />
-                      <span class="text-code text-ink-muted w-12"
-                        >{shadow.opacity}%</span
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-            {/each}
-
-            <button
-              onclick={addTextShadow}
-              class="btn btn-secondary w-full"
-            >
-              <Plus class="w-4 h-4" />
-              Add text shadow layer
-            </button>
+        <div class="flex flex-col gap-3">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h3 class="text-label text-ink-muted">CSS</h3>
+            <CopyChip value={cssCode}>Copy CSS</CopyChip>
           </div>
-        {/if}
-      </div>
-
-      <!-- Preview Settings -->
-      <div class="tool-card">
-        <h2 class="section-title">Preview settings</h2>
-        <div class="space-y-4">
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label
-                for="background-color"
-                class="label"
-                >Background</label
-              >
-              <input
-                type="color"
-                bind:value={backgroundColor}
-                id="background-color"
-                class="w-full h-10 rounded-sm bg-control p-1 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
-              />
-            </div>
-            <div>
-              <label
-                for="text-color"
-                class="label"
-                >Text color</label
-              >
-              <input
-                type="color"
-                bind:value={textColor}
-                id="text-color"
-                class="w-full h-10 rounded-sm bg-control p-1 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label
-              for="border-radius"
-              class="label"
-              >Border radius: <span class="font-mono text-ink">{borderRadius}px</span></label
-            >
-            <input
-              type="range"
-              bind:value={borderRadius}
-              min="0"
-              max="50"
-              class="slider w-full"
-              style="--p: {(borderRadius / 50) * 100}%"
-            />
-          </div>
-
-          <div>
-            <label
-              for="preview-text"
-              class="label"
-              >Preview text</label
-            >
-            <input
-              type="text"
-              bind:value={previewText}
-              id="preview-text"
-              class="tool-input w-full"
-            />
-          </div>
-
-          <div class="flex items-center gap-4">
-            <label class="custom-checkbox">
-              <input
-                type="checkbox"
-                bind:checked={showBox}
-                id="show-box"
-              />
-              <span class="checkmark"></span>
-              <span class="label-text">Show box</span>
-            </label>
-            <label class="custom-checkbox">
-              <input
-                type="checkbox"
-                bind:checked={showText}
-                id="show-text"
-              />
-              <span class="checkmark"></span>
-              <span class="label-text">Show text</span>
-            </label>
-          </div>
+          <pre
+            class="overflow-x-auto rounded-md bg-sunken p-4 font-mono text-code whitespace-pre-wrap break-all text-ink"
+            aria-label="Generated CSS">{cssCode}</pre>
         </div>
-      </div>
-    </div>
+      </section>
 
-    <!-- Preview Panel -->
-    <div class="space-y-4">
-      <!-- Live Preview -->
-      <div class="tool-card">
-        <h2 class="section-title">Live preview</h2>
-        <!-- Canvas: token surface; the user-picked background (data) is applied inline on top. -->
-        <div class="p-3 rounded-md bg-sunken">
-          <div
-            class="p-8 rounded-sm flex items-center justify-center min-h-[200px]"
-            style="background-color: {backgroundColor};"
-          >
-            {#if showBox}
-              <div
-                class="p-8 flex items-center justify-center"
-                style="box-shadow: {boxShadowCSS}; border-radius: {borderRadius}px; background: white;"
-              >
-                {#if showText}
-                  <h3
-                    class="text-2xl font-bold"
-                    style="color: {textColor}; text-shadow: {textShadowCSS};"
-                  >
-                    {previewText}
-                  </h3>
-                {/if}
-              </div>
-            {:else if showText}
-              <h3
-                class="text-2xl font-bold"
-                style="color: {textColor}; text-shadow: {textShadowCSS};"
-              >
-                {previewText}
-              </h3>
-            {/if}
-          </div>
-        </div>
-      </div>
-
-      <!-- CSS Output -->
-      <div class="tool-card">
-        <div class="card-header flex-wrap gap-2">
-          <h2 class="section-title !mb-0">CSS code</h2>
+      <!-- Presets + layers -->
+      <section class="flex min-w-0 flex-col gap-5 rounded-lg bg-card p-6" aria-labelledby="sh-layers">
+        <div class="flex flex-col gap-3">
+          <h2 class="text-label text-ink-muted">Presets</h2>
           <div class="flex flex-wrap gap-2">
-            <button
-              onclick={() => copyToClipboard(`box-shadow: ${boxShadowCSS};`)}
-              class="btn btn-sm btn-secondary"
-            >
-              <Copy class="w-4 h-4" />
-              Copy box
-            </button>
-            <button
-              onclick={() => copyToClipboard(`text-shadow: ${textShadowCSS};`)}
-              class="btn btn-sm btn-secondary"
-            >
-              <Copy class="w-4 h-4" />
-              Copy text
-            </button>
-            <button
-              onclick={downloadCSS}
-              class="btn btn-sm btn-primary"
-            >
-              <Download class="w-4 h-4" />
-              Download
-            </button>
+            {#each presets as p (p.name)}
+              <Button variant="secondary" size="sm" onclick={() => applyPreset(p)}>{p.name}</Button>
+            {/each}
           </div>
         </div>
 
-        <div class="space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 class="text-label text-ink-muted mb-2">Box shadow</h3>
-            <pre
-              class="bg-sunken p-4 rounded-md overflow-x-auto text-code text-ink"><code
-                >box-shadow: {boxShadowCSS};</code
-              ></pre>
+            <h2 id="sh-layers" class="text-label text-ink-muted">Layers</h2>
+            <p class="text-body-sm text-ink-muted">The first layer is drawn on top.</p>
           </div>
-
-          <div>
-            <h3 class="text-label text-ink-muted mb-2">Text shadow</h3>
-            <pre
-              class="bg-sunken p-4 rounded-md overflow-x-auto text-code text-ink"><code
-                >text-shadow: {textShadowCSS};</code
-              ></pre>
-          </div>
+          <Button variant="secondary" size="sm" onclick={add}>
+            {#snippet icon()}<Plus size={16} />{/snippet}
+            Add layer
+          </Button>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-    <div class="card">
-      <div class="feature-icon">
-        <Settings2 class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Real-time preview</h3>
-      <p class="feature-description">
-        See your shadow effects instantly as you adjust the controls
-      </p>
-    </div>
+        <ol class="flex flex-col gap-3">
+          {#each model.layers as layer, i (layer.id)}
+            {@const open = expanded.includes(layer.id)}
+            {@const draft = hexDrafts[draftKey(layer)]}
+            <li class="flex flex-col gap-4 rounded-md bg-control p-4" class:opacity-60={!layer.enabled && !open}>
+              <div class="flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  class="flex min-w-0 flex-1 cursor-pointer items-center gap-3 rounded-sm text-left text-ink"
+                  aria-expanded={open}
+                  aria-controls="sh-layer-{layer.id}"
+                  onclick={() => toggle(layer.id)}
+                >
+                  <ChevronDown size={18} class="shrink-0 transition-[rotate] duration-fast {open ? '' : '-rotate-90'}" aria-hidden="true" />
+                  <span class="size-5 shrink-0 rounded-pill" style:background-color={layer.color} style:opacity={layer.opacity / 100} aria-hidden="true"></span>
+                  <span class="min-w-0">
+                    <span class="block text-body-sm">Layer {i + 1}</span>
+                    <span class="block truncate font-mono text-code text-ink-muted">
+                      {layer.x} {layer.y} {layer.blur}{kind === 'box' ? ` ${layer.spread}` : ''}{kind === 'box' && layer.inset ? ' inset' : ''}
+                    </span>
+                  </span>
+                </button>
+                <Switch label="Show" aria-label="Show layer {i + 1}" bind:checked={layer.enabled} />
+                <div class="flex flex-wrap gap-1">
+                  {#if i > 0}
+                    <IconButton label="Move layer {i + 1} up" onclick={() => update(m => moveLayer(m, layer.id, -1))}><ArrowUp /></IconButton>
+                  {/if}
+                  {#if i < model.layers.length - 1}
+                    <IconButton label="Move layer {i + 1} down" onclick={() => update(m => moveLayer(m, layer.id, 1))}><ArrowDown /></IconButton>
+                  {/if}
+                  <IconButton label="Duplicate layer {i + 1}" onclick={() => update(m => duplicateLayer(m, layer.id))}><Copy /></IconButton>
+                  {#if model.layers.length > 1}
+                    <IconButton label="Remove layer {i + 1}" onclick={() => update(m => removeLayer(m, layer.id))}><Trash2 /></IconButton>
+                  {/if}
+                </div>
+              </div>
 
-    <div class="card">
-      <div class="feature-icon">
-        <Sparkles class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Multiple layers</h3>
-      <p class="feature-description">
-        Add multiple shadow layers for complex and beautiful effects
-      </p>
-    </div>
+              {#if open}
+                <div id="sh-layer-{layer.id}" class="grid gap-4 sm:grid-cols-2">
+                  {#each FIELDS.filter(f => !f.boxOnly || kind === 'box') as f (f.key)}
+                    <div class="flex items-end gap-3">
+                      <div class="min-w-0 flex-1">
+                        <Slider label={f.label} unit="px" min={f.min} max={f.max} bind:value={layer[f.key]} />
+                      </div>
+                      <div class="w-24 shrink-0">
+                        <TextField
+                          type="number"
+                          inputmode="numeric"
+                          aria-label="{f.label} in pixels, layer {i + 1}"
+                          min={f.min}
+                          max={f.max}
+                          step={1}
+                          value={layer[f.key]}
+                          oninput={e => setNumber(layer, f.key, e.currentTarget.valueAsNumber, f.min, f.max)}
+                          onchange={e => (e.currentTarget.value = String(layer[f.key]))}
+                        />
+                      </div>
+                    </div>
+                  {/each}
 
-    <div class="card">
-      <div class="feature-icon">
-        <Zap class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Quick presets</h3>
-      <p class="feature-description">
-        Pre-built styles for cards, buttons, neon effects, and more
-      </p>
+                  <div class="flex items-end gap-3">
+                    <input
+                      type="color"
+                      aria-label="Layer {i + 1} color picker"
+                      class="h-11 w-14 shrink-0 cursor-pointer rounded-pill bg-sunken p-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+                      value={layer.color}
+                      oninput={e => onHexInput(layer, e.currentTarget.value)}
+                    />
+                    <div class="min-w-0 flex-1">
+                      <TextField
+                        label="Color (hex)"
+                        mono
+                        spellcheck={false}
+                        autocomplete="off"
+                        value={draft ?? layer.color}
+                        error={draft !== undefined ? 'Use #rgb or #rrggbb' : undefined}
+                        oninput={e => onHexInput(layer, e.currentTarget.value)}
+                      />
+                    </div>
+                  </div>
+                  <Slider label="Opacity" unit="%" min={0} max={100} bind:value={layer.opacity} />
+
+                  {#if kind === 'box'}
+                    <Switch label="Inset" description="Draw the shadow inside the element" bind:checked={layer.inset} />
+                  {/if}
+                </div>
+              {/if}
+            </li>
+          {/each}
+        </ol>
+      </section>
     </div>
   </div>
 </ToolLayout>

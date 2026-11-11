@@ -1,389 +1,215 @@
 <script lang="ts">
-  import { Palette, Copy, Zap, RefreshCw } from '@lucide/svelte';
+  import { Palette, Shuffle } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
-  import { toast } from 'svelte-sonner';
+  import { TextField, Segmented, CopyChip, Button } from '$lib/components/ds';
+  import {
+    parseHex,
+    harmony,
+    shadeScale,
+    randomHex,
+    formatOklch,
+    bestTextColor,
+    slugName,
+    toCssVariables,
+    toTailwindTheme,
+    toTailwindConfig,
+    toJson,
+    isHarmony,
+    HARMONIES,
+    type HarmonyType
+  } from '$lib/tools/palette';
 
-  let baseColor = $state('#3B82F6');
-  let paletteType = $state('complementary');
-  let palette = $state<Array<{ hex: string; name: string; hsl: string; rgb: string }>>([]);
+  const BASE_KEY = 'colorPalette.base';
+  const HARMONY_KEY = 'colorPalette.harmony';
+  const DEFAULT = '#3b82f6';
 
-  function hexToRgb(hex: string): { r: number; g: number; b: number } {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result
-      ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16)
-        }
-      : { r: 0, g: 0, b: 0 };
-  }
-
-  function rgbToHsl(r: number, g: number, b: number): { h: number; s: number; l: number } {
-    r /= 255;
-    g /= 255;
-    b /= 255;
-
-    const max = Math.max(r, g, b);
-    const min = Math.min(r, g, b);
-    let h = 0,
-      s = 0,
-      l = (max + min) / 2;
-
-    if (max !== min) {
-      const d = max - min;
-      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-      switch (max) {
-        case r:
-          h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
-          break;
-        case g:
-          h = ((b - r) / d + 2) / 6;
-          break;
-        case b:
-          h = ((r - g) / d + 4) / 6;
-          break;
-      }
+  function read(key: string): string | null {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
     }
-
-    return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
   }
-
-  function hslToHex(h: number, s: number, l: number): string {
-    h = h / 360;
-    s = s / 100;
-    l = l / 100;
-
-    let r, g, b;
-
-    if (s === 0) {
-      r = g = b = l;
-    } else {
-      const hue2rgb = (p: number, q: number, t: number) => {
-        if (t < 0) t += 1;
-        if (t > 1) t -= 1;
-        if (t < 1 / 6) return p + (q - p) * 6 * t;
-        if (t < 1 / 2) return q;
-        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-        return p;
-      };
-
-      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-      const p = 2 * l - q;
-      r = hue2rgb(p, q, h + 1 / 3);
-      g = hue2rgb(p, q, h);
-      b = hue2rgb(p, q, h - 1 / 3);
+  function write(key: string, value: string) {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      /* storage blocked: settings live for this visit only */
     }
-
-    const toHex = (x: number) => {
-      const hex = Math.round(x * 255).toString(16);
-      return hex.length === 1 ? '0' + hex : hex;
-    };
-
-    return `#${toHex(r)}${toHex(g)}${toHex(b)}`.toUpperCase();
   }
 
-  function generatePalette() {
-    const rgb = hexToRgb(baseColor);
-    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+  const storedHarmony = read(HARMONY_KEY);
+  const initialBase = parseHex(read(BASE_KEY) ?? '') ?? DEFAULT;
+  let base = $state(initialBase);
+  let text = $state(initialBase);
+  let harmonyType = $state<HarmonyType>(isHarmony(storedHarmony) ? storedHarmony : 'complementary');
+  let paletteName = $state('brand');
+  let exportFormat = $state('css');
 
-    let newPalette: Array<{ hex: string; name: string; hsl: string; rgb: string }> = [];
+  const invalid = $derived(text.trim() !== '' && parseHex(text) === null);
+  const swatches = $derived(harmony(base, harmonyType));
+  const scale = $derived(shadeScale(base));
+  const slug = $derived(slugName(paletteName));
 
-    switch (paletteType) {
-      case 'complementary':
-        newPalette = [
-          {
-            hex: baseColor,
-            name: 'Base',
-            hsl: `${hsl.h}, ${hsl.s}%, ${hsl.l}%`,
-            rgb: `${rgb.r}, ${rgb.g}, ${rgb.b}`
-          },
-          {
-            hex: hslToHex((hsl.h + 180) % 360, hsl.s, hsl.l),
-            name: 'Complementary',
-            hsl: `${(hsl.h + 180) % 360}, ${hsl.s}%, ${hsl.l}%`,
-            rgb: ''
-          }
-        ];
-        break;
+  const XL_COLS: Record<number, string> = {
+    2: 'xl:grid-cols-2',
+    3: 'xl:grid-cols-3',
+    4: 'xl:grid-cols-4',
+    6: 'xl:grid-cols-6'
+  };
 
-      case 'triadic':
-        newPalette = [
-          {
-            hex: baseColor,
-            name: 'Base',
-            hsl: `${hsl.h}, ${hsl.s}%, ${hsl.l}%`,
-            rgb: `${rgb.r}, ${rgb.g}, ${rgb.b}`
-          },
-          {
-            hex: hslToHex((hsl.h + 120) % 360, hsl.s, hsl.l),
-            name: 'Triadic 1',
-            hsl: `${(hsl.h + 120) % 360}, ${hsl.s}%, ${hsl.l}%`,
-            rgb: ''
-          },
-          {
-            hex: hslToHex((hsl.h + 240) % 360, hsl.s, hsl.l),
-            name: 'Triadic 2',
-            hsl: `${(hsl.h + 240) % 360}, ${hsl.s}%, ${hsl.l}%`,
-            rgb: ''
-          }
-        ];
-        break;
-
-      case 'analogous':
-        newPalette = [
-          {
-            hex: hslToHex((hsl.h - 30 + 360) % 360, hsl.s, hsl.l),
-            name: 'Analogous 1',
-            hsl: `${(hsl.h - 30 + 360) % 360}, ${hsl.s}%, ${hsl.l}%`,
-            rgb: ''
-          },
-          {
-            hex: baseColor,
-            name: 'Base',
-            hsl: `${hsl.h}, ${hsl.s}%, ${hsl.l}%`,
-            rgb: `${rgb.r}, ${rgb.g}, ${rgb.b}`
-          },
-          {
-            hex: hslToHex((hsl.h + 30) % 360, hsl.s, hsl.l),
-            name: 'Analogous 2',
-            hsl: `${(hsl.h + 30) % 360}, ${hsl.s}%, ${hsl.l}%`,
-            rgb: ''
-          }
-        ];
-        break;
-
-      case 'monochromatic':
-        newPalette = [
-          {
-            hex: hslToHex(hsl.h, hsl.s, 20),
-            name: 'Dark',
-            hsl: `${hsl.h}, ${hsl.s}%, 20%`,
-            rgb: ''
-          },
-          {
-            hex: hslToHex(hsl.h, hsl.s, 40),
-            name: 'Dark Medium',
-            hsl: `${hsl.h}, ${hsl.s}%, 40%`,
-            rgb: ''
-          },
-          {
-            hex: hslToHex(hsl.h, hsl.s, 60),
-            name: 'Medium',
-            hsl: `${hsl.h}, ${hsl.s}%, 60%`,
-            rgb: ''
-          },
-          {
-            hex: hslToHex(hsl.h, hsl.s, 80),
-            name: 'Light Medium',
-            hsl: `${hsl.h}, ${hsl.s}%, 80%`,
-            rgb: ''
-          },
-          {
-            hex: hslToHex(hsl.h, hsl.s, 95),
-            name: 'Light',
-            hsl: `${hsl.h}, ${hsl.s}%, 95%`,
-            rgb: ''
-          }
-        ];
-        break;
-    }
-
-    // Add RGB values for all colors
-    newPalette = newPalette.map(color => {
-      if (!color.rgb) {
-        const rgb = hexToRgb(color.hex);
-        return { ...color, rgb: `${rgb.r}, ${rgb.g}, ${rgb.b}` };
-      }
-      return color;
-    });
-
-    palette = newPalette;
-  }
-
-  function randomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    baseColor = color;
-  }
-
-  function copyToClipboard(color: string) {
-    navigator.clipboard.writeText(color);
-    toast.success('Copied to clipboard');
-  }
-
-  function loadSamplePalette() {
-    baseColor = '#8B5CF6';
-    paletteType = 'triadic';
-    generatePalette();
-  }
-
-  // React to changes in base color or palette type
-  $effect(() => {
-    if (baseColor && paletteType) {
-      generatePalette();
+  const FORMATS = [
+    { value: 'css', label: 'CSS variables' },
+    { value: 'tw4', label: 'Tailwind v4' },
+    { value: 'tw3', label: 'Tailwind v3' },
+    { value: 'json', label: 'JSON' }
+  ];
+  const code = $derived.by(() => {
+    switch (exportFormat) {
+      case 'tw4':
+        return toTailwindTheme(paletteName, scale);
+      case 'tw3':
+        return toTailwindConfig(paletteName, scale);
+      case 'json':
+        return toJson(paletteName, scale);
+      default:
+        return toCssVariables(paletteName, scale);
     }
   });
+
+  $effect(() => write(BASE_KEY, base));
+  $effect(() => write(HARMONY_KEY, harmonyType));
+
+  function onText(e: Event & { currentTarget: HTMLInputElement }) {
+    text = e.currentTarget.value;
+    const p = parseHex(text);
+    if (p) base = p;
+  }
+
+  function setBase(hex: string) {
+    base = hex;
+    text = hex;
+  }
 </script>
 
 <ToolLayout
   title="Color Palette Generator"
-  description="Generate harmonious color palettes with complementary, triadic, and analogous colors."
+  description="Build a palette from one color: OKLCH harmonies, a 50–950 shade scale, and ready-to-paste CSS, Tailwind or JSON."
   icon={Palette}
   color="warning"
 >
-  <!-- Controls -->
-  <div class="flex flex-wrap gap-2">
-    <button onclick={loadSamplePalette} class="btn btn-primary">
-      <RefreshCw class="size-4" />
-      Load sample
-    </button>
-    <button onclick={randomColor} class="btn btn-secondary">
-      <RefreshCw class="size-4" />
-      Random color
-    </button>
-  </div>
-
-  <!-- Base Color & Type Selection -->
-  <div class="tool-card">
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-      <div>
-        <label for="base-color-picker" class="label">Base color</label>
-        <div class="flex gap-2">
-          <input
-            class="h-11 w-12 cursor-pointer rounded-sm bg-control p-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
-            id="base-color-picker"
-            type="color"
-            bind:value={baseColor}
-          />
-          <input
-            type="text"
-            bind:value={baseColor}
-            class="tool-input flex-1 font-mono!"
-            maxlength={7}
-          />
-        </div>
+  <section class="flex flex-col gap-4 rounded-lg bg-card p-6" aria-label="Base color">
+    <div class="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-start">
+      <TextField
+        label="Base color"
+        mono
+        value={text}
+        oninput={onText}
+        placeholder="#3b82f6"
+        maxlength={8}
+        spellcheck={false}
+        autocomplete="off"
+        autocapitalize="off"
+        error={invalid ? `Enter a 3- or 6-digit hex color — still showing ${base}.` : undefined}
+        hint={invalid ? undefined : 'HEX with or without #, 3 or 6 digits.'}
+      />
+      <div class="flex flex-col gap-2">
+        <label class="fz-field-label" for="cp-picker">Picker</label>
+        <input
+          id="cp-picker"
+          type="color"
+          class="h-12 w-full cursor-pointer rounded-md border-0 bg-control p-1.5 sm:w-20"
+          value={base}
+          oninput={e => setBase(e.currentTarget.value)}
+        />
       </div>
-
-      <div>
-        <label for="palette-type-select" class="label">Palette type</label>
-        <select id="palette-type-select" bind:value={paletteType} class="tool-select">
-          <option value="complementary">Complementary</option>
-          <option value="triadic">Triadic</option>
-          <option value="analogous">Analogous</option>
-          <option value="monochromatic">Monochromatic</option>
-        </select>
+      <div class="flex flex-col gap-2 sm:pt-7">
+        <Button variant="secondary" onclick={() => setBase(randomHex())}>
+          {#snippet icon()}<Shuffle class="size-4" aria-hidden="true" />{/snippet}
+          Random
+        </Button>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Color Palette -->
-  {#if palette.length > 0}
-    <div class="tool-card">
-      <h3 class="section-title">Generated palette</h3>
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        {#each palette as color, i (color.hex + i)}
-          <div class="overflow-hidden rounded-md bg-sunken">
-            <div class="h-24 w-full" style="background-color: {color.hex}"></div>
-            <div class="p-3">
-              <h4 class="text-body-sm mb-2 font-medium text-ink">{color.name}</h4>
-              <div class="space-y-1 text-xs">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="text-ink-muted">HEX:</span>
-                  <button
-                    onclick={() => copyToClipboard(color.hex)}
-                    class="quick-btn font-mono"
-                    title="Copy HEX"
-                  >
-                    {color.hex}
-                  </button>
-                </div>
-                <div class="flex items-center justify-between gap-2">
-                  <span class="text-ink-muted">HSL:</span>
-                  <button
-                    onclick={() => copyToClipboard(`hsl(${color.hsl})`)}
-                    class="quick-btn font-mono"
-                    title="Copy HSL"
-                  >
-                    {color.hsl}
-                  </button>
-                </div>
-                <div class="flex items-center justify-between gap-2">
-                  <span class="text-ink-muted">RGB:</span>
-                  <button
-                    onclick={() => copyToClipboard(`rgb(${color.rgb})`)}
-                    class="quick-btn font-mono"
-                    title="Copy RGB"
-                  >
-                    {color.rgb}
-                  </button>
-                </div>
-              </div>
-            </div>
+  <section class="flex flex-col gap-4 rounded-lg bg-card p-6" aria-labelledby="cp-harmony">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <h2 id="cp-harmony" class="section-title">Harmony</h2>
+      <Segmented label="Harmony type" options={HARMONIES} bind:value={harmonyType} />
+    </div>
+    <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 {XL_COLS[swatches.length] ?? 'xl:grid-cols-3'}">
+      {#each swatches as s, i (i)}
+        <li class="flex flex-col gap-3 rounded-md bg-control p-2">
+          <div
+            class="flex h-28 flex-col justify-end gap-0.5 rounded-sm p-3"
+            style="background-color: {s.hex}; color: {bestTextColor(s.hex)}"
+          >
+            <span class="text-body-sm font-medium">{s.name}{s.isBase && s.name !== 'Base' ? ' · base' : ''}</span>
+            <span class="font-mono text-label">{formatOklch(s.hex)}</span>
           </div>
-        {/each}
-      </div>
-    </div>
-  {/if}
+          <CopyChip value={s.hex}><span class="sr-only">Copy </span><span class="font-mono">{s.hex}</span></CopyChip>
+        </li>
+      {/each}
+    </ul>
+  </section>
 
-  <!-- Palette Types Information -->
-  <div class="tool-card">
-    <h3 class="section-title">Palette types</h3>
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <div class="info-card">
-        <h4 class="section-title-sm">Complementary</h4>
-        <p class="text-body-sm text-ink-muted">
-          Two colors opposite each other on the color wheel. Creates high contrast and visual
-          interest.
-        </p>
-      </div>
-      <div class="info-card">
-        <h4 class="section-title-sm">Triadic</h4>
-        <p class="text-body-sm text-ink-muted">
-          Three colors evenly spaced on the color wheel. Creates vibrant, balanced color schemes.
-        </p>
-      </div>
-      <div class="info-card">
-        <h4 class="section-title-sm">Analogous</h4>
-        <p class="text-body-sm text-ink-muted">
-          Colors adjacent to each other on the color wheel. Creates harmonious and pleasing
-          combinations.
-        </p>
-      </div>
-      <div class="info-card">
-        <h4 class="section-title-sm">Monochromatic</h4>
-        <p class="text-body-sm text-ink-muted">
-          Variations of a single color with different lightness values. Creates subtle and
-          sophisticated looks.
-        </p>
-      </div>
+  <section class="flex flex-col gap-4 rounded-lg bg-card p-6" aria-labelledby="cp-scale">
+    <div class="flex flex-wrap items-baseline justify-between gap-2">
+      <h2 id="cp-scale" class="section-title">Shade scale</h2>
+      <span class="text-body-sm text-ink-muted">
+        Base color is step <span class="font-mono text-ink">{scale.baseStep}</span>
+      </span>
     </div>
-  </div>
+    <div class="flex h-20 overflow-hidden rounded-md" aria-hidden="true">
+      {#each scale.steps as s (s.step)}
+        <div
+          class="flex flex-1 flex-col items-center justify-end pb-2 font-mono text-label"
+          style="background-color: {s.hex}; color: {bestTextColor(s.hex)}"
+        >
+          <span>{s.step}</span>
+          {#if s.isBase}<span>●</span>{/if}
+        </div>
+      {/each}
+    </div>
+    <ul class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      {#each scale.steps as s (s.step)}
+        <li class="flex items-center gap-3 rounded-md bg-control py-1.5 pr-1.5 pl-1.5">
+          <span class="size-8 shrink-0 rounded-pill" style="background-color: {s.hex}" aria-hidden="true"></span>
+          <span class="min-w-0 flex-1 text-body-sm text-ink">
+            <span class="font-mono">{slug}-{s.step}</span>
+            {#if s.isBase}<span class="text-accent-text"> · base</span>{/if}
+          </span>
+          <CopyChip value={s.hex}><span class="sr-only">Copy </span><span class="font-mono">{s.hex}</span></CopyChip>
+        </li>
+      {/each}
+    </ul>
+  </section>
 
-  <!-- Features Section -->
-  <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-    <div class="card">
-      <div class="feature-icon"><Palette class="size-5" /></div>
-      <h3 class="feature-title">Color harmony</h3>
-      <p class="feature-description">
-        Generate color schemes based on color theory principles for professional designs
-      </p>
+  <section class="flex flex-col gap-4 rounded-lg bg-card p-6" aria-labelledby="cp-export">
+    <h2 id="cp-export" class="section-title">Export shade scale</h2>
+    <div class="overflow-x-auto">
+      <Segmented label="Export format" options={FORMATS} bind:value={exportFormat} />
     </div>
-
-    <div class="card">
-      <div class="feature-icon"><Copy class="size-5" /></div>
-      <h3 class="feature-title">Multiple formats</h3>
-      <p class="feature-description">
-        Export colors in HEX, RGB, and HSL formats for use in any design tool
-      </p>
+    <div class="max-w-xs">
+      <TextField
+        label="Palette name"
+        mono
+        bind:value={paletteName}
+        placeholder="brand"
+        spellcheck={false}
+        autocomplete="off"
+        autocapitalize="off"
+        hint="Used as {slug}-500"
+      />
     </div>
-
-    <div class="card">
-      <div class="feature-icon"><Zap class="size-5" /></div>
-      <h3 class="feature-title">Instant preview</h3>
-      <p class="feature-description">See your color palette in real-time as you adjust settings</p>
+    <!-- svelte-ignore a11y_no_noninteractive_tabindex (scrollable code must be keyboard-reachable) -->
+    <pre
+      class="max-h-96 overflow-auto rounded-md bg-sunken p-4 font-mono text-code text-ink"
+      role="region"
+      aria-label="Exported code"
+      tabindex="0"><code>{code}</code></pre>
+    <div>
+      <CopyChip value={code}>Copy code</CopyChip>
     </div>
-  </div>
+  </section>
 </ToolLayout>

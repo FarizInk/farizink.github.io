@@ -125,10 +125,18 @@ src/
 
 ### Developer Tools (34 tools)
 Organized in 4 categories, configured centrally in `src/lib/toolsConfig.ts`:
+
 - **Text & Data** (8): JSON Parser, Text Case Converter, Lorem Ipsum, Character Counter, Text Diff, URL Parser, Hash Generator, Base64 Converter
 - **Generators & Converters** (7): QR Code, Color Converter, CSS Gradient, Color Palette, Password Generator, Slug Generator, Timestamp Converter
 - **Web Development** (6): URL Encoder, HTML Entity Encoder, CSS Minifier, JS Minifier, CSS Shadow Generator, Meta Tag Generator
 - **Utilities & Calculators** (13): Age Calculator, BMI Calculator, Percentage Calculator, Tip Calculator, Unit Converter, Random Picker, Hash Comparer, JWT Decoder, Cron Generator, ASCII Art, Markdown Preview, Pomodoro Timer, Temp File Upload
+
+Tool page pattern (all 34 follow it — keep new tools the same):
+- **Logic in `src/lib/tools/<name>.ts`**, pure and self-contained (no relative imports — `node --test` can't resolve extensionless ones; package imports are fine), with tests in `tests/<name>.test.ts`. Heavy libraries (terser, prettier, csso) are loaded with dynamic `import()` so they stay out of the main bundle.
+- **Live output via `$derived`** (debounce large inputs; async work guarded by a run counter) — no "Generate/Convert" buttons, no stale output when input is cleared, never NaN/Infinity on screen.
+- **DS components only**: `CopyChip` for every copy (no toasts), `Segmented`/`Switch`/`Slider`/`Select`/`TextField`/`Textarea`/`FileDrop`; every input labelled, icon-only buttons have `aria-label`, state never conveyed by color alone.
+- **No filler**: no "Features"/"Tips" marketing cards. Persist only harmless preferences/drafts in `localStorage` (try/catch); never secrets (passwords, tokens).
+- **Mobile**: no page-level horizontal scroll at 375px — grid children get `min-w-0`, long values `break-all`, code scrolls inside its box.
 
 ### Portfolio Features
 - Professional profile display
