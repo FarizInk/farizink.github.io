@@ -1,0 +1,37 @@
+import{G as Ut,j as qt,e as At,m as t,y,z as e,f as M,h as X,o as i,c as a,i as j,am as Dt,aM as Ot,aw as I,ag as Y,t as L,n as J,D as tt,b as $,d as Pt,k as U,a as q,r as f,bw as Gt,bC as Kt}from"./vendor-DD6qoAQi.js";import{T as Nt}from"./ToolLayout-BLTXxgnX.js";import{t as R}from"./notifications-D_9cxcKx.js";import"./index-P59-iu8G.js";import"./router-Dh19MaBG.js";var Zt=M('<button class="btn btn-primary"><!> Copy result</button> <button class="btn btn-secondary"><!> Download JavaScript</button>',1),Ht=M('<div class="status-error flex items-start gap-2 p-3 rounded-md"><!> <p class="text-body-sm text-negative"> </p></div>'),Qt=M('<div class="stats-card"><div class="stat-item"><p class="text-label text-ink-muted">Original size</p> <p class="stat-value font-mono"> </p></div> <div class="stat-item"><p class="text-label text-ink-muted">Processed size</p> <p class="stat-value font-mono"> </p></div> <div class="stat-item"><p class="text-label text-ink-muted">Size change</p> <p> </p></div> <div class="stat-item"><p class="text-label text-ink-muted">Compression</p> <p class="stat-value font-mono"> </p></div></div>'),Vt=M('<div class="absolute inset-0 flex flex-col items-center justify-center p-6 pointer-events-none"><!> <p class="text-body-sm text-ink-muted"> </p></div>'),Wt=M('<div class="tab-nav" role="tablist"><button role="tab">Beautify JavaScript</button> <button role="tab">Minify JavaScript</button></div> <div class="flex flex-wrap gap-2 items-center"><!> <button class="btn btn-secondary"><!> Load sample JavaScript</button> <button class="btn btn-ghost">Clear all</button></div> <!> <!> <div class="grid grid-cols-1 lg:grid-cols-2 gap-4"><div class="tool-card"><div class="card-header"><h2 class="section-title !mb-0">Input JavaScript</h2> <span class="text-count"> </span></div> <textarea placeholder="Enter your JavaScript code here..." class="code-editor min-h-[200px] sm:min-h-[300px] lg:min-h-[500px]"></textarea></div> <div class="tool-card"><div class="card-header"><h2 class="section-title !mb-0"> </h2> <span class="text-count"> </span></div> <div class="relative"><textarea readonly="" class="code-editor min-h-[200px] sm:min-h-[300px] lg:min-h-[500px]"></textarea> <!></div></div></div> <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4"><div class="card"><div class="feature-icon"><!></div> <h3 class="feature-title">Minify JavaScript</h3> <p class="feature-description">Reduce file size by removing whitespace, comments, and unnecessary characters</p></div> <div class="card"><div class="feature-icon"><!></div> <h3 class="feature-title">Beautify JavaScript</h3> <p class="feature-description">Format JavaScript with proper indentation and line breaks for better readability</p></div> <div class="card"><div class="feature-icon"><!></div> <h3 class="feature-title">Export results</h3> <p class="feature-description">Copy to clipboard or download processed JavaScript as a file for immediate use</p></div></div>',1);function ia(at,et){At(et,!0);let v=y(""),o=y(""),l=y(!1),n=y(0),m=y(0),B=y(0),w=y("");function A(){if(!t(v).trim()){e(o,""),e(n,0),e(m,0),e(B,0),e(w,"");return}e(n,new Blob([t(v)]).size,!0);try{if(t(l)){let r=t(v).replace(/(?:^|\n|\r)\s*\/\/.*$/gm,"").replace(/\/\*[\s\S]*?\*\//g,"").replace(/\s+/g," ").replace(/\s*([+\-*/=<>!&|,;:{}()[\]])\s*/g,"$1").trim();e(o,r,!0),e(m,new Blob([r]).size,!0)}else{let r=t(v).replace(/([+\-*/=<>!&|,;:{}()[\]])/g," $1 ").replace(/\s+/g," ").replace(/;/g,`;
+`).replace(/{/g,`{
+`).replace(/}/g,`
+}
+`).split(`
+`).map((p,u,h)=>{let b=p.trim();if(!b)return"";let _=0,S=0;for(let k=0;k<u;k++){const z=h[k].trim();z==="{"&&S++,z==="}"&&S--}return _=Math.max(0,S),b==="}"&&(_=Math.max(0,_-1)),"  ".repeat(_)+b}).filter(p=>p.trim()).join(`
+`);e(o,r,!0),e(m,new Blob([r]).size,!0)}e(B,t(n)>0?Math.round((t(n)-t(m))/t(n)*100):0,!0),e(w,"")}catch{e(w,"Error processing JavaScript. Please check your syntax."),e(o,"")}}function it(){e(v,`// Sample JavaScript function
+function calculateTotal(items, tax = 0.08) {
+    let subtotal = 0;
+
+    // Calculate subtotal
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        subtotal += item.price * item.quantity;
+    }
+
+    // Calculate tax and total
+    const taxAmount = subtotal * tax;
+    const total = subtotal + taxAmount;
+
+    return {
+        subtotal: subtotal,
+        tax: taxAmount,
+        total: total,
+        currency: 'USD'
+    };
+}
+
+// Example usage
+const cartItems = [
+    { name: 'Book', price: 15.99, quantity: 2 },
+    { name: 'Pen', price: 2.49, quantity: 5 },
+    { name: 'Notebook', price: 8.99, quantity: 1 }
+];
+
+const result = calculateTotal(cartItems);
+console.log('Total amount:', result.total);`),e(l,!0),A(),R.success("Sample JavaScript loaded")}function st(r){navigator.clipboard.writeText(r),R.success("Copied to clipboard")}function rt(){const r=new Blob([t(o)],{type:"text/javascript"}),p=URL.createObjectURL(r),u=document.createElement("a");u.href=p,u.download=t(l)?"script.min.js":"script.js",u.click(),URL.revokeObjectURL(p),R.success("JavaScript downloaded")}function ot(){e(v,""),e(o,""),e(n,0),e(m,0),e(B,0),e(w,""),R.success("Cleared all")}function T(r){if(r===0)return"0 Bytes";const p=1024,u=["Bytes","KB","MB","GB"],h=Math.floor(Math.log(r)/Math.log(p));return parseFloat((r/Math.pow(p,h)).toFixed(2))+" "+u[h]}Ut(()=>{t(v)&&A()}),Nt(at,{title:"JavaScript Minifier",description:"Minify or beautify JavaScript code with real-time preview and size comparison.",get icon(){return I},color:"warning",children:(r,p)=>{var u=Wt(),h=X(u),b=a(h),_=i(b,2),S=i(h,2),k=a(S);{var z=s=>{var d=Zt(),c=X(d),g=a(c);Gt(g,{class:"w-4 h-4"});var x=i(c,2),C=a(x);Y(C,{class:"w-4 h-4"}),J("click",c,()=>st(t(o))),J("click",x,rt),$(s,d)};j(k,s=>{t(o)&&s(z)})}var E=i(k,2),lt=a(E);Dt(lt,{class:"w-4 h-4"});var ct=i(E,2),D=i(S,2);{var nt=s=>{var d=Ht(),c=a(d);Kt(c,{class:"w-5 h-5 text-negative flex-shrink-0 mt-0.5"});var g=i(c,2),x=a(g);L(()=>f(x,t(w))),$(s,d)};j(D,s=>{t(w)&&s(nt)})}var O=i(D,2);{var dt=s=>{var d=Qt(),c=a(d),g=i(a(c),2),x=a(g),C=i(c,2),zt=i(a(C),2),Ct=a(zt),V=i(C,2),W=i(a(V),2),jt=a(W),Lt=i(V,2),Rt=i(a(Lt),2),Tt=a(Rt);L((Et,Ft,It)=>{f(x,Et),f(Ct,Ft),q(W,1,`stat-value font-mono ${t(m)<t(n)?"!text-live":"!text-negative"}`),f(jt,`${t(m)<t(n)?"-":"+"}${It??""}`),f(Tt,`${t(B)??""}%`)},[()=>T(t(n)),()=>T(t(m)),()=>T(Math.abs(t(m)-t(n)))]),$(s,d)};j(O,s=>{t(n)>0&&s(dt)})}var P=i(O,2),G=a(P),K=a(G),vt=i(a(K),2),pt=a(vt),ut=i(K,2),mt=i(G,2),N=a(mt),Z=a(N),ft=a(Z),bt=i(Z,2),_t=a(bt),xt=i(N,2),F=a(xt),ht=i(F,2);{var gt=s=>{var d=Vt(),c=a(d);I(c,{class:"w-12 h-12 mb-2 opacity-50 text-ink-muted"});var g=i(c,2),x=a(g);L(()=>f(x,`Enter JavaScript code to see ${t(l)?"minified":"beautified"} result`)),$(s,d)};j(ht,s=>{t(o)||s(gt)})}var yt=i(P,2),H=a(yt),wt=a(H),St=a(wt);Ot(St,{class:"w-5 h-5"});var Q=i(H,2),kt=a(Q),Jt=a(kt);I(Jt,{class:"w-5 h-5"});var $t=i(Q,2),Mt=a($t),Bt=a(Mt);Y(Bt,{class:"w-5 h-5"}),L(()=>{U(b,"aria-selected",!t(l)),q(b,1,`tab-btn ${t(l)?"":"active"}`),U(_,"aria-selected",t(l)),q(_,1,`tab-btn ${t(l)?"active":""}`),f(pt,`${t(v).length??""} characters`),f(ft,`${t(l)?"Minified":"Beautified"} JavaScript`),f(_t,`${t(o).length??""} characters`),U(F,"placeholder",`${t(l)?"Minified":"Beautified"} JavaScript will appear here...`)}),J("click",b,()=>e(l,!1)),J("click",_,()=>e(l,!0)),J("click",E,it),J("click",ct,ot),tt(ut,()=>t(v),s=>e(v,s)),tt(F,()=>t(o),s=>e(o,s)),$(r,u)},$$slots:{default:!0}}),qt()}Pt(["click"]);export{ia as default};
