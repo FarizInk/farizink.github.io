@@ -1,47 +1,77 @@
 <script lang="ts">
+  import { ArrowUpDown, FileText } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
-  import { Code, Zap, FileText, Copy, RefreshCw } from '@lucide/svelte';
+  import { CopyChip, EmptyState, IconButton, Segmented, Switch, Textarea } from '$lib/components/ds';
+  import { decodeHtml, encodeHtml, isHtmlMode, REFERENCE, type HtmlMode } from '$lib/tools/htmlentities';
 
-  let inputText = $state('');
-  let encodedText = $state('');
-  let decodedText = $state('');
-  let copiedText = $state('');
-  let activeTab = $state<'encode' | 'decode'>('encode');
-
-  function encodeHtml() {
-    const div = document.createElement('div');
-    div.textContent = inputText;
-    encodedText = div.innerHTML;
-    decodedText = '';
+  interface Settings {
+    direction: string; // 'encode' | 'decode'
+    mode: string; // HtmlMode
+    nonAscii: boolean;
   }
 
-  function decodeHtml() {
-    const div = document.createElement('div');
-    div.innerHTML = inputText;
-    decodedText = div.textContent || div.innerText || '';
-    encodedText = '';
+  const STORAGE_KEY = 'htmlEncoder.options';
+  const DEFAULTS: Settings = { direction: 'encode', mode: 'minimal', nonAscii: false };
+
+  const DIRECTIONS = [
+    { value: 'encode', label: 'Encode' },
+    { value: 'decode', label: 'Decode' }
+  ];
+
+  const MODES = [
+    { value: 'minimal', label: 'Minimal' },
+    { value: 'named', label: 'Named' },
+    { value: 'numeric', label: 'Numeric' },
+    { value: 'hex', label: 'Hex' }
+  ];
+
+  const MODE_HELP: Record<HtmlMode, string> = {
+    minimal: 'Only & < > " \' — enough for text and quoted attribute values.',
+    named: 'Also uses names like &copy; &nbsp; &mdash; wherever one exists.',
+    numeric: 'Decimal references: &#38; &#60; &#169;.',
+    hex: 'Hexadecimal references: &#x26; &#x3C; &#xA9;.'
+  };
+
+  function loadSettings(): Settings {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return { ...DEFAULTS };
+      const saved = JSON.parse(raw) as Partial<Record<keyof Settings, unknown>>;
+      const s: Settings = { ...DEFAULTS };
+      if (saved.direction === 'encode' || saved.direction === 'decode') s.direction = saved.direction;
+      if (isHtmlMode(saved.mode)) s.mode = saved.mode;
+      if (typeof saved.nonAscii === 'boolean') s.nonAscii = saved.nonAscii;
+      return s;
+    } catch {
+      return { ...DEFAULTS };
+    }
   }
 
-  function loadSampleText() {
-    inputText =
-      '<div class="container">\n  <h1>Hello World!</h1>\n  <p>This is a <strong>sample</strong> text with <em>HTML</em> tags.</p>\n</div>';
-    activeTab = 'encode';
-    encodeHtml();
-  }
+  let s = $state<Settings>(loadSettings());
+  let input = $state('');
 
+  $effect(() => {
+    const data = JSON.stringify(s);
+    try {
+      localStorage.setItem(STORAGE_KEY, data);
+    } catch {
+      /* storage blocked: options just won't persist */
+    }
+  });
 
-  function copyToClipboard(text: string, format: string) {
-    navigator.clipboard.writeText(text);
-    copiedText = format;
-    setTimeout(() => {
-      copiedText = '';
-    }, 2000);
-  }
+  const encoding = $derived(s.direction === 'encode');
+  const mode = $derived<HtmlMode>(isHtmlMode(s.mode) ? s.mode : 'minimal');
+  const output = $derived(encoding ? encodeHtml(input, { mode, nonAscii: s.nonAscii }) : decodeHtml(input));
 
-  function clearAll() {
-    inputText = '';
-    encodedText = '';
-    decodedText = '';
+  const placeholder = $derived(
+    encoding
+      ? `<a href="/?q=1&x=2" title="Tom's café">© 2026 — 🎉</a>`
+      : '&lt;b&gt;Tom &amp; Jerry&lt;/b&gt; &copy; &#169; &#x1F389;'
+  );
+
+  function swap() {
+    if (output) input = output;
+    s.direction = encoding ? 'decode' : 'encode';
   }
 </script>
 
@@ -51,199 +81,86 @@
   icon={FileText}
   color="warning"
 >
-  <!-- Tab Navigation -->
-  <div class="tab-nav" role="tablist">
-    <button
-      role="tab"
-      aria-selected={activeTab === 'encode'}
-      onclick={() => (activeTab = 'encode')}
-      class="tab-btn {activeTab === 'encode' ? 'active' : ''}"
-    >
-      Encode HTML
-    </button>
-    <button
-      role="tab"
-      aria-selected={activeTab === 'decode'}
-      onclick={() => (activeTab = 'decode')}
-      class="tab-btn {activeTab === 'decode' ? 'active' : ''}"
-    >
-      Decode HTML
-    </button>
-  </div>
-
-  <!-- Controls -->
-  <div class="flex flex-wrap gap-2 items-center">
-    <button
-      onclick={activeTab === 'encode' ? encodeHtml : decodeHtml}
-      disabled={!inputText.trim()}
-      class="btn btn-primary"
-    >
-      {activeTab === 'encode' ? 'Encode HTML' : 'Decode HTML'}
-    </button>
-    <button class="btn btn-secondary" onclick={loadSampleText}>
-      <RefreshCw class="w-4 h-4" />
-      Load sample
-    </button>
-    <button class="btn btn-ghost" onclick={clearAll}>
-      Clear all
-    </button>
-  </div>
-
-  <!-- Input and Output -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-    <!-- Input Section -->
-    <div class="tool-card">
-      <div class="card-header">
-        <h2 class="section-title !mb-0">Input</h2>
-        <span class="text-count">
-          {inputText.length} characters
-        </span>
+  <div class="grid gap-4 lg:grid-cols-[3fr_2fr]">
+    <section class="flex flex-col gap-5 rounded-lg bg-card p-6" aria-labelledby="html-main-title">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="html-main-title" class="text-label text-ink-muted">{encoding ? 'Encode' : 'Decode'}</h2>
+        <div class="flex items-center gap-2">
+          <div class="w-56">
+            <Segmented label="Direction" options={DIRECTIONS} bind:value={s.direction} />
+          </div>
+          <IconButton label="Use output as input" onclick={swap}><ArrowUpDown /></IconButton>
+        </div>
       </div>
 
-      <textarea
-        bind:value={inputText}
-        placeholder="Enter {activeTab === 'encode'
-          ? 'HTML code or text'
-          : 'HTML entities'} to {activeTab === 'encode' ? 'encode' : 'decode'}..."
-        class="code-editor h-64"
-      ></textarea>
-    </div>
+      <Textarea
+        label={encoding ? 'Text to encode' : 'Text to decode'}
+        hint={encoding ? undefined : 'Decoded as plain text: tags are never parsed or run.'}
+        rows={6}
+        mono
+        spellcheck={false}
+        bind:value={input}
+        {placeholder}
+      />
 
-    <!-- Results Section -->
-    <div class="tool-card">
-      <div class="card-header">
-        <h2 class="section-title !mb-0">
-          {activeTab === 'encode' ? 'Encoded' : 'Decoded'} result
-        </h2>
-        {#if (activeTab === 'encode' && encodedText) || (activeTab === 'decode' && decodedText)}
-          <button
-            onclick={() =>
-              copyToClipboard(activeTab === 'encode' ? encodedText : decodedText, 'result')}
-            class="btn btn-copy btn-sm"
-          >
-            <Copy class="w-4 h-4" />
-            {copiedText === 'result' ? 'Copied!' : 'Copy'}
-          </button>
-        {/if}
-      </div>
-
-      <div class="relative">
-        {#if activeTab === 'encode'}
-          <textarea
-            bind:value={encodedText}
-            placeholder="Encoded HTML will appear here..."
-            class="code-editor h-64"
-            readonly
-          ></textarea>
-          {#if !encodedText}
-            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <p class="text-body-sm text-ink-muted">Enter text above to see encoded result</p>
-            </div>
-          {/if}
+      <div class="flex flex-col gap-3">
+        <h3 id="html-output-title" class="text-label text-ink-muted">{encoding ? 'Encoded' : 'Decoded'}</h3>
+        {#if output}
+          <pre
+            class="max-h-80 overflow-auto rounded-md bg-sunken px-5 py-4 font-mono text-code break-all whitespace-pre-wrap text-ink"
+            aria-labelledby="html-output-title"
+            aria-live="polite">{output}</pre>
+          <div class="flex flex-wrap items-center gap-3">
+            <CopyChip value={output}>Copy output</CopyChip>
+            <span class="text-body-sm text-ink-muted">{[...input].length} → {[...output].length} characters</span>
+          </div>
         {:else}
-          <textarea
-            bind:value={decodedText}
-            placeholder="Decoded HTML will appear here..."
-            class="code-editor h-64"
-            readonly
-          ></textarea>
-          {#if !decodedText}
-            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <p class="text-body-sm text-ink-muted">
-                Enter HTML entities above to see decoded result
-              </p>
-            </div>
-          {/if}
+          <EmptyState
+            title="Nothing to show yet"
+            text={encoding ? 'Type or paste text or HTML above — it is encoded as you type.' : 'Paste text with entities above — it is decoded as you type.'}
+          />
         {/if}
       </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Common HTML Entities Reference -->
-  <div class="tool-card">
-    <h3 class="section-title">Common HTML entities</h3>
-    <div class="overflow-x-auto">
-      <table class="w-full text-body-sm">
-        <thead>
-          <tr>
-            <th class="text-left py-2 px-3 text-label text-ink-muted">Character</th>
-            <th class="text-left py-2 px-3 text-label text-ink-muted">Entity name</th>
-            <th class="text-left py-2 px-3 text-label text-ink-muted">Entity number</th>
-            <th class="text-left py-2 px-3 text-label text-ink-muted">Description</th>
-          </tr>
-        </thead>
-        <tbody class="text-ink">
-          <tr class="odd:bg-sunken">
-            <td class="py-2 px-3 font-mono">&lt;</td>
-            <td class="py-2 px-3 font-mono text-accent-text">&amp;lt;</td>
-            <td class="py-2 px-3 font-mono">&amp;#60;</td>
-            <td class="py-2 px-3 text-ink-muted">Less than</td>
-          </tr>
-          <tr class="odd:bg-sunken">
-            <td class="py-2 px-3 font-mono">&gt;</td>
-            <td class="py-2 px-3 font-mono text-accent-text">&amp;gt;</td>
-            <td class="py-2 px-3 font-mono">&amp;#62;</td>
-            <td class="py-2 px-3 text-ink-muted">Greater than</td>
-          </tr>
-          <tr class="odd:bg-sunken">
-            <td class="py-2 px-3 font-mono">&amp;</td>
-            <td class="py-2 px-3 font-mono text-accent-text">&amp;amp;</td>
-            <td class="py-2 px-3 font-mono">&amp;#38;</td>
-            <td class="py-2 px-3 text-ink-muted">Ampersand</td>
-          </tr>
-          <tr class="odd:bg-sunken">
-            <td class="py-2 px-3 font-mono">"</td>
-            <td class="py-2 px-3 font-mono text-accent-text">&amp;quot;</td>
-            <td class="py-2 px-3 font-mono">&amp;#34;</td>
-            <td class="py-2 px-3 text-ink-muted">Quotation mark</td>
-          </tr>
-          <tr class="odd:bg-sunken">
-            <td class="py-2 px-3 font-mono">'</td>
-            <td class="py-2 px-3 font-mono text-accent-text">&amp;apos;</td>
-            <td class="py-2 px-3 font-mono">&amp;#39;</td>
-            <td class="py-2 px-3 text-ink-muted">Apostrophe</td>
-          </tr>
-          <tr class="odd:bg-sunken">
-            <td class="py-2 px-3 font-mono"> </td>
-            <td class="py-2 px-3 font-mono text-accent-text">&amp;nbsp;</td>
-            <td class="py-2 px-3 font-mono">&amp;#160;</td>
-            <td class="py-2 px-3 text-ink-muted">Non-breaking space</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+    <div class="flex flex-col gap-4">
+      <section class="flex flex-col gap-6 rounded-lg bg-card p-6" aria-labelledby="html-options-title">
+        <h2 id="html-options-title" class="text-label text-ink-muted">Options</h2>
 
-  <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-    <div class="card">
-      <div class="feature-icon">
-        <Code class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Encode HTML</h3>
-      <p class="feature-description">
-        Convert HTML tags and special characters to entities for safe display
-      </p>
-    </div>
+        <div class="flex flex-col gap-2">
+          <span class="fz-field-label" aria-hidden="true">Entity style</span>
+          <Segmented label="Entity style" options={MODES} bind:value={s.mode} />
+          <p class="text-body-sm text-ink-muted">{MODE_HELP[mode]}</p>
+        </div>
 
-    <div class="card">
-      <div class="feature-icon">
-        <FileText class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Decode HTML</h3>
-      <p class="feature-description">
-        Convert HTML entities back to readable characters
-      </p>
-    </div>
+        <Switch
+          label="Encode non-ASCII"
+          description="Turn é, —, 🎉 … into references too (named where possible)"
+          bind:checked={s.nonAscii}
+        />
+        {#if !encoding}
+          <p class="text-body-sm text-ink-muted">Options apply to encoding. Decoding understands named, decimal and hex references.</p>
+        {/if}
+      </section>
 
-    <div class="card">
-      <div class="feature-icon">
-        <Zap class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Unicode support</h3>
-      <p class="feature-description">
-        Full support for Unicode characters and special symbols
-      </p>
+      <section class="flex flex-col gap-3 rounded-lg bg-card p-6" aria-labelledby="html-ref-title">
+        <h2 id="html-ref-title" class="text-label text-ink-muted">Common entities</h2>
+        <table class="w-full text-body-sm">
+          <thead class="sr-only">
+            <tr><th scope="col">Character</th><th scope="col">Entity</th></tr>
+          </thead>
+          <tbody>
+            {#each REFERENCE as row (row.entity)}
+              <tr>
+                <td class="py-1 pr-4 text-ink">
+                  {#if row.label}<span class="text-ink-muted">{row.label}</span>{:else}<span class="font-mono">{row.char}</span>{/if}
+                </td>
+                <td class="py-1 text-right font-mono text-accent-text">{row.entity}</td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </section>
     </div>
   </div>
 </ToolLayout>

@@ -1,513 +1,291 @@
 <script lang="ts">
+  import { ArrowUpDown, Calculator, History, Trash2 } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
+  import { Button, CopyChip, IconButton, Select, TextField, type Option } from '$lib/components/ds';
   import {
-    Calculator,
-    Ruler,
-    Weight,
-    Thermometer,
-    Volume,
-    Clock,
-    Zap,
-    ArrowUpDown,
-    RotateCcw,
-    Copy,
-    History,
-    Trash2,
-  } from '@lucide/svelte';
-  import { toast } from 'svelte-sonner';
+    CATEGORIES,
+    convert,
+    formatResult,
+    getCategory,
+    getUnit,
+    inputError,
+    isCategoryId,
+    parseNumber,
+    unitLabel,
+    type CategoryId
+  } from '$lib/tools/units';
 
-  // Type definitions
-  type Category = 'length' | 'weight' | 'temperature' | 'volume' | 'time' | 'speed';
-
+  type Side = 'from' | 'to';
   interface HistoryEntry {
+    category: CategoryId;
     from: string;
     to: string;
-    category: string;
-    timestamp: Date;
+    /** Which field held the typed value, and the text exactly as typed. */
+    side: Side;
+    text: string;
   }
 
-  // Categories
-  const categories = [
-    { id: 'length', name: 'Length', icon: Ruler },
-    { id: 'weight', name: 'Weight', icon: Weight },
-    { id: 'temperature', name: 'Temperature', icon: Thermometer },
-    { id: 'volume', name: 'Volume', icon: Volume },
-    { id: 'time', name: 'Time', icon: Clock },
-    { id: 'speed', name: 'Speed', icon: Zap }
-  ];
+  const STORAGE_KEY = 'unitConverter.history';
+  const HISTORY_MAX = 10;
+  const RECORD_DELAY_MS = 1200;
 
-  // Conversion factors (relative to base units)
-  const conversionFactors = {
-    length: {
-      meter: 1,
-      kilometer: 0.001,
-      centimeter: 100,
-      millimeter: 1000,
-      mile: 0.000621371,
-      yard: 1.09361,
-      foot: 3.28084,
-      inch: 39.3701,
-      nauticalMile: 0.000539957
-    },
-    weight: {
-      kilogram: 1,
-      gram: 1000,
-      milligram: 1000000,
-      pound: 2.20462,
-      ounce: 35.274,
-      ton: 0.001,
-      stone: 0.157473
-    },
-    temperature: {
-      celsius: 'celsius',
-      fahrenheit: 'fahrenheit',
-      kelvin: 'kelvin'
-    },
-    volume: {
-      liter: 1,
-      milliliter: 1000,
-      gallon: 0.264172,
-      quart: 1.05669,
-      pint: 2.11338,
-      cup: 4.22675,
-      fluidOunce: 33.814,
-      cubicMeter: 0.001
-    },
-    time: {
-      second: 1,
-      millisecond: 1000,
-      microsecond: 1000000,
-      minute: 1 / 60,
-      hour: 1 / 3600,
-      day: 1 / 86400,
-      week: 1 / 604800,
-      month: 1 / 2592000,
-      year: 1 / 31536000
-    },
-    speed: {
-      meterPerSecond: 1,
-      kilometerPerHour: 3.6,
-      milePerHour: 2.23694,
-      knot: 1.94384,
-      footPerSecond: 3.28084,
-      mach: 0.00291545
+  function loadHistory(): HistoryEntry[] {
+    try {
+      const raw: unknown = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]');
+      if (!Array.isArray(raw)) return [];
+      return raw
+        .filter(
+          (e): e is HistoryEntry =>
+            !!e &&
+            isCategoryId(e.category) &&
+            !!getUnit(e.category, e.from) &&
+            !!getUnit(e.category, e.to) &&
+            (e.side === 'from' || e.side === 'to') &&
+            typeof e.text === 'string'
+        )
+        .slice(0, HISTORY_MAX);
+    } catch {
+      return [];
     }
-  };
+  }
 
-  const unitLabels = {
-    length: {
-      meter: 'Meter (m)',
-      kilometer: 'Kilometer (km)',
-      centimeter: 'Centimeter (cm)',
-      millimeter: 'Millimeter (mm)',
-      mile: 'Mile (mi)',
-      yard: 'Yard (yd)',
-      foot: 'Foot (ft)',
-      inch: 'Inch (in)',
-      nauticalMile: 'Nautical Mile (nm)'
-    },
-    weight: {
-      kilogram: 'Kilogram (kg)',
-      gram: 'Gram (g)',
-      milligram: 'Milligram (mg)',
-      pound: 'Pound (lb)',
-      ounce: 'Ounce (oz)',
-      ton: 'Ton (t)',
-      stone: 'Stone (st)'
-    },
-    temperature: {
-      celsius: 'Celsius (°C)',
-      fahrenheit: 'Fahrenheit (°F)',
-      kelvin: 'Kelvin (K)'
-    },
-    volume: {
-      liter: 'Liter (L)',
-      milliliter: 'Milliliter (mL)',
-      gallon: 'Gallon (gal)',
-      quart: 'Quart (qt)',
-      pint: 'Pint (pt)',
-      cup: 'Cup (cup)',
-      fluidOunce: 'Fluid Ounce (fl oz)',
-      cubicMeter: 'Cubic Meter (m³)'
-    },
-    time: {
-      second: 'Second (s)',
-      millisecond: 'Millisecond (ms)',
-      microsecond: 'Microsecond (μs)',
-      minute: 'Minute (min)',
-      hour: 'Hour (hr)',
-      day: 'Day (d)',
-      week: 'Week (wk)',
-      month: 'Month (mo)',
-      year: 'Year (yr)'
-    },
-    speed: {
-      meterPerSecond: 'Meter/Second (m/s)',
-      kilometerPerHour: 'Kilometer/Hour (km/h)',
-      milePerHour: 'Mile/Hour (mph)',
-      knot: 'Knot (kn)',
-      footPerSecond: 'Foot/Second (ft/s)',
-      mach: 'Mach'
+  function saveHistory(list: HistoryEntry[]) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    } catch {
+      /* storage blocked: history stays in memory */
     }
-  };
+  }
 
-  // State
-  let activeCategory = $state('length');
-  let fromValue = $state('1');
-  let fromUnit = $state('meter');
-  let toUnit = $state('kilometer');
-  let toValue = $state('');
-  let conversionHistory = $state<HistoryEntry[]>([]);
+  let category = $state<CategoryId>('length');
+  let fromUnit = $state('m');
+  let toUnit = $state('ft');
+  let side = $state<Side>('from');
+  let text = $state('1');
+  let history = $state<HistoryEntry[]>(loadHistory());
+  /** Only record conversions the user made, not the initial state or a restored entry. */
+  let dirty = $state(false);
 
-  // Get units for active category
-  const availableUnits = $derived(Object.keys(conversionFactors[activeCategory as Category]));
-  const unitOptions = $derived(
-    availableUnits.map(unit => ({
-      value: unit,
-      label: unitLabels[activeCategory as Category][unit as keyof (typeof unitLabels)[Category]]
-    }))
+  const cat = $derived(getCategory(category));
+  const unitOptions: Option[] = $derived(cat.units.map((u) => ({ value: u.key, label: unitLabel(u), hint: u.hint })));
+  const sym = (key: string, c: CategoryId = category) => getUnit(c, key)?.symbol ?? key;
+
+  const srcUnit = $derived(side === 'from' ? fromUnit : toUnit);
+  const dstUnit = $derived(side === 'from' ? toUnit : fromUnit);
+  const value = $derived(parseNumber(text));
+  const empty = $derived(text.trim() === '');
+  const error = $derived(empty ? undefined : inputError(value, srcUnit, category));
+  const valid = $derived(!empty && !error);
+  const result = $derived(valid ? convert(value, srcUnit, dstUnit, category) : NaN);
+
+  const fromValue = $derived(side === 'from' ? value : result);
+  const toValue = $derived(side === 'from' ? result : value);
+  const plain = (n: number) => formatResult(n, { grouping: false });
+  const fromText = $derived(side === 'from' ? text : plain(result));
+  const toText = $derived(side === 'to' ? text : plain(result));
+  const line = $derived(
+    valid ? `${formatResult(fromValue)} ${sym(fromUnit)} = ${formatResult(toValue)} ${sym(toUnit)}` : ''
   );
 
-  // Perform conversion
+  const table = $derived(
+    valid
+      ? cat.units
+          .filter((u) => u.key !== fromUnit)
+          .map((u) => ({ unit: u, value: formatResult(convert(fromValue, fromUnit, u.key, category)) }))
+      : []
+  );
+
+  // Record the current conversion once the user pauses.
   $effect(() => {
-    if (fromValue && !isNaN(parseFloat(fromValue))) {
-      const value = parseFloat(fromValue);
-      let result;
-
-      if (activeCategory === 'temperature') {
-        result = convertTemperature(value, fromUnit, toUnit);
-      } else {
-        // Convert to base unit first, then to target unit
-        const factors = conversionFactors[activeCategory as Category] as Record<string, number>;
-        const baseValue = value / factors[fromUnit];
-        result = baseValue * factors[toUnit];
-      }
-
-      toValue = result.toFixed(6).replace(/\.?0+$/, '');
-    } else {
-      toValue = '';
-    }
+    if (!dirty || !valid) return;
+    const entry: HistoryEntry = { category, from: fromUnit, to: toUnit, side, text: text.trim() };
+    const timer = setTimeout(() => record(entry), RECORD_DELAY_MS);
+    return () => clearTimeout(timer);
   });
 
-  function convertTemperature(value: number, from: string, to: string): number {
-    let celsius: number;
+  const keyOf = (e: HistoryEntry) => `${e.category}|${e.from}|${e.to}|${e.side}|${e.text}`;
 
-    // Convert to Celsius first
-    switch (from) {
-      case 'celsius':
-        celsius = value;
-        break;
-      case 'fahrenheit':
-        celsius = ((value - 32) * 5) / 9;
-        break;
-      case 'kelvin':
-        celsius = value - 273.15;
-        break;
-      default:
-        throw new Error(`Unknown temperature unit: ${from}`);
-    }
-
-    // Convert from Celsius to target
-    switch (to) {
-      case 'celsius':
-        return celsius;
-      case 'fahrenheit':
-        return (celsius * 9) / 5 + 32;
-      case 'kelvin':
-        return celsius + 273.15;
-      default:
-        throw new Error(`Unknown temperature unit: ${to}`);
-    }
+  function record(entry: HistoryEntry) {
+    const k = keyOf(entry);
+    history = [entry, ...history.filter((e) => keyOf(e) !== k)].slice(0, HISTORY_MAX);
+    saveHistory(history);
   }
 
-  function swapUnits() {
-    const temp = fromUnit;
-    fromUnit = toUnit;
-    toUnit = temp;
-
-    const tempValue = fromValue;
-    fromValue = toValue;
-    toValue = tempValue;
+  function describe(e: HistoryEntry): string {
+    const src = e.side === 'from' ? e.from : e.to;
+    const dst = e.side === 'from' ? e.to : e.from;
+    const v = parseNumber(e.text);
+    return `${formatResult(v)} ${sym(src, e.category)} → ${formatResult(convert(v, src, dst, e.category))} ${sym(dst, e.category)}`;
   }
 
-  function copyResult() {
-    if (!toValue) return;
-    navigator.clipboard.writeText(toValue).then(() => {
-      toast.success('Copied result to clipboard');
-      addToHistory();
-    });
-  }
-
-  function addToHistory() {
-    const labels = unitLabels[activeCategory as Category] as Record<string, string>;
-    const fromLabel = labels[fromUnit];
-    const toLabel = labels[toUnit];
-
-    // Avoid duplicates at the top
-    const entry = {
-      from: `${fromValue} ${fromLabel}`,
-      to: `${toValue} ${toLabel}`,
-      category: activeCategory,
-      timestamp: new Date()
-    };
-
-    if (
-      conversionHistory.length > 0 &&
-      conversionHistory[0].from === entry.from &&
-      conversionHistory[0].to === entry.to
-    ) {
-      return;
-    }
-
-    conversionHistory = [entry, ...conversionHistory.slice(0, 9)];
-  }
-
-  function loadHistoryItem(item: HistoryEntry) {
-    fromValue = item.from.split(' ')[0];
-    activeCategory = item.category;
-
-    const units = Object.keys(conversionFactors[item.category as Category]);
-    fromUnit = units[0];
-    toUnit = units[1];
+  function restore(e: HistoryEntry) {
+    category = e.category;
+    fromUnit = e.from;
+    toUnit = e.to;
+    side = e.side;
+    text = e.text;
+    dirty = false;
   }
 
   function clearHistory() {
-    conversionHistory = [];
-    toast.success('Cleared history');
+    history = [];
+    saveHistory(history);
   }
 
-  function reset() {
-    fromValue = '1';
-    toValue = '';
-    const units = Object.keys(conversionFactors[activeCategory as Category]);
-    fromUnit = units[0];
-    toUnit = units[1];
-    toast.success('Reset converter');
+  function pickCategory(id: CategoryId) {
+    if (id === category) return;
+    category = id;
+    [fromUnit, toUnit] = getCategory(id).defaults;
+  }
+
+  function edit(s: Side, v: string) {
+    side = s;
+    text = v;
+    dirty = true;
+  }
+
+  // Swap units only; the typed value stays exactly as entered.
+  function swap() {
+    [fromUnit, toUnit] = [toUnit, fromUnit];
+    dirty = true;
   }
 </script>
 
 <ToolLayout
   title="Unit Converter"
-  description="Convert between different units of measurement with precision."
+  description="Convert length, mass, volume, area, temperature and more using exact official definitions."
   icon={Calculator}
   color="warning"
 >
-  <!-- Toolbar -->
-  <div class="flex flex-wrap gap-2">
-    <button class="btn btn-secondary" onclick={reset}>
-      <RotateCcw class="w-4 h-4" />
-      Reset
-    </button>
-    <button class="btn btn-ghost" onclick={clearHistory}>
-      <Trash2 class="w-4 h-4" />
-      Clear history
-    </button>
-  </div>
-
-  <!-- Category Selection -->
-  <div class="flex gap-2 overflow-x-auto pb-2">
-    {#each categories as category (category.id)}
-      <button
-        onclick={() => {
-          activeCategory = category.id;
-          reset();
-        }}
-        class="preset-btn inline-flex shrink-0 items-center gap-2 {activeCategory === category.id ? 'active' : ''}"
-      >
-        <category.icon class="w-4 h-4" />
-        <span>{category.name}</span>
-      </button>
-    {/each}
-  </div>
-
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-    <!-- Main Converter -->
-    <div class="lg:col-span-2 space-y-4">
-      <!-- Converter Card -->
-      <div class="tool-card">
-        <h2 class="section-title flex items-center gap-2">
-          <Calculator class="w-5 h-5 text-accent-text" />
-          Convert {categories.find(c => c.id === activeCategory)?.name.toLowerCase()}
-        </h2>
-
-        <div class="space-y-6">
-          <!-- From Unit -->
-          <div>
-            <label for="from-value-input" class="label">From</label>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <input
-                id="from-value-input"
-                type="number" inputmode="decimal"
-                bind:value={fromValue}
-                placeholder="Enter value"
-                class="tool-input font-mono tabular-nums text-lg"
-              />
-              <select bind:value={fromUnit} class="tool-select">
-                {#each unitOptions as option (option.value)}
-                  <option value={option.value}>{option.label}</option>
-                {/each}
-              </select>
-            </div>
-          </div>
-
-          <!-- Swap Button -->
-          <div class="flex justify-center">
-            <button
-              class="btn-icon bg-control hover:bg-control-hover text-ink"
-              onclick={swapUnits}
-              aria-label="Swap units"
-              title="Swap units"
+  <div class="grid items-start gap-4 lg:grid-cols-[3fr_2fr]">
+    <div class="flex flex-col gap-4">
+      <section class="flex flex-col gap-6 rounded-lg bg-card p-6" aria-labelledby="uc-title">
+        <h2 id="uc-title" class="sr-only">Convert</h2>
+        <div class="flex flex-wrap gap-2" role="group" aria-label="Category">
+          {#each CATEGORIES as c (c.id)}
+            <Button
+              size="sm"
+              variant={c.id === category ? 'primary' : 'secondary'}
+              aria-pressed={c.id === category}
+              onclick={() => pickCategory(c.id)}
             >
-              <ArrowUpDown class="w-5 h-5" />
-            </button>
-          </div>
+              {c.name}
+            </Button>
+          {/each}
+        </div>
 
-          <!-- To Unit -->
-          <div>
-            <label for="to-value-input" class="label">To</label>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div class="relative">
-                <input
-                  id="to-value-input"
-                  type="text"
-                  bind:value={toValue}
-                  readonly
-                  placeholder="Result"
-                  class="tool-input font-display text-xl font-bold tabular-nums pr-14"
-                />
+        <div class="grid gap-3 sm:grid-cols-2">
+          <TextField
+            label="From value"
+            value={fromText}
+            oninput={(e) => edit('from', e.currentTarget.value)}
+            inputmode="decimal"
+            autocomplete="off"
+            hint={side === 'from' && error ? undefined : 'Comma or dot for decimals.'}
+            error={side === 'from' ? error : undefined}
+            class="tabular-nums"
+          />
+          <Select label="From unit" options={unitOptions} bind:value={fromUnit} onchange={() => (dirty = true)} />
+        </div>
+
+        <div class="flex justify-center">
+          <IconButton label="Swap units" onclick={swap}><ArrowUpDown /></IconButton>
+        </div>
+
+        <div class="grid gap-3 sm:grid-cols-2">
+          <TextField
+            label="To value"
+            value={toText}
+            oninput={(e) => edit('to', e.currentTarget.value)}
+            inputmode="decimal"
+            autocomplete="off"
+            error={side === 'to' ? error : undefined}
+            class="tabular-nums"
+          />
+          <Select label="To unit" options={unitOptions} bind:value={toUnit} onchange={() => (dirty = true)} />
+        </div>
+
+        <div class="flex flex-col gap-3 rounded-md bg-control px-4 py-4" aria-live="polite">
+          {#if valid}
+            <p class="font-mono text-body-lg break-words tabular-nums text-ink">{line}</p>
+            <div class="flex flex-wrap gap-2">
+              <CopyChip value={line}>Copy line</CopyChip>
+              <CopyChip value={plain(toValue)} />
+            </div>
+          {:else}
+            <p class="text-body text-ink-muted">
+              {error ? `▼ ${error}` : 'Enter a value to convert.'}
+            </p>
+          {/if}
+        </div>
+      </section>
+
+      {#if table.length}
+        <section class="flex flex-col gap-3 rounded-lg bg-card p-6" aria-labelledby="uc-table-title">
+          <h2 id="uc-table-title" class="text-label text-ink-muted">
+            {formatResult(fromValue)} {sym(fromUnit)} in other units
+          </h2>
+          <ul class="flex flex-col gap-1">
+            {#each table as row (row.unit.key)}
+              <li>
                 <button
-                  onclick={copyResult}
-                  class="btn-icon absolute right-1 top-1/2 -translate-y-1/2"
-                  title="Copy result"
-                  aria-label="Copy result"
+                  type="button"
+                  class="flex w-full cursor-pointer items-baseline justify-between gap-4 rounded-md px-3 py-2 text-left transition-colors duration-fast hover:bg-control {row
+                    .unit.key === toUnit
+                    ? 'bg-control'
+                    : ''}"
+                  aria-pressed={row.unit.key === toUnit}
+                  aria-label="Convert to {row.unit.name}: {row.value} {row.unit.symbol}"
+                  onclick={() => {
+                    toUnit = row.unit.key;
+                    dirty = true;
+                  }}
                 >
-                  <Copy class="w-4 h-4" />
+                  <span class="text-body-sm text-ink-muted">
+                    {row.unit.name}{#if row.unit.hint}<span class="text-ink-muted"> · {row.unit.hint}</span>{/if}
+                  </span>
+                  <span class="font-mono text-body-sm break-all text-right tabular-nums text-ink">
+                    {row.value} {row.unit.symbol}
+                  </span>
                 </button>
-              </div>
-              <select bind:value={toUnit} class="tool-select">
-                {#each unitOptions as option (option.value)}
-                  <option value={option.value}>{option.label}</option>
-                {/each}
-              </select>
-            </div>
-          </div>
-
-          <!-- Formula Information (for temperature) -->
-          {#if activeCategory === 'temperature'}
-            <div class="info-card">
-              <h3 class="text-label text-ink-muted mb-2">Conversion formulas</h3>
-              <div class="space-y-1 font-mono text-code text-ink">
-                <p>°C to °F: (°C × 9/5) + 32</p>
-                <p>°F to °C: (°F - 32) × 5/9</p>
-                <p>°C to K: °C + 273.15</p>
-                <p>K to °C: K - 273.15</p>
-              </div>
-            </div>
-          {/if}
-        </div>
-      </div>
-
-      <!-- Quick Reference -->
-      <div class="tool-card">
-        <h3 class="section-title">Quick reference</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 font-mono text-code text-ink">
-          {#if activeCategory === 'length'}
-            <div class="result-row"><p>1 inch = 2.54 cm</p></div>
-            <div class="result-row"><p>1 foot = 12 inches</p></div>
-            <div class="result-row"><p>1 mile = 1.609 km</p></div>
-            <div class="result-row"><p>1 yard = 0.914 m</p></div>
-          {:else if activeCategory === 'weight'}
-            <div class="result-row"><p>1 kg = 2.205 lbs</p></div>
-            <div class="result-row"><p>1 lb = 16 oz</p></div>
-            <div class="result-row"><p>1 ton = 1000 kg</p></div>
-            <div class="result-row"><p>1 stone = 14 lbs</p></div>
-          {:else if activeCategory === 'volume'}
-            <div class="result-row"><p>1 gallon = 3.785 L</p></div>
-            <div class="result-row"><p>1 L = 1000 mL</p></div>
-            <div class="result-row"><p>1 cup = 236.6 mL</p></div>
-            <div class="result-row"><p>1 quart = 2 pints</p></div>
-          {:else if activeCategory === 'time'}
-            <div class="result-row"><p>1 minute = 60 seconds</p></div>
-            <div class="result-row"><p>1 hour = 60 minutes</p></div>
-            <div class="result-row"><p>1 day = 24 hours</p></div>
-            <div class="result-row"><p>1 week = 7 days</p></div>
-          {:else if activeCategory === 'speed'}
-            <div class="result-row"><p>100 km/h = 27.78 m/s</p></div>
-            <div class="result-row"><p>60 mph = 96.56 km/h</p></div>
-            <div class="result-row"><p>1 knot = 1.852 km/h</p></div>
-            <div class="result-row"><p>Mach 1 = 343 m/s</p></div>
-          {/if}
-        </div>
-      </div>
+              </li>
+            {/each}
+          </ul>
+        </section>
+      {/if}
     </div>
 
-    <!-- Sidebar -->
-    <div class="space-y-4">
-      <!-- Conversion History -->
-      <div class="tool-card sticky">
-        <div class="card-header">
-          <h3 class="section-title mb-0">History</h3>
-          {#if conversionHistory.length > 0}
-            <button class="btn btn-sm btn-ghost">Clear</button>
-          {/if}
-        </div>
-
-        {#if conversionHistory.length === 0}
-          <div class="flex flex-col items-center justify-center py-8 text-ink-muted">
-            <History class="w-8 h-8 mb-2 opacity-50" />
-            <p class="text-body-sm">No conversions yet</p>
-          </div>
-        {:else}
-          <div class="space-y-2 max-h-[400px] overflow-y-auto">
-            {#each conversionHistory as item (item.timestamp)}
-              <button
-                onclick={() => loadHistoryItem(item)}
-                class="w-full text-left rounded-md bg-control px-4 py-3 transition-colors hover:bg-control-hover"
-              >
-                <div class="font-mono text-code text-ink">
-                  {item.from}
-                </div>
-                <div class="font-mono text-code text-ink-muted">
-                  → {item.to}
-                </div>
-              </button>
-            {/each}
-          </div>
+    <section class="flex flex-col gap-3 rounded-lg bg-card p-6 lg:sticky lg:top-6" aria-labelledby="uc-history-title">
+      <div class="flex items-center justify-between gap-3">
+        <h2 id="uc-history-title" class="text-label text-ink-muted">History</h2>
+        {#if history.length}
+          <Button variant="ghost" size="sm" onclick={clearHistory}>
+            {#snippet icon()}<Trash2 class="size-4" />{/snippet}
+            Clear
+          </Button>
         {/if}
       </div>
-    </div>
-  </div>
-
-  <!-- Features Section -->
-  <div class="features-grid mt-4">
-    <div class="card">
-      <div class="feature-icon">
-        <Calculator class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Precision</h3>
-      <p class="feature-description">
-        High-precision calculations for accurate results every time
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon">
-        <History class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">History</h3>
-      <p class="feature-description">
-        Automatically saves your recent conversions for quick reference
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon">
-        <Zap class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Fast</h3>
-      <p class="feature-description">
-        Instant conversion as you type with no page reloads
-      </p>
-    </div>
+      {#if history.length === 0}
+        <div class="flex flex-col items-center gap-2 py-6 text-center text-ink-muted">
+          <History class="size-6" aria-hidden="true" />
+          <p class="text-body-sm">Your recent conversions are saved here automatically.</p>
+        </div>
+      {:else}
+        <ul class="flex flex-col gap-2">
+          {#each history as e (keyOf(e))}
+            <li>
+              <button
+                type="button"
+                class="w-full cursor-pointer rounded-md bg-control px-4 py-3 text-left transition-colors duration-fast hover:bg-control-hover"
+                onclick={() => restore(e)}
+              >
+                <span class="block text-label text-ink-muted">{getCategory(e.category).name}</span>
+                <span class="block font-mono text-code break-words tabular-nums text-ink">{describe(e)}</span>
+              </button>
+            </li>
+          {/each}
+        </ul>
+      {/if}
+    </section>
   </div>
 </ToolLayout>

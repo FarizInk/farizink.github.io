@@ -1,345 +1,244 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
+  import { Link, Plus, X } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
-  import { Link, Globe, FileText, Copy, Zap, AlertCircle } from '@lucide/svelte';
+  import { Button, CopyChip, EmptyState, IconButton, Switch, TextField } from '$lib/components/ds';
+  import { buildUrl, parseUrl } from '$lib/tools/url';
 
-  let urlInput = $state('');
-  let parsedUrl = $state<{
-    protocol: string;
-    hostname: string;
-    port: string;
-    pathname: string;
-    search: string;
-    hash: string;
-    origin: string;
-    host: string;
-    searchParams: { key: string; value: string }[];
-  } | null>(null);
-  let error = $state('');
+  const SAMPLE =
+    'https://al%20ice:s3cr%40t@shop.example.com:8443/docs/my%20file/index.html?q=hello%20world&tag=a+b&tag=c#section-2';
 
-  function parseUrl() {
-    if (!urlInput.trim()) {
-      error = 'Please enter a URL to parse';
-      parsedUrl = null;
-      return;
-    }
-
-    try {
-      // Add protocol if missing
-      let urlToParse = urlInput.trim();
-      if (!urlToParse.match(/^https?:\/\//) && !urlToParse.match(/^ftp:\/\//)) {
-        urlToParse = 'https://' + urlToParse;
-      }
-
-      const url = new URL(urlToParse);
-
-      const searchParams: { key: string; value: string }[] = [];
-      url.searchParams.forEach((value, key) => {
-        searchParams.push({ key, value });
-      });
-
-      parsedUrl = {
-        protocol: url.protocol,
-        hostname: url.hostname,
-        port: url.port || (url.protocol === 'https:' ? '443' : '80'),
-        pathname: url.pathname,
-        search: url.search,
-        hash: url.hash,
-        origin: url.origin,
-        host: url.host,
-        searchParams
-      };
-
-      error = '';
-    } catch {
-      error = 'Invalid URL format. Please enter a valid URL.';
-      parsedUrl = null;
-    }
+  interface Row {
+    id: number;
+    key: string;
+    value: string;
+    /** Source spelling + decoded original, for parsed rows only (hidden once the row is edited). */
+    raw?: string;
+    origKey?: string;
+    origValue?: string;
   }
 
-  function loadSampleUrl() {
-    urlInput =
-      'https://example.com:8080/path/to/page?query=search&category=tools&sort=popular#section-1';
-    parseUrl();
+  let input = $state('');
+  let showPassword = $state(false);
+
+  const result = $derived(parseUrl(input));
+  const url = $derived(result.kind === 'ok' ? result.url : null);
+
+  // Editable params: reseeded from the parse whenever the URL changes, then edited freely.
+  let nextId = 0;
+  let rows = $state<Row[]>([]);
+  $effect(() => {
+    const params = url?.params ?? [];
+    untrack(() => {
+      rows = params.map(p => ({
+        id: nextId++,
+        key: p.key,
+        value: p.value,
+        raw: p.rawKey !== p.key || p.rawValue !== p.value ? `${p.rawKey}${p.rawValue ? `=${p.rawValue}` : ''}` : undefined,
+        origKey: p.key,
+        origValue: p.value
+      }));
+    });
+  });
+
+  const rebuilt = $derived(url ? buildUrl(url, rows) : '');
+  const changed = $derived(!!url && rebuilt !== url.href);
+
+  interface Detail {
+    label: string;
+    value: string;
+    /** Shown instead of `value` (e.g. masked password, "443 (default)"). */
+    display?: string;
+    note?: string;
+    secret?: boolean;
   }
 
-  function copyToClipboard(text: string) {
-    navigator.clipboard.writeText(text);
+  const details = $derived.by((): Detail[] => {
+    if (!url) return [];
+    const port = url.effectivePort
+      ? `${url.effectivePort}${url.portImplicit ? ' (default)' : ''}`
+      : '';
+    const raw = (decoded: string, rawText: string) => (rawText !== decoded ? `raw: ${rawText}` : undefined);
+    return [
+      { label: 'href', value: url.href },
+      {
+        label: 'origin',
+        value: url.origin ?? '',
+        note: url.origin ? undefined : 'Opaque: only special schemes (http, https, ws, wss, ftp) have an origin.'
+      },
+      { label: 'protocol', value: url.protocol, note: url.assumedScheme ? 'Assumed: the input had no scheme.' : undefined },
+      { label: 'username', value: url.username, note: raw(url.username, url.rawUsername) },
+      {
+        label: 'password',
+        value: url.password,
+        secret: true,
+        display: url.password && !showPassword ? '•'.repeat(Math.min(url.password.length, 12)) : undefined,
+        note: showPassword ? raw(url.password, url.rawPassword) : undefined
+      },
+      { label: 'host', value: url.host },
+      {
+        label: 'hostname',
+        value: url.hostname,
+        note: url.hostnameUnicode ? `Unicode: ${url.hostnameUnicode}` : undefined
+      },
+      {
+        label: 'port',
+        value: url.effectivePort,
+        display: port,
+        note: url.portImplicit ? `Not in the URL; the ${url.scheme} default.` : undefined
+      },
+      { label: 'pathname', value: url.pathname },
+      { label: 'search', value: url.search },
+      { label: 'hash', value: url.hash }
+    ];
+  });
+
+  function loadSample() {
+    input = SAMPLE;
   }
 
-  function clearAll() {
-    urlInput = '';
-    parsedUrl = null;
-    error = '';
+  function addRow() {
+    rows.push({ id: nextId++, key: '', value: '' });
+  }
+
+  function removeRow(id: number) {
+    rows = rows.filter(r => r.id !== id);
+  }
+
+  function useRebuilt() {
+    input = rebuilt;
   }
 </script>
 
 <ToolLayout
   title="URL Parser"
-  description="Extract and analyze URL components: protocol, domain, path, query parameters."
+  description="Inspect and edit any URL live: scheme, credentials, host, port, path, query parameters and fragment."
   icon={Link}
   color="warning"
 >
-  <!-- Input Section -->
-  <div class="tool-card">
-    <h2 class="section-title">Enter URL</h2>
-
-    <div class="flex flex-col sm:flex-row gap-3 mb-4">
-      <input
-        type="text"
-        bind:value={urlInput}
-        placeholder="https://example.com/path?query=value#section"
-        class="tool-input flex-1"
-        onkeydown={e => e.key === 'Enter' && parseUrl()}
-      />
-      <button class="btn btn-primary" onclick={parseUrl}>
-        Parse URL
-      </button>
-    </div>
-
+  <section class="flex min-w-0 flex-col gap-4 rounded-lg bg-card p-6" aria-label="Input">
+    <TextField
+      label="URL"
+      bind:value={input}
+      mono
+      type="text"
+      inputmode="url"
+      placeholder="https://example.com/path?query=value#section"
+      spellcheck={false}
+      autocomplete="off"
+      autocapitalize="off"
+      error={result.kind === 'error' ? result.error : undefined}
+      hint={url?.assumedScheme
+        ? `No scheme given, so it was read as ${url.protocol}//…`
+        : 'Parsed as you type with the browser’s URL parser. Any scheme works: ws:, mailto:, postgres: …'}
+    />
     <div class="flex flex-wrap gap-2">
-      <button class="btn btn-secondary btn-sm" onclick={loadSampleUrl}>
-        Load sample URL
-      </button>
-      <button class="btn btn-ghost btn-sm" onclick={clearAll}>
-        Clear
-      </button>
+      <Button variant="secondary" size="sm" onclick={loadSample}>Load sample</Button>
+      <Button variant="ghost" size="sm" onclick={() => (input = '')} disabled={!input}>Clear</Button>
     </div>
-  </div>
+  </section>
 
-  <!-- Error Display -->
-  {#if error}
-    <div class="status-error flex items-center gap-2 p-4 rounded-md" role="alert">
-      <AlertCircle class="w-5 h-5 shrink-0" />
-      <p class="text-body-sm">Error: {error}</p>
-    </div>
+  {#if result.kind === 'empty'}
+    <section class="rounded-lg bg-card" aria-label="Result">
+      <EmptyState title="Nothing to parse yet" text="Type or paste a URL above, or load a sample with credentials, a port, an encoded path and repeated parameters.">
+        {#snippet actions()}
+          <Button variant="secondary" size="sm" onclick={loadSample}>Load sample</Button>
+        {/snippet}
+      </EmptyState>
+    </section>
+  {:else if url}
+    <section class="flex min-w-0 flex-col gap-3 rounded-lg bg-card p-6" aria-labelledby="url-parts-title">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="url-parts-title" class="m-0 text-title">Components</h2>
+        {#if url.password}
+          <Switch label="Show password" bind:checked={showPassword} />
+        {/if}
+      </div>
+      <dl class="m-0 flex flex-col gap-2">
+        {#each details as d (d.label)}
+          <div class="flex min-w-0 items-center gap-3 rounded-md bg-control py-3 pr-3 pl-4">
+            <div class="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-4">
+              <dt class="shrink-0 font-mono text-label text-ink-muted sm:w-24">{d.label}</dt>
+              <dd class="m-0 flex min-w-0 flex-1 flex-col gap-1">
+                {#if d.value}
+                  <code class="font-mono text-code break-all text-ink">{d.display ?? d.value}</code>
+                {:else}
+                  <span class="text-body-sm text-ink-muted">(none)</span>
+                {/if}
+                {#if d.label === 'pathname' && url.pathSegments.length > 1}
+                  <ol class="m-0 flex list-none flex-wrap gap-1.5 p-0" aria-label="Decoded path segments">
+                    {#each url.pathSegments as seg, i (i)}
+                      <li class="rounded-pill bg-sunken px-2.5 py-0.5 font-mono text-label break-all text-ink">
+                        <span class="text-ink-muted">{i + 1}</span> {seg || '(empty)'}
+                      </li>
+                    {/each}
+                  </ol>
+                {:else if d.label === 'pathname' && url.pathSegments.length === 1 && url.pathSegments[0] !== url.pathname.replace(/^\//, '')}
+                  <span class="font-mono text-label break-all text-ink-muted">decoded: {url.pathSegments[0]}</span>
+                {/if}
+                {#if d.note}<span class="font-mono text-label break-all text-ink-muted">{d.note}</span>{/if}
+              </dd>
+            </div>
+            {#if d.value}
+              <div class="shrink-0">
+                <CopyChip value={d.value}><span class="sr-only">Copy {d.label}</span></CopyChip>
+              </div>
+            {/if}
+          </div>
+        {/each}
+      </dl>
+    </section>
+
+    <section class="flex min-w-0 flex-col gap-4 rounded-lg bg-card p-6" aria-labelledby="url-params-title">
+      <div class="flex flex-wrap items-baseline justify-between gap-3">
+        <h2 id="url-params-title" class="m-0 text-title">Query parameters</h2>
+        <span class="font-mono text-label text-ink-muted">{rows.length} {rows.length === 1 ? 'row' : 'rows'} · decoded</span>
+      </div>
+
+      {#if rows.length}
+        <ol class="m-0 flex list-none flex-col gap-2 p-0">
+          {#each rows as row, i (row.id)}
+            <li class="flex min-w-0 items-start gap-2 rounded-md bg-sunken p-3">
+              <div class="grid min-w-0 flex-1 gap-2 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+                <TextField mono bind:value={row.key} placeholder="key" aria-label="Parameter {i + 1} key" spellcheck={false} autocomplete="off" autocapitalize="off" />
+                <TextField mono bind:value={row.value} placeholder="value" aria-label="Parameter {i + 1} value" spellcheck={false} autocomplete="off" autocapitalize="off" />
+                {#if row.raw && row.key === row.origKey && row.value === row.origValue}
+                  <p class="m-0 font-mono text-label break-all text-ink-muted sm:col-span-2">raw: {row.raw}</p>
+                {/if}
+              </div>
+              <div class="shrink-0 pt-0.5">
+                <IconButton label="Remove parameter {i + 1}{row.key ? ` (${row.key})` : ''}" onclick={() => removeRow(row.id)}>
+                  <X aria-hidden="true" />
+                </IconButton>
+              </div>
+            </li>
+          {/each}
+        </ol>
+      {:else}
+        <p class="m-0 text-body-sm text-ink-muted">This URL has no query string. Add a parameter to build one.</p>
+      {/if}
+
+      <div>
+        <Button variant="secondary" size="sm" onclick={addRow}>
+          {#snippet icon()}<Plus class="size-4" aria-hidden="true" />{/snippet}
+          Add parameter
+        </Button>
+      </div>
+
+      <div class="flex min-w-0 flex-col gap-3 rounded-md bg-sunken p-4" aria-live="polite">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h3 class="m-0 font-mono text-label text-ink-muted">
+            Rebuilt URL{#if changed}<span class="text-accent-text"> · edited</span>{/if}
+          </h3>
+          <div class="flex flex-wrap gap-2">
+            {#if changed}
+              <Button variant="ghost" size="sm" onclick={useRebuilt}>Use as input</Button>
+            {/if}
+            <CopyChip value={rebuilt}>Copy URL</CopyChip>
+          </div>
+        </div>
+        <code class="font-mono text-code break-all text-ink">{rebuilt}</code>
+      </div>
+    </section>
   {/if}
-
-  <!-- Parsed URL Results -->
-  {#if parsedUrl}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <!-- Basic components -->
-      <div class="tool-card">
-        <h3 class="section-title">Basic components</h3>
-
-        <div class="space-y-3">
-          <div class="result-row gap-3">
-            <span class="result-label shrink-0">Protocol</span>
-            <div class="flex items-center gap-2 min-w-0">
-              <code class="font-mono text-code text-ink">{parsedUrl.protocol}</code>
-              <button
-                onclick={() => parsedUrl && copyToClipboard(parsedUrl.protocol)}
-                class="btn-icon w-8 h-8 min-w-8"
-              >
-                <Copy class="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          <div class="result-row gap-3">
-            <span class="result-label shrink-0">Hostname</span>
-            <div class="flex items-center gap-2 min-w-0">
-              <code class="font-mono text-code text-ink">{parsedUrl.hostname}</code>
-              <button
-                onclick={() => parsedUrl && copyToClipboard(parsedUrl.hostname)}
-                class="btn-icon w-8 h-8 min-w-8"
-              >
-                <Copy class="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          <div class="result-row gap-3">
-            <span class="result-label shrink-0">Port</span>
-            <div class="flex items-center gap-2 min-w-0">
-              <code class="font-mono text-code text-ink">{parsedUrl.port}</code>
-              <button
-                onclick={() => parsedUrl && copyToClipboard(parsedUrl.port)}
-                class="btn-icon w-8 h-8 min-w-8"
-              >
-                <Copy class="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          <div class="result-row gap-3">
-            <span class="result-label shrink-0">Path</span>
-            <div class="flex items-center gap-2 min-w-0">
-              <code class="font-mono text-code text-ink truncate max-w-xs"
-                >{parsedUrl.pathname}</code
-              >
-              <button
-                onclick={() => parsedUrl && copyToClipboard(parsedUrl.pathname)}
-                class="btn-icon w-8 h-8 min-w-8"
-              >
-                <Copy class="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          <div class="result-row gap-3">
-            <span class="result-label shrink-0">Hash</span>
-            <div class="flex items-center gap-2 min-w-0">
-              <code class="font-mono text-code text-ink truncate max-w-xs"
-                >{parsedUrl.hash || '(none)'}</code
-              >
-              <button
-                onclick={() => parsedUrl && copyToClipboard(parsedUrl.hash || '')}
-                class="btn-icon w-8 h-8 min-w-8"
-              >
-                <Copy class="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Complete Components -->
-      <div class="tool-card">
-        <h3 class="section-title">Complete components</h3>
-
-        <div class="space-y-3">
-          <div class="result-row gap-3">
-            <span class="result-label shrink-0">Origin</span>
-            <div class="flex items-center gap-2 min-w-0">
-              <code class="font-mono text-code text-ink truncate max-w-xs"
-                >{parsedUrl.origin}</code
-              >
-              <button
-                onclick={() => parsedUrl && copyToClipboard(parsedUrl.origin)}
-                class="btn-icon w-8 h-8 min-w-8"
-              >
-                <Copy class="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          <div class="result-row gap-3">
-            <span class="result-label shrink-0">Host</span>
-            <div class="flex items-center gap-2 min-w-0">
-              <code class="font-mono text-code text-ink truncate max-w-xs"
-                >{parsedUrl.host}</code
-              >
-              <button
-                onclick={() => parsedUrl && copyToClipboard(parsedUrl.host)}
-                class="btn-icon w-8 h-8 min-w-8"
-              >
-                <Copy class="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          <div class="result-row gap-3">
-            <span class="result-label shrink-0">Search query</span>
-            <div class="flex items-center gap-2 min-w-0">
-              <code class="font-mono text-code text-ink truncate max-w-xs"
-                >{parsedUrl.search || '(none)'}</code
-              >
-              <button
-                onclick={() => parsedUrl && copyToClipboard(parsedUrl.search || '')}
-                class="btn-icon w-8 h-8 min-w-8"
-              >
-                <Copy class="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Query Parameters -->
-    {#if parsedUrl.searchParams.length > 0}
-      <div class="tool-card">
-        <div class="card-header">
-          <h3 class="section-title mb-0">Query parameters</h3>
-          <span class="text-count"
-            >{parsedUrl.searchParams.length} parameters</span
-          >
-        </div>
-
-        <div class="overflow-x-auto">
-          <table class="w-full border-separate border-spacing-y-1">
-            <thead>
-              <tr>
-                <th class="text-left py-2 px-3 text-label text-ink-muted"
-                  >Parameter</th
-                >
-                <th class="text-left py-2 px-3 text-label text-ink-muted"
-                  >Value</th
-                >
-                <th
-                  class="text-center py-2 px-3 text-label text-ink-muted"
-                  >Actions</th
-                >
-              </tr>
-            </thead>
-            <tbody>
-              {#each parsedUrl.searchParams as param, index (param.key + index)}
-                <tr class="bg-control [&>td:first-child]:rounded-l-md [&>td:last-child]:rounded-r-md">
-                  <td class="py-2 px-3">
-                    <code class="font-mono text-code text-ink">{param.key}</code>
-                  </td>
-                  <td class="py-2 px-3">
-                    <code class="font-mono text-code text-ink truncate max-w-xs"
-                      >{param.value}</code
-                    >
-                  </td>
-                  <td class="py-2 px-3 text-center">
-                    <div class="flex justify-center gap-2">
-                      <button
-                        onclick={() => copyToClipboard(param.key)}
-                        class="btn-icon w-8 h-8 min-w-8"
-                        title="Copy parameter name"
-                      >
-                        <Copy class="w-4 h-4" />
-                      </button>
-                      <button
-                        onclick={() => copyToClipboard(param.value)}
-                        class="btn-icon w-8 h-8 min-w-8"
-                        title="Copy parameter value"
-                      >
-                        <Copy class="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    {/if}
-  {/if}
-
-  <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <div class="card">
-      <div class="feature-icon">
-        <Globe class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Extract domain</h3>
-      <p class="feature-description">
-        Extract domain, subdomain, and port information from any URL
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon">
-        <FileText class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Path analysis</h3>
-      <p class="feature-description">
-        Analyze URL paths, query parameters, and hash fragments
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon">
-        <Zap class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Query parameters</h3>
-      <p class="feature-description">
-        Parse and extract all query parameters with their values
-      </p>
-    </div>
-  </div>
 </ToolLayout>

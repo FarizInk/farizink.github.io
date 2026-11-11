@@ -1,98 +1,98 @@
 <script lang="ts">
+  import { ArrowUpDown, Link } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
-  import { Link, Shield, Zap, CreditCard, Copy } from '@lucide/svelte';
+  import { CopyChip, EmptyState, IconButton, Segmented, Switch, Textarea } from '$lib/components/ds';
+  import {
+    decodeUrl,
+    decodeUrlLines,
+    encodeUrl,
+    encodeUrlLines,
+    isUrlMode,
+    looksEncoded,
+    type UrlMode,
+    type UrlResult
+  } from '$lib/tools/urlencode';
 
-  let inputText = $state('');
-  let encodedText = $state('');
-  let decodedText = $state('');
-  let batchInput = $state('');
-  let batchResults = $state<Array<{ original: string; encoded: string; decoded: string }>>([]);
-  let copiedText = $state('');
-  let activeTab = $state<'single' | 'batch'>('single');
+  interface Settings {
+    direction: string; // 'encode' | 'decode'
+    mode: string; // UrlMode
+    batch: boolean;
+  }
 
-  function encodeUrl() {
+  const STORAGE_KEY = 'urlEncoder.options';
+  const DEFAULTS: Settings = { direction: 'encode', mode: 'component', batch: false };
+
+  const DIRECTIONS = [
+    { value: 'encode', label: 'Encode' },
+    { value: 'decode', label: 'Decode' }
+  ];
+
+  const MODES = [
+    { value: 'component', label: 'Component' },
+    { value: 'uri', label: 'Full URL' },
+    { value: 'form', label: 'Form' }
+  ];
+
+  const MODE_HELP: Record<UrlMode, string> = {
+    component: 'encodeURIComponent: for one query value or path segment. Escapes / ? & = # too.',
+    uri: 'encodeURI: for a whole URL. Keeps : / ? # & = so the link still works; escapes spaces and non-ASCII.',
+    form: 'application/x-www-form-urlencoded (HTML forms, URLSearchParams): spaces become +, and + decodes back to a space.'
+  };
+
+  function loadSettings(): Settings {
     try {
-      encodedText = encodeURIComponent(inputText);
-      // Auto decode to show round-trip
-      decodedText = decodeURIComponent(encodedText);
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return { ...DEFAULTS };
+      const saved = JSON.parse(raw) as Partial<Record<keyof Settings, unknown>>;
+      const s: Settings = { ...DEFAULTS };
+      if (saved.direction === 'encode' || saved.direction === 'decode') s.direction = saved.direction;
+      if (isUrlMode(saved.mode)) s.mode = saved.mode;
+      if (typeof saved.batch === 'boolean') s.batch = saved.batch;
+      return s;
     } catch {
-      encodedText = '';
-      decodedText = '';
+      return { ...DEFAULTS };
     }
   }
 
-  function decodeUrl() {
-    try {
-      decodedText = decodeURIComponent(inputText);
-      // Auto encode to show round-trip
-      encodedText = encodeURIComponent(decodedText);
-    } catch {
-      decodedText = 'Error: Invalid URL encoding';
-      encodedText = '';
-    }
-  }
+  let s = $state<Settings>(loadSettings());
+  let input = $state('');
 
-  function encodeBatch() {
-    try {
-      const lines = batchInput.split('\n').filter(line => line.trim());
-      batchResults = lines.map(line => {
-        try {
-          const encoded = encodeURIComponent(line);
-          const decoded = decodeURIComponent(encoded);
-          return { original: line, encoded, decoded };
-        } catch {
-          return {
-            original: line,
-            encoded: 'Error: Invalid characters',
-            decoded: 'Error: Invalid characters'
-          };
-        }
-      });
-    } catch {
-      batchResults = [];
-    }
-  }
-
-  function clearAll() {
-    inputText = '';
-    encodedText = '';
-    decodedText = '';
-    batchInput = '';
-    batchResults = [];
-  }
-
-  function copyToClipboard(text: string, format: string) {
-    navigator.clipboard.writeText(text);
-    copiedText = format;
-    setTimeout(() => {
-      copiedText = '';
-    }, 2000);
-  }
-
-  function copyBatchResults() {
-    const results = batchResults
-      .map(
-        result =>
-          `Original: ${result.original}\nEncoded: ${result.encoded}\nDecoded: ${result.decoded}\n`
-      )
-      .join('\n');
-    copyToClipboard(results, 'batch');
-  }
-
-  function loadSampleUrls() {
-    batchInput = `https://example.com/search?q=hello world&category=web development
-https://test.com/path/to/file?name=John Doe&age=30&city=New York
-https://api.example.com/users?filter=name eq "John Smith"&sort=created_at desc
-https://site.com/page?param=value with spaces&another=special!@#$%^&*()chars
-https://demo.com/search?query=测试&lang=zh-CN`;
-  }
-
-  // Auto-encode/decode when input changes
   $effect(() => {
-    if (inputText && activeTab === 'single') {
-      encodeUrl();
+    const data = JSON.stringify(s);
+    try {
+      localStorage.setItem(STORAGE_KEY, data);
+    } catch {
+      /* storage blocked: options just won't persist */
     }
   });
+
+  const encoding = $derived(s.direction === 'encode');
+  const mode = $derived<UrlMode>(isUrlMode(s.mode) ? s.mode : 'component');
+  const result = $derived<UrlResult>(
+    input === ''
+      ? { ok: true, value: '' }
+      : encoding
+        ? (s.batch ? encodeUrlLines : encodeUrl)(input, mode)
+        : (s.batch ? decodeUrlLines : decodeUrl)(input, mode)
+  );
+  const output = $derived(result.ok ? result.value : '');
+  const error = $derived(result.ok ? undefined : result.message);
+  const doubleEncodeWarning = $derived(encoding && looksEncoded(input));
+
+  const placeholder = $derived(
+    encoding
+      ? s.batch
+        ? 'hello world\ncafé & crème\nhttps://example.com/a path?q=1'
+        : 'https://example.com/search?q=café & crème'
+      : s.batch
+        ? 'hello%20world\ncaf%C3%A9%20%26%20cr%C3%A8me'
+        : 'https%3A%2F%2Fexample.com%2Fsearch%3Fq%3Dcaf%C3%A9'
+  );
+
+  function swap() {
+    if (output) input = output;
+    s.direction = encoding ? 'decode' : 'encode';
+  }
 </script>
 
 <ToolLayout
@@ -101,269 +101,71 @@ https://demo.com/search?query=测试&lang=zh-CN`;
   icon={Link}
   color="warning"
 >
-  <!-- Tab Navigation -->
-  <div class="tab-nav" role="tablist">
-    <button
-      role="tab"
-      aria-selected={activeTab === 'single'}
-      onclick={() => (activeTab = 'single')}
-      class="tab-btn {activeTab === 'single' ? 'active' : ''}"
-    >
-      Single URL
-    </button>
-    <button
-      role="tab"
-      aria-selected={activeTab === 'batch'}
-      onclick={() => (activeTab = 'batch')}
-      class="tab-btn {activeTab === 'batch' ? 'active' : ''}"
-    >
-      Batch processing
-    </button>
-  </div>
-
-  <!-- Controls -->
-  <div class="flex flex-wrap gap-2 items-center">
-    {#if activeTab === 'single'}
-      <button class="btn btn-primary" onclick={encodeUrl}>
-        Encode URL
-      </button>
-      <button class="btn btn-secondary" onclick={decodeUrl}>
-        Decode URL
-      </button>
-    {:else}
-      <button class="btn btn-primary" onclick={encodeBatch}>
-        Process batch
-      </button>
-      <button class="btn btn-secondary" onclick={loadSampleUrls}>
-        Load sample URLs
-      </button>
-    {/if}
-    <button class="btn btn-ghost" onclick={clearAll}>
-      Clear all
-    </button>
-  </div>
-
-  {#if activeTab === 'single'}
-    <!-- Single URL Processing -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <!-- Input Section -->
-      <div class="card">
-        <div class="card-header">
-          <h2 class="section-title !mb-0">Input text / URL</h2>
-          <span class="text-count">
-            {inputText.length} characters
-          </span>
-        </div>
-
-        <textarea
-          bind:value={inputText}
-          placeholder="Enter text or URL to encode/decode..."
-          class="code-editor h-64"
-        ></textarea>
-
-        <!-- Quick Examples -->
-        <div class="info-card mt-4">
-          <p class="text-label text-ink-muted mb-3">Quick examples</p>
-          <div class="flex flex-col gap-2">
-            <button
-              onclick={() => {
-                inputText = 'https://example.com/search?q=hello world&category=web development';
-                encodeUrl();
-              }}
-              class="quick-btn w-full"
-            >
-              Query parameters with spaces
-            </button>
-            <button
-              onclick={() => {
-                inputText = 'https://test.com/path?name=John Doe&city=New York';
-                encodeUrl();
-              }}
-              class="quick-btn w-full"
-            >
-              Multiple parameters with special characters
-            </button>
-            <button
-              onclick={() => {
-                inputText = 'https://site.com/search?q=测试&lang=zh-CN';
-                encodeUrl();
-              }}
-              class="quick-btn w-full"
-            >
-              International characters (Chinese)
-            </button>
+  <div class="grid gap-4 lg:grid-cols-[3fr_2fr]">
+    <section class="flex flex-col gap-5 rounded-lg bg-card p-6" aria-labelledby="url-main-title">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="url-main-title" class="text-label text-ink-muted">{encoding ? 'Encode' : 'Decode'}</h2>
+        <div class="flex items-center gap-2">
+          <div class="w-56">
+            <Segmented label="Direction" options={DIRECTIONS} bind:value={s.direction} />
           </div>
+          <IconButton label="Use output as input" onclick={swap}><ArrowUpDown /></IconButton>
         </div>
       </div>
 
-      <!-- Results Section -->
-      <div class="card flex flex-col gap-4">
-        <!-- Encoded Result -->
-        <div>
-          <div class="card-header !mb-2">
-            <h2 class="section-title !mb-0">Encoded URL</h2>
-            {#if encodedText}
-              <button class="btn btn-sm btn-copy" onclick={() => copyToClipboard(encodedText, 'encoded')}>
-                <Copy class="w-3.5 h-3.5" />
-                {copiedText === 'encoded' ? 'Copied!' : 'Copy'}
-              </button>
-            {/if}
+      <Textarea
+        label={encoding ? 'Text to encode' : 'Text to decode'}
+        hint={s.batch ? 'Each line is processed on its own.' : undefined}
+        rows={s.batch ? 8 : 5}
+        mono
+        spellcheck={false}
+        bind:value={input}
+        {placeholder}
+        {error}
+      />
+
+      {#if doubleEncodeWarning}
+        <p class="text-body-sm text-ink-muted" role="status">
+          <span class="text-accent-text">Heads up:</span> this already looks URL-encoded (it has %XX escapes).
+          Encoding it again turns <code class="font-mono">%20</code> into <code class="font-mono">%2520</code>
+          — switch to Decode if you meant to read it.
+        </p>
+      {/if}
+
+      <div class="flex flex-col gap-3">
+        <h3 id="url-output-title" class="text-label text-ink-muted">{encoding ? 'Encoded' : 'Decoded'}</h3>
+        {#if output}
+          <pre
+            class="max-h-80 overflow-auto rounded-md bg-sunken px-5 py-4 font-mono text-code break-all whitespace-pre-wrap text-ink"
+            aria-labelledby="url-output-title"
+            aria-live="polite">{output}</pre>
+          <div class="flex flex-wrap items-center gap-3">
+            <CopyChip value={output}>Copy output</CopyChip>
+            <span class="text-body-sm text-ink-muted">{[...input].length} → {[...output].length} characters</span>
           </div>
-
-          <div class="relative">
-            <textarea
-              bind:value={encodedText}
-              placeholder="Encoded URL will appear here..."
-              class="code-editor h-28"
-            ></textarea>
-            {#if !encodedText}
-              <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <p class="text-body-sm text-ink-muted">
-                  Enter text above to see encoded result
-                </p>
-              </div>
-            {/if}
-          </div>
-        </div>
-
-        <!-- Decoded Result -->
-        <div>
-          <div class="card-header !mb-2">
-            <h2 class="section-title !mb-0">
-              Decoded URL (round-trip)
-            </h2>
-            {#if decodedText}
-              <button class="btn btn-sm btn-copy" onclick={() => copyToClipboard(decodedText, 'decoded')}>
-                <Copy class="w-3.5 h-3.5" />
-                {copiedText === 'decoded' ? 'Copied!' : 'Copy'}
-              </button>
-            {/if}
-          </div>
-
-          <div class="relative">
-            <textarea
-              bind:value={decodedText}
-              placeholder="Decoded URL will appear here..."
-              class="code-editor h-28"
-            ></textarea>
-            {#if !decodedText}
-              <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <p class="text-body-sm text-ink-muted">
-                  Round-trip test result will appear here
-                </p>
-              </div>
-            {/if}
-          </div>
-        </div>
+        {:else if !error}
+          <EmptyState
+            title="Nothing to show yet"
+            text={encoding ? 'Type or paste text above — it is encoded as you type.' : 'Paste percent-encoded text above — it is decoded as you type.'}
+          />
+        {/if}
       </div>
-    </div>
-  {:else}
-    <!-- Batch Processing -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <!-- Batch Input -->
-      <div class="card">
-        <div class="card-header">
-          <h2 class="section-title !mb-0">
-            Batch input (one URL per line)
-          </h2>
-          <span class="text-count">
-            {batchInput.split('\n').filter(line => line.trim()).length} URLs
-          </span>
-        </div>
+    </section>
 
-        <textarea
-          bind:value={batchInput}
-          placeholder="Enter multiple URLs or text strings, one per line..."
-          class="code-editor h-48 sm:h-64 lg:h-96"
-        ></textarea>
+    <section class="flex flex-col gap-6 rounded-lg bg-card p-6" aria-labelledby="url-options-title">
+      <h2 id="url-options-title" class="text-label text-ink-muted">Options</h2>
+
+      <div class="flex flex-col gap-2">
+        <span class="fz-field-label" aria-hidden="true">Encoding</span>
+        <Segmented label="Encoding" options={MODES} bind:value={s.mode} />
+        <p class="text-body-sm text-ink-muted">{MODE_HELP[mode]}</p>
       </div>
 
-      <!-- Batch Results -->
-      <div class="card">
-        <div class="card-header">
-          <h2 class="section-title !mb-0">Batch results</h2>
-          {#if batchResults.length > 0}
-            <button class="btn btn-sm btn-copy" onclick={copyBatchResults}>
-              <Copy class="w-3.5 h-3.5" />
-              {copiedText === 'batch' ? 'Copied!' : 'Copy all'}
-            </button>
-          {/if}
-        </div>
-
-        <div
-          class="h-48 sm:h-64 lg:h-96 overflow-y-auto rounded-md bg-sunken p-4"
-        >
-          {#if batchResults.length === 0}
-            <div class="flex items-center justify-center h-full">
-              <p class="text-body-sm text-ink-muted">Process batch URLs to see results</p>
-            </div>
-          {:else}
-            <div class="space-y-2">
-              {#each batchResults as result, index (result.original + index)}
-                <div class="rounded-md bg-control p-3">
-                  <div class="text-code text-ink-muted mb-1">
-                    #{index + 1}
-                  </div>
-                  <div class="space-y-2">
-                    <div>
-                      <span class="text-label text-ink-muted">Original</span>
-                      <div class="font-mono text-xs text-ink break-all">
-                        {result.original}
-                      </div>
-                    </div>
-                    <div>
-                      <span class="text-label text-accent-text">Encoded</span>
-                      <div class="font-mono text-xs text-ink break-all">
-                        {result.encoded}
-                      </div>
-                    </div>
-                    <div>
-                      <span class="text-label text-accent-text">Decoded</span>
-                      <div class="font-mono text-xs text-ink break-all">
-                        {result.decoded}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              {/each}
-            </div>
-          {/if}
-        </div>
-      </div>
-    </div>
-  {/if}
-
-  <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-    <div class="card">
-      <div class="feature-icon">
-        <Shield class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Safe encoding</h3>
-      <p class="feature-description">
-        Properly encodes special characters, spaces, and international characters for safe URL
-        transmission
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon">
-        <Zap class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Batch processing</h3>
-      <p class="feature-description">
-        Process multiple URLs at once with batch mode for efficient workflow
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon">
-        <CreditCard class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Round-trip testing</h3>
-      <p class="feature-description">
-        Automatic round-trip testing ensures your URLs decode back to the original text
-      </p>
-    </div>
+      <Switch
+        label="Process each line separately"
+        description="Batch: one value per line, empty lines kept"
+        bind:checked={s.batch}
+      />
+    </section>
   </div>
 </ToolLayout>

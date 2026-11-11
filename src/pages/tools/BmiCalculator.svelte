@@ -1,577 +1,255 @@
 <script lang="ts">
-  import {
-    Activity,
-    Users,
-    Target,
-    Heart,
-    Info,
-    RotateCcw,
-    CircleCheck,
-    TriangleAlert,
-  } from '@lucide/svelte';
+  import { Activity, RotateCcw } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
+  import { Button, Segmented, Select, StatTile, TextField, type Option } from '$lib/components/ds';
+  import {
+    STANDARDS,
+    adultCategoriesApply,
+    bmiPrime,
+    classify,
+    cmToFtIn,
+    computeBmi,
+    distanceToRange,
+    ftInToCm,
+    healthyWeightRange,
+    kgToLb,
+    lbToKg,
+    parseAge,
+    parseDecimal,
+    plain,
+    rangeText,
+    type CategoryKey,
+    type Standard,
+    type Units
+  } from '$lib/tools/bmi';
 
-  // Units state
-  let units = $state('metric'); // 'metric' or 'imperial'
+  let units = $state<Units>('metric');
+  let standard = $state<Standard>('asia');
+  let weightText = $state('');
+  let cmText = $state('');
+  let ftText = $state('');
+  let inText = $state('');
+  let ageText = $state('');
 
-  // Input values
-  let height = $state('');
-  let weight = $state('');
-  let age = $state('');
-  let gender = $state('male');
-  let activityLevel = $state('moderate');
-
-  // Results
-  let bmi = $state(0);
-  let bmiCategory = $state('');
-  let bmiColorClass = $state('');
-  let idealWeight = $state({ min: 0, max: 0 });
-  let healthRisk = $state('');
-  let bmr = $state(0);
-  let dailyCalories = $state(0);
-  let bodyFatEstimate = $state(0);
-
-  // Activity levels with their multipliers
-  const activityLevels = [
-    {
-      value: 'sedentary',
-      label: 'Sedentary',
-      multiplier: 1.2,
-      description: 'Little or no exercise'
-    },
-    {
-      value: 'light',
-      label: 'Lightly Active',
-      multiplier: 1.375,
-      description: 'Light exercise/sports 1-3 days/week'
-    },
-    {
-      value: 'moderate',
-      label: 'Moderately Active',
-      multiplier: 1.55,
-      description: 'Moderate exercise/sports 3-5 days/week'
-    },
-    {
-      value: 'active',
-      label: 'Very Active',
-      multiplier: 1.725,
-      description: 'Hard exercise/sports 6-7 days a week'
-    },
-    {
-      value: 'extra',
-      label: 'Extra Active',
-      multiplier: 1.9,
-      description: 'Very hard exercise/sports & physical job'
-    }
+  const unitOptions = [
+    { value: 'metric', label: 'Metric (kg, cm)' },
+    { value: 'imperial', label: 'Imperial (lb, ft)' }
   ];
+  const standardOptions: Option[] = (['asia', 'kemenkes', 'who'] as const).map((s) => ({
+    value: s,
+    label: STANDARDS[s].name
+  }));
 
-  // Calculate BMI and related metrics
-  $effect(() => {
-    if (height && weight && !isNaN(parseFloat(height)) && !isNaN(parseFloat(weight))) {
-      let heightInMeters, weightInKg;
+  const NOT_NUMBER = 'Enter a positive number, e.g. 70 or 70,5.';
 
-      if (units === 'metric') {
-        heightInMeters = parseFloat(height) / 100; // Convert cm to meters
-        weightInKg = parseFloat(weight);
-      } else {
-        // Imperial: height in inches, weight in pounds
-        heightInMeters = parseFloat(height) * 0.0254; // Convert inches to meters
-        weightInKg = parseFloat(weight) * 0.453592; // Convert pounds to kg
-      }
+  // ---- Parsing (live) ----
+  const weightNum = $derived(parseDecimal(weightText));
+  const cmNum = $derived(parseDecimal(cmText));
+  const ftNum = $derived(parseDecimal(ftText));
+  const inNum = $derived(parseDecimal(inText));
+  const ageParsed = $derived(parseAge(ageText));
 
-      // Calculate BMI
-      bmi = weightInKg / (heightInMeters * heightInMeters);
-
-      // Determine BMI category
-      if (bmi < 18.5) {
-        bmiCategory = 'Underweight';
-        bmiColorClass = 'bmi-underweight';
-        healthRisk = 'May have nutritional deficiency and osteoporosis risk';
-      } else if (bmi < 25) {
-        bmiCategory = 'Normal Weight';
-        bmiColorClass = 'bmi-normal';
-        healthRisk = 'Low risk of developing health problems';
-      } else if (bmi < 30) {
-        bmiCategory = 'Overweight';
-        bmiColorClass = 'bmi-overweight';
-        healthRisk = 'Increased risk of heart disease, diabetes, and high blood pressure';
-      } else if (bmi < 35) {
-        bmiCategory = 'Obese Class I';
-        bmiColorClass = 'bmi-obese1';
-        healthRisk = 'High risk of cardiovascular disease and diabetes';
-      } else if (bmi < 40) {
-        bmiCategory = 'Obese Class II';
-        bmiColorClass = 'bmi-obese2';
-        healthRisk = 'Very high risk of serious health conditions';
-      } else {
-        bmiCategory = 'Obese Class III';
-        bmiColorClass = 'bmi-obese3';
-        healthRisk = 'Extremely high risk of life-threatening health conditions';
-      }
-
-      // Calculate ideal weight range (BMI 18.5 - 24.9)
-      const minHeightSquared = heightInMeters * heightInMeters;
-      idealWeight.min = 18.5 * minHeightSquared;
-      idealWeight.max = 24.9 * minHeightSquared;
-
-      // Calculate BMR using Mifflin-St Jeor Equation
-      if (age && !isNaN(parseFloat(age))) {
-        const ageYears = parseFloat(age);
-        if (gender === 'male') {
-          bmr = 10 * weightInKg + 6.25 * (heightInMeters * 100) - 5 * ageYears + 5;
-        } else {
-          bmr = 10 * weightInKg + 6.25 * (heightInMeters * 100) - 5 * ageYears - 161;
-        }
-
-        // Calculate daily calories based on activity level
-        const activity = activityLevels.find(level => level.value === activityLevel);
-        if (activity) {
-          dailyCalories = bmr * activity.multiplier;
-        }
-
-        // Estimate body fat percentage (simplified formula)
-        if (gender === 'male') {
-          bodyFatEstimate = 1.2 * bmi + 0.23 * ageYears - 16.2;
-        } else {
-          bodyFatEstimate = 1.2 * bmi + 0.23 * ageYears - 5.4;
-        }
-      }
-    } else {
-      bmi = 0;
-      bmiCategory = '';
-      bmiColorClass = '';
-      idealWeight = { min: 0, max: 0 };
-      healthRisk = '';
-      bmr = 0;
-      dailyCalories = 0;
-      bodyFatEstimate = 0;
-    }
+  const weightKg = $derived(weightNum === null ? null : units === 'metric' ? weightNum : lbToKg(weightNum));
+  const inchError = $derived(
+    Number.isNaN(inNum) ? NOT_NUMBER : inNum !== null && inNum >= 12 ? 'Inches must be under 12.' : undefined
+  );
+  const heightCm = $derived.by(() => {
+    if (units === 'metric') return cmNum;
+    if (ftNum === null && inNum === null) return null;
+    return ftInToCm(ftNum ?? 0, inNum ?? 0);
   });
 
-  function switchUnits(newUnits: string) {
-    units = newUnits;
-    height = '';
-    weight = '';
-  }
+  const result = $derived(
+    weightKg !== null && heightCm !== null && !inchError ? computeBmi(weightKg, heightCm, units) : null
+  );
+  const bmi = $derived(result?.ok ? result : null);
 
-  function loadExample() {
-    units = 'metric';
-    height = '175';
-    weight = '70';
-    age = '30';
-    gender = 'male';
-    activityLevel = 'moderate';
+  // Field errors: syntax errors right away, range errors once both values are there.
+  const rangeErr = (f: 'weight' | 'height') => (result && !result.ok && result.field === f ? result.error : undefined);
+  const weightError = $derived(Number.isNaN(weightNum) ? NOT_NUMBER : rangeErr('weight'));
+  const cmError = $derived(Number.isNaN(cmNum) ? NOT_NUMBER : rangeErr('height'));
+  const ftError = $derived(Number.isNaN(ftNum) ? NOT_NUMBER : inchError ? undefined : rangeErr('height'));
+
+  const adult = $derived(adultCategoriesApply(ageParsed.ok ? ageParsed.age : null));
+  const category = $derived(bmi ? classify(bmi.bmi, standard) : null);
+  const healthy = $derived(heightCm !== null && bmi ? healthyWeightRange(heightCm, standard) : null);
+  const distance = $derived(healthy && weightKg !== null ? distanceToRange(weightKg, healthy) : null);
+
+  const wUnit = $derived(units === 'metric' ? 'kg' : 'lb');
+  const toUnit = (kg: number) => plain(units === 'metric' ? kg : kgToLb(kg));
+  const healthyText = $derived(healthy ? `${toUnit(healthy.min)}–${toUnit(healthy.max)} ${wUnit}` : '');
+  const distanceText = $derived.by(() => {
+    if (!distance) return '';
+    if (distance.direction === 'within') return 'Your weight is inside this range.';
+    const amount = `${toUnit(distance.kg)} ${wUnit}`;
+    return distance.direction === 'lose' ? `${amount} above the range.` : `${amount} below the range.`;
+  });
+
+  // ---- Scale (positions proportional to BMI value) ----
+  const MIN = 15;
+  const MAX = 40;
+  const pos = (v: number) => ((Math.min(MAX, Math.max(MIN, v)) - MIN) / (MAX - MIN)) * 100;
+  const fill: Record<CategoryKey, string> = {
+    underweight: 'bg-tile-lilac',
+    normal: 'bg-live',
+    overweight: 'bg-accent',
+    obese1: 'bg-negative/55',
+    obese2: 'bg-negative/80',
+    obese3: 'bg-negative'
+  };
+  const segments = $derived(
+    STANDARDS[standard].bands.map((b, i, all) => {
+      const start = pos(b.min ?? MIN);
+      const next = all[i + 1]?.min;
+      return { ...b, range: rangeText(b), left: start, width: pos(next ?? MAX) - start };
+    })
+  );
+  const ticks = $derived(STANDARDS[standard].bands.filter((b) => b.min !== null).map((b) => b.min as number));
+
+  // ---- Actions ----
+  function switchUnits(next: string) {
+    const to: Units = next === 'imperial' ? 'imperial' : 'metric';
+    if (to === units) return;
+    const w = weightKg !== null && Number.isFinite(weightKg) ? weightKg : null;
+    const h = heightCm !== null && Number.isFinite(heightCm) && !inchError ? heightCm : null;
+    if (to === 'imperial') {
+      weightText = w === null ? '' : plain(kgToLb(w));
+      const fi = h === null ? null : cmToFtIn(h);
+      ftText = fi ? String(fi.ft) : '';
+      inText = fi ? plain(fi.in) : '';
+    } else {
+      weightText = w === null ? '' : plain(w);
+      cmText = h === null ? '' : plain(h);
+    }
+    units = to;
   }
 
   function reset() {
-    height = '';
-    weight = '';
-    age = '';
-    gender = 'male';
-    activityLevel = 'moderate';
+    weightText = cmText = ftText = inText = ageText = '';
   }
-
-  function getBMIProgressWidth() {
-    // BMI range: 15 - 40
-    if (bmi === 0) return 0;
-    const position = ((bmi - 15) / 25) * 100;
-    return Math.max(0, Math.min(100, position));
-  }
-
-  function formatWeight(value: number): string {
-    if (units === 'metric') {
-      return `${value.toFixed(1)} kg`;
-    } else {
-      const pounds = value * 2.20462;
-      return `${pounds.toFixed(1)} lbs`;
-    }
-  }
-
-  function formatCalories(value: number): string {
-    return `${Math.round(value)} calories/day`;
-  }
-
-  function getHealthTips(): string[] {
-    const tips = [];
-
-    if (bmi < 18.5) {
-      tips.push('Increase calorie intake with nutrient-dense foods');
-      tips.push('Include protein-rich foods to build muscle mass');
-      tips.push('Consider strength training exercises');
-      tips.push('Consult with a healthcare provider or dietitian');
-    } else if (bmi >= 18.5 && bmi < 25) {
-      tips.push('Maintain your current healthy lifestyle');
-      tips.push('Continue regular physical activity (150 min/week)');
-      tips.push('Eat a balanced diet with variety');
-      tips.push('Get adequate sleep (7-9 hours per night)');
-    } else if (bmi >= 25 && bmi < 30) {
-      tips.push('Aim for gradual weight loss (1-2 lbs per week)');
-      tips.push('Increase physical activity to 300 min/week');
-      tips.push('Focus on portion control and mindful eating');
-      tips.push('Reduce processed foods and sugary drinks');
-    } else {
-      tips.push('Consult healthcare provider for a comprehensive plan');
-      tips.push('Start with small, sustainable lifestyle changes');
-      tips.push('Consider professional nutritional guidance');
-      tips.push('Focus on both diet and exercise modifications');
-    }
-
-    return tips;
-  }
-
-  function getBMICardClass() {
-    switch (bmiColorClass) {
-      case 'bmi-underweight':
-        return 'bg-tile-lime text-ink-on-bright';
-      case 'bmi-normal':
-        return 'bg-control text-ink';
-      case 'bmi-overweight':
-        return 'bg-tile-lilac text-ink-on-bright';
-      case 'bmi-obese1':
-        return 'bg-tile-violet text-ink-on-dark';
-      case 'bmi-obese2':
-      case 'bmi-obese3':
-        return 'bg-tile-deep text-ink-on-dark';
-      default:
-        return 'bg-control text-ink';
-    }
-  }
-
-  function getBMITextClass() {
-    switch (bmiColorClass) {
-      case 'bmi-normal':
-        return 'text-live';
-      case 'bmi-obese1':
-      case 'bmi-obese2':
-      case 'bmi-obese3':
-        return 'text-negative';
-      default:
-        return 'text-ink';
-    }
-  }
-
-  const isObese = $derived(bmiColorClass.startsWith('bmi-obese'));
 </script>
 
 <ToolLayout
   title="BMI Calculator"
-  description="Calculate your Body Mass Index, ideal weight, and get personalized health insights"
+  description="Body Mass Index with Asia-Pacific, Kemenkes RI and WHO cut-offs, plus the healthy weight range for your height."
   icon={Activity}
   color="warning"
 >
-  <!-- Unit Selection -->
-  <div class="tool-card">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <h3 class="section-title mb-0">Measurement units</h3>
-      <div class="mode-toggle">
-        <button
-          class="mode-btn {units === 'metric' ? 'active' : ''}"
-          onclick={() => switchUnits('metric')}
-        >
-          Metric
-        </button>
-        <button
-          class="mode-btn {units === 'imperial' ? 'active' : ''}"
-          onclick={() => switchUnits('imperial')}
-        >
-          Imperial
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-    <!-- Input Form -->
-    <div class="lg:col-span-2 space-y-4">
-      <!-- Basic Information -->
-      <div class="tool-card">
-        <div class="card-header flex-wrap gap-3">
-          <h3 class="section-title mb-0 flex items-center gap-2">
-            <Users class="w-5 h-5 text-accent-text" />
-            Personal information
-          </h3>
-          <div class="flex gap-2">
-            <button class="btn btn-secondary btn-sm" onclick={loadExample}>Example</button>
-            <button class="btn btn-ghost btn-sm" onclick={reset} title="Reset">
-              <RotateCcw class="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label for="height-input" class="label">
-              Height ({units === 'metric' ? 'cm' : 'inches'})
-            </label>
-            <input
-              class="tool-input"
-              id="height-input"
-              type="number" inputmode="decimal"
-              bind:value={height}
-              placeholder={units === 'metric' ? '170' : '67'}
-            />
-          </div>
-
-          <div>
-            <label for="weight-input" class="label">
-              Weight ({units === 'metric' ? 'kg' : 'lbs'})
-            </label>
-            <input
-              class="tool-input"
-              id="weight-input"
-              type="number" inputmode="decimal"
-              bind:value={weight}
-              placeholder={units === 'metric' ? '70' : '154'}
-            />
-          </div>
-
-          <div>
-            <label for="age-input" class="label">Age</label>
-            <input
-              class="tool-input"
-              id="age-input"
-              type="number" inputmode="decimal"
-              bind:value={age}
-              placeholder="30"
-            />
-          </div>
-
-          <div>
-            <fieldset>
-              <legend class="label">Gender</legend>
-              <div class="flex gap-4 pt-2">
-                <label class="custom-radio">
-                  <input type="radio" bind:group={gender} value="male" />
-                  <span class="radio-dot"></span>
-                  <span class="label-text">Male</span>
-                </label>
-                <label class="custom-radio">
-                  <input type="radio" bind:group={gender} value="female" />
-                  <span class="radio-dot"></span>
-                  <span class="label-text">Female</span>
-                </label>
-              </div>
-            </fieldset>
-          </div>
-        </div>
-
-        <div class="mt-6">
-          <label for="activity-level-select" class="label">Activity level</label>
-          <select id="activity-level-select" bind:value={activityLevel} class="tool-select">
-            {#each activityLevels as level (level.value)}
-              <option value={level.value}>{level.label} - {level.description}</option>
-            {/each}
-          </select>
-        </div>
+  <div class="grid gap-4 lg:grid-cols-[3fr_2fr]">
+    <section class="flex flex-col gap-6 rounded-lg bg-card p-6" aria-labelledby="bmi-input-title">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="bmi-input-title" class="text-label text-ink-muted">Your measurements</h2>
+        <Button variant="ghost" size="sm" onclick={reset}>
+          {#snippet icon()}<RotateCcw class="size-4" />{/snippet}
+          Reset
+        </Button>
       </div>
 
-      <!-- BMI Result -->
-      {#if bmi > 0}
-        <div class="tool-card">
-          <h3 class="section-title flex items-center gap-2">
-            <Activity class="w-5 h-5 text-accent-text" />
-            Your BMI results
-          </h3>
+      <div class="flex flex-col gap-2">
+        <span class="fz-field-label">Units</span>
+        <Segmented label="Units" options={unitOptions} value={units} onchange={switchUnits} />
+      </div>
 
-          <!-- BMI Value and Category -->
-          <div class="text-center mb-8">
-            <div class="inline-flex flex-col items-center gap-3 px-8 py-6 rounded-md {getBMICardClass()}">
-              <span class="text-label">BMI</span>
-              <p class="m-0 font-display text-[48px] leading-[52px] font-bold tracking-tight tabular-nums">
-                {bmi.toFixed(1)}
-              </p>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <TextField label="Weight" suffix={wUnit} inputmode="decimal" autocomplete="off" placeholder={units === 'metric' ? '70' : '154'} error={weightError} bind:value={weightText} class="tabular-nums" />
+        {#if units === 'metric'}
+          <TextField label="Height" suffix="cm" inputmode="decimal" autocomplete="off" placeholder="170" error={cmError} bind:value={cmText} class="tabular-nums" />
+        {:else}
+          <div class="grid grid-cols-2 gap-3">
+            <TextField label="Height (feet)" suffix="ft" inputmode="decimal" autocomplete="off" placeholder="5" error={ftError} bind:value={ftText} class="tabular-nums" />
+            <TextField label="Height (inches)" suffix="in" inputmode="decimal" autocomplete="off" placeholder="7" error={inchError} bind:value={inText} class="tabular-nums" />
+          </div>
+        {/if}
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <TextField label="Age" optional suffix="years" inputmode="numeric" autocomplete="off" placeholder="30" hint="Adult categories apply from 18." error={ageParsed.ok ? undefined : ageParsed.error} bind:value={ageText} class="tabular-nums" />
+        <Select label="Standard" options={standardOptions} bind:value={standard} hint={STANDARDS[standard].note} />
+      </div>
+    </section>
+
+    <section class="flex flex-col gap-4" aria-labelledby="bmi-result-title" aria-live="polite">
+      <h2 id="bmi-result-title" class="sr-only">Result</h2>
+      {#if bmi && !adult}
+        <StatTile tone="deep" label="Your BMI" value={bmi.rounded.toFixed(1)} caption="Under 18: adult categories don't apply." />
+        <div class="flex flex-col gap-2 rounded-lg bg-card p-6">
+          <h3 class="text-label text-ink-muted">Children and teens</h3>
+          <p class="text-body text-ink">
+            Below 18, BMI is judged against age- and sex-specific percentile charts (WHO growth charts, or the KMS / Permenkes
+            No. 2 Tahun 2020 standards in Indonesia). This tool doesn't include those charts, so it shows no category or
+            healthy range. Ask a doctor or Posyandu to plot it.
+          </p>
+        </div>
+      {:else if bmi && category}
+        <StatTile
+          tone="deep"
+          label="Your BMI · {STANDARDS[standard].name}"
+          value={bmi.rounded.toFixed(1)}
+          caption="{category.label} ({category.range}) · BMI Prime {bmiPrime(bmi.bmi, standard).toFixed(2)}"
+        />
+
+        <div class="flex flex-col gap-4 rounded-lg bg-card p-6">
+          <div class="flex items-center gap-2">
+            <span class="size-3 shrink-0 rounded-pill {fill[category.key]}" aria-hidden="true"></span>
+            <p class="text-body-lg font-medium text-ink">{category.label}</p>
+          </div>
+          <dl class="flex flex-col gap-2 text-body">
+            <div class="flex items-baseline justify-between gap-4">
+              <dt class="text-ink-muted">Healthy weight for your height</dt>
+              <dd class="font-mono tabular-nums text-ink">{healthyText}</dd>
+            </div>
+          </dl>
+          <p class="text-body-sm text-ink-muted">{distanceText}</p>
+
+          <div
+            class="flex flex-col gap-1 pt-2"
+            role="img"
+            aria-label="Scale: BMI {bmi.rounded.toFixed(1)} falls in {category.label}, {category.range}."
+          >
+            <div class="relative h-5">
               <span
-                class="inline-flex items-center gap-1.5 rounded-pill bg-card px-3 py-1 text-body-sm font-medium {getBMITextClass()}"
+                class="absolute top-0 -translate-x-1/2 font-mono text-[11px] leading-4 text-ink"
+                style="left: {pos(bmi.bmi)}%"
+                aria-hidden="true">▼</span
               >
-                {#if bmiColorClass === 'bmi-normal'}
-                  <CircleCheck class="w-4 h-4" />
-                {:else if isObese}
-                  <TriangleAlert class="w-4 h-4" />
-                {/if}
-                {bmiCategory}
-              </span>
+            </div>
+            <div class="relative h-3 overflow-hidden rounded-pill bg-sunken">
+              {#each segments as s (s.key)}
+                <span class="absolute inset-y-0 {fill[s.key]}" style="left: {s.left}%; width: {s.width}%"></span>
+              {/each}
+            </div>
+            <div class="relative h-5 font-mono text-[11px] leading-5 text-ink-muted" aria-hidden="true">
+              {#each ticks as t (t)}
+                <span class="absolute top-0 -translate-x-1/2 tabular-nums" style="left: {pos(t)}%">{t.toFixed(1)}</span>
+              {/each}
             </div>
           </div>
 
-          <!-- BMI Visual Scale -->
-          <div class="mb-8">
-            <div class="relative">
-              <div class="h-3 rounded-pill overflow-hidden flex" aria-hidden="true">
-                <div class="h-full bg-tile-lime text-ink-on-bright" style="width: 14%;"></div>
-                <div class="h-full bg-live/60" style="width: 26%;"></div>
-                <div class="h-full bg-tile-lilac text-ink-on-bright" style="width: 20%;"></div>
-                <div class="h-full bg-tile-violet text-ink-on-dark" style="width: 40%;"></div>
-              </div>
-              <div
-                class="absolute top-1.5 w-4 h-4 rounded-pill {isObese ? 'bg-negative' : 'bg-ink'}"
-                style="left: {getBMIProgressWidth()}%; transform: translate(-50%, -50%);"
-              ></div>
-              <div class="flex justify-between mt-2 font-mono text-xs text-ink-muted tabular-nums">
-                <span>15</span>
-                <span>18.5</span>
-                <span>25</span>
-                <span>30</span>
-                <span>35</span>
-                <span>40+</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Health Risk -->
-          <div class="info-card flex items-start">
-            <Info class="w-5 h-5 text-accent-text mt-0.5 mr-3 flex-shrink-0" />
-            <div>
-              <p class="font-medium text-ink mb-1">Health risk assessment</p>
-              <p class="text-body-sm text-ink-muted">{healthRisk}</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Detailed Results -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Ideal Weight -->
-          <div class="tool-card">
-            <h3 class="section-title flex items-center gap-2">
-              <Target class="w-5 h-5 text-accent-text" />
-              Ideal weight range
-            </h3>
-            <div class="space-y-2">
-              <div class="flex justify-between items-center">
-                <span class="result-label">Minimum:</span>
-                <span class="result-value">{formatWeight(idealWeight.min)}</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="result-label">Maximum:</span>
-                <span class="result-value">{formatWeight(idealWeight.max)}</span>
-              </div>
-              {#if units === 'imperial' && height}
-                <div class="pt-2">
-                  <p class="text-body-sm text-ink-muted">
-                    For height: {height} inches ({(parseFloat(height) / 12).toFixed(1)} ft)
-                  </p>
-                </div>
-              {/if}
-            </div>
-          </div>
-
-          <!-- Metabolic Information -->
-          {#if bmr > 0}
-            <div class="tool-card">
-              <h3 class="section-title flex items-center gap-2">
-                <Heart class="w-5 h-5 text-accent-text" />
-                Metabolic information
-              </h3>
-              <div class="space-y-2">
-                <div class="flex justify-between items-center">
-                  <span class="result-label">BMR:</span>
-                  <span class="result-value">{Math.round(bmr)} calories/day</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="result-label">Daily calories:</span>
-                  <span class="result-value">{formatCalories(dailyCalories)}</span>
-                </div>
-                {#if bodyFatEstimate > 0}
-                  <div class="flex justify-between items-center">
-                    <span class="result-label">Est. body fat:</span>
-                    <span class="result-value">{Math.max(0, bodyFatEstimate).toFixed(1)}%</span>
-                  </div>
-                {/if}
-              </div>
-            </div>
-          {/if}
-        </div>
-      {/if}
-    </div>
-
-    <!-- Sidebar -->
-    <div class="space-y-4">
-      <!-- BMI Categories -->
-      <div class="tool-card">
-        <h3 class="section-title">BMI categories</h3>
-        <div class="space-y-2">
-          <div class="flex items-center justify-between px-3 py-2 rounded-md bg-tile-lime text-ink-on-bright">
-            <span class="text-body-sm font-medium">Underweight</span>
-            <span class="font-mono text-sm tabular-nums">&lt; 18.5</span>
-          </div>
-          <div class="flex items-center justify-between px-3 py-2 rounded-md bg-control text-ink">
-            <span class="flex items-center gap-2 text-body-sm font-medium">
-              <CircleCheck class="w-4 h-4 text-live" />
-              Normal
-            </span>
-            <span class="font-mono text-sm tabular-nums">18.5 - 24.9</span>
-          </div>
-          <div class="flex items-center justify-between px-3 py-2 rounded-md bg-tile-lilac text-ink-on-bright">
-            <span class="text-body-sm font-medium">Overweight</span>
-            <span class="font-mono text-sm tabular-nums">25 - 29.9</span>
-          </div>
-          <div class="flex items-center justify-between px-3 py-2 rounded-md bg-tile-violet text-ink-on-dark">
-            <span class="flex items-center gap-2 text-body-sm font-medium">
-              <TriangleAlert class="w-4 h-4" />
-              Obese
-            </span>
-            <span class="font-mono text-sm tabular-nums">≥ 30</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Health Tips -->
-      {#if bmi > 0 && getHealthTips().length > 0}
-        <div class="tool-card">
-          <h3 class="section-title">Health tips</h3>
-          <div class="space-y-3">
-            {#each getHealthTips() as tip (tip)}
-              <div class="flex items-start">
-                <div class="w-2 h-2 rounded-pill mt-1.5 mr-3 flex-shrink-0 bg-accent"></div>
-                <p class="text-body-sm text-ink-muted">{tip}</p>
-              </div>
+          <ul class="grid gap-1.5 text-body-sm sm:grid-cols-2" aria-label="Categories">
+            {#each segments as s (s.key)}
+              <li class="flex items-center gap-2 {s.key === category.key ? 'font-medium text-ink' : 'text-ink-muted'}">
+                <span class="size-2.5 shrink-0 rounded-pill {fill[s.key]}" aria-hidden="true"></span>
+                {s.label} <span class="font-mono tabular-nums">{s.range}</span>
+                {#if s.key === category.key}<span class="sr-only">(you)</span><span aria-hidden="true">◀</span>{/if}
+              </li>
             {/each}
-          </div>
+          </ul>
+        </div>
+      {:else}
+        <div class="flex flex-col gap-2 rounded-lg bg-card p-6">
+          <h3 class="text-label text-ink-muted">Your BMI</h3>
+          <p class="text-body text-ink-muted">
+            {#if weightError || cmError || ftError || inchError}
+              ▼ Fix the highlighted field to see your BMI.
+            {:else}
+              Enter your weight and height to see your BMI.
+            {/if}
+          </p>
         </div>
       {/if}
-
-      <!-- Important Notes -->
-      <div class="rounded-lg p-6 bg-tile-lilac text-ink-on-bright">
-        <div class="flex items-start">
-          <Info class="w-5 h-5 mt-0.5 mr-3 flex-shrink-0" />
-          <div>
-            <h3 class="section-title-sm">Important notes</h3>
-            <ul class="text-body-sm list-disc pl-4 space-y-1">
-              <li>BMI is a screening tool, not a diagnostic tool</li>
-              <li>It doesn't account for muscle mass or body composition</li>
-              <li>Athletes may have high BMI but low body fat</li>
-              <li>Consult healthcare providers for medical advice</li>
-              <li>Children and teens use different BMI charts</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Features Section -->
-  <div class="features-grid">
-    <div class="card">
-      <div class="feature-icon"><Activity class="w-5 h-5" /></div>
-      <h3 class="feature-title">Accurate BMI</h3>
-      <p class="feature-description">
-        Calculate Body Mass Index with precision using metric or imperial units
+      <p class="px-2 text-body-sm text-ink-muted">
+        BMI is a screening number, not a diagnosis: it doesn't see muscle, frame or where fat sits.
       </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon"><Heart class="w-5 h-5" /></div>
-      <h3 class="feature-title">Metabolic insights</h3>
-      <p class="feature-description">
-        Get BMR and daily calorie estimates based on your activity level
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon"><Target class="w-5 h-5" /></div>
-      <h3 class="feature-title">Health guidance</h3>
-      <p class="feature-description">
-        Receive personalized health tips and ideal weight recommendations
-      </p>
-    </div>
+    </section>
   </div>
 </ToolLayout>

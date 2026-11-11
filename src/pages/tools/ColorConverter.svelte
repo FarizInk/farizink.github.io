@@ -1,455 +1,287 @@
 <script lang="ts">
-  import { Palette, Zap, History, Copy, RefreshCw } from '@lucide/svelte';
-  import { toast } from 'svelte-sonner';
+  import { Palette } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
+  import { TextField, Slider, CopyChip, Button, EmptyState } from '$lib/components/ds';
+  import {
+    parseColor,
+    toHex,
+    formatRgb,
+    formatRgbLegacy,
+    formatHsl,
+    formatHwb,
+    formatOklch,
+    formatOklab,
+    formatHsv,
+    formatCmyk,
+    wcag,
+    bestTextColor,
+    namedColorFor,
+    WHITE,
+    BLACK,
+    type Color
+  } from '$lib/tools/color';
 
-  let hexInput = $state('#3B82F6');
-  let rgbInput = $state({ r: 59, g: 130, b: 246 });
-  let hslInput = $state({ h: 217, s: 91, l: 60 });
-  let hsvInput = $state({ h: 217, s: 76, v: 96 });
-  let cmykInput = $state({ c: 76, m: 47, y: 0, k: 4 });
+  const HISTORY_KEY = 'colorConverter.history';
+  const HISTORY_MAX = 10;
+  const RECORD_DELAY = 700;
+  const DEFAULT = '#3b82f6';
 
-  let history = $state<Array<{ color: string; format: string; timestamp: Date }>>([]);
+  const initial = parseColor(DEFAULT);
+  let text = $state(DEFAULT);
+  let color = $state<Color>(initial.ok ? initial.color : { r: 0, g: 0, b: 0, alpha: 1 });
+  let clipped = $state(false);
+  let error = $state('');
+  let alphaPct = $state(100);
+  let history = $state<string[]>(readHistory());
 
-  function hexToRgb(hex: string) {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result
-      ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16)
-        }
-      : null;
+  // ---- Outputs -------------------------------------------------------------
+  const opaque = $derived<Color>({ ...color, alpha: 1 });
+  const hex = $derived(toHex(color));
+  const pickerHex = $derived(toHex(opaque));
+  const cssColor = $derived(formatRgb(color));
+  const opaqueCss = $derived(formatRgb(opaque));
+  const name = $derived(namedColorFor(color));
+  const translucent = $derived(color.alpha < 1);
+
+  const formats = $derived([
+    { id: 'HEX', value: hex },
+    { id: 'RGB', value: formatRgb(color) },
+    { id: 'RGB legacy', value: formatRgbLegacy(color) },
+    { id: 'HSL', value: formatHsl(color) },
+    { id: 'HWB', value: formatHwb(color) },
+    { id: 'OKLCH', value: formatOklch(color) },
+    { id: 'OKLab', value: formatOklab(color) },
+    { id: 'HSV', value: formatHsv(color) },
+    { id: 'CMYK', value: formatCmyk(color) }
+  ]);
+
+  const contrast = $derived([
+    { id: 'white', label: 'White text', ink: 'white', ...wcag(opaque, WHITE) },
+    { id: 'black', label: 'Black text', ink: 'black', ...wcag(opaque, BLACK) }
+  ]);
+  const best = $derived(bestTextColor(opaque));
+
+  // ---- Input handlers ------------------------------------------------------
+  function setColor(c: Color, isClipped = false) {
+    color = c;
+    clipped = isClipped;
+    alphaPct = Math.round(c.alpha * 100);
+    scheduleRecord();
   }
 
-  function rgbToHex(r: number, g: number, b: number) {
-    return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
-  }
-
-  function rgbToHsl(r: number, g: number, b: number) {
-    r /= 255;
-    g /= 255;
-    b /= 255;
-    const max = Math.max(r, g, b),
-      min = Math.min(r, g, b);
-    let h = 0,
-      s = 0,
-      l = (max + min) / 2;
-
-    if (max !== min) {
-      const d = max - min;
-      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-      switch (max) {
-        case r:
-          h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
-          break;
-        case g:
-          h = ((b - r) / d + 2) / 6;
-          break;
-        case b:
-          h = ((r - g) / d + 4) / 6;
-          break;
-      }
+  function onText(e: Event & { currentTarget: HTMLInputElement }) {
+    text = e.currentTarget.value;
+    if (!text.trim()) {
+      error = '';
+      return;
     }
-
-    return {
-      h: Math.round(h * 360),
-      s: Math.round(s * 100),
-      l: Math.round(l * 100)
-    };
-  }
-
-  function hslToRgb(h: number, s: number, l: number) {
-    h /= 360;
-    s /= 100;
-    l /= 100;
-    let r, g, b;
-
-    if (s === 0) {
-      r = g = b = l;
+    const r = parseColor(text);
+    if (r.ok) {
+      error = '';
+      setColor(r.color, r.clipped);
     } else {
-      const hue2rgb = (p: number, q: number, t: number) => {
-        if (t < 0) t += 1;
-        if (t > 1) t -= 1;
-        if (t < 1 / 6) return p + (q - p) * 6 * t;
-        if (t < 1 / 2) return q;
-        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-        return p;
-      };
-
-      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-      const p = 2 * l - q;
-      r = hue2rgb(p, q, h + 1 / 3);
-      g = hue2rgb(p, q, h);
-      b = hue2rgb(p, q, h - 1 / 3);
-    }
-
-    return {
-      r: Math.round(r * 255),
-      g: Math.round(g * 255),
-      b: Math.round(b * 255)
-    };
-  }
-
-  function rgbToHsv(r: number, g: number, b: number) {
-    r /= 255;
-    g /= 255;
-    b /= 255;
-    const max = Math.max(r, g, b),
-      min = Math.min(r, g, b);
-    let h = 0,
-      s = 0,
-      v = max;
-
-    const d = max - min;
-    s = max === 0 ? 0 : d / max;
-
-    if (max !== min) {
-      switch (max) {
-        case r:
-          h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
-          break;
-        case g:
-          h = ((b - r) / d + 2) / 6;
-          break;
-        case b:
-          h = ((r - g) / d + 4) / 6;
-          break;
-      }
-    }
-
-    return {
-      h: Math.round(h * 360),
-      s: Math.round(s * 100),
-      v: Math.round(v * 100)
-    };
-  }
-
-  function rgbToCmyk(r: number, g: number, b: number) {
-    let c = 1 - r / 255;
-    let m = 1 - g / 255;
-    let y = 1 - b / 255;
-    let k = Math.min(c, Math.min(m, y));
-
-    if (k === 1) {
-      c = m = y = 0;
-    } else {
-      c = (c - k) / (1 - k);
-      m = (m - k) / (1 - k);
-      y = (y - k) / (1 - k);
-    }
-
-    return {
-      c: Math.round(c * 100),
-      m: Math.round(m * 100),
-      y: Math.round(y * 100),
-      k: Math.round(k * 100)
-    };
-  }
-
-  function updateFromHex() {
-    const rgb = hexToRgb(hexInput);
-    if (rgb) {
-      rgbInput = rgb;
-      hslInput = rgbToHsl(rgb.r, rgb.g, rgb.b);
-      hsvInput = rgbToHsv(rgb.r, rgb.g, rgb.b);
-      cmykInput = rgbToCmyk(rgb.r, rgb.g, rgb.b);
-      addToHistory(hexInput, 'HEX');
+      error = r.message;
     }
   }
 
-  function updateFromRgb() {
-    hexInput = rgbToHex(rgbInput.r, rgbInput.g, rgbInput.b);
-    hslInput = rgbToHsl(rgbInput.r, rgbInput.g, rgbInput.b);
-    hsvInput = rgbToHsv(rgbInput.r, rgbInput.g, rgbInput.b);
-    cmykInput = rgbToCmyk(rgbInput.r, rgbInput.g, rgbInput.b);
-    addToHistory(hexInput, 'RGB');
+  function onPicker(e: Event & { currentTarget: HTMLInputElement }) {
+    const r = parseColor(e.currentTarget.value);
+    if (!r.ok) return;
+    setColor({ ...r.color, alpha: color.alpha });
+    text = toHex(color);
+    error = '';
   }
 
-  function updateFromHsl() {
-    const rgb = hslToRgb(hslInput.h, hslInput.s, hslInput.l);
-    rgbInput = rgb;
-    hexInput = rgbToHex(rgb.r, rgb.g, rgb.b);
-    hsvInput = rgbToHsv(rgb.r, rgb.g, rgb.b);
-    cmykInput = rgbToCmyk(rgb.r, rgb.g, rgb.b);
-    addToHistory(hexInput, 'HSL');
+  function onAlpha(v: number) {
+    color = { ...color, alpha: v / 100 };
+    text = toHex(color);
+    error = '';
+    scheduleRecord();
   }
 
-  function copyToClipboard(text: string, format: string) {
-    navigator.clipboard.writeText(text);
-    toast.success(`Copied ${format} value`);
-  }
-
-  function addToHistory(color: string, format: string) {
-    // Avoid duplicates at the top of the list
-    if (history.length > 0 && history[0].color === color) return;
-
-    history.unshift({ color, format, timestamp: new Date() });
-    if (history.length > 10) {
-      history = history.slice(0, 10);
+  // ---- History -------------------------------------------------------------
+  function readHistory(): string[] {
+    try {
+      const raw = JSON.parse(localStorage.getItem(HISTORY_KEY) ?? '[]');
+      if (!Array.isArray(raw)) return [];
+      return raw.filter((h): h is string => typeof h === 'string' && parseColor(h).ok).slice(0, HISTORY_MAX);
+    } catch {
+      return [];
     }
   }
 
-  function randomColor() {
-    const r = Math.floor(Math.random() * 256);
-    const g = Math.floor(Math.random() * 256);
-    const b = Math.floor(Math.random() * 256);
-    rgbInput = { r, g, b };
-    updateFromRgb();
-    toast.success('Generated random color');
+  function saveHistory() {
+    try {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    } catch {
+      /* storage blocked: history lives for this visit only */
+    }
   }
+
+  let recordTimer: ReturnType<typeof setTimeout> | undefined;
+  function scheduleRecord() {
+    clearTimeout(recordTimer);
+    recordTimer = setTimeout(() => record(toHex(color)), RECORD_DELAY);
+  }
+  $effect(() => () => clearTimeout(recordTimer));
+
+  function record(h: string) {
+    if (history[0] === h) return;
+    history = [h, ...history.filter(x => x !== h)].slice(0, HISTORY_MAX);
+    saveHistory();
+  }
+
+  function restore(h: string) {
+    const r = parseColor(h);
+    if (!r.ok) return;
+    clearTimeout(recordTimer);
+    color = r.color;
+    clipped = false;
+    alphaPct = Math.round(r.color.alpha * 100);
+    text = h;
+    error = '';
+  }
+
+  function clearHistory() {
+    history = [];
+    saveHistory();
+  }
+
+  // Checkerboard behind translucent colors, drawn from theme tokens.
+  const checker =
+    'background-color: var(--bg-control); background-image: repeating-conic-gradient(var(--bg-control-hover) 0 25%, transparent 0 50%); background-size: 16px 16px;';
 </script>
 
 <ToolLayout
   title="Color Converter"
-  description="Convert between different color formats instantly. Perfect for designers and developers."
+  description="Paste any CSS color — HEX, rgb(), hsl(), hwb(), oklch(), oklab() or a name — and get every format plus WCAG contrast."
   icon={Palette}
   color="warning"
 >
-  <!-- Toolbar -->
-  <div class="flex flex-wrap gap-2">
-    <button class="btn btn-primary" onclick={randomColor}>
-      <RefreshCw class="size-4" />
-      Random color
-    </button>
-  </div>
-
-  <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-    <!-- Color Preview -->
-    <div class="tool-card">
-      <h2 class="section-title">Color preview</h2>
-      <div
-        class="mb-4 h-48 w-full rounded-md ring-1 ring-inset ring-ink/10"
-        style="background-color: {hexInput}"
-      ></div>
-      <div class="text-body-sm grid grid-cols-2 gap-4">
-        <div class="rounded-md bg-sunken p-3">
-          <span class="text-ink-muted">HEX:</span>
-          <span class="ml-2 font-mono text-ink">{hexInput}</span>
-        </div>
-        <div class="rounded-md bg-sunken p-3">
-          <span class="text-ink-muted">RGB:</span>
-          <span class="ml-2 font-mono text-ink">{rgbInput.r}, {rgbInput.g}, {rgbInput.b}</span>
-        </div>
+  <section class="flex flex-col gap-4 rounded-lg bg-card p-6" aria-label="Color input">
+    <div class="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto]">
+      <TextField
+        label="Paste any color"
+        mono
+        value={text}
+        oninput={onText}
+        placeholder="#3b82f6, rgb(59 130 246 / 50%), oklch(62% 0.19 260), tomato…"
+        spellcheck={false}
+        autocomplete="off"
+        autocapitalize="off"
+        error={error || undefined}
+        hint={error ? undefined : 'HEX (3/4/6/8 digits), rgb(), hsl(), hwb(), oklch(), oklab() or a CSS color name.'}
+      />
+      <div class="flex flex-col gap-2">
+        <label class="fz-field-label" for="cc-picker">Picker</label>
+        <input
+          id="cc-picker"
+          type="color"
+          class="h-12 w-full cursor-pointer rounded-md border-0 bg-control p-1.5 sm:w-20"
+          value={pickerHex}
+          oninput={onPicker}
+        />
       </div>
     </div>
 
-    <!-- Color History -->
-    <div class="tool-card">
-      <h2 class="section-title">Recent colors</h2>
-      {#if history.length === 0}
-        <div class="flex h-48 flex-col items-center justify-center text-ink-muted">
-          <History class="mb-2 size-8" />
-          <p class="text-body-sm">No colors yet. Start converting!</p>
+    <Slider label="Alpha" min={0} max={100} unit="%" bind:value={alphaPct} onchange={onAlpha} />
+
+    {#if clipped}
+      <p class="text-body-sm text-ink-muted">▼ Outside the sRGB gamut — chroma was reduced to the nearest displayable color.</p>
+    {/if}
+  </section>
+
+  <div class="grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+    <section class="flex flex-col gap-4 rounded-lg bg-card p-6" aria-label="Preview">
+      <div class="overflow-hidden rounded-md bg-sunken p-2">
+        <div class="h-48 overflow-hidden rounded-sm" style={checker}>
+          <div class="size-full" style="background-color: {cssColor}" role="img" aria-label="Preview of {hex}"></div>
         </div>
-      {:else}
-        <div class="grid grid-cols-5 gap-2">
-          {#each history as item (item.timestamp.getTime())}
-            <div class="group relative">
-              <button
-                type="button"
-                class="h-12 w-full cursor-pointer rounded-sm ring-1 ring-inset ring-ink/10 transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
-                style="background-color: {item.color}"
-                onclick={() => {
-                  hexInput = item.color;
-                  updateFromHex();
-                }}
-                aria-label={`Select color ${item.color}`}
-              ></button>
-              <div
-                class="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded-pill bg-ink px-2 py-1 font-mono text-xs whitespace-nowrap text-canvas opacity-0 transition-opacity group-hover:opacity-100"
-              >
-                {item.color}
-              </div>
-            </div>
-          {/each}
+      </div>
+      <div class="flex flex-wrap items-baseline justify-between gap-2">
+        <span class="font-mono text-title text-ink">{hex}</span>
+        {#if name}<span class="text-label font-mono text-ink-muted">{name}</span>{/if}
+      </div>
+    </section>
+
+    <section class="flex flex-col gap-3 rounded-lg bg-card p-6" aria-labelledby="cc-formats">
+      <h2 id="cc-formats" class="section-title">Formats</h2>
+      <ul class="flex flex-col gap-2">
+        {#each formats as f (f.id)}
+          <li class="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-md bg-control py-2 pr-2 pl-4">
+            <span class="text-label w-24 shrink-0 font-mono text-ink-muted">{f.id}</span>
+            <code class="min-w-0 flex-1 font-mono text-code break-all text-ink">{f.value}</code>
+            <CopyChip value={f.value}>Copy<span class="sr-only"> {f.id}</span></CopyChip>
+          </li>
+        {/each}
+      </ul>
+    </section>
+  </div>
+
+  <section class="flex flex-col gap-4 rounded-lg bg-card p-6" aria-labelledby="cc-contrast">
+    <div class="flex flex-wrap items-baseline justify-between gap-2">
+      <h2 id="cc-contrast" class="section-title">Contrast (WCAG 2)</h2>
+      <span class="text-body-sm text-ink-muted">
+        Best text color: <span class="font-mono text-ink">{best}</span>
+      </span>
+    </div>
+    {#if translucent}
+      <p class="text-body-sm text-ink-muted">Contrast uses the color at full opacity.</p>
+    {/if}
+    <div class="grid gap-4 md:grid-cols-2">
+      {#each contrast as c (c.id)}
+        <div class="flex flex-col gap-3 rounded-md bg-control p-3">
+          <div class="flex flex-col gap-1 rounded-sm p-4" style="background-color: {opaqueCss}; color: {c.ink}">
+            <span class="text-title">Large sample text</span>
+            <span class="text-body-sm">Normal sample text — the quick brown fox.</span>
+          </div>
+          <div class="flex flex-wrap items-baseline justify-between gap-2 px-1">
+            <span class="text-body-sm text-ink">{c.label}</span>
+            <span class="font-mono text-title text-ink">{c.ratio.toFixed(2)}:1</span>
+          </div>
+          <ul class="grid grid-cols-2 gap-x-4 gap-y-1 px-1 text-body-sm">
+            {#each [{ k: 'AA normal', v: c.aaNormal }, { k: 'AA large', v: c.aaLarge }, { k: 'AAA normal', v: c.aaaNormal }, { k: 'AAA large', v: c.aaaLarge }] as row (row.k)}
+              <li class="flex justify-between gap-2">
+                <span class="text-ink-muted">{row.k}</span>
+                <span class="font-mono {row.v ? 'text-live' : 'text-negative'}">{row.v ? '▲ Pass' : '▼ Fail'}</span>
+              </li>
+            {/each}
+          </ul>
         </div>
+      {/each}
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-4 rounded-lg bg-card p-6" aria-labelledby="cc-history">
+    <div class="flex items-center justify-between gap-2">
+      <h2 id="cc-history" class="section-title">Recent colors</h2>
+      {#if history.length}
+        <Button variant="ghost" size="sm" onclick={clearHistory}>Clear</Button>
       {/if}
     </div>
-  </div>
-
-  <!-- Color Formats -->
-  <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-    <!-- HEX Format -->
-    <div class="tool-card">
-      <h3 class="section-title">HEX</h3>
-      <div class="flex gap-2">
-        <input
-          bind:value={hexInput}
-          oninput={updateFromHex}
-          class="tool-input flex-1 font-mono! text-sm!"
-          placeholder="#000000"
-        />
-        <button
-          onclick={() => copyToClipboard(hexInput, 'HEX')}
-          class="btn btn-secondary"
-          aria-label="Copy HEX"
-          title="Copy HEX"
-        >
-          <Copy class="size-4" />
-        </button>
-      </div>
-    </div>
-
-    <!-- RGB Format -->
-    <div class="tool-card">
-      <h3 class="section-title">RGB</h3>
-      <div class="space-y-3">
-        {#each ['r', 'g', 'b'] as channel (channel)}
-          <div class="flex items-center gap-2">
-            <label
-              for={`rgb-${channel}`}
-              class="text-body-sm w-8 font-mono font-medium text-ink-muted uppercase"
+    {#if history.length === 0}
+      <EmptyState title="No colors yet" text="Colors you settle on are kept here, on this device." />
+    {:else}
+      <ul class="flex flex-wrap gap-2">
+        {#each history as h (h)}
+          <li>
+            <button
+              type="button"
+              class="group flex cursor-pointer flex-col items-center gap-1 rounded-md bg-control p-1.5 transition-[background-color,scale] duration-fast ease-spring hover:bg-control-hover active:scale-[.96]"
+              onclick={() => restore(h)}
+              aria-label="Restore {h}"
+              title={h}
             >
-              {channel}:
-            </label>
-            <input
-              id={`rgb-${channel}`}
-              type="range"
-              min="0"
-              max="255"
-              bind:value={rgbInput[channel as keyof typeof rgbInput]}
-              oninput={updateFromRgb}
-              class="slider flex-1"
-              style="--p: {(rgbInput[channel as keyof typeof rgbInput] / 255) * 100}%"
-            />
-            <input
-              type="number" inputmode="decimal"
-              min="0"
-              max="255"
-              bind:value={rgbInput[channel as keyof typeof rgbInput]}
-              oninput={updateFromRgb}
-              class="tool-input w-16! px-2! py-1! font-mono! text-sm!"
-            />
-          </div>
+              <span class="block size-11 overflow-hidden rounded-sm bg-sunken p-0.5">
+                <span class="block size-full overflow-hidden rounded-sm" style={checker}>
+                  <span class="block size-full" style="background-color: {h}"></span>
+                </span>
+              </span>
+              <span class="text-label font-mono text-ink-muted">{h}</span>
+            </button>
+          </li>
         {/each}
-        <button
-          onclick={() => copyToClipboard(`rgb(${rgbInput.r}, ${rgbInput.g}, ${rgbInput.b})`, 'RGB')}
-          class="btn btn-secondary mt-2 w-full"
-        >
-          <Copy class="size-4" />
-          Copy RGB
-        </button>
-      </div>
-    </div>
-
-    <!-- HSL Format -->
-    <div class="tool-card">
-      <h3 class="section-title">HSL</h3>
-      <div class="space-y-3">
-        {#each ['h', 's', 'l'] as channel (channel)}
-          <div class="flex items-center gap-2">
-            <label
-              for={`hsl-${channel}`}
-              class="text-body-sm w-8 font-mono font-medium text-ink-muted uppercase"
-            >
-              {channel}:
-            </label>
-            <input
-              id={`hsl-${channel}`}
-              type="range"
-              min="0"
-              max={channel === 'h' ? 360 : 100}
-              bind:value={hslInput[channel as keyof typeof hslInput]}
-              oninput={updateFromHsl}
-              class="slider flex-1"
-              style="--p: {(hslInput[channel as keyof typeof hslInput] / (channel === 'h' ? 360 : 100)) * 100}%"
-            />
-            <input
-              type="number" inputmode="decimal"
-              min="0"
-              max={channel === 'h' ? 360 : 100}
-              bind:value={hslInput[channel as keyof typeof hslInput]}
-              oninput={updateFromHsl}
-              class="tool-input w-16! px-2! py-1! font-mono! text-sm!"
-            />
-          </div>
-        {/each}
-        <button
-          onclick={() =>
-            copyToClipboard(`hsl(${hslInput.h}, ${hslInput.s}%, ${hslInput.l}%)`, 'HSL')}
-          class="btn btn-secondary mt-2 w-full"
-        >
-          <Copy class="size-4" />
-          Copy HSL
-        </button>
-      </div>
-    </div>
-
-    <!-- HSV Format -->
-    <div class="tool-card">
-      <h3 class="section-title">HSV</h3>
-      <div class="space-y-2">
-        <div class="text-body-sm flex justify-between">
-          <span class="text-ink-muted">Hue:</span>
-          <span class="font-mono text-ink">{hsvInput.h}°</span>
-        </div>
-        <div class="text-body-sm flex justify-between">
-          <span class="text-ink-muted">Saturation:</span>
-          <span class="font-mono text-ink">{hsvInput.s}%</span>
-        </div>
-        <div class="text-body-sm flex justify-between">
-          <span class="text-ink-muted">Value:</span>
-          <span class="font-mono text-ink">{hsvInput.v}%</span>
-        </div>
-        <button
-          onclick={() =>
-            copyToClipboard(`hsv(${hsvInput.h}, ${hsvInput.s}%, ${hsvInput.v}%)`, 'HSV')}
-          class="btn btn-secondary mt-4 w-full"
-        >
-          <Copy class="size-4" />
-          Copy HSV
-        </button>
-      </div>
-    </div>
-
-    <!-- CMYK Format -->
-    <div class="tool-card">
-      <h3 class="section-title">CMYK</h3>
-      <div class="space-y-2">
-        {#each ['c', 'm', 'y', 'k'] as channel (channel)}
-          <div class="text-body-sm flex justify-between">
-            <span class="text-ink-muted uppercase">
-              {channel === 'k' ? 'Key (Black)' : channel}:
-            </span>
-            <span class="font-mono text-ink">
-              {cmykInput[channel as keyof typeof cmykInput]}%
-            </span>
-          </div>
-        {/each}
-        <button
-          onclick={() =>
-            copyToClipboard(
-              `cmyk(${cmykInput.c}%, ${cmykInput.m}%, ${cmykInput.y}%, ${cmykInput.k}%)`,
-              'CMYK'
-            )}
-          class="btn btn-secondary mt-4 w-full"
-        >
-          <Copy class="size-4" />
-          Copy CMYK
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Features Section -->
-  <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-    <div class="card">
-      <div class="feature-icon"><Palette class="size-5" /></div>
-      <h3 class="feature-title">Multiple formats</h3>
-      <p class="feature-description">Support for HEX, RGB, HSL, HSV, and CMYK color formats</p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon"><Zap class="size-5" /></div>
-      <h3 class="feature-title">Live conversion</h3>
-      <p class="feature-description">Real-time color conversion as you type or adjust sliders</p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon"><History class="size-5" /></div>
-      <h3 class="feature-title">Color history</h3>
-      <p class="feature-description">Keep track of your recently used colors for quick access</p>
-    </div>
-  </div>
+      </ul>
+    {/if}
+  </section>
 </ToolLayout>
