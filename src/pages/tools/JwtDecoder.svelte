@@ -1,417 +1,301 @@
 <script lang="ts">
-  import {
-    Copy,
-    Eye,
-    EyeOff,
-    RefreshCw,
-    Check,
-    X,
-    Info,
-    AlertCircle,
-    FileText
-  } from '@lucide/svelte';
+  import { FileText } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
+  import { Button, CopyChip, EmptyState, Switch, Textarea, TextField } from '$lib/components/ds';
+  import {
+    claimDate,
+    decodeJwt,
+    isHmacAlg,
+    relativeTime,
+    verifyHmac,
+    type FindingLevel,
+    type VerifyStatus
+  } from '$lib/tools/jwt';
 
-  let jwtToken = $state('');
-  let showToken = $state(false);
-  let decodedHeader = $state('');
-  let decodedPayload = $state('');
-  let signature = $state('');
-  let isValid = $state<boolean | null>(null);
-  let errorMessage = $state('');
-  let copied = $state(false);
-  let activeTab = $state('header');
+  // HS256 sample signed with SAMPLE_SECRET; UTF-8 claims and a `-` in the signature on purpose.
+  const SAMPLE =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkrDtmhuIETFkyIsImxvY2FsZSI6IuaXpeacrCIsImlzcyI6Imh0dHBzOi8vZmFyaXouZGV2IiwiYXVkIjoiZmFyaXppbmstdG9vbHMiLCJpYXQiOjE3NjI4MTkyMDAsImV4cCI6NDEwMjQ0NDgwMCwianRpIjoic2FtcGxlLTAxIn0.Vpo57i8pt8Ido-jE1opXccqWa2cnkSOXs2YmLafUBp8';
+  const SAMPLE_SECRET = 'fariz-sample-secret';
 
+  const CLAIMS = [
+    ['iss', 'Issuer'],
+    ['sub', 'Subject'],
+    ['aud', 'Audience'],
+    ['exp', 'Expires'],
+    ['nbf', 'Not before'],
+    ['iat', 'Issued at'],
+    ['jti', 'JWT ID']
+  ] as const;
+
+  const LEVEL: Record<FindingLevel, { marker: string; cls: string }> = {
+    error: { marker: '▼', cls: 'text-negative' },
+    warning: { marker: 'Warning:', cls: 'text-accent-text' },
+    info: { marker: 'Note:', cls: 'text-ink-muted' }
+  };
+
+  // Tokens are credentials: kept in memory only, never persisted.
+  let input = $state('');
+  let secret = $state('');
+  let secretBase64 = $state(false);
+
+  // Ticks so relative times ("expires in 3 h") and expiry findings stay current.
+  let now = $state(Date.now());
   $effect(() => {
-    if (jwtToken) {
-      decodeJWT();
-    } else {
-      clearDecoded();
-    }
+    const timer = setInterval(() => (now = Date.now()), 30_000);
+    return () => clearInterval(timer);
   });
 
-  function decodeJWT() {
-    try {
-      const parts = jwtToken.split('.');
+  const decoded = $derived(decodeJwt(input, now));
+  const jws = $derived(decoded.kind === 'jws' ? decoded : null);
+  const header = $derived(decoded.kind === 'jws' || decoded.kind === 'jwe' ? decoded.header : null);
+  const headerJson = $derived(header ? JSON.stringify(header, null, 2) : '');
+  const payloadJson = $derived(jws ? JSON.stringify(jws.payload, null, 2) : '');
+  const alg = $derived(decoded.kind === 'jws' || decoded.kind === 'jwe' ? decoded.alg : undefined);
+  const algNone = $derived(alg?.toLowerCase() === 'none');
 
-      if (parts.length !== 3) {
-        throw new Error('Invalid JWT format. JWT must have 3 parts separated by dots.');
-      }
-
-      // Decode header
-      try {
-        const headerJson = atob(parts[0]);
-        const header = JSON.parse(headerJson);
-        decodedHeader = JSON.stringify(header, null, 2);
-      } catch {
-        throw new Error('Invalid header format. Cannot decode base64 or parse JSON.');
-      }
-
-      // Decode payload
-      try {
-        const payloadJson = atob(parts[1]);
-        const payload = JSON.parse(payloadJson);
-        decodedPayload = JSON.stringify(payload, null, 2);
-
-        // Check if token is expired
-        if (payload.exp) {
-          const currentTime = Math.floor(Date.now() / 1000);
-          if (currentTime > payload.exp) {
-            errorMessage = 'Warning: This token has expired!';
-          } else {
-            errorMessage = '';
-          }
-        }
-      } catch {
-        throw new Error('Invalid payload format. Cannot decode base64 or parse JSON.');
-      }
-
-      signature = parts[2];
-      isValid = true;
-    } catch (error) {
-      errorMessage = error instanceof Error ? error.message : 'Failed to decode JWT token';
-      clearDecoded();
-      isValid = false;
+  /** The token split into labelled, coloured parts. */
+  const pieces = $derived.by(() => {
+    if (decoded.kind === 'jws') {
+      return [
+        { label: 'Header', text: decoded.segments.header, cls: 'text-accent-text' },
+        { label: 'Payload', text: decoded.segments.payload, cls: 'text-live' },
+        { label: 'Signature', text: decoded.segments.signature, cls: 'text-ink-muted' }
+      ];
     }
-  }
+    if (decoded.kind === 'jwe') {
+      const names = ['Header', 'Encrypted key', 'IV', 'Ciphertext', 'Tag'];
+      return decoded.parts.map((text, i) => ({
+        label: names[i],
+        text,
+        cls: i === 0 ? 'text-accent-text' : 'text-ink-muted'
+      }));
+    }
+    return [];
+  });
 
-  function clearDecoded() {
-    decodedHeader = '';
-    decodedPayload = '';
-    signature = '';
-    isValid = null;
-  }
-
-  function copyToClipboard(text: string) {
-    navigator.clipboard.writeText(text).then(() => {
-      copied = true;
-      setTimeout(() => {
-        copied = false;
-      }, 2000);
+  const claimRows = $derived.by(() => {
+    if (!jws) return [];
+    const payload = jws.payload;
+    return CLAIMS.filter(([key]) => key in payload).map(([key, label]) => {
+      const value = payload[key];
+      const date = key === 'exp' || key === 'nbf' || key === 'iat' ? claimDate(payload, key) : undefined;
+      const text = Array.isArray(value) ? value.map(String).join(', ') : typeof value === 'string' ? value : undefined;
+      return {
+        key,
+        label,
+        raw: JSON.stringify(value),
+        human: date ? date.toLocaleString() : text,
+        relative: date ? relativeTime(date, now) : undefined
+      };
     });
+  });
+
+  // Signature verification (HS* only) runs async; only the latest run may write its result.
+  const verifyToken = $derived(jws && isHmacAlg(jws.alg) ? jws.token : '');
+  let verifyStatus = $state<VerifyStatus | 'checking' | null>(null);
+  let run = 0;
+  $effect(() => {
+    const token = verifyToken;
+    const key = secret;
+    const secretEncoding = secretBase64 ? 'base64' : 'utf8';
+    const id = ++run;
+    if (!token || key === '') {
+      verifyStatus = null;
+      return;
+    }
+    verifyStatus = 'checking';
+    verifyHmac(token, key, { secretEncoding })
+      .then(status => {
+        if (id === run) verifyStatus = status;
+      })
+      .catch(() => {
+        if (id === run) verifyStatus = 'invalid';
+      });
+  });
+
+  function loadSample() {
+    input = SAMPLE;
+    secret = '';
+    secretBase64 = false;
   }
 
   function clearAll() {
-    jwtToken = '';
-    clearDecoded();
-    errorMessage = '';
-    isValid = null;
-    activeTab = 'header';
-  }
-
-  function loadExample() {
-    jwtToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE3MTYyMzkwMjJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
-  }
-
-  function getPayloadInfo() {
-    if (!decodedPayload) return null;
-
-    try {
-      const payload = JSON.parse(decodedPayload);
-      return payload;
-    } catch {
-      return null;
-    }
-  }
-
-  function formatTimestamp(timestamp: number): string {
-    return new Date(timestamp * 1000).toLocaleString();
-  }
-
-  function isTokenExpired(): boolean {
-    const payload = getPayloadInfo();
-    if (!payload || !payload.exp) return false;
-
-    return Math.floor(Date.now() / 1000) > payload.exp;
-  }
-
-  function getTokenValidityTime(): string {
-    const payload = getPayloadInfo();
-    if (!payload || !payload.exp) return 'N/A';
-
-    const currentTime = Math.floor(Date.now() / 1000);
-    const timeLeft = payload.exp - currentTime;
-
-    if (timeLeft <= 0) return 'Expired';
-
-    const days = Math.floor(timeLeft / 86400);
-    const hours = Math.floor((timeLeft % 86400) / 3600);
-    const minutes = Math.floor((timeLeft % 3600) / 60);
-
-    if (days > 0) return `${days}d ${hours}h ${minutes}m`;
-    if (hours > 0) return `${hours}h ${minutes}m`;
-    return `${minutes}m`;
+    input = '';
+    secret = '';
+    secretBase64 = false;
   }
 </script>
 
-<svelte:head>
-  <title>JWT Decoder - Developer Tools</title>
-  <meta
-    name="description"
-    content="Securely decode and analyze JWT tokens. View header, payload, and check token validity"
-  />
-</svelte:head>
-
 <ToolLayout
   title="JWT Decoder"
-  description="Decode and validate JSON Web Tokens (JWT) with header, payload, and signature analysis."
+  description="Inspect JSON Web Tokens: header, payload, claims and expiry, with optional HMAC signature verification — all in your browser."
   icon={FileText}
   color="warning"
 >
-  <!-- Controls -->
-  <div class="flex flex-wrap gap-2">
-    <button class="btn btn-secondary btn-sm" onclick={loadExample}>
-      <RefreshCw class="w-4 h-4" />
-      Load example
-    </button>
-    <button class="btn btn-ghost btn-sm" onclick={clearAll}>
-      Clear
-    </button>
-  </div>
+  <section class="flex min-w-0 flex-col gap-4 rounded-lg bg-card p-6" aria-label="Token">
+    <Textarea
+      label="JWT"
+      bind:value={input}
+      rows={5}
+      mono
+      class="break-all"
+      placeholder="Paste a token — eyJhbGciOi… (a leading “Bearer ” is fine)"
+      spellcheck={false}
+      autocomplete="off"
+      autocapitalize="off"
+      error={decoded.kind === 'error' ? decoded.error : undefined}
+      hint="Decoded as you type. Nothing is stored or sent anywhere."
+    />
+    <div class="flex flex-wrap gap-2">
+      <Button variant="secondary" size="sm" onclick={loadSample}>Load sample</Button>
+      <Button variant="ghost" size="sm" onclick={clearAll} disabled={!input && !secret}>Clear</Button>
+    </div>
 
-  <!-- Input Section -->
-  <div class="tool-card">
-    <div class="mb-4">
-      <label
-        for="jwt-token-input"
-        class="label"
-      >
-        JWT token
-      </label>
-      <div class="relative">
-        <textarea
-          id="jwt-token-input"
-          bind:value={jwtToken}
-          placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
-          rows={showToken ? 4 : 1}
-          class="code-editor pr-12 font-mono text-sm"
-        ></textarea>
-        <button
-          onclick={() => (showToken = !showToken)}
-          class="btn-icon absolute right-3 top-3"
-        >
-          {#if showToken}
-            <EyeOff class="w-5 h-5" />
+    {#if pieces.length}
+      <div class="flex flex-col gap-3 rounded-md bg-sunken p-4">
+        <p class="m-0 font-mono text-code break-all text-ink">
+          {#each pieces as piece, i (i)}{#if i > 0}<span aria-hidden="true">.</span>{/if}<span
+              class={piece.cls}
+              title={piece.label}>{piece.text}</span
+            >{/each}
+        </p>
+        <ul class="m-0 flex list-none flex-wrap gap-x-4 gap-y-1 p-0 text-label font-mono" aria-label="Colour key">
+          {#each pieces as piece, i (i)}
+            <li class={piece.cls}>
+              <span aria-hidden="true">■</span>
+              {piece.label}<span class="text-ink-muted"> · {piece.text.length} chars</span>
+            </li>
+          {/each}
+        </ul>
+      </div>
+    {/if}
+  </section>
+
+  {#if decoded.kind === 'empty'}
+    <section class="rounded-lg bg-card" aria-label="Result">
+      <EmptyState title="Nothing to decode yet" text="Paste a JWT above, or load a signed sample to see how it works.">
+        {#snippet actions()}
+          <Button variant="secondary" size="sm" onclick={loadSample}>Load sample</Button>
+        {/snippet}
+      </EmptyState>
+    </section>
+  {:else if decoded.kind === 'jwe'}
+    <section class="flex flex-col gap-3 rounded-lg bg-card p-6" aria-label="Status" aria-live="polite">
+      <p class="m-0 text-body text-ink">Well-formed JWE{alg ? ` · alg ${alg}` : ''}</p>
+      <p class="m-0 text-body-sm text-ink-muted">{decoded.message}</p>
+    </section>
+  {:else if jws}
+    <section class="flex flex-col gap-3 rounded-lg bg-card p-6" aria-label="Status" aria-live="polite">
+      <p class="m-0 text-body text-ink">
+        Well-formed JWS{alg ? ` · alg ${alg}` : ''}
+        {#if verifyStatus === 'valid'}<span class="text-live"> · ▲ Signature verified</span>{/if}
+        {#if verifyStatus === 'invalid'}<span class="text-negative"> · ▼ Signature does not match</span>{/if}
+      </p>
+      {#if jws.findings.length}
+        <ul class="m-0 flex list-none flex-col gap-1 p-0 text-body-sm">
+          {#each jws.findings as finding (finding.code)}
+            <li class="text-ink">
+              <span class="font-mono {LEVEL[finding.level].cls}">{LEVEL[finding.level].marker}</span>
+              {finding.message}
+            </li>
+          {/each}
+        </ul>
+      {:else}
+        <p class="m-0 text-body-sm text-ink-muted">No problems with the time claims. Decoding alone doesn't prove who signed it.</p>
+      {/if}
+    </section>
+  {/if}
+
+  {#if header}
+    <div class="grid min-w-0 gap-4 {jws ? 'lg:grid-cols-2' : ''}">
+      <section class="flex min-w-0 flex-col gap-3 rounded-lg bg-card p-6" aria-labelledby="jwt-header-title">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <h2 id="jwt-header-title" class="m-0 text-title text-accent-text">Header</h2>
+          <CopyChip value={headerJson}>Copy header</CopyChip>
+        </div>
+        <pre class="m-0 rounded-md bg-sunken p-4 font-mono text-code whitespace-pre-wrap text-ink [overflow-wrap:anywhere]">{headerJson}</pre>
+      </section>
+
+      {#if jws}
+        <section class="flex min-w-0 flex-col gap-3 rounded-lg bg-card p-6" aria-labelledby="jwt-payload-title">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 id="jwt-payload-title" class="m-0 text-title text-live">Payload</h2>
+            <CopyChip value={payloadJson}>Copy payload</CopyChip>
+          </div>
+          <pre class="m-0 rounded-md bg-sunken p-4 font-mono text-code whitespace-pre-wrap text-ink [overflow-wrap:anywhere]">{payloadJson}</pre>
+        </section>
+      {/if}
+    </div>
+  {/if}
+
+  {#if jws && claimRows.length}
+    <section class="flex min-w-0 flex-col gap-3 rounded-lg bg-card p-6" aria-labelledby="jwt-claims-title">
+      <h2 id="jwt-claims-title" class="m-0 text-title">Registered claims</h2>
+      <dl class="m-0 flex flex-col gap-2">
+        {#each claimRows as row (row.key)}
+          <div class="flex min-w-0 flex-col gap-1 rounded-md bg-control p-4 sm:flex-row sm:gap-4">
+            <dt class="flex shrink-0 items-baseline gap-2 sm:w-36 sm:flex-col sm:gap-0">
+              <span class="font-mono text-label text-ink">{row.key}</span>
+              <span class="text-body-sm text-ink-muted">{row.label}</span>
+            </dt>
+            <dd class="m-0 flex min-w-0 flex-1 flex-col gap-1">
+              {#if row.human !== undefined}
+                <span class="text-body-sm break-all text-ink">
+                  {row.human}{#if row.relative}<span class="text-ink-muted"> · {row.relative}</span>{/if}
+                </span>
+              {/if}
+              <code class="font-mono text-code break-all text-ink-muted">{row.raw}</code>
+            </dd>
+          </div>
+        {/each}
+      </dl>
+    </section>
+  {/if}
+
+  {#if jws}
+    <section class="flex min-w-0 flex-col gap-4 rounded-lg bg-card p-6" aria-labelledby="jwt-signature-title">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="jwt-signature-title" class="m-0 text-title">Signature</h2>
+        {#if jws.signature}<CopyChip value={jws.signature}>Copy signature</CopyChip>{/if}
+      </div>
+
+      {#if algNone}
+        <p class="m-0 text-body-sm text-ink">
+          <span class="font-mono text-accent-text">Warning:</span> Unsecured token (alg "none"): there is no signature,
+          so nothing can be verified and any server should reject it.
+        </p>
+      {:else if isHmacAlg(jws.alg)}
+        <p class="m-0 text-body-sm text-ink-muted">
+          {jws.alg} is signed with a shared secret. Enter it to check the signature.
+          {#if input.trim() === SAMPLE}The sample's secret is <code class="font-mono text-ink">{SAMPLE_SECRET}</code>.{/if}
+        </p>
+        <TextField
+          label="HMAC secret"
+          type="password"
+          mono
+          bind:value={secret}
+          autocomplete="off"
+          spellcheck={false}
+          hint="Verified locally with WebCrypto — the secret never leaves your browser and isn't saved."
+        />
+        <Switch label="Secret is base64-encoded" bind:checked={secretBase64} />
+        <p class="m-0 text-body-sm" aria-live="polite">
+          {#if verifyStatus === 'checking'}
+            <span class="text-ink-muted">Checking…</span>
+          {:else if verifyStatus === 'valid'}
+            <span class="text-live">▲ Signature verified with this secret.</span>
+          {:else if verifyStatus === 'invalid'}
+            <span class="text-negative">▼ Signature does not match this secret{secretBase64 ? ' (or it is not valid base64)' : ''}.</span>
           {:else}
-            <Eye class="w-5 h-5" />
+            <span class="text-ink-muted">Not verified.</span>
           {/if}
-        </button>
-      </div>
-      <p class="text-body-sm text-ink-muted mt-2">
-        Token will be decoded in real-time. No data is sent to any server.
-      </p>
-    </div>
-
-    <!-- Validation Status -->
-    {#if isValid !== null}
-      <div
-        class="flex items-center p-3 rounded-md {isValid ? 'status-success' : 'status-error'}"
-      >
-        {#if isValid}
-          <Check class="w-5 h-5 mr-2" />
-          <span class="text-sm">Valid JWT format</span>
-        {:else}
-          <X class="w-5 h-5 mr-2" />
-          <span class="text-sm">Invalid JWT format</span>
-        {/if}
-      </div>
-    {/if}
-
-    {#if errorMessage}
-      <div class="flex items-start p-3 mt-3 rounded-md status-warning">
-        <AlertCircle class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
-        <span class="text-sm">{errorMessage}</span>
-      </div>
-    {/if}
-  </div>
-
-  <!-- Token Info Card -->
-  {#if isValid && getPayloadInfo()}
-    {@const payload = getPayloadInfo()}
-    <div class="tool-card">
-      <h2 class="section-title flex items-center">
-        <Info class="w-5 h-5 mr-2 text-accent-text" />
-        Token information
-      </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="info-card p-3">
-          <p class="text-label text-ink-muted mb-1">Subject</p>
-          <p class="text-sm font-medium font-mono text-ink">
-            {payload.sub || 'N/A'}
-          </p>
-        </div>
-        <div class="info-card p-3">
-          <p class="text-label text-ink-muted mb-1">Issued at</p>
-          <p class="text-sm font-medium font-mono text-ink">
-            {payload.iat ? formatTimestamp(payload.iat) : 'N/A'}
-          </p>
-        </div>
-        <div class="info-card p-3">
-          <p class="text-label text-ink-muted mb-1">Expires at</p>
-          <p class="text-sm font-medium font-mono text-ink">
-            {payload.exp ? formatTimestamp(payload.exp) : 'N/A'}
-          </p>
-        </div>
-        <div class="info-card p-3">
-          <p class="text-label text-ink-muted mb-1">Status</p>
-          <p
-            class="flex items-center gap-1 text-sm font-medium {isTokenExpired()
-              ? 'text-negative'
-              : 'text-live'}"
-          >
-            {#if isTokenExpired()}
-              <X class="w-4 h-4 flex-shrink-0" />
-            {:else}
-              <Check class="w-4 h-4 flex-shrink-0" />
-            {/if}
-            {isTokenExpired() ? 'Expired' : `Valid (${getTokenValidityTime()})`}
-          </p>
-        </div>
-      </div>
-    </div>
+        </p>
+      {:else}
+        <p class="m-0 text-body-sm text-ink-muted">
+          {jws.alg ? `${jws.alg} signatures` : 'Signatures without a known alg'} need the issuer's public key to verify, which
+          this tool doesn't support. The token is decoded but its signature is <strong class="text-ink">not verified</strong>.
+        </p>
+      {/if}
+    </section>
   {/if}
-
-  <!-- Decoded Sections -->
-  {#if isValid}
-    <div class="tool-card">
-      <!-- Tab Navigation -->
-      <div class="tab-nav">
-        <button
-          onclick={() => (activeTab = 'header')}
-          class="tab-btn {activeTab === 'header' ? 'active' : ''}"
-        >
-          Header
-        </button>
-        <button
-          onclick={() => (activeTab = 'payload')}
-          class="tab-btn {activeTab === 'payload' ? 'active' : ''}"
-        >
-          Payload
-        </button>
-        <button
-          onclick={() => (activeTab = 'signature')}
-          class="tab-btn {activeTab === 'signature' ? 'active' : ''}"
-        >
-          Signature
-        </button>
-      </div>
-
-      <div>
-        <!-- Header Tab -->
-        {#if activeTab === 'header'}
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="section-title-sm mb-0! flex items-center gap-2">
-              <span class="badge bg-tile-violet text-ink-on-dark">Header</span>
-              Decoded header
-            </h3>
-            <button
-              onclick={() => copyToClipboard(decodedHeader)}
-              class="btn btn-ghost btn-sm"
-            >
-              <Copy class="w-4 h-4" />
-              {copied ? 'Copied!' : 'Copy'}
-            </button>
-          </div>
-
-          <pre
-            class="bg-tile-violet text-ink-on-dark p-4 rounded-md overflow-x-auto font-mono text-code"><code
-              >{decodedHeader}</code
-            ></pre>
-        {/if}
-
-        <!-- Payload Tab -->
-        {#if activeTab === 'payload'}
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="section-title-sm mb-0! flex items-center gap-2">
-              <span class="badge bg-tile-deep text-ink-on-dark">Payload</span>
-              Decoded payload
-            </h3>
-            <button
-              onclick={() => copyToClipboard(decodedPayload)}
-              class="btn btn-ghost btn-sm"
-            >
-              <Copy class="w-4 h-4" />
-              {copied ? 'Copied!' : 'Copy'}
-            </button>
-          </div>
-
-          <pre
-            class="bg-tile-deep text-ink-on-dark p-4 rounded-md overflow-x-auto font-mono text-code"><code
-              >{decodedPayload}</code
-            ></pre>
-        {/if}
-
-        <!-- Signature Tab -->
-        {#if activeTab === 'signature'}
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="section-title-sm mb-0! flex items-center gap-2">
-              <span class="badge bg-tile-lime text-ink-on-bright">Signature</span>
-              Signature
-            </h3>
-            <button
-              onclick={() => copyToClipboard(signature)}
-              class="btn btn-ghost btn-sm"
-            >
-              <Copy class="w-4 h-4" />
-              {copied ? 'Copied!' : 'Copy'}
-            </button>
-          </div>
-
-          <div class="status-warning rounded-md p-4 mb-4">
-            <div class="flex items-start">
-              <Info class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
-              <div>
-                <p class="text-sm font-medium mb-1">
-                  Security note
-                </p>
-                <p class="text-body-sm">
-                  The signature cannot be verified in the browser for security reasons. Always
-                  verify JWT signatures on your server using a proper secret key.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <pre
-            class="bg-tile-lime text-ink-on-bright p-4 rounded-md overflow-x-auto font-mono text-code break-all whitespace-pre-wrap"><code
-              >{signature}</code
-            ></pre>
-        {/if}
-      </div>
-    </div>
-  {/if}
-
-  <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <div class="tool-card">
-      <div class="feature-icon">
-        <Check class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Real-time decoding</h3>
-      <p class="feature-description">
-        Instantly decode JWT tokens as you type with automatic format validation
-      </p>
-    </div>
-
-    <div class="tool-card">
-      <div class="feature-icon">
-        <AlertCircle class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Token validation</h3>
-      <p class="feature-description">
-        Check token expiration and validity status with detailed information display
-      </p>
-    </div>
-
-    <div class="tool-card">
-      <div class="feature-icon">
-        <Copy class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Easy copy</h3>
-      <p class="feature-description">
-        Copy decoded header, payload, or signature with a single click
-      </p>
-    </div>
-  </div>
 </ToolLayout>

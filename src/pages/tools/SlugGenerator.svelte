@@ -1,286 +1,204 @@
 <script lang="ts">
+  import { Type } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
-  import { Type, Zap, Link2, Copy, Check } from '@lucide/svelte';
+  import { CopyChip, EmptyState, Segmented, Slider, Switch, Textarea } from '$lib/components/ds';
+  import { DEFAULT_SLUG_OPTIONS, slugify, slugifyLines, uniqueSlugs, type SlugOptions } from '$lib/tools/slug';
 
-  let inputText = $state('');
-  let generatedSlug = $state('');
-  let separator = $state('-');
-  let toLowerCase = $state(true);
-  let removeStopWords = $state(false);
-  let maxLength = $state(100);
-  let copiedText = $state('');
-
-  const stopWords = new Set([
-    'a',
-    'an',
-    'the',
-    'and',
-    'or',
-    'but',
-    'in',
-    'on',
-    'at',
-    'to',
-    'for',
-    'of',
-    'with',
-    'by',
-    'is',
-    'are',
-    'was',
-    'were',
-    'be',
-    'been',
-    'being',
-    'have',
-    'has',
-    'had',
-    'do',
-    'does',
-    'did',
-    'will',
-    'would',
-    'could',
-    'should',
-    'may',
-    'might',
-    'must',
-    'can',
-    'this',
-    'that',
-    'these',
-    'those'
-  ]);
-
-  function generateSlug() {
-    if (!inputText.trim()) {
-      generatedSlug = '';
-      return;
-    }
-
-    let slug = inputText;
-
-    // Convert to lowercase if requested
-    if (toLowerCase) {
-      slug = slug.toLowerCase();
-    }
-
-    // Remove stop words if requested
-    if (removeStopWords) {
-      slug = slug
-        .split(/\s+/)
-        .filter(word => !stopWords.has(word.toLowerCase()))
-        .join(' ');
-    }
-
-    // Remove special characters except spaces, hyphens, and underscores
-    slug = slug.replace(/[^\w\s-_]/g, '');
-
-    // Replace spaces and underscores with separator
-    slug = slug.replace(/[\s_]+/g, separator);
-
-    // Remove multiple consecutive separators
-    slug = slug.replace(new RegExp(`${separator}+`, 'g'), separator);
-
-    // Remove leading/trailing separators
-    slug = slug.replace(new RegExp(`^${separator}+|${separator}+$`, 'g'), '');
-
-    // Apply max length
-    if (maxLength > 0) {
-      slug = slug.substring(0, maxLength);
-      // Remove trailing separator if truncated
-      slug = slug.replace(new RegExp(`${separator}$`), '');
-    }
-
-    generatedSlug = slug;
+  interface Settings {
+    mode: string; // 'single' | 'batch'
+    separator: string;
+    lowercase: boolean;
+    keepUnicode: boolean;
+    removeStopWords: boolean;
+    ampersand: boolean;
+    maxLength: number;
+    breakAtWord: boolean;
   }
 
-  function loadSampleText() {
-    inputText = 'How to Create Amazing URL Slugs for Your Blog Posts and Articles';
-    generateSlug();
+  const STORAGE_KEY = 'slugGenerator.options';
+  const MAX_LIMIT = 200;
+  const BATCH_PLACEHOLDER = ['My First Post', 'Café Crème Brûlée', 'My First Post'].join('\n');
+
+  const DEFAULTS: Settings = {
+    mode: 'single',
+    separator: DEFAULT_SLUG_OPTIONS.separator,
+    lowercase: DEFAULT_SLUG_OPTIONS.lowercase,
+    keepUnicode: DEFAULT_SLUG_OPTIONS.keepUnicode,
+    removeStopWords: DEFAULT_SLUG_OPTIONS.removeStopWords,
+    ampersand: DEFAULT_SLUG_OPTIONS.ampersand,
+    maxLength: DEFAULT_SLUG_OPTIONS.maxLength,
+    breakAtWord: DEFAULT_SLUG_OPTIONS.breakAtWord
+  };
+
+  const MODES = [
+    { value: 'single', label: 'Single' },
+    { value: 'batch', label: 'Batch' }
+  ];
+
+  const SEPARATORS = [
+    { value: '-', label: 'Hyphen -' },
+    { value: '_', label: 'Underscore _' },
+    { value: '.', label: 'Dot .' },
+    { value: '', label: 'None' }
+  ];
+
+  /** Saved options, validated field by field so a stale or hand-edited entry can't break the page. */
+  function loadSettings(): Settings {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return { ...DEFAULTS };
+      const saved = JSON.parse(raw) as Partial<Record<keyof Settings, unknown>>;
+      const s: Settings = { ...DEFAULTS };
+      if (saved.mode === 'single' || saved.mode === 'batch') s.mode = saved.mode;
+      if (typeof saved.separator === 'string' && SEPARATORS.some(o => o.value === saved.separator)) {
+        s.separator = saved.separator;
+      }
+      for (const k of ['lowercase', 'keepUnicode', 'removeStopWords', 'ampersand', 'breakAtWord'] as const) {
+        if (typeof saved[k] === 'boolean') s[k] = saved[k];
+      }
+      if (typeof saved.maxLength === 'number' && Number.isFinite(saved.maxLength)) {
+        s.maxLength = Math.min(MAX_LIMIT, Math.max(0, Math.round(saved.maxLength)));
+      }
+      return s;
+    } catch {
+      return { ...DEFAULTS };
+    }
   }
 
-  function copyToClipboard(text: string) {
-    navigator.clipboard.writeText(text);
-    copiedText = 'slug';
-    setTimeout(() => {
-      copiedText = '';
-    }, 2000);
-  }
+  let s = $state<Settings>(loadSettings());
+  let singleText = $state('');
+  let batchText = $state('');
 
-  function clearAll() {
-    inputText = '';
-    generatedSlug = '';
-  }
-
-  // React to changes in input text
   $effect(() => {
-    if (inputText) {
-      generateSlug();
+    const data = JSON.stringify(s);
+    try {
+      localStorage.setItem(STORAGE_KEY, data);
+    } catch {
+      /* storage blocked: options just won't persist */
     }
   });
+
+  const opts = $derived<SlugOptions>({
+    separator: s.separator,
+    lowercase: s.lowercase,
+    keepUnicode: s.keepUnicode,
+    removeStopWords: s.removeStopWords,
+    ampersand: s.ampersand,
+    maxLength: s.maxLength,
+    breakAtWord: s.breakAtWord
+  });
+
+  const slug = $derived(slugify(singleText, opts));
+  const batch = $derived(uniqueSlugs(slugifyLines(batchText, opts), s.separator || '-'));
+  const batchJoined = $derived(batch.join('\n'));
+  const isBatch = $derived(s.mode === 'batch');
+  const hasInput = $derived((isBatch ? batchText : singleText).trim() !== '');
+  const lengthLabel = $derived(s.maxLength > 0 ? `${s.maxLength} characters` : 'No limit');
 </script>
 
 <ToolLayout
   title="Slug Generator"
-  description="Create URL-friendly slugs from text with customizable separators."
+  description="Turn titles into clean, URL-friendly slugs. Accents are transliterated, punctuation and emoji are dropped."
   icon={Type}
   color="warning"
 >
-  <!-- Toolbar -->
-  <div class="flex flex-wrap gap-2">
-    <button class="btn btn-secondary" onclick={loadSampleText}>Load sample</button>
-    <button class="btn btn-ghost" onclick={clearAll}>Clear</button>
-  </div>
-
-  <!-- Options -->
-  <div class="tool-card">
-    <h2 class="section-title">Slug options</h2>
-
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-      <div class="flex flex-col">
-        <label for="separator-select" class="label">Separator</label>
-        <select id="separator-select" bind:value={separator} class="tool-select">
-          <option value="-">Hyphen (-)</option>
-          <option value="_">Underscore (_)</option>
-          <option value="">No separator</option>
-        </select>
+  <div class="grid gap-4 lg:grid-cols-[3fr_2fr]">
+    <!-- Input + result -->
+    <section class="flex flex-col gap-5 rounded-lg bg-card p-6" aria-labelledby="slug-main-title">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="slug-main-title" class="text-label text-ink-muted">{isBatch ? 'Titles' : 'Title'}</h2>
+        <div class="w-full sm:w-56">
+          <Segmented label="Mode" options={MODES} bind:value={s.mode} />
+        </div>
       </div>
 
-      <div class="flex flex-col">
-        <label for="max-length-input" class="label">Max length</label>
-        <input
-          id="max-length-input"
-          type="number" inputmode="decimal"
-          bind:value={maxLength}
-          min="0"
-          max="500"
-          class="tool-input"
+      {#if isBatch}
+        <Textarea
+          label="Titles, one per line"
+          hint="Each line becomes a slug. Repeats get -2, -3 … so every slug is unique."
+          rows={8}
+          bind:value={batchText}
+          placeholder={BATCH_PLACEHOLDER}
         />
-      </div>
+      {:else}
+        <Textarea
+          label="Text to slugify"
+          rows={3}
+          bind:value={singleText}
+          placeholder="Café Crème Brûlée: A Beginner's Guide"
+        />
+      {/if}
 
-      <div class="flex items-end">
-        <label class="custom-checkbox">
-          <input type="checkbox" bind:checked={toLowerCase} />
-          <span class="checkmark"></span>
-          <span class="label-text">Convert to lowercase</span>
-        </label>
-      </div>
+      <div class="flex flex-col gap-3" aria-live="polite">
+        <h3 class="text-label text-ink-muted">{isBatch ? `Slugs (${batch.length})` : 'Slug'}</h3>
 
-      <div class="flex items-end">
-        <label class="custom-checkbox">
-          <input type="checkbox" bind:checked={removeStopWords} />
-          <span class="checkmark"></span>
-          <span class="label-text">Remove stop words</span>
-        </label>
-      </div>
-    </div>
-  </div>
-
-  <!-- Input and Output -->
-  <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-    <!-- Input Section -->
-    <div class="tool-card">
-      <div class="card-header">
-        <h2 class="section-title mb-0!">Input text</h2>
-        <span class="text-count">
-          {inputText.length} characters
-        </span>
-      </div>
-
-      <textarea
-        class="code-editor min-h-[160px]"
-        bind:value={inputText}
-        placeholder="Enter your text here to generate a URL-friendly slug..."
-      ></textarea>
-    </div>
-
-    <!-- Output Section -->
-    <div class="tool-card">
-      <div class="card-header">
-        <h2 class="section-title mb-0!">Generated slug</h2>
-        {#if generatedSlug}
-          <button class="btn btn-sm btn-primary" onclick={() => copyToClipboard(generatedSlug)}>
-            {#if copiedText === 'slug'}
-              <Check class="size-4" />
-              Copied!
-            {:else}
-              <Copy class="size-4" />
-              Copy
-            {/if}
-          </button>
+        {#if isBatch && batch.length}
+          <ol class="flex max-h-80 flex-col gap-1 overflow-auto rounded-md bg-sunken p-4 font-mono text-code text-ink">
+            {#each batch as item, i (i)}
+              <li class="break-all">{item}</li>
+            {/each}
+          </ol>
+          <div>
+            <CopyChip value={batchJoined}>Copy all</CopyChip>
+          </div>
+        {:else if !isBatch && slug}
+          <output
+            class="block rounded-md bg-sunken px-5 py-4 font-mono text-body break-all text-ink"
+            aria-label="Generated slug"
+          >
+            {slug}
+          </output>
+          <div class="flex flex-wrap items-center gap-3">
+            <CopyChip value={slug}>Copy slug</CopyChip>
+            <span class="text-body-sm text-ink-muted">{[...slug].length} characters</span>
+          </div>
+          <p class="font-mono text-body-sm break-all text-ink-muted">
+            https://example.com/blog/<span class="text-accent-text">{slug}</span>
+          </p>
+        {:else if hasInput}
+          <p class="text-body text-ink-muted">
+            Nothing usable left — the text has no letters or digits that fit these options.
+            {#if !s.keepUnicode}Try turning on “Keep non-Latin letters”.{/if}
+          </p>
+        {:else}
+          <EmptyState
+            title={isBatch ? 'No titles yet' : 'No text yet'}
+            text={isBatch ? 'Paste one title per line to get a list of slugs.' : 'Type a title above and the slug appears as you type.'}
+          />
         {/if}
       </div>
+    </section>
 
-      <input
-        type="text"
-        bind:value={generatedSlug}
-        placeholder="Enter text above to generate a slug…"
-        class="tool-input font-mono! text-sm!"
-      />
-    </div>
-  </div>
+    <!-- Options -->
+    <section class="flex flex-col gap-6 rounded-lg bg-card p-6" aria-labelledby="slug-options-title">
+      <h2 id="slug-options-title" class="text-label text-ink-muted">Options</h2>
 
-  <!-- Slug Examples -->
-  <div class="tool-card">
-    <h2 class="section-title">Common examples</h2>
-    <div class="space-y-3">
-      <div class="info-card">
-        <p class="text-body-sm mb-1 font-medium text-ink">Blog post title</p>
-        <p class="mb-2 text-xs text-ink-muted">
-          "How to Create Amazing URL Slugs for Your Blog Posts"
-        </p>
-        <p class="font-mono text-sm break-all text-accent-text">
-          how-to-create-amazing-url-slugs-for-your-blog-posts
-        </p>
+      <div class="flex flex-col gap-2">
+        <span class="fz-field-label" aria-hidden="true">Separator</span>
+        <Segmented label="Separator" options={SEPARATORS} bind:value={s.separator} />
       </div>
 
-      <div class="info-card">
-        <p class="text-body-sm mb-1 font-medium text-ink">Product name</p>
-        <p class="mb-2 text-xs text-ink-muted">
-          "Super Pro Max 3000 Widget with Advanced Features"
-        </p>
-        <p class="font-mono text-sm break-all text-accent-text">
-          super-pro-max-3000-widget-with-advanced-features
-        </p>
+      <div class="flex flex-col gap-4">
+        <Switch label="Lowercase" bind:checked={s.lowercase} />
+        <Switch
+          label="Keep non-Latin letters"
+          description="Keep 日本語, Ελληνικά, Кириллица … instead of dropping them"
+          bind:checked={s.keepUnicode}
+        />
+        <Switch label="Remove stop words" description="a, the, of, to, in …" bind:checked={s.removeStopWords} />
+        <Switch label="Replace & with “and”" bind:checked={s.ampersand} />
       </div>
 
-      <div class="info-card">
-        <p class="text-body-sm mb-1 font-medium text-ink">Article title</p>
-        <p class="mb-2 text-xs text-ink-muted">
-          "The Ultimate Guide to Web Development in 2024"
-        </p>
-        <p class="font-mono text-sm break-all text-accent-text">
-          ultimate-guide-web-development-2024
-        </p>
+      <div class="flex flex-col gap-3">
+        <Slider label="Max length" min={0} max={MAX_LIMIT} step={5} bind:value={s.maxLength} marks={['No limit', String(MAX_LIMIT)]} />
+        <p class="text-body-sm text-ink-muted">{lengthLabel}. 0 means no limit.</p>
+        <Switch
+          label="Break at word"
+          description="Cut between words, never mid-word"
+          bind:checked={s.breakAtWord}
+          disabled={s.maxLength === 0 || s.separator === ''}
+        />
       </div>
-    </div>
-  </div>
-
-  <!-- Features Section -->
-  <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-    <div class="card">
-      <div class="feature-icon"><Link2 class="size-5" /></div>
-      <h3 class="feature-title">URL-friendly slugs</h3>
-      <p class="feature-description">
-        Create clean, readable URLs that are SEO-friendly and user-friendly
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon"><Type class="size-5" /></div>
-      <h3 class="feature-title">Custom separators</h3>
-      <p class="feature-description">
-        Choose between hyphens, underscores, or no separators for your slugs
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon"><Zap class="size-5" /></div>
-      <h3 class="feature-title">Smart processing</h3>
-      <p class="feature-description">
-        Remove special characters, stop words, and apply length limits automatically
-      </p>
-    </div>
+    </section>
   </div>
 </ToolLayout>

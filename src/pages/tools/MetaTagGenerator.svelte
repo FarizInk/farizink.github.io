@@ -1,338 +1,118 @@
 <script lang="ts">
-  import {
-    Copy,
-    RefreshCw,
-    FileText,
-    Search,
-    Globe,
-    Twitter,
-    Code,
-    Download
-  } from '@lucide/svelte';
-  import { toast } from 'svelte-sonner';
+  import { FileText, Download, RotateCcw, Sparkles } from '@lucide/svelte';
   import ToolLayout from '../../components/ToolLayout.svelte';
+  import {
+    Button,
+    CopyChip,
+    EmptyState,
+    Icon,
+    Segmented,
+    Select,
+    Switch,
+    TextField,
+    Textarea
+  } from '$lib/components/ds';
+  import {
+    EMPTY_INPUT,
+    EXAMPLE_INPUT,
+    TITLE_MAX,
+    DESCRIPTION_MAX,
+    buildMetaTags,
+    buildHtmlDocument,
+    validate,
+    resolve,
+    truncate,
+    breadcrumb,
+    hostOf,
+    isAbsoluteUrl,
+    parseSaved,
+    currentOffsetLabel,
+    type MetaInput,
+    type OgType,
+    type TwitterCard
+  } from '$lib/tools/metatags';
 
-  // Basic SEO Meta Tags
-  let title = $state('');
-  let description = $state('');
-  let keywords = $state('');
-  let author = $state('');
-  let canonicalUrl = $state('');
-  let robots = $state('index,follow');
+  const STORAGE_KEY = 'tool.metaTagGenerator';
 
-  // Open Graph Meta Tags
-  let ogTitle = $state('');
-  let ogDescription = $state('');
-  let ogImage = $state('');
-  let ogImageAlt = $state('');
-  let ogUrl = $state('');
-  let ogType = $state('website');
-  let ogSitename = $state('');
-  let ogLocale = $state('en_US');
+  function load(): MetaInput {
+    try {
+      return parseSaved(localStorage.getItem(STORAGE_KEY));
+    } catch {
+      return { ...EMPTY_INPUT };
+    }
+  }
 
-  // Twitter Card Meta Tags
-  let twitterCard = $state('summary_large_image');
-  let twitterTitle = $state('');
-  let twitterDescription = $state('');
-  let twitterImage = $state('');
-  let twitterImageAlt = $state('');
-  let twitterSite = $state('');
-  let twitterCreator = $state('');
+  let form = $state<MetaInput>(load());
 
-  // Additional Meta Tags
-  let themeColor = $state('#ffffff');
-  let viewport = $state('width=device-width, initial-scale=1.0');
-  let language = $state('en');
-  let favicon = $state('/favicon.ico');
-
-  // Article specific (if type is article)
-  let articlePublishedTime = $state('');
-  let articleModifiedTime = $state('');
-  let articleAuthor = $state('');
-  let articleSection = $state('');
-  let articleTag = $state('');
-
-  // JSON-LD Structured Data
-  let enableJsonLd = $state(false);
-  let jsonLdType = $state('WebPage');
-  let jsonLdName = $state('');
-  let jsonLdDescription = $state('');
-  let jsonLdUrl = $state('');
-  let jsonLdImage = $state('');
-
-  // Component state
-  let generatedTags = $state('');
-  let activeTab = $state('basic');
-
-  // Auto-synchronize fields
   $effect(() => {
-    if (title && !ogTitle) ogTitle = title;
-    if (title && !twitterTitle) twitterTitle = title;
-    if (description && !ogDescription) ogDescription = description;
-    if (description && !twitterDescription) twitterDescription = description;
-    if (canonicalUrl && !ogUrl) ogUrl = canonicalUrl;
-    if (ogImage && !twitterImage) twitterImage = ogImage;
-    if (ogImageAlt && !twitterImageAlt) twitterImageAlt = ogImageAlt;
+    const json = JSON.stringify(form);
+    try {
+      localStorage.setItem(STORAGE_KEY, json);
+    } catch {
+      /* storage unavailable: keep working without persistence */
+    }
   });
 
-  function generateMetaTags() {
-    let tags = '';
+  const output = $derived(buildMetaTags(form));
+  const warnings = $derived(validate(form));
+  const r = $derived(resolve(form));
+  const warn = (field: keyof MetaInput) => warnings.find((w) => w.field === field)?.message;
 
-    // Basic SEO Meta Tags
-    if (title) {
-      tags += '<title>' + escapeHtml(title) + '</title>';
-      tags += '\n';
-    }
-    if (description) {
-      tags += '<meta name="description" content="' + escapeHtml(description) + '">';
-      tags += '\n';
-    }
-    if (keywords) {
-      tags += '<meta name="keywords" content="' + escapeHtml(keywords) + '">';
-      tags += '\n';
-    }
-    if (author) {
-      tags += '<meta name="author" content="' + escapeHtml(author) + '">';
-      tags += '\n';
-    }
-    if (canonicalUrl) {
-      tags += '<link rel="canonical" href="' + escapeHtml(canonicalUrl) + '">';
-      tags += '\n';
-    }
-    if (robots) {
-      tags += '<meta name="robots" content="' + escapeHtml(robots) + '">';
-      tags += '\n';
-    }
+  const count = (text: string, max: number) => {
+    const n = text.trim().length;
+    return n > max ? `${n} / ${max} · likely truncated in search results` : `${n} / ${max}`;
+  };
 
-    // Open Graph Meta Tags
-    tags += '\n<!-- Open Graph Meta Tags -->\n';
-    tags += '<meta property="og:type" content="' + escapeHtml(ogType) + '">\n';
-    if (ogTitle) {
-      tags += '<meta property="og:title" content="' + escapeHtml(ogTitle) + '">\n';
-    }
-    if (ogDescription) {
-      tags += '<meta property="og:description" content="' + escapeHtml(ogDescription) + '">\n';
-    }
-    if (ogImage) {
-      tags += '<meta property="og:image" content="' + escapeHtml(ogImage) + '">\n';
-    }
-    if (ogImageAlt) {
-      tags += '<meta property="og:image:alt" content="' + escapeHtml(ogImageAlt) + '">\n';
-    }
-    if (ogUrl) {
-      tags += '<meta property="og:url" content="' + escapeHtml(ogUrl) + '">\n';
-    }
-    if (ogSitename) {
-      tags += '<meta property="og:site_name" content="' + escapeHtml(ogSitename) + '">\n';
-    }
-    if (ogLocale) {
-      tags += '<meta property="og:locale" content="' + escapeHtml(ogLocale) + '">\n';
-    }
+  // Previews
+  const pageUrl = $derived(r.url || r.ogUrl);
+  const crumb = $derived(breadcrumb(pageUrl) || 'example.com');
+  const siteLabel = $derived(form.siteName.trim() || hostOf(pageUrl) || 'Your site');
+  const socialHost = $derived(hostOf(r.ogUrl) || 'example.com');
+  const previewImage = $derived(isAbsoluteUrl(r.image) ? r.image : '');
+  let failedImage = $state('');
+  const largeCard = $derived(form.twitterCard === 'summary_large_image');
 
-    // Twitter Card Meta Tags
-    tags += '\n<!-- Twitter Card Meta Tags -->\n';
-    tags += '<meta name="twitter:card" content="' + escapeHtml(twitterCard) + '">\n';
-    if (twitterTitle) {
-      tags += '<meta name="twitter:title" content="' + escapeHtml(twitterTitle) + '">\n';
-    }
-    if (twitterDescription) {
-      tags +=
-        '<meta name="twitter:description" content="' + escapeHtml(twitterDescription) + '">\n';
-    }
-    if (twitterImage) {
-      tags += '<meta name="twitter:image" content="' + escapeHtml(twitterImage) + '">\n';
-    }
-    if (twitterImageAlt) {
-      tags += '<meta name="twitter:image:alt" content="' + escapeHtml(twitterImageAlt) + '">\n';
-    }
-    if (twitterSite) {
-      tags += '<meta name="twitter:site" content="' + escapeHtml(twitterSite) + '">\n';
-    }
-    if (twitterCreator) {
-      tags += '<meta name="twitter:creator" content="' + escapeHtml(twitterCreator) + '">\n';
-    }
-
-    // Article specific tags
-    if (ogType === 'article') {
-      tags += '\n<!-- Article Specific Meta Tags -->\n';
-      if (articlePublishedTime) {
-        tags +=
-          '<meta property="article:published_time" content="' +
-          escapeHtml(articlePublishedTime) +
-          '">\n';
-      }
-      if (articleModifiedTime) {
-        tags +=
-          '<meta property="article:modified_time" content="' +
-          escapeHtml(articleModifiedTime) +
-          '">\n';
-      }
-      if (articleAuthor) {
-        tags += '<meta property="article:author" content="' + escapeHtml(articleAuthor) + '">\n';
-      }
-      if (articleSection) {
-        tags += '<meta property="article:section" content="' + escapeHtml(articleSection) + '">\n';
-      }
-      if (articleTag) {
-        tags += '<meta property="article:tag" content="' + escapeHtml(articleTag) + '">\n';
-      }
-    }
-
-    // Additional Meta Tags
-    tags += '\n<!-- Additional Meta Tags -->\n';
-    tags += '<meta charset="utf-8">\n';
-    tags += '<meta name="viewport" content="' + escapeHtml(viewport) + '">\n';
-    tags +=
-      '<meta http-equiv="content-type" content="' + escapeHtml('text/html; charset=utf-8') + '">\n';
-    if (language) {
-      tags += '<meta name="language" content="' + escapeHtml(language) + '">\n';
-    }
-    if (themeColor) {
-      tags += '<meta name="theme-color" content="' + escapeHtml(themeColor) + '">\n';
-    }
-    if (favicon) {
-      tags += '<link rel="icon" href="' + escapeHtml(favicon) + '">\n';
-    }
-
-    // JSON-LD Structured Data
-    if (enableJsonLd) {
-      tags += '\n<!-- JSON-LD Structured Data -->\n';
-      const jsonLd = generateJsonLd();
-      tags += '<script type="application/ld+json">' + jsonLd + '</scr' + 'ipt>\n';
-    }
-
-    generatedTags = tags;
-  }
-
-  function generateJsonLd() {
-    const jsonLd: Record<string, unknown> = {
-      '@context': 'https://schema.org',
-      '@type': jsonLdType
-    };
-
-    if (jsonLdName) jsonLd.name = jsonLdName;
-    if (jsonLdDescription) jsonLd.description = jsonLdDescription;
-    if (jsonLdUrl) jsonLd.url = jsonLdUrl;
-    if (jsonLdImage) jsonLd.image = jsonLdImage;
-
-    return JSON.stringify(jsonLd, null, 2);
-  }
-
-  function escapeHtml(text: string): string {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
-  function copyToClipboard() {
-    navigator.clipboard.writeText(generatedTags);
-    toast.success('Copied to clipboard');
-  }
-
-  function clearAll() {
-    title = '';
-    description = '';
-    keywords = '';
-    author = '';
-    canonicalUrl = '';
-    robots = 'index,follow';
-    ogTitle = '';
-    ogDescription = '';
-    ogImage = '';
-    ogImageAlt = '';
-    ogUrl = '';
-    ogType = 'website';
-    ogSitename = '';
-    ogLocale = 'en_US';
-    twitterCard = 'summary_large_image';
-    twitterTitle = '';
-    twitterDescription = '';
-    twitterImage = '';
-    twitterImageAlt = '';
-    twitterSite = '';
-    twitterCreator = '';
-    themeColor = '#ffffff';
-    viewport = 'width=device-width, initial-scale=1.0';
-    language = 'en';
-    favicon = '/favicon.ico';
-    articlePublishedTime = '';
-    articleModifiedTime = '';
-    articleAuthor = '';
-    articleSection = '';
-    articleTag = '';
-    enableJsonLd = false;
-    jsonLdType = 'WebPage';
-    jsonLdName = '';
-    jsonLdDescription = '';
-    jsonLdUrl = '';
-    jsonLdImage = '';
-    generatedTags = '';
-    toast.success('Cleared all');
-  }
+  const ogTypes = [
+    { value: 'website', label: 'Website' },
+    { value: 'article', label: 'Article' },
+    { value: 'profile', label: 'Profile' }
+  ];
+  const cardTypes = [
+    { value: 'summary_large_image', label: 'Large image' },
+    { value: 'summary', label: 'Summary' }
+  ];
+  const robotsOptions = [
+    { value: '', label: 'Default (index, follow)' },
+    { value: 'noindex', label: 'noindex' },
+    { value: 'nofollow', label: 'nofollow' },
+    { value: 'noindex, nofollow', label: 'noindex, nofollow' }
+  ];
 
   function loadExample() {
-    title = 'My Awesome Website - Home Page';
-    description =
-      'Welcome to my awesome website! Discover amazing content, services, and resources that will help you achieve your goals.';
-    keywords = 'awesome website, web development, technology, innovation, digital solutions';
-    author = 'John Doe';
-    canonicalUrl = 'https://myawesomewebsite.com';
-    robots = 'index,follow';
-    ogType = 'website';
-    ogSitename = 'My Awesome Website';
-    ogLocale = 'en_US';
-    twitterCard = 'summary_large_image';
-    twitterSite = '@myawesomewebsite';
-    twitterCreator = '@johndoe';
-    themeColor = '#3b82f6';
-    language = 'en';
-    enableJsonLd = true;
-    jsonLdType = 'WebPage';
-    jsonLdName = 'My Awesome Website - Home Page';
-    jsonLdDescription = description;
-    jsonLdUrl = canonicalUrl;
-    toast.success('Example loaded');
+    form = { ...EXAMPLE_INPUT };
   }
 
-  function downloadAsHtml() {
-    if (!generatedTags) return;
+  function reset() {
+    form = { ...EMPTY_INPUT };
+  }
 
-    const htmlContent =
-      '<!DOCTYPE html>\n' +
-      '<html lang="' +
-      language +
-      '">\n' +
-      '<head>\n' +
-      generatedTags +
-      '</head>\n' +
-      '<body>\n' +
-      '  <!-- Your content goes here -->\n' +
-      '  <h1>Welcome to ' +
-      (title || 'Your Website') +
-      '</h1>\n' +
-      '  <p>' +
-      (description || 'Your description here.') +
-      '</p>\n' +
-      '</body>\n' +
-      '</html>\n';
-
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
+  function download() {
+    const blob = new Blob([buildHtmlDocument(form)], { type: 'text/html;charset=utf-8' });
+    const href = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = 'meta-tags-example.html';
-    document.body.appendChild(a);
+    a.href = href;
+    a.download = 'meta-tags.html';
     a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    toast.success('HTML downloaded');
+    URL.revokeObjectURL(href);
   }
-
-  // Auto-generate when inputs change
-  $effect(() => {
-    generateMetaTags();
-  });
 </script>
+
+{#snippet section(id: string, title: string, text: string)}
+  <div class="flex flex-col gap-1">
+    <h2 {id} class="text-title text-ink">{title}</h2>
+    <p class="text-body-sm text-ink-muted">{text}</p>
+  </div>
+{/snippet}
 
 <ToolLayout
   title="Meta Tag Generator"
@@ -340,648 +120,235 @@
   icon={FileText}
   color="warning"
 >
-  <!-- Actions -->
-  <div class="flex flex-wrap gap-2 items-center">
-    <button
-      class="btn btn-secondary"
-      onclick={loadExample}
-    >
-      <RefreshCw class="w-4 h-4" />
+  <div class="flex flex-wrap gap-3">
+    <Button variant="secondary" onclick={loadExample}>
+      {#snippet icon()}<Sparkles class="size-4" />{/snippet}
       Load example
-    </button>
-    <button
-      class="btn btn-ghost"
-      onclick={clearAll}>Clear all</button
-    >
+    </Button>
+    <Button variant="ghost" onclick={reset}>
+      {#snippet icon()}<RotateCcw class="size-4" />{/snippet}
+      Reset
+    </Button>
   </div>
 
-  <!-- Tab Navigation -->
-  <div class="card !p-0 overflow-hidden">
-    <div class="tab-nav !mb-0 px-4 pt-2" role="tablist">
-      {#each [{ id: 'basic', label: 'Basic SEO', icon: Search }, { id: 'opengraph', label: 'Open Graph', icon: Globe }, { id: 'twitter', label: 'Twitter cards', icon: Twitter }, { id: 'additional', label: 'Additional', icon: Code }, { id: 'jsonld', label: 'JSON-LD', icon: FileText }] as tab (tab.id)}
-        <button
-          role="tab"
-          aria-selected={activeTab === tab.id}
-          onclick={() => (activeTab = tab.id)}
-          class="tab-btn inline-flex items-center gap-2 {activeTab === tab.id ? 'active' : ''}"
-        >
-          <tab.icon class="w-4 h-4" />
-          {tab.label}
-        </button>
-      {/each}
+  <div class="grid items-start gap-6 lg:grid-cols-2">
+    <!-- Form -->
+    <div class="flex min-w-0 flex-col gap-6">
+      <section aria-labelledby="mt-basics" class="flex flex-col gap-5 rounded-lg bg-card p-6">
+        {@render section('mt-basics', 'Basics', 'What search engines show for this page.')}
+        <TextField label="Page title" bind:value={form.title} placeholder="My awesome page" hint={count(form.title, TITLE_MAX)} />
+        <Textarea
+          label="Description"
+          bind:value={form.description}
+          rows={3}
+          placeholder="A short summary of the page"
+          hint={count(form.description, DESCRIPTION_MAX)}
+        />
+        <TextField
+          label="Canonical URL"
+          type="url"
+          mono
+          bind:value={form.url}
+          placeholder="https://example.com/page"
+          hint={warn('url') ?? 'The preferred address of this page.'}
+          optional
+        />
+        <TextField label="Author" bind:value={form.author} placeholder="Jane Doe" optional />
+      </section>
+
+      <section aria-labelledby="mt-social" class="flex flex-col gap-5 rounded-lg bg-card p-6">
+        {@render section('mt-social', 'Social', 'Open Graph and X cards. Empty overrides fall back to Basics.')}
+        <div class="flex flex-col gap-2">
+          <span class="text-label text-ink-muted" aria-hidden="true">Content type</span>
+          <Segmented
+            label="Content type (og:type)"
+            options={ogTypes}
+            bind:value={() => form.ogType, (v) => (form.ogType = (v ?? 'website') as OgType)}
+          />
+        </div>
+        <TextField
+          label="Image URL"
+          type="url"
+          mono
+          bind:value={form.image}
+          placeholder="https://example.com/og.png"
+          hint={warn('image') ?? 'Absolute URL; 1200 × 630 works everywhere.'}
+        />
+        <TextField label="Image alt text" bind:value={form.imageAlt} placeholder="Describe the image" optional />
+        <div class="grid grid-cols-2 gap-4">
+          <TextField label="Image width" inputmode="numeric" bind:value={form.imageWidth} placeholder="1200" optional />
+          <TextField label="Image height" inputmode="numeric" bind:value={form.imageHeight} placeholder="630" optional />
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <TextField label="Site name" bind:value={form.siteName} placeholder="Example" optional />
+          <TextField label="Locale" bind:value={form.locale} placeholder="en_US" optional />
+        </div>
+        <TextField label="Social title" bind:value={form.ogTitle} placeholder="Uses page title" optional />
+        <Textarea label="Social description" bind:value={form.ogDescription} rows={2} placeholder="Uses description" optional />
+        <TextField
+          label="Social URL"
+          type="url"
+          mono
+          bind:value={form.ogUrl}
+          placeholder="Uses canonical URL"
+          hint={warn('ogUrl')}
+          optional
+        />
+
+        <h3 class="text-body font-medium text-ink">X (Twitter)</h3>
+        <div class="flex flex-col gap-2">
+          <span class="text-label text-ink-muted" aria-hidden="true">Card</span>
+          <Segmented
+            label="X card type"
+            options={cardTypes}
+            bind:value={() => form.twitterCard, (v) => (form.twitterCard = (v ?? 'summary_large_image') as TwitterCard)}
+          />
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <TextField label="Site handle" bind:value={form.twitterSite} placeholder="@example" optional />
+          <TextField label="Creator handle" bind:value={form.twitterCreator} placeholder="@author" optional />
+        </div>
+        <TextField label="X title" bind:value={form.twitterTitle} placeholder="Uses social title" optional />
+        <Textarea label="X description" bind:value={form.twitterDescription} rows={2} placeholder="Uses social description" optional />
+        <TextField
+          label="X image URL"
+          type="url"
+          mono
+          bind:value={form.twitterImage}
+          placeholder="Uses social image"
+          hint={warn('twitterImage')}
+          optional
+        />
+      </section>
+
+      {#if form.ogType === 'article'}
+        <section aria-labelledby="mt-article" class="flex flex-col gap-5 rounded-lg bg-card p-6">
+          {@render section('mt-article', 'Article', `Times are saved with your offset (UTC${currentOffsetLabel()}).`)}
+          <div class="grid gap-4 sm:grid-cols-2">
+            <TextField label="Published" type="datetime-local" bind:value={form.publishedTime} optional />
+            <TextField label="Modified" type="datetime-local" bind:value={form.modifiedTime} optional />
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <TextField label="Article author" bind:value={form.articleAuthor} placeholder="Jane Doe or profile URL" optional />
+            <TextField label="Section" bind:value={form.articleSection} placeholder="Technology" optional />
+          </div>
+          <TextField
+            label="Tags"
+            bind:value={form.articleTags}
+            placeholder="svelte, seo, web"
+            hint="Comma-separated; each becomes its own article:tag."
+            optional
+          />
+        </section>
+      {/if}
+
+      <section aria-labelledby="mt-advanced" class="flex flex-col gap-5 rounded-lg bg-card p-6">
+        {@render section('mt-advanced', 'Advanced', 'Crawling, browser chrome and structured data.')}
+        <Select label="Robots" options={robotsOptions} bind:value={form.robots} />
+        <div class="grid gap-4 sm:grid-cols-2">
+          <TextField label="Theme color" mono bind:value={form.themeColor} placeholder="#9b6bff" optional />
+          <TextField label="Document language" bind:value={form.lang} placeholder="en" hint="Used for the downloaded file." optional />
+        </div>
+        <Switch label="Include viewport tag" description="width=device-width, initial-scale=1" bind:checked={form.viewport} />
+        <Switch
+          label="Add JSON-LD structured data"
+          description={form.ogType === 'article' ? 'schema.org Article' : 'schema.org WebSite'}
+          bind:checked={form.jsonLd}
+        />
+      </section>
     </div>
 
-    <div class="p-6">
-      <!-- Basic SEO Tab -->
-      {#if activeTab === 'basic'}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label
-              for="title-input"
-              class="label"
-              >Page title *</label
-            >
-            <input
-              class="tool-input"
-              type="text"
-              bind:value={title}
-              placeholder="Enter page title (50-60 characters recommended)"
-            />
-            <p class="text-count mt-1">
-              {title.length}/60 characters
-            </p>
-          </div>
+    <!-- Previews + output -->
+    <div class="flex min-w-0 flex-col gap-6 lg:sticky lg:top-6">
+      <section aria-labelledby="mt-preview" class="flex flex-col gap-5 rounded-lg bg-card p-6">
+        {@render section('mt-preview', 'Preview', 'Approximate; every site renders a little differently.')}
 
-          <div>
-            <label
-              for="description-input"
-              class="label"
-              >Meta description *</label
-            >
-            <textarea
-              class="code-editor min-h-[80px]"
-              bind:value={description}
-              placeholder="Enter page description (150-160 characters recommended)"
-            ></textarea>
-            <p class="text-count mt-1">
-              {description.length}/160 characters
-            </p>
-          </div>
-
-          <div>
-            <label
-              for="keywords-input"
-              class="label"
-              >Keywords</label
-            >
-            <input
-              type="text"
-              bind:value={keywords}
-              placeholder="Enter keywords separated by commas"
-              class="tool-input"
-            />
-          </div>
-
-          <div>
-            <label
-              for="author-input"
-              class="label">Author</label
-            >
-            <input
-              type="text"
-              bind:value={author}
-              placeholder="Enter author name"
-              class="tool-input"
-            />
-          </div>
-
-          <div>
-            <label
-              for="canonical-input"
-              class="label"
-              >Canonical URL</label
-            >
-            <input
-              type="url"
-              bind:value={canonicalUrl}
-              placeholder="https://example.com/page"
-              class="tool-input"
-            />
-          </div>
-
-          <div>
-            <label
-              for="robots-input"
-              class="label">Robots</label
-            >
-            <select
-              bind:value={robots}
-              class="tool-select"
-            >
-              <option value="index,follow">Index, Follow</option>
-              <option value="index,nofollow">Index, No Follow</option>
-              <option value="noindex,follow">No Index, Follow</option>
-              <option value="noindex,nofollow">No Index, No Follow</option>
-            </select>
-          </div>
-        </div>
-      {/if}
-
-      <!-- Open Graph Tab -->
-      {#if activeTab === 'opengraph'}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label
-              for="og-title-input"
-              class="label"
-              >OG title</label
-            >
-            <input
-              type="text"
-              bind:value={ogTitle}
-              placeholder="Enter Open Graph title"
-              class="tool-input"
-            />
-          </div>
-
-          <div>
-            <label
-              for="og-description-input"
-              class="label"
-              >OG description</label
-            >
-            <textarea
-              bind:value={ogDescription}
-              placeholder="Enter Open Graph description"
-              class="code-editor min-h-[80px]"
-            ></textarea>
-          </div>
-
-          <div>
-            <label
-              for="og-image-input"
-              class="label"
-              >OG image URL</label
-            >
-            <input
-              type="url"
-              bind:value={ogImage}
-              placeholder="https://example.com/image.jpg"
-              class="tool-input"
-            />
-          </div>
-
-          <div>
-            <label
-              for="og-alt-input"
-              class="label"
-              >OG image alt</label
-            >
-            <input
-              type="text"
-              bind:value={ogImageAlt}
-              placeholder="Describe the image for accessibility"
-              class="tool-input"
-            />
-          </div>
-
-          <div>
-            <label
-              for="og-url-input"
-              class="label">OG URL</label
-            >
-            <input
-              type="url"
-              bind:value={ogUrl}
-              placeholder="https://example.com/page"
-              class="tool-input"
-            />
-          </div>
-
-          <div>
-            <label
-              for="og-type-input"
-              class="label">OG type</label
-           >
-           <select
-             bind:value={ogType}
-              class="tool-select"
-           >
-             <option value="website">Website</option>
-              <option value="article">Article</option>
-              <option value="product">Product</option>
-              <option value="profile">Profile</option>
-              <option value="video">Video</option>
-              <option value="music">Music</option>
-            </select>
-          </div>
-
-          <div>
-            <label
-              for="og-site-input"
-              class="label"
-              >OG site name</label
-            >
-            <input
-              type="text"
-              bind:value={ogSitename}
-              placeholder="Your website name"
-              class="tool-input"
-            />
-          </div>
-
-          <div>
-            <label
-              for="og-locale-input"
-              class="label"
-              >OG locale</label
-            >
-            <input
-              type="text"
-              bind:value={ogLocale}
-              placeholder="en_US"
-              class="tool-input"
-            />
-          </div>
-        </div>
-
-        <!-- Article specific fields -->
-        {#if ogType === 'article'}
-          <div class="mt-8">
-            <h3 class="section-title">
-              Article-specific tags
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label
-                  for="published-input"
-                  class="label"
-                  >Published time</label
-                >
-                <input
-                  type="datetime-local"
-                  bind:value={articlePublishedTime}
-                  class="tool-input"
-                />
-              </div>
-
-              <div>
-                <label
-                  for="modified-input"
-                  class="label"
-                  >Modified time</label
-                >
-                <input
-                  type="datetime-local"
-                  bind:value={articleModifiedTime}
-                  class="tool-input"
-                />
-              </div>
-
-              <div>
-                <label
-                  for="article-author-input"
-                  class="label"
-                  >Article author</label
-                >
-                <input
-                  type="text"
-                  bind:value={articleAuthor}
-                  placeholder="Author name"
-                  class="tool-input"
-                />
-              </div>
-
-              <div>
-                <label
-                  for="section-input"
-                  class="label"
-                  >Article section</label
-                >
-                <input
-                  type="text"
-                  bind:value={articleSection}
-                  placeholder="Technology, Business, etc."
-                  class="tool-input"
-                />
-              </div>
-
-              <div class="md:col-span-2">
-                <label
-                  for="article-tag-input"
-                  class="label"
-                  >Article tags</label
-                >
-                <input
-                  type="text"
-                  bind:value={articleTag}
-                  placeholder="tag1, tag2, tag3"
-                  class="tool-input"
-                />
+        <div class="flex flex-col gap-2">
+          <h3 class="text-label text-ink-muted">Search result</h3>
+          <div class="flex flex-col gap-1.5 rounded-md bg-sunken p-4">
+            <div class="flex min-w-0 items-center gap-3">
+              <span
+                class="grid size-7 shrink-0 place-items-center rounded-pill bg-control text-body-sm font-medium text-ink"
+                aria-hidden="true">{siteLabel.charAt(0).toUpperCase()}</span
+              >
+              <div class="flex min-w-0 flex-col">
+                <span class="truncate text-body-sm text-ink">{siteLabel}</span>
+                <span class="truncate text-body-sm text-ink-muted">{crumb}</span>
               </div>
             </div>
-          </div>
-        {/if}
-      {/if}
-
-      <!-- Twitter Cards Tab -->
-      {#if activeTab === 'twitter'}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label
-              for="twitter-card-type"
-              class="label"
-              >Twitter card type</label
-           >
-           <select
-             bind:value={twitterCard}
-              class="tool-select"
-           >
-             <option value="summary">Summary</option>
-              <option value="summary_large_image">Summary with Large Image</option>
-              <option value="app">App</option>
-              <option value="player">Player</option>
-            </select>
-          </div>
-
-          <div>
-            <label
-              for="twitter-title-input"
-              class="label"
-              >Twitter title</label
-            >
-            <input
-              type="text"
-              bind:value={twitterTitle}
-              placeholder="Enter Twitter card title"
-              class="tool-input"
-            />
-          </div>
-
-          <div>
-            <label
-              for="twitter-desc-input"
-              class="label"
-              >Twitter description</label
-            >
-          <textarea
-            bind:value={twitterDescription}
-            placeholder="Enter Twitter card description"
-            class="textarea min-h-[80px] resize-none"
-          ></textarea>
-          </div>
-
-          <div>
-            <label
-              for="twitter-image-input"
-              class="label"
-              >Twitter image URL</label
-            >
-            <input
-              type="url"
-              bind:value={twitterImage}
-              placeholder="https://example.com/twitter-image.jpg"
-              class="tool-input"
-            />
-          </div>
-
-          <div>
-            <label
-              for="twitter-alt-input"
-              class="label"
-              >Twitter image alt</label
-            >
-            <input
-              type="text"
-              bind:value={twitterImageAlt}
-              placeholder="Describe the Twitter image"
-              class="tool-input"
-            />
-          </div>
-
-          <div>
-            <label
-              for="twitter-site-input"
-              class="label"
-              >Twitter site</label
-            >
-            <input
-              type="text"
-              bind:value={twitterSite}
-              placeholder="@yourwebsite"
-              class="tool-input"
-            />
-          </div>
-
-          <div>
-            <label
-              for="twitter-creator-input"
-              class="label"
-              >Twitter creator</label
-            >
-            <input
-              type="text"
-              bind:value={twitterCreator}
-              placeholder="@author"
-              class="tool-input"
-            />
+            <p class="text-body-lg break-words text-accent-text">{truncate(r.title || 'Page title', TITLE_MAX)}</p>
+            <p class="text-body-sm break-words text-ink-muted">
+              {r.description ? truncate(r.description, DESCRIPTION_MAX) : 'Add a description to control this snippet.'}
+            </p>
           </div>
         </div>
-      {/if}
 
-      <!-- Additional Tab -->
-      {#if activeTab === 'additional'}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label
-              for="theme-color-input"
-              class="label"
-              >Theme color</label
+        <div class="flex flex-col gap-2">
+          <h3 class="text-label text-ink-muted">Social card · {largeCard ? 'large image' : 'summary'}</h3>
+          <div class="flex overflow-hidden rounded-md bg-sunken {largeCard ? 'flex-col' : 'flex-row'}">
+            <div
+              class="grid shrink-0 place-items-center overflow-hidden bg-control {largeCard ? 'aspect-[1.91/1] w-full' : 'size-28'}"
             >
-            <input type="color" bind:value={themeColor} class="input h-12 w-full p-1! cursor-pointer" />
-          </div>
-
-          <div>
-            <label
-              for="language-input"
-              class="label"
-              >Language</label
-            >
-            <input
-              type="text"
-              bind:value={language}
-              placeholder="en"
-              class="tool-input"
-            />
-          </div>
-
-          <div>
-            <label
-              for="viewport-input"
-              class="label"
-              >Viewport</label
-            >
-            <input
-              type="text"
-              bind:value={viewport}
-              placeholder="width=device-width, initial-scale=1.0"
-              class="tool-input"
-            />
-          </div>
-
-          <div>
-            <label
-              for="favicon-input"
-              class="label">Favicon</label
-            >
-            <input
-              type="text"
-              bind:value={favicon}
-              placeholder="/favicon.ico"
-              class="tool-input"
-            />
+              {#if previewImage && failedImage !== previewImage}
+                <img
+                  src={previewImage}
+                  alt={form.imageAlt}
+                  class="size-full object-cover"
+                  onerror={() => (failedImage = previewImage)}
+                />
+              {:else}
+                <span class="px-2 text-center text-body-sm text-ink-muted">
+                  {previewImage ? 'Image failed to load' : r.image ? 'Relative URL' : 'No image'}
+                </span>
+              {/if}
+            </div>
+            <div class="flex min-w-0 flex-col gap-1 p-4">
+              <span class="text-label truncate text-ink-muted">{socialHost}</span>
+              <p class="truncate font-medium text-ink">{r.twitterTitle || 'Page title'}</p>
+              <p class="line-clamp-2 text-body-sm text-ink-muted">{r.twitterDescription || 'Description'}</p>
+            </div>
           </div>
         </div>
-      {/if}
+      </section>
 
-      <!-- JSON-LD Tab -->
-      {#if activeTab === 'jsonld'}
-        <div class="space-y-6">
-          <div class="flex items-center">
-            <label class="custom-checkbox">
-              <input
-                type="checkbox"
-                bind:checked={enableJsonLd}
-                id="enable-jsonld"
-              />
-              <span class="checkmark"></span>
-              <span class="label-text">Enable JSON-LD structured data</span>
-            </label>
-          </div>
-
-          {#if enableJsonLd}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label
-                  for="jsonld-type"
-                  class="label"
-                  >JSON-LD type</label
-               >
-               <select
-                 bind:value={jsonLdType}
-                  class="tool-select"
-               >
-                 <option value="WebPage">Web Page</option>
-                  <option value="Article">Article</option>
-                  <option value="Product">Product</option>
-                  <option value="Organization">Organization</option>
-                  <option value="Person">Person</option>
-                  <option value="Recipe">Recipe</option>
-                  <option value="Event">Event</option>
-                </select>
-              </div>
-
-              <div>
-                <label
-                  for="jsonld-name"
-                  class="label"
-                  >Name</label
-                >
-                <input
-                  type="text"
-                  bind:value={jsonLdName}
-                  placeholder="Enter name/title"
-                  class="tool-input"
-                />
-              </div>
-
-              <div>
-                <label
-                  for="jsonld-description"
-                  class="label"
-                  >Description</label
-                >
-              <textarea
-                bind:value={jsonLdDescription}
-                placeholder="Enter description"
-                class="textarea min-h-[80px] resize-none"
-              ></textarea>
-              </div>
-
-              <div>
-                <label
-                  for="jsonld-url"
-                  class="label">URL</label
-                >
-                <input
-                  type="url"
-                  bind:value={jsonLdUrl}
-                  placeholder="https://example.com"
-                  class="tool-input"
-                />
-              </div>
-
-              <div>
-                <label
-                  for="jsonld-image"
-                  class="label"
-                  >Image</label
-                >
-                <input
-                  type="url"
-                  bind:value={jsonLdImage}
-                  placeholder="https://example.com/image.jpg"
-                  class="tool-input"
-                />
-              </div>
+      <section aria-labelledby="mt-output" class="flex flex-col gap-5 rounded-lg bg-card p-6">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <h2 id="mt-output" class="text-title text-ink">Tags</h2>
+          {#if output.html}
+            <div class="flex flex-wrap gap-3">
+              <CopyChip value={output.html}>Copy tags</CopyChip>
+              <Button variant="secondary" onclick={download}>
+                {#snippet icon()}<Download class="size-4" />{/snippet}
+                Download .html
+              </Button>
             </div>
           {/if}
         </div>
-      {/if}
-    </div>
-  </div>
 
-  <!-- Generated Output -->
-  <div class="tool-card">
-    <div class="card-header flex-wrap gap-2">
-      <h2 class="section-title !mb-0">Generated meta tags</h2>
-      <div class="flex flex-wrap gap-2">
-        <button
-          class="btn btn-primary"
-          onclick={copyToClipboard}
-          disabled={!generatedTags}
-        >
-          <Copy class="w-4 h-4" />
-          Copy
-        </button>
-        <button
-          class="btn btn-secondary"
-          onclick={downloadAsHtml}
-          disabled={!generatedTags}
-        >
-          <Download class="w-4 h-4" />
-          Download HTML
-        </button>
-      </div>
-    </div>
-
-    <div class="p-4 rounded-md bg-sunken">
-      <pre class="text-code {generatedTags ? 'text-ink' : 'text-ink-muted'} overflow-x-auto"><code
-          >{generatedTags || 'Fill in the form above to generate meta tags...'}</code
-        ></pre>
-    </div>
-  </div>
-
-  <!-- Features Section -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-    <div class="card">
-      <div class="feature-icon">
-        <Search class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">SEO optimized</h3>
-      <p class="feature-description">
-        Generate meta tags that follow SEO best practices for better search rankings
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon">
-        <Twitter class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">Social media ready</h3>
-      <p class="feature-description">
-        Full support for Open Graph and Twitter Cards for rich social sharing
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="feature-icon">
-        <Code class="w-5 h-5" />
-      </div>
-      <h3 class="feature-title">JSON-LD support</h3>
-      <p class="feature-description">
-        Generate structured data for search engines to better understand your content
-      </p>
+        {#if output.html}
+          {#if warnings.length}
+            <ul class="flex flex-col gap-2" aria-label="Warnings">
+              {#each warnings as w (w.field + w.message)}
+                <li class="flex items-start gap-2 rounded-md bg-sunken px-4 py-3 text-body-sm text-ink">
+                  <Icon name="alert" class="mt-0.5 size-4 shrink-0 text-accent-text" />
+                  {w.message}
+                </li>
+              {/each}
+            </ul>
+          {/if}
+          <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+          <pre
+            class="text-code m-0 max-h-[480px] overflow-auto rounded-md bg-sunken p-4 font-mono text-ink"
+            tabindex="0"
+            aria-label="Generated meta tags ({output.tags.length} lines)">{output.html}</pre>
+        {:else}
+          <EmptyState title="No tags yet" text="Fill in a title or description, or load the example to see the generated tags.">
+            {#snippet actions()}
+              <Button variant="secondary" onclick={loadExample}>Load example</Button>
+            {/snippet}
+          </EmptyState>
+        {/if}
+      </section>
     </div>
   </div>
 </ToolLayout>

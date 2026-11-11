@@ -1,525 +1,299 @@
 <script lang="ts">
-  import {
-    Shuffle,
-    Plus,
-    X,
-    Dices,
-    RotateCcw,
-    Copy,
-    List,
-    Star,
-    Zap,
-    Gift,
-    Utensils,
-    Users,
-    CircleAlert
-  } from '@lucide/svelte';
+  import { Dices, Shuffle, Users } from '@lucide/svelte';
+  import { fly } from 'svelte/transition';
   import ToolLayout from '../../components/ToolLayout.svelte';
-  import { toast } from 'svelte-sonner';
+  import { Button, CopyChip, EASE, EmptyState, Segmented, Switch, TextField, Textarea, dur } from '$lib/components/ds';
+  import {
+    parseItems,
+    pickMany,
+    removeLines,
+    shuffle,
+    splitIntoGroups,
+    validateItems,
+    type Item
+  } from '$lib/tools/random';
 
-  // Types
-  interface PickerItem {
-    id: number;
-    text: string;
-    weight: number;
-  }
-
-  interface SelectedResult {
-    text: string;
-    type: 'success' | 'error' | 'animating';
-    items?: PickerItem[];
-  }
-
+  type Mode = 'pick' | 'shuffle' | 'teams';
+  type Result =
+    | { id: number; mode: 'pick' | 'shuffle'; items: string[] }
+    | { id: number; mode: 'teams'; groups: string[][] };
   interface HistoryEntry {
     id: number;
-    items: string[];
-    timestamp: Date;
-    totalItems: number;
+    label: string;
+    text: string;
+    at: Date;
   }
 
-  interface Preset {
-    name: string;
-    icon: typeof Dices; // Use the type of a Lucide icon
-    items: { text: string; weight: number }[];
-  }
-
-  // State
-  let items = $state<PickerItem[]>([
-    { id: 1, text: '', weight: 1 },
-    { id: 2, text: '', weight: 1 },
-    { id: 3, text: '', weight: 1 }
-  ]);
-  let selectedItem = $state<SelectedResult | null>(null);
-  let history = $state<HistoryEntry[]>([]);
-  let isSpinning = $state(false);
-  let numberOfPicks = $state(1);
-  let allowDuplicates = $state(false);
-  let showWeights = $state(false);
-  let animationDuration = $state(2000);
-
-  // Presets
-  const presets: Preset[] = [
-    {
-      name: 'Decision Maker',
-      icon: Dices,
-      items: [
-        { text: 'Yes', weight: 1 },
-        { text: 'No', weight: 1 },
-        { text: 'Maybe', weight: 1 }
-      ]
-    },
-    {
-      name: 'Restaurant Picker',
-      icon: Utensils,
-      items: [
-        { text: 'Pizza', weight: 1 },
-        { text: 'Burger', weight: 1 },
-        { text: 'Sushi', weight: 1 },
-        { text: 'Pasta', weight: 1 },
-        { text: 'Thai', weight: 1 }
-      ]
-    },
-    {
-      name: 'Team Selector',
-      icon: Users,
-      items: [
-        { text: 'Team A', weight: 1 },
-        { text: 'Team B', weight: 1 },
-        { text: 'Team C', weight: 1 },
-        { text: 'Team D', weight: 1 }
-      ]
-    },
-    {
-      name: 'Activity Ideas',
-      icon: Zap,
-      items: [
-        { text: 'Go for a walk', weight: 1 },
-        { text: 'Read a book', weight: 1 },
-        { text: 'Watch a movie', weight: 1 },
-        { text: 'Call a friend', weight: 1 },
-        { text: 'Try a new recipe', weight: 1 }
-      ]
-    }
+  const STORAGE_KEY = 'randomPicker.items';
+  const HISTORY_MAX = 10;
+  const PLACEHOLDER = 'Alice\nBob\nCarol';
+  const SAMPLE = 'Alice\nBob\nCarol\nDave\nEve\nFrank\nGrace\nHeidi';
+  const MODES = [
+    { value: 'pick', label: 'Pick' },
+    { value: 'shuffle', label: 'Shuffle' },
+    { value: 'teams', label: 'Teams' }
   ];
+  const MODE_LABEL: Record<Mode, string> = { pick: 'Pick', shuffle: 'Shuffle', teams: 'Teams' };
 
-  // Add new item
-  function addItem() {
-    const newId = Math.max(...items.map(item => item.id)) + 1;
-    items = [...items, { id: newId, text: '', weight: 1 }];
-  }
-
-  // Remove item
-  function removeItem(id: number) {
-    if (items.length > 1) {
-      items = items.filter(item => item.id !== id);
+  function loadSaved(): string {
+    try {
+      return localStorage.getItem(STORAGE_KEY) ?? '';
+    } catch {
+      return '';
     }
   }
 
-  // Load preset
-  function loadPreset(preset: Preset) {
-    items = preset.items.map((item, index) => ({
-      id: index + 1,
-      text: item.text,
-      weight: item.weight
-    }));
-    resetPicker();
-    toast.success(`Loaded ${preset.name} preset`);
-  }
+  let text = $state(loadSaved());
+  let mode = $state<string>('pick');
+  let picks = $state<number | null>(1);
+  let groupCount = $state<number | null>(2);
+  let noRepeats = $state(true);
+  let useWeights = $state(false);
+  let removePicked = $state(false);
+  let result = $state<Result | null>(null);
+  let runError = $state('');
+  let history = $state<HistoryEntry[]>([]);
+  let nextId = 1;
 
-  // Random pick function
-  function pickRandom(): PickerItem[] {
-    const validItems = items.filter(item => item.text.trim() !== '');
-
-    if (validItems.length === 0) {
-      return [];
+  $effect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, text);
+    } catch {
+      /* storage blocked: list just isn't remembered */
     }
+  });
 
-    // Calculate total weight
-    const totalWeight = validItems.reduce((sum, item) => sum + item.weight, 0);
-
-    // Pick items
-    const results: PickerItem[] = [];
-    const availableItems = [...validItems];
-
-    for (let i = 0; i < Math.min(numberOfPicks, availableItems.length); i++) {
-      let random = Math.random() * totalWeight;
-      let selectedIndex = 0;
-
-      // Weighted selection
-      for (let j = 0; j < availableItems.length; j++) {
-        random -= availableItems[j].weight;
-        if (random <= 0) {
-          selectedIndex = j;
-          break;
-        }
-      }
-
-      const selected = availableItems[selectedIndex];
-      results.push(selected);
-
-      // Remove if no duplicates allowed
-      if (!allowDuplicates) {
-        availableItems.splice(selectedIndex, 1);
-      }
-    }
-
-    return results;
-  }
-
-  // Spin animation
-  async function spinPicker() {
-    const validItems = items.filter(item => item.text.trim() !== '');
-
-    if (validItems.length === 0) {
-      selectedItem = { text: 'Please add some items first!', type: 'error' };
-      return;
-    }
-
-    isSpinning = true;
-    selectedItem = null;
-
-    // Create animation effect
-    const animationSteps = 20;
-    const stepDuration = animationDuration / animationSteps;
-
-    for (let i = 0; i < animationSteps; i++) {
-      const tempItem = validItems[Math.floor(Math.random() * validItems.length)];
-      selectedItem = { text: tempItem.text, type: 'animating' };
-
-      await new Promise(resolve => setTimeout(resolve, stepDuration));
-    }
-
-    // Final selection
-    const results = pickRandom();
-    if (results.length === 0) {
-      selectedItem = { text: 'Please add some items first!', type: 'error' };
-      isSpinning = false;
-      return;
-    }
-
-    selectedItem = {
-      text: results.length === 1 ? results[0].text : `${results.length} items selected`,
-      type: 'success',
-      items: results
-    };
-
-    // Add to history
-    const historyEntry: HistoryEntry = {
-      id: Date.now(),
-      items: results.map(r => r.text),
-      timestamp: new Date(),
-      totalItems: validItems.length
-    };
-    history = [historyEntry, ...history.slice(0, 9)]; // Keep last 10
-
-    isSpinning = false;
-  }
-
-  // Reset picker
-  function resetPicker() {
-    selectedItem = null;
-    isSpinning = false;
-  }
-
-  // Clear all
-  function clearAll() {
-    items = [{ id: 1, text: '', weight: 1 }];
-    selectedItem = null;
-    history = [];
-    resetPicker();
-    toast.success('Cleared all');
-  }
-
-  // Copy result
-  function copyResult() {
-    if (selectedItem && selectedItem.items) {
-      const text = selectedItem.items.map((item: PickerItem) => item.text).join(', ');
-      navigator.clipboard.writeText(text);
-    } else if (selectedItem) {
-      navigator.clipboard.writeText(selectedItem.text);
-    }
-    toast.success('Copied to clipboard');
-  }
-
-  // Load from history
-  function loadFromHistory(entry: HistoryEntry) {
-    // Convert history items back to picker items
-    items = entry.items.map((text, index) => ({
-      id: index + 1,
-      text: text,
-      weight: 1
-    }));
-    resetPicker();
-    toast.success('Loaded from history');
-  }
-
-  // Calculate total weight
-  const totalWeight = $derived(
-    items.reduce((sum, item) => sum + (parseFloat(String(item.weight)) || 1), 0)
+  const items = $derived(parseItems(text, { weights: useWeights }));
+  const itemError = $derived(
+    items.length === 0 ? 'Add at least one item.' : mode === 'pick' ? validateItems(items, useWeights) : null
   );
+  const picksError = $derived.by(() => {
+    if (mode !== 'pick') return '';
+    if (picks === null || !Number.isFinite(picks)) return 'Enter how many items to pick.';
+    if (!Number.isInteger(picks) || picks < 1) return 'Use a whole number of 1 or more.';
+    if (noRepeats && items.length > 0 && picks > items.length) {
+      return `Only ${items.length} item${items.length === 1 ? '' : 's'} — pick fewer or turn off No repeats.`;
+    }
+    return '';
+  });
+  const groupsError = $derived.by(() => {
+    if (mode !== 'teams') return '';
+    if (groupCount === null || !Number.isFinite(groupCount)) return 'Enter how many groups to make.';
+    if (!Number.isInteger(groupCount) || groupCount < 2) return 'Use a whole number of 2 or more.';
+    if (items.length > 0 && groupCount > items.length) return `Only ${items.length} items — make fewer groups.`;
+    return '';
+  });
+  const canRun = $derived(!itemError && !picksError && !groupsError);
+  const runLabel = $derived(mode === 'pick' ? (picks === 1 ? 'Pick one' : 'Pick') : mode === 'shuffle' ? 'Shuffle' : 'Make teams');
+
+  const resultText = $derived.by(() => {
+    if (!result) return '';
+    if (result.mode === 'teams') return result.groups.map((g, i) => `Group ${i + 1}: ${g.join(', ')}`).join('\n');
+    return result.items.join('\n');
+  });
+
+  function names(list: Item[]): string[] {
+    return list.map(i => i.text);
+  }
+
+  function run() {
+    if (!canRun) return;
+    runError = '';
+    const id = nextId++;
+    try {
+      if (mode === 'pick') {
+        const picked = pickMany(items, picks as number, { unique: noRepeats, weighted: useWeights });
+        result = { id, mode: 'pick', items: names(picked) };
+        if (removePicked) text = removeLines(text, picked.map(p => p.line));
+      } else if (mode === 'shuffle') {
+        result = { id, mode: 'shuffle', items: names(shuffle(items)) };
+      } else {
+        result = { id, mode: 'teams', groups: splitIntoGroups(items, groupCount as number).map(names) };
+      }
+    } catch (e) {
+      runError = e instanceof Error ? e.message : 'Something went wrong.';
+      result = null;
+      return;
+    }
+    const label = MODE_LABEL[mode as Mode];
+    history = [{ id, label, text: resultText, at: new Date() }, ...history].slice(0, HISTORY_MAX);
+  }
+
+  function onTextareaKey(e: KeyboardEvent) {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      run();
+    }
+  }
+
+  function clearList() {
+    text = '';
+    result = null;
+  }
+
+  const timeFmt = (d: Date) => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 </script>
 
 <ToolLayout
   title="Random Picker"
-  description="Fairly randomize items from a list with customizable options."
+  description="Pick, shuffle or split a list into teams — fairly, with your browser's cryptographic random generator."
   icon={Shuffle}
   color="warning"
 >
-  <!-- Presets -->
-  <div class="tool-card">
-    <h2 class="section-title">Quick presets</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-      {#each presets as preset (preset.name)}
-        <button onclick={() => loadPreset(preset)} class="preset-btn rounded-md p-3 text-left">
-          <preset.icon class="w-5 h-5 text-accent-text mb-2" />
-          <div class="text-body-sm font-medium text-ink">{preset.name}</div>
-          <div class="font-mono text-xs text-ink-muted">{preset.items.length} items</div>
-        </button>
-      {/each}
-    </div>
+  <div class="grid gap-4 lg:grid-cols-[3fr_2fr]">
+    <!-- List -->
+    <section class="flex flex-col gap-4 rounded-lg bg-card p-6" aria-labelledby="rp-list-title">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="rp-list-title" class="text-label text-ink-muted">Your list</h2>
+        <p class="text-body-sm text-ink-muted" aria-live="polite">
+          {items.length} item{items.length === 1 ? '' : 's'}
+        </p>
+      </div>
+      <Textarea
+        label="Items, one per line"
+        hint={useWeights
+          ? 'Paste a list. End a line with * 3 to make it 3× as likely. Ctrl+Enter runs.'
+          : 'Paste a list — empty lines are ignored. Ctrl+Enter runs.'}
+        rows={10}
+        placeholder={PLACEHOLDER}
+        spellcheck="false"
+        bind:value={text}
+        onkeydown={onTextareaKey}
+      />
+      <div class="flex flex-wrap gap-2">
+        <Button size="sm" variant="secondary" onclick={() => (text = SAMPLE)}>Load sample</Button>
+        <Button size="sm" variant="ghost" onclick={clearList} disabled={!text}>Clear</Button>
+      </div>
+    </section>
+
+    <!-- Options -->
+    <section class="flex flex-col gap-5 rounded-lg bg-card p-6" aria-labelledby="rp-options-title">
+      <h2 id="rp-options-title" class="text-label text-ink-muted">Options</h2>
+      <Segmented label="Mode" options={MODES} bind:value={mode} />
+
+      {#if mode === 'pick'}
+        <TextField
+          label="Number of picks"
+          type="number"
+          inputmode="numeric"
+          min={1}
+          max={noRepeats ? Math.max(items.length, 1) : undefined}
+          step={1}
+          bind:value={picks}
+          error={picksError || undefined}
+        />
+        <div class="flex flex-col gap-3">
+          <Switch label="No repeats" description="Each item can come up at most once" bind:checked={noRepeats} />
+          <Switch
+            label="Use weights"
+            description="End a line with * 3 to make it 3× as likely (e.g. Pizza * 3)"
+            bind:checked={useWeights}
+          />
+          <Switch
+            label="Remove picked from list"
+            description="Elimination draw: picked lines are deleted after each pick"
+            bind:checked={removePicked}
+          />
+        </div>
+      {:else if mode === 'teams'}
+        <TextField
+          label="Number of groups"
+          type="number"
+          inputmode="numeric"
+          min={2}
+          max={Math.max(items.length, 2)}
+          step={1}
+          bind:value={groupCount}
+          error={groupsError || undefined}
+          hint="Group sizes differ by at most one."
+        />
+      {:else}
+        <p class="text-body-sm text-ink-muted">Puts the whole list in a random order. Every order is equally likely.</p>
+      {/if}
+
+      {#if itemError && items.length > 0}
+        <p class="text-body-sm text-negative">▼ {itemError}</p>
+      {/if}
+
+      <Button onclick={run} disabled={!canRun} class="mt-auto w-full">
+        {#snippet icon()}
+          {#if mode === 'teams'}<Users class="size-4" />{:else if mode === 'shuffle'}<Shuffle class="size-4" />{:else}<Dices
+              class="size-4"
+            />{/if}
+        {/snippet}
+        {runLabel}
+      </Button>
+    </section>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-    <!-- Main Picker -->
-    <div class="lg:col-span-2 space-y-4">
-      <!-- Items Input -->
-      <div class="tool-card">
-        <div class="card-header flex-wrap gap-3">
-          <h2 class="section-title mb-0 flex items-center gap-2">
-            <List class="w-5 h-5 text-accent-text" />
-            Items to pick from
-          </h2>
-          <div class="flex gap-2">
-            <button class="btn btn-sm btn-secondary" onclick={addItem}>
-              <Plus class="w-4 h-4" />
-              Add item
-            </button>
-            <button class="btn btn-sm btn-ghost" onclick={clearAll}>Clear all</button>
-          </div>
-        </div>
-
-        <div class="space-y-3">
-          {#each items as item (item.id)}
-            <div class="flex gap-3">
-              <input
-                type="text"
-                bind:value={item.text}
-                placeholder="Enter item name"
-                class="tool-input flex-1"
-              />
-
-              {#if showWeights}
-                <div class="flex items-center gap-1">
-                  <label for="weight-{item.id}" class="text-body-sm text-ink-muted">Weight:</label>
-                  <input
-                    id="weight-{item.id}"
-                    type="number" inputmode="decimal"
-                    bind:value={item.weight}
-                    min="0.1"
-                    step="0.1"
-                    class="tool-input w-20 text-sm px-2 py-2"
-                  />
-                </div>
-              {/if}
-
-              <button
-                onclick={() => removeItem(item.id)}
-                class="btn-icon"
-                title="Remove item"
-                disabled={items.length === 1}
-              >
-                <X class="w-4 h-4" />
-              </button>
-            </div>
-          {/each}
-        </div>
-
-        <div class="mt-4 flex items-center justify-between">
-          <label class="custom-checkbox">
-            <input type="checkbox" bind:checked={showWeights} />
-            <span class="checkmark"></span>
-            <span class="label-text">Enable weights</span>
-          </label>
-
-          {#if showWeights}
-            <span class="font-mono text-sm text-ink-muted tabular-nums">
-              Total weight: {totalWeight.toFixed(1)}
-            </span>
-          {/if}
-        </div>
-      </div>
-    </div>
-
-    <!-- Picker Controls -->
-    <div class="tool-card">
-      <h2 class="section-title">Picker settings</h2>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div>
-          <label for="number-of-picks" class="label">Number of picks</label>
-          <input
-            id="number-of-picks"
-            type="number" inputmode="decimal"
-            bind:value={numberOfPicks}
-            min="1"
-            max={items.filter(item => item.text.trim() !== '').length}
-            class="tool-input"
-          />
-        </div>
-
-        <div>
-          <label for="animation-speed" class="label">Animation speed (ms)</label>
-          <input
-            id="animation-speed"
-            type="range"
-            bind:value={animationDuration}
-            min="500"
-            max="5000"
-            step="500"
-            class="slider w-full"
-            style="--p: {((animationDuration - 500) / (5000 - 500)) * 100}%"
-          />
-          <div class="font-mono text-xs text-ink-muted tabular-nums">
-            {animationDuration}ms
-          </div>
-        </div>
-      </div>
-
-      <label class="custom-checkbox mb-6" for="allow-duplicates">
-        <input id="allow-duplicates" type="checkbox" bind:checked={allowDuplicates} />
-        <span class="checkmark"></span>
-        <span class="label-text">Allow duplicates (when picking multiple items)</span>
-      </label>
-
-      <button
-        class="btn btn-primary w-full"
-        onclick={spinPicker}
-        disabled={isSpinning || items.filter(item => item.text.trim() !== '').length === 0}
-      >
-        {#if isSpinning}
-          <div class="flex items-center">
-            <div class="animate-spin mr-2">
-              <Shuffle class="w-5 h-5" />
-            </div>
-            Picking...
-          </div>
-        {:else}
-          <Shuffle class="w-5 h-5" />
-          Pick random item{numberOfPicks > 1 ? 's' : ''}
-        {/if}
-      </button>
-
-      <!-- Result Display -->
-      {#if selectedItem}
-        <div class="result-card mt-6">
-          <div class="card-header flex-wrap gap-3">
-            <h2 class="section-title mb-0 flex items-center gap-2">
-              <Gift class="w-5 h-5 text-accent-text" />
-              Result
-            </h2>
-            <div class="flex gap-2">
-              <button class="btn btn-secondary btn-sm" onclick={copyResult}>
-                <Copy class="w-4 h-4" />
-                Copy
-              </button>
-              <button class="btn btn-ghost btn-sm" onclick={resetPicker} title="Reset">
-                <RotateCcw class="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          {#if selectedItem.type === 'error'}
-            <div class="flex items-center justify-center gap-2 p-4 rounded-md bg-negative/15 text-ink">
-              <CircleAlert class="w-4 h-4 flex-shrink-0 text-negative" />
-              <p class="text-center">
-                {selectedItem.text}
-              </p>
-            </div>
-          {:else if selectedItem.type === 'animating'}
-            <div class="text-center py-8">
-              <div class="inline-block">
-                <Dices class="w-16 h-16 text-accent-text" />
-              </div>
-              <p class="mt-4 font-display text-title text-ink-muted">
-                {selectedItem.text}
-              </p>
-            </div>
-          {:else}
-            <div class="text-center py-8">
-              <div class="inline-block p-6 rounded-md bg-tile-lime text-ink-on-bright">
-                <Star class="w-12 h-12 mx-auto mb-3" />
-                <h3 class="font-display text-[28px] leading-8 font-bold tracking-tight mb-2">
-                  {selectedItem.text}
-                </h3>
-                {#if selectedItem.items && selectedItem.items.length > 1}
-                  <div class="mt-4 space-y-2">
-                    {#each selectedItem.items as item (item.text)}
-                      <div class="px-3 py-1 bg-card text-ink rounded-pill">
-                        {item.text}
-                      </div>
-                    {/each}
-                  </div>
-                {/if}
-              </div>
-            </div>
-          {/if}
-        </div>
+  <!-- Result -->
+  <section class="flex flex-col gap-4 rounded-lg bg-card p-6" aria-labelledby="rp-result-title">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <h2 id="rp-result-title" class="text-label text-ink-muted">Result</h2>
+      {#if result}
+        <CopyChip value={resultText}>Copy results</CopyChip>
       {/if}
     </div>
 
-    <!-- Sidebar -->
-    <div class="space-y-4">
-      <!-- History -->
-      <div class="tool-card">
-        <h3 class="section-title">History</h3>
-
-        {#if history.length === 0}
-          <p class="text-body-sm text-ink-muted">No picks yet</p>
-        {:else}
-          <div class="space-y-3 max-h-96 overflow-y-auto">
-            {#each history as entry (entry.id)}
-              <button onclick={() => loadFromHistory(entry)} class="preset-btn rounded-md w-full text-left">
-                <div class="text-body-sm font-medium text-ink">
-                  {entry.items.slice(0, 2).join(', ')}
-                  {#if entry.items.length > 2}
-                    +{entry.items.length - 2} more
-                  {/if}
-                </div>
-
-                <div class="font-mono text-xs text-ink-muted">
-                  {entry.timestamp.toLocaleTimeString()} · {entry.totalItems} total items
-                </div>
-              </button>
-            {/each}
+    <div aria-live="polite" aria-atomic="true">
+      {#if runError}
+        <p class="text-body text-negative" role="alert">▼ {runError}</p>
+      {:else if !result}
+        <EmptyState
+          title="Nothing drawn yet"
+          text={items.length ? `Choose a mode and press ${runLabel}.` : 'Add some items to your list, or load the sample.'}
+        />
+      {:else}
+        {#key result.id}
+          <div in:fly={{ y: 8, duration: dur(240), easing: EASE.soft }}>
+            {#if result.mode === 'teams'}
+              <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {#each result.groups as group, gi (gi)}
+                  <div class="flex flex-col gap-2 rounded-md bg-control p-4">
+                    <h3 class="text-label text-ink-muted">Group {gi + 1} · {group.length}</h3>
+                    <ul class="m-0 flex list-none flex-col gap-1 p-0">
+                      {#each group as name, ni (ni)}
+                        <li class="text-body break-words text-ink">{name}</li>
+                      {/each}
+                    </ul>
+                  </div>
+                {/each}
+              </div>
+            {:else if result.items.length === 1}
+              <p class="rounded-md bg-sunken px-5 py-6 text-center font-display text-display break-words text-ink">
+                {result.items[0]}
+              </p>
+            {:else}
+              <ol class="m-0 flex list-none flex-col gap-2 p-0">
+                {#each result.items as name, i (i)}
+                  <li class="flex items-baseline gap-3 rounded-md bg-control px-4 py-3">
+                    <span class="w-6 shrink-0 text-right font-mono text-body-sm text-ink-muted">{i + 1}</span>
+                    <span class="text-body break-words text-ink">{name}</span>
+                  </li>
+                {/each}
+              </ol>
+            {/if}
           </div>
-        {/if}
-      </div>
-
-      <!-- Tips -->
-      <div class="rounded-lg p-6 bg-tile-lilac text-ink-on-bright">
-        <h3 class="section-title flex items-center gap-2">
-          <Zap class="w-5 h-5" />
-          Pro tips
-        </h3>
-        <div class="space-y-3 text-body-sm">
-          <div class="flex items-start">
-            <div class="w-2 h-2 bg-current rounded-pill mt-1.5 mr-3 flex-shrink-0"></div>
-            <p>Use weights to give some items higher chances of being selected</p>
-          </div>
-          <div class="flex items-start">
-            <div class="w-2 h-2 bg-current rounded-pill mt-1.5 mr-3 flex-shrink-0"></div>
-            <p>Enable multiple picks for selecting more than one item at once</p>
-          </div>
-          <div class="flex items-start">
-            <div class="w-2 h-2 bg-current rounded-pill mt-1.5 mr-3 flex-shrink-0"></div>
-            <p>History helps you track previous random selections</p>
-          </div>
-          <div class="flex items-start">
-            <div class="w-2 h-2 bg-current rounded-pill mt-1.5 mr-3 flex-shrink-0"></div>
-            <p>Use presets for quick decision-making scenarios</p>
-          </div>
-        </div>
-      </div>
+        {/key}
+      {/if}
     </div>
-  </div>
+  </section>
+
+  <!-- History -->
+  {#if history.length}
+    <section class="flex flex-col gap-3 rounded-lg bg-card p-6" aria-labelledby="rp-history-title">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="rp-history-title" class="text-label text-ink-muted">Recent results</h2>
+        <Button size="sm" variant="ghost" onclick={() => (history = [])}>Clear history</Button>
+      </div>
+      <ul class="m-0 flex list-none flex-col gap-2 p-0">
+        {#each history as entry (entry.id)}
+          <li class="flex flex-col gap-1 rounded-md bg-control px-4 py-3 sm:flex-row sm:items-baseline sm:gap-4">
+            <span class="shrink-0 font-mono text-body-sm text-ink-muted">{entry.label} · {timeFmt(entry.at)}</span>
+            <span class="text-body-sm break-words whitespace-pre-line text-ink">{entry.text}</span>
+          </li>
+        {/each}
+      </ul>
+    </section>
+  {/if}
 </ToolLayout>
