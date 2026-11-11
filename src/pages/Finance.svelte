@@ -31,10 +31,9 @@
     type TransactionFilters,
   } from '../lib/finance';
   import { getTags, type Tag } from '../lib/tags';
-  import Skeleton from 'boneyard-js/svelte';
-  import { Button, EmptyState, FilterTabs, PageHeader, StatTile } from '$lib/components/ds';
-  import { fixtureTransactions, fixtureFinanceSummary } from '../lib/fixtures';
-  import { isBoneyardCapture } from '../lib/boneyard';
+  import LoadingDelay from '../components/skeletons/LoadingDelay.svelte';
+  import StatTileSkeleton from '../components/skeletons/StatTileSkeleton.svelte';
+  import { Button, EmptyState, FilterTabs, PageHeader, StatTile, Skeleton as Shimmer } from '$lib/components/ds';
   import Modal from '../components/Modal.svelte';
 
   // Auth
@@ -363,7 +362,7 @@
     <div class="flex items-center justify-center py-20">
       <div class="size-12 animate-spin rounded-pill border-4 border-control border-t-accent"></div>
     </div>
-  {:else if !hasAuthToken && !isBoneyardCapture}
+  {:else if !hasAuthToken}
     <div class="flex min-h-[60vh] items-center justify-center">
       <EmptyState title="Login required" text="You need to be logged in to access finance.">
         {#snippet actions()}
@@ -381,9 +380,11 @@
       </div>
 
       {#if isLoading && !summary}
-        <Skeleton name="finance-summary" loading={true}>
-          {@render summaryRow(fixtureFinanceSummary)}
-        </Skeleton>
+        <LoadingDelay label="Loading summary" class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <StatTileSkeleton label="Income" />
+          <StatTileSkeleton label="Expense" />
+          <StatTileSkeleton label="Balance" tone="violet" />
+        </LoadingDelay>
       {:else if summary}
         {@render summaryRow(summary)}
       {/if}
@@ -423,13 +424,20 @@
       </div>
 
       {#if isLoading}
-        <Skeleton name="finance-transactions" loading={true}>
-          <div class="space-y-3">
-            {#each fixtureTransactions as transaction (transaction.id)}
-              {@render transactionRow(transaction, false)}
-            {/each}
-          </div>
-        </Skeleton>
+        <LoadingDelay label="Loading transactions" class="flex flex-col gap-3">
+          {#each [0, 1, 2, 3] as i (i)}
+            <div class="flex items-center justify-between gap-4 rounded-lg bg-card p-4">
+              <div class="flex min-w-0 flex-1 items-center gap-4">
+                <Shimmer width={44} height={44} class="flex-none rounded-md" />
+                <div class="flex min-w-0 flex-1 flex-col gap-2">
+                  <Shimmer width="46%" height={16} />
+                  <Shimmer width="28%" height={12} />
+                </div>
+              </div>
+              <Shimmer width={96} height={18} />
+            </div>
+          {/each}
+        </LoadingDelay>
       {:else if transactions.length === 0}
         <div class="rounded-lg bg-card">
           <EmptyState title="No transactions yet" text="Start tracking your finances.">

@@ -43,21 +43,15 @@ Deployed as a static site on GitHub Pages with SPA routing support. No server-si
 
 **Important**: No Git commands that modify the repository (read-only access policy).
 
-### Skeleton Screens (boneyard-js)
+### Loading states (skeletons)
 
-Loading states use [boneyard-js](https://boneyard.vercel.app) — auto-generated skeleton screens captured from the real rendered DOM.
+Hand-made from the DS `Skeleton` (`.fz-skeleton` shimmer) — no generator, nothing to re-capture.
 
-- **How it works**: The `boneyardPlugin()` (in `vite.config.ts`) launches a headless Chromium during `npm run dev`, snapshots every `<Skeleton name="...">` at 3 breakpoints, and writes `.bones.json` + `registry.ts` to `src/bones/`. Fresh captures always overwrite existing bones for visited routes.
-- **Deploy**: `src/bones/` is **committed to git**. `bun run build` (in `deploy.sh`) just bundles the committed JSON — no browser/dev server at build time. `deploy.sh` is unchanged.
-- **Auth-gated pages** (Notes/Finance/Dashboard): the headless browser can't log in, so each data-driven `<Skeleton>` wraps a `fixture`-rendered version of its content (mock data from `src/lib/fixtures.ts`). Fixtures render only during capture, never at runtime.
-- **`isBoneyardCapture`** (`src/lib/boneyard.ts`): true only inside the plugin's headless browser (`window.__BONEYARD_BUILD`). Auth pages OR it into their loading branches (`{#if isLoading || isBoneyardCapture}`) to force-mount the fixture skeleton during capture, and early-return from `onMount` fetches. Route `/notes?id=boneyard-capture` forces the detail view; `/files/boneyard` matches the `/files/:code` route.
-- **Routes**: `boneyard.config.json → routes` lists the pages to snapshot (default `['/']`). Add a route there when a new `<Skeleton>` lives on a page not yet listed.
-- **Runtime colors**: `configureBoneyard({ color, darkColor, animate })` in `src/main.ts` — the JSON config's colors are dev/capture-time only; the Svelte runtime reads them from `main.ts`. Keep both in sync (`#e6e0f2` / `#30284a`, matching the `--bg-control` token in light/dark).
-- **Bootstrap**: `src/main.ts` imports `./bones/registry`. If `src/bones/` is ever wiped, recreate a stub `registry.ts` exporting `registerBones({})` so the app loads — the plugin overwrites it after the first successful capture.
-- **Workflow after layout changes**: whenever you change the layout of a component wrapped in `<Skeleton>`, run `npm run dev` to re-capture bones, then commit `src/bones/`. Stale bones look wrong; missing bones fall back to empty/loading content.
-- **First-time setup**: run `npx playwright install chromium` once (downloads the Chromium binary boneyard drives).
-- **Config**: `boneyard.config.json` (breakpoints, colors matching the `--bg-control` token, `animate: shimmer`).
-- **Skeleton motion**: bones use `animate: 'shimmer'` — the design system's only looping animation, shown only while loading. Boneyard detects dark mode via a `.dark` class on `<html>`, so `index.html` and `src/lib/theme.svelte.ts` keep that class in sync with the theme even though styling uses `data-theme`.
+- **Shape, not detail**: placeholders match the footprint of what loads, at tile/row level. Static parts (headings, tile labels, field labels, tones) render for real; only data-driven content shimmers. Shared pieces live in `src/components/skeletons/` (`StatTileSkeleton`, `NoteCardSkeleton`).
+- **`LoadingDelay`** (`src/components/skeletons/LoadingDelay.svelte`): wrap every loading placeholder in it. It announces the status to screen readers immediately but only shows the placeholder after 200 ms, so fast responses never flash a skeleton. Pass layout classes via `class`; children render inside a `display: contents` wrapper, so use `gap-*` (flex/grid), not `space-y-*`.
+- **Tones**: on dark tiles (`bg-tile-deep/violet/void`) the shimmer turns translucent light, on bright tiles (`lilac/lime/accent`) translucent dark — handled in `fariz-components.css`.
+- **Route chunks**: while a lazy route loads, `Router.svelte` shows one thin accent bar (`.fz-route-progress`) instead of a guessed page shape.
+- **When a layout changes**, update the matching placeholder by hand in the same commit.
 
 ## Project Structure
 

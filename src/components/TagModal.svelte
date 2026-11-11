@@ -11,9 +11,8 @@
   } from '@lucide/svelte';
   import { deleteTag, type Tag } from '../lib/tags';
   import { tags, tagsStore, isLoadingTags } from '../lib/stores/tags';
-  import Skeleton from 'boneyard-js/svelte';
-  import { fixtureTagsForModal } from '../lib/fixtures';
-  import { isBoneyardCapture } from '../lib/boneyard';
+  import { Skeleton as Shimmer } from '$lib/components/ds';
+  import LoadingDelay from './skeletons/LoadingDelay.svelte';
   import Modal from './Modal.svelte';
   import TagFormModal from './TagFormModal.svelte';
 
@@ -130,39 +129,11 @@
   </div>
 
   <div class="max-h-[50vh] overflow-y-auto">
-    {#if (isAnyLoading && $tags.length === 0) || isBoneyardCapture}
-      <Skeleton name="tag-grid" loading={true}>
-        <div class="grid grid-cols-2 gap-2">
-          {#each fixtureTagsForModal as tag (tag.id)}
-            {@const hasColor = !!tag.color}
-            <div class="group flex items-center justify-between rounded-md bg-control px-3 py-2 transition-colors hover:bg-control-hover">
-              <div class="flex min-w-0 items-center gap-2">
-                <span
-                  class="size-2.5 shrink-0 rounded-pill {hasColor ? '' : 'bg-accent'}"
-                  style={hasColor ? `background-color: ${tag.color}` : ''}
-                  aria-hidden="true"
-                ></span>
-                <div class="min-w-0">
-                  <span class="block truncate text-body-sm font-medium text-ink">
-                    {tag.name}
-                  </span>
-                  <span class="block truncate font-mono text-xs text-ink-muted">
-                    {tag.tag}
-                  </span>
-                </div>
-              </div>
-              <div class="ml-1 flex shrink-0 items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
-                <div class="btn-icon !h-7 !min-w-7 !px-0">
-                  <Edit2 class="size-3.5" />
-                </div>
-                <div class="btn-icon !h-7 !min-w-7 !px-0">
-                  <Trash2 class="size-3.5" />
-                </div>
-              </div>
-            </div>
-          {/each}
-        </div>
-      </Skeleton>
+    {#if isAnyLoading && $tags.length === 0}
+      <!-- Tag rows are bg-control already, so each placeholder is a whole row. -->
+      <LoadingDelay label="Loading tags" class="grid grid-cols-2 gap-2">
+        {#each Array.from({ length: 8 }, (_, i) => i) as i (i)}<Shimmer height={52} class="rounded-md" />{/each}
+      </LoadingDelay>
     {:else if filteredTags.length === 0}
       <div class="py-10 text-center">
         <TagIcon class="mx-auto mb-2 size-8 text-ink-muted" />

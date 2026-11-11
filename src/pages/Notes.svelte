@@ -5,9 +5,9 @@
   import { tagsStore } from '../lib/stores/tags';
   import { notesStore, notes, notesError, isLoadingNotes, hasMore, totalCount } from '../lib/stores/notes';
   import NoteCard from '../components/NoteCard.svelte';
-  import Skeleton from 'boneyard-js/svelte';
-  import { fixtureNotes, fixtureSingleNote } from '../lib/fixtures';
-  import { isBoneyardCapture } from '../lib/boneyard';
+  import { Skeleton as Shimmer } from '$lib/components/ds';
+  import LoadingDelay from '../components/skeletons/LoadingDelay.svelte';
+  import NoteCardSkeleton from '../components/skeletons/NoteCardSkeleton.svelte';
   import NoteModal from '../components/NoteModal.svelte';
   import NoteDetailModal from '../components/NoteDetailModal.svelte';
   import TagModal from '../components/TagModal.svelte';
@@ -433,14 +433,6 @@
 
   // Load notes and tags on mount
   onMount(async () => {
-    // During boneyard capture, skip fetching — the loading branches below are
-    // forced on via isBoneyardCapture so their fixtures render for the snapshot.
-    if (isBoneyardCapture) {
-      if (new URLSearchParams(window.location.search).get('id')) viewMode = 'detail';
-      isTagModalOpen = true;
-      return;
-    }
-
     const urlParams = new URLSearchParams(window.location.search);
     const noteId = urlParams.get('id');
 
@@ -745,17 +737,10 @@
 
     <!-- Notes -->
     <div class="flex flex-col gap-4">
-      {#if ($isLoadingNotes && $notes.length === 0) || isBoneyardCapture}
-        <div class="flex flex-col gap-4" role="status" aria-label="Loading notes">
-          {#each Array(3) as _, index (index)}
-            <Skeleton name="note-card" loading={true}>
-              <!-- Children render only during boneyard capture (dev), giving the
-                   headless browser a real NoteCard layout to snapshot. At runtime
-                   loading=true shows the generated bones instead. -->
-              <NoteCard note={fixtureNotes[index] ?? fixtureNotes[0]} {hasAuthToken} />
-            </Skeleton>
-          {/each}
-        </div>
+      {#if $isLoadingNotes && $notes.length === 0}
+        <LoadingDelay label="Loading notes" class="flex flex-col gap-4">
+          {#each [0, 1, 2] as i (i)}<NoteCardSkeleton />{/each}
+        </LoadingDelay>
       {:else if $notes.length === 0}
         <div class="rounded-lg bg-card">
           <EmptyState
@@ -830,36 +815,21 @@
       {/if}
     </div>
   {:else if viewMode === 'detail'}
-    {#if isLoadingSingleNote || isBoneyardCapture}
+    {#if isLoadingSingleNote}
       <div class="mx-auto flex w-full max-w-[900px] flex-col gap-4">
-        <Button variant="ghost" size="sm" class="self-start"><ChevronLeft class="size-4" /> All notes</Button>
+        <Button variant="ghost" size="sm" class="self-start" onclick={backToList}>
+          <ChevronLeft class="size-4" /> All notes
+        </Button>
 
-        <Skeleton name="note-detail" loading={true}>
-          <div class="flex flex-col gap-4">
-            <div class="card flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-              <div class="min-w-0 flex-1">
-                <h1 class="text-display m-0 mb-3 break-words max-sm:text-[28px] max-sm:leading-8">
-                  {fixtureSingleNote.name || 'Untitled note'}
-                </h1>
-                <div class="text-code flex flex-wrap items-center gap-4 text-ink-muted">
-                  <span class="flex items-center gap-1.5"><Calendar class="size-4" /> Created Aug 22, 2026</span>
-                  <span class="flex items-center gap-1.5"><Clock class="size-4" /> Updated Aug 22, 2026</span>
-                  <span class="flex items-center gap-1.5"><ImageIcon class="size-4" /> 1 file</span>
-                </div>
-              </div>
-              <div class="flex items-center justify-end gap-2">
-                <span class="btn-icon bg-control hover:bg-control-hover"><Share2 class="size-4" /></span>
-                <span class="btn-icon bg-control hover:bg-control-hover"><Pencil class="size-4" /></span>
-                <span class="btn-icon bg-control hover:bg-control-hover text-negative"><Trash2 class="size-4" /></span>
-              </div>
-            </div>
-            <div class="card">
-              <div class="prose max-w-none text-ink">
-                <p>Key differences between Svelte 4 and 5: $state, $derived, $props, $effect.</p>
-              </div>
-            </div>
+        <LoadingDelay label="Loading note" class="flex flex-col gap-4">
+          <div class="card flex flex-col gap-4">
+            <Shimmer width="58%" height={40} />
+            <Shimmer width="42%" height={14} />
           </div>
-        </Skeleton>
+          <div class="card">
+            <Shimmer variant="text" lines={6} />
+          </div>
+        </LoadingDelay>
       </div>
     {:else if singleNote}
       <div class="mx-auto flex w-full max-w-[900px] flex-col gap-4">

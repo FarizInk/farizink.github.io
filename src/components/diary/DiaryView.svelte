@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount, tick, untrack } from 'svelte';
   import { toast } from 'svelte-sonner';
-  import Skeleton from 'boneyard-js/svelte';
   import { SlidersHorizontal } from '@lucide/svelte';
   import { Button, EmptyState, MultiSelect, Skeleton as Shimmer } from '$lib/components/ds';
   import DiaryComposer from './DiaryComposer.svelte';
@@ -10,8 +9,7 @@
   import { createNote, deleteNote, getNotes, updateNote, type Note } from '../../lib/notes';
   import { tags, tagsStore } from '../../lib/stores/tags';
   import { readTagIds, sortNewestFirst, writeTagIds, type DiaryEditData } from '../../lib/diary';
-  import { isBoneyardCapture } from '../../lib/boneyard';
-  import { fixtureNotes } from '../../lib/fixtures';
+  import LoadingDelay from '../skeletons/LoadingDelay.svelte';
   import { scrollTopButton } from '../../lib/scrollTop.svelte';
 
   let tagIds = $state<string[]>(readTagIds(localStorage));
@@ -34,7 +32,6 @@
   const done = $derived(loaded && page >= totalPages);
 
   async function loadPage(reset = false) {
-    if (isBoneyardCapture) return;
     if (reset) {
       reqId++;
       page = 0;
@@ -130,7 +127,6 @@
   });
 
   onMount(() => {
-    if (isBoneyardCapture) return;
     tagsStore.loadTags();
     loadPage(true);
   });
@@ -145,6 +141,17 @@
     return () => io.disconnect();
   });
 </script>
+
+{#snippet entrySkeletons(count: number)}
+  <div class="flex flex-col gap-2">
+    {#each Array.from({ length: count }, (_, i) => i) as i (i)}
+      <div class="flex flex-col gap-2 rounded-lg bg-card p-4">
+        <Shimmer width="55%" height={18} />
+        <Shimmer variant="text" lines={2} />
+      </div>
+    {/each}
+  </div>
+{/snippet}
 
 {#snippet feed(list: Note[])}
   <div class="flex flex-col gap-2">
@@ -195,10 +202,8 @@
     </div>
   </div>
 
-  {#if isBoneyardCapture || (!loaded && loading)}
-    <Skeleton name="diary-feed" loading={true}>
-      {@render feed(fixtureNotes)}
-    </Skeleton>
+  {#if !loaded && loading}
+    <LoadingDelay label="Loading entries">{@render entrySkeletons(4)}</LoadingDelay>
   {:else if error && !notes.length}
     <EmptyState title="Couldn't load entries" text={error}>
       {#snippet actions()}
@@ -214,14 +219,7 @@
   <div bind:this={sentinel} aria-hidden="true"></div>
 
   {#if loaded && loading}
-    <div class="flex flex-col gap-2" aria-label="Loading more entries">
-      {#each [0, 1] as i (i)}
-        <div class="flex flex-col gap-2 rounded-lg bg-card p-4">
-          <Shimmer width="55%" height={18} />
-          <Shimmer variant="text" lines={2} />
-        </div>
-      {/each}
-    </div>
+    <LoadingDelay label="Loading more entries">{@render entrySkeletons(2)}</LoadingDelay>
   {:else if error && notes.length}
     <div class="flex justify-center py-2">
       <Button variant="secondary" size="sm" onclick={() => loadPage()}>Retry</Button>

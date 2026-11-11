@@ -14,10 +14,8 @@
     ArrowRight,
     Upload
   } from '@lucide/svelte';
-  import Skeleton from 'boneyard-js/svelte';
-  import { Button, EmptyState, PageHeader } from '$lib/components/ds';
-  import { fixtureShortlinkData as fixtureData } from '../lib/fixtures';
-  import { isBoneyardCapture } from '../lib/boneyard';
+  import { Button, EmptyState, PageHeader, Skeleton as Shimmer } from '$lib/components/ds';
+  import LoadingDelay from '../components/skeletons/LoadingDelay.svelte';
 
   // Types
   interface ShortlinkFile {
@@ -35,9 +33,7 @@
   // State
   let shortlinkCode = $state('');
   let inputCode = $state('');
-  // Start "loading" during boneyard capture so the skeleton branch (with its
-  // fixture files) renders for the headless snapshot.
-  let isLoading = $state(isBoneyardCapture);
+  let isLoading = $state(false);
   let error = $state<string | null>(null);
   let data = $state<ShortlinkData | null>(null);
 
@@ -67,9 +63,6 @@
   let unsubscribe: (() => void) | null = null;
 
   onMount(() => {
-    // Keep the skeleton branch mounted during boneyard capture.
-    if (isBoneyardCapture) return;
-
     shortlinkCode = getShortlinkCode();
 
     if (!shortlinkCode) {
@@ -271,68 +264,24 @@
 
   <!-- Loading State -->
   {:else if isLoading}
-    <div class="mx-auto w-full max-w-4xl">
-      <!-- Info Card -->
-      <div class="card mb-6">
-        <div class="flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <h2 class="section-title mb-1">Files ready to download</h2>
-            <p class="text-code flex items-center gap-1.5 text-ink-muted">
-              <Clock class="size-4" />
-              {formatExpiresAt(fixtureData.expires_at)}
-            </p>
-          </div>
-          <div class="btn btn-secondary">
-            <Copy class="size-4" />
-            Copy all links
-          </div>
-        </div>
+    <LoadingDelay label="Loading shared files" class="mx-auto block w-full max-w-4xl">
+      <div class="card mb-6 flex flex-col gap-2">
+        <h2 class="section-title mb-1">Files ready to download</h2>
+        <Shimmer width={140} height={14} />
       </div>
-
-      <!-- Files skeleton -->
-      <Skeleton name="files-list" loading={true}>
-        <div class="grid gap-4">
-          {#each fixtureData.files as file (file.id)}
-            {@const iconType = getFileIcon(file.original_name)}
-            {@const iconColor = getFileColor(iconType)}
-            <div class="card overflow-hidden p-4">
-              <div class="flex items-center gap-4 min-w-0">
-                <div class="flex-shrink-0">
-                  <div class={`grid size-12 place-items-center rounded-md ${iconColor}`}>
-                    {#if iconType === 'image'}
-                      <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <rect x="3" y="3" width="18" height="18" rx="2" stroke-width="2"/>
-                        <circle cx="8.5" cy="8.5" r="1.5" stroke-width="2"/>
-                        <path d="M21 15l-5-5L5 21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                    {:else}
-                      <File class="size-6" />
-                    {/if}
-                  </div>
-                </div>
-                <div class="flex-1 min-w-0 overflow-hidden">
-                  <h3 class="text-body-sm leading-tight break-all">
-                    {file.original_name}
-                  </h3>
-                  <p class="text-code truncate text-ink-muted">
-                    {getExtension(file.original_name).toUpperCase()} file
-                  </p>
-                </div>
-                <div class="flex items-center gap-2">
-                  <div class="btn-icon">
-                    <Copy class="size-4" />
-                  </div>
-                  <div class="btn btn-secondary">
-                    <Download class="size-4" />
-                    <span class="hidden sm:inline">Download</span>
-                  </div>
-                </div>
-              </div>
+      <div class="grid gap-4">
+        {#each [0, 1] as i (i)}
+          <div class="card flex items-center gap-4 p-4">
+            <Shimmer width={48} height={48} class="flex-none rounded-md" />
+            <div class="flex min-w-0 flex-1 flex-col gap-2">
+              <Shimmer width="52%" height={14} />
+              <Shimmer width="22%" height={12} />
             </div>
-          {/each}
-        </div>
-      </Skeleton>
-    </div>
+            <Shimmer width={112} height={40} round />
+          </div>
+        {/each}
+      </div>
+    </LoadingDelay>
 
   <!-- Error State -->
   {:else if error}

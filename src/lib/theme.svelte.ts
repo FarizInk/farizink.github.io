@@ -32,8 +32,6 @@ function apply() {
   theme.light = light;
   if (light) root().dataset.theme = 'light';
   else delete root().dataset.theme;
-  // .dark mirrors the theme for third-party code that sniffs it (boneyard skeletons).
-  root().classList.toggle('dark', !light);
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#f0edf7' : '#09070f');
 }
 

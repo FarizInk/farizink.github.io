@@ -265,7 +265,11 @@
 .fz-enter > :nth-child(n+12){animation-delay:calc(var(--stagger) * 11)}
 /* Skeleton: the only looping animation, only while loading */
 .fz-skeleton{display:block;border-radius:var(--radius-sm);background:linear-gradient(90deg,var(--bg-control) 0%,var(--bg-control-hover) 50%,var(--bg-control) 100%) 0 0/200% 100%;animation:fz-shimmer 1.4s linear infinite}
-.fz-tone-void .fz-skeleton,.fz-tone-deep .fz-skeleton,.fz-tone-violet .fz-skeleton{background:linear-gradient(90deg,rgba(241,237,250,.08) 0%,rgba(241,237,250,.18) 50%,rgba(241,237,250,.08) 100%) 0 0/200% 100%}
+:is(.bg-tile-void,.bg-tile-deep,.bg-tile-violet) .fz-skeleton{background:linear-gradient(90deg,rgba(241,237,250,.08) 0%,rgba(241,237,250,.18) 50%,rgba(241,237,250,.08) 100%) 0 0/200% 100%}
+:is(.bg-tile-lilac,.bg-tile-lime,.bg-accent) .fz-skeleton{background:linear-gradient(90deg,rgba(9,7,15,.08) 0%,rgba(9,7,15,.16) 50%,rgba(9,7,15,.08) 100%) 0 0/200% 100%}
+/* Route loading: one thin accent bar that eases toward the end, never loops. */
+.fz-route-progress{position:fixed;top:0;left:0;z-index:60;height:2px;width:100%;background:var(--accent);transform-origin:left;transform:scaleX(0);animation:fz-route-progress 8s cubic-bezier(.1,.7,.2,1) forwards}
+@keyframes fz-route-progress{to{transform:scaleX(.9)}}
 @keyframes fz-rise{from{opacity:0;transform:translateY(8px)}}
 @keyframes fz-drop{from{opacity:0;transform:translateY(-4px) scale(.98)}}
 @keyframes fz-chip-in{from{opacity:0;transform:scale(.8)}}
@@ -277,6 +281,7 @@
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:1ms!important;animation-delay:0ms!important;animation-iteration-count:1!important;transition-duration:1ms!important;scroll-behavior:auto!important}
   .fz-skeleton{animation:none!important}
+  .fz-route-progress{animation:none!important;transform:scaleX(.35)}
 }
 
 /* Icon that pops in when it replaces another (copy → check). */

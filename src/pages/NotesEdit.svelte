@@ -1,12 +1,10 @@
 <script lang="ts">
   import NoteForm from '../components/NoteForm.svelte';
-  import Skeleton from 'boneyard-js/svelte';
-  import { fixtureSingleNote } from '../lib/fixtures';
-  import { isBoneyardCapture } from '../lib/boneyard';
+  import LoadingDelay from '../components/skeletons/LoadingDelay.svelte';
   import { navigate, getCurrentRouterState } from '../lib/router';
   import { tagsStore } from '../lib/stores/tags';
   import { ChevronLeft, Save } from '@lucide/svelte';
-  import { Button, EmptyState, PageHeader } from '$lib/components/ds';
+  import { Button, EmptyState, PageHeader, Skeleton as Shimmer } from '$lib/components/ds';
   import { onMount } from 'svelte';
   import type { Note } from '../lib/notes';
   import { getNote } from '../lib/notes';
@@ -22,11 +20,6 @@
     hasAuthToken =
       typeof localStorage !== 'undefined' ? !!localStorage.getItem('authToken') : false;
     isCheckingAuth = false;
-
-    // During boneyard capture, skip fetching — the skeleton branch below is
-    // forced on via isBoneyardCapture so its fixture form renders for the
-    // snapshot (the headless browser has no auth token).
-    if (isBoneyardCapture) return;
 
     if (!hasAuthToken) return;
 
@@ -92,7 +85,7 @@
     <div class="flex items-center justify-center py-20">
       <div class="size-12 animate-spin rounded-pill border-4 border-control border-t-accent"></div>
     </div>
-  {:else if !hasAuthToken && !isBoneyardCapture}
+  {:else if !hasAuthToken}
     <div class="flex min-h-[70vh] items-center justify-center">
       <EmptyState title="Login required" text="You need to be logged in to edit notes.">
         {#snippet actions()}
@@ -101,7 +94,7 @@
         {/snippet}
       </EmptyState>
     </div>
-  {:else if isLoadingNote || isBoneyardCapture}
+  {:else if isLoadingNote}
     <div class="flex flex-col">
       <Button variant="ghost" size="sm" class="self-start" onclick={() => navigate('/notes')}>
         <ChevronLeft class="size-4" /> All notes
@@ -109,12 +102,15 @@
 
       <PageHeader title="Edit" highlight="note" subtitle="Edit your note details." />
 
-      <Skeleton name="note-edit-form" loading={true}>
-        <!-- Children render only during boneyard capture (dev), giving the
-             headless browser a real NoteForm layout to snapshot. At runtime
-             loading=true shows the generated bones instead. -->
-        <NoteForm mode="edit" note={fixtureSingleNote} />
-      </Skeleton>
+      <!-- Field labels are known; only the field contents wait. -->
+      <LoadingDelay label="Loading note" class="flex flex-col gap-4 sm:gap-5">
+        {#each [['Title', 48], ['Link', 48], ['Description', 280], ['Tags', 48]] as const as [label, height] (label)}
+          <div>
+            <span class="label">{label}</span>
+            <Shimmer {height} class="mt-2 rounded-md" />
+          </div>
+        {/each}
+      </LoadingDelay>
     </div>
   {:else if noteError}
     <div class="flex min-h-[70vh] items-center justify-center">
@@ -134,14 +130,12 @@
 
       <!-- Note Form -->
       {#if note}
-        <Skeleton name="note-edit-form" loading={isLoadingNote}>
-          <NoteForm
-            mode="edit"
-            {note}
-            onSuccess={handleFormSuccess}
-            onSubmitReady={handleFormReady}
-          />
-        </Skeleton>
+        <NoteForm
+          mode="edit"
+          {note}
+          onSuccess={handleFormSuccess}
+          onSubmitReady={handleFormReady}
+        />
       {/if}
 
       <!-- Action Buttons -->

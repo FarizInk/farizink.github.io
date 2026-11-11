@@ -11,8 +11,8 @@
   import { permanentDeleteNote, restoreNote } from '../lib/notes';
   import { toast } from 'svelte-sonner';
   import NoteCard from './NoteCard.svelte';
-  import Skeleton from 'boneyard-js/svelte';
-  import { fixtureNotes } from '../lib/fixtures';
+  import LoadingDelay from './skeletons/LoadingDelay.svelte';
+  import NoteCardSkeleton from './skeletons/NoteCardSkeleton.svelte';
   import Modal from './Modal.svelte';
   import { RefreshCw, RotateCw, Plus, Trash2, X } from '@lucide/svelte';
 
@@ -152,15 +152,11 @@
 
   <div>
     {#if $isLoadingDeletedNotes && $deletedNotes.length === 0}
-      <div class="flex flex-col items-center gap-4">
-        {#each Array(3) as _, index (index)}
-          <div class="w-full max-w-2xl">
-            <Skeleton name="note-card" loading={true}>
-              <NoteCard note={fixtureNotes[index] ?? fixtureNotes[0]} hasAuthToken={true} isDeleted={true} />
-            </Skeleton>
-          </div>
+      <LoadingDelay label="Loading deleted notes" class="flex flex-col items-center gap-4">
+        {#each [0, 1, 2] as i (i)}
+          <div class="w-full max-w-2xl"><NoteCardSkeleton /></div>
         {/each}
-      </div>
+      </LoadingDelay>
     {:else if $deletedNotes.length === 0}
       <div class="text-center py-12">
         <div class="size-16 bg-sunken rounded-pill flex items-center justify-center mx-auto mb-4">

@@ -7,7 +7,6 @@
   import DashboardView from '../components/DashboardView.svelte';
   import DiaryView from '../components/diary/DiaryView.svelte';
   import { Command, LayoutDashboard, NotebookPen, User, X } from '@lucide/svelte';
-  import { isBoneyardCapture } from '../lib/boneyard';
   import { getAllTools } from '../lib/toolsConfig';
   import { BentoCard, BentoGrid, Segmented, Tag } from '$lib/components/ds';
   import { readHomeView, writeHomeView, type HomeView } from '../lib/diary';
@@ -23,13 +22,7 @@
   let view = $state<HomeView>('profile');
   let isLoggedIn = $state(false);
 
-  // Boneyard capture forces the data views so their skeletons get snapshotted.
-  const capturedView: HomeView | null = isBoneyardCapture
-    ? new URLSearchParams(window.location.search).get('view') === 'diary'
-      ? 'diary'
-      : 'dashboard'
-    : null;
-  const shownView = $derived(capturedView ?? (isLoggedIn ? view : 'profile'));
+  const shownView = $derived(isLoggedIn ? view : 'profile');
 
   function setView(next: string) {
     view = next as HomeView;

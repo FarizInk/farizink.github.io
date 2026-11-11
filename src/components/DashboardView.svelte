@@ -7,8 +7,9 @@
   import { truncateText } from '../lib/uiUtils';
   import { stripHtml } from '../lib/uiUtils';
   import { getCached, setCache } from '../lib/cache';
-  import Skeleton from 'boneyard-js/svelte';
-  import { fixtureNotes, fixtureFinanceSummary } from '../lib/fixtures';
+  import LoadingDelay from './skeletons/LoadingDelay.svelte';
+  import StatTileSkeleton from './skeletons/StatTileSkeleton.svelte';
+  import NoteCardSkeleton from './skeletons/NoteCardSkeleton.svelte';
   import NoteDetailModal from './NoteDetailModal.svelte';
   import { Button, NoteCard, ServiceTile, StatTile, type TileTone } from '$lib/components/ds';
   import {
@@ -229,21 +230,28 @@
 {/snippet}
 
 {#if isLoading}
+  <!-- Static parts render for real; only the data-driven tiles hold placeholders. -->
   <div class="space-y-10">
     <section class="flex flex-col gap-4">
       <h2 class="text-label text-ink-muted">Finance summary</h2>
-      <Skeleton name="dashboard-finance" loading={true}>
-        {@render financeRow(fixtureFinanceSummary)}
-      </Skeleton>
+      <LoadingDelay label="Loading finance summary">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <StatTileSkeleton label="Income" />
+          <StatTileSkeleton label="Expense" />
+          <StatTileSkeleton label="Balance" tone="violet" />
+        </div>
+      </LoadingDelay>
     </section>
 
     {@render appsGrid()}
 
     <section class="flex flex-col gap-4">
       {@render notesHeader()}
-      <Skeleton name="dashboard-notes" loading={true}>
-        {@render notesList(fixtureNotes, false)}
-      </Skeleton>
+      <LoadingDelay label="Loading latest notes">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {#each [0, 1, 2] as i (i)}<NoteCardSkeleton />{/each}
+        </div>
+      </LoadingDelay>
     </section>
   </div>
 {:else}

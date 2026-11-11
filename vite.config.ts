@@ -1,16 +1,11 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import tailwindcss from '@tailwindcss/vite';
-import { boneyardPlugin } from 'boneyard-js/vite';
 import { defineConfig } from 'vite';
 import { fileURLToPath } from 'node:url';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // boneyardPlugin must run AFTER svelte()/tailwindcss() so components are
-  // compiled before the headless browser snapshots them during `vite dev`.
-  // It is dev-only — `vite build` (run by deploy.sh) just bundles the
-  // committed .bones.json from src/bones/, no browser involved.
-  plugins: [svelte(), tailwindcss(), boneyardPlugin()],
+  plugins: [svelte(), tailwindcss()],
   resolve: {
     alias: { $lib: fileURLToPath(new URL('./src/lib', import.meta.url)) }
   },
@@ -18,7 +13,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['svelte', '@lucide/svelte', 'boneyard-js'],
+          vendor: ['svelte', '@lucide/svelte'],
           router: ['./src/lib/router.ts', './src/lib/Router.svelte'],
           notifications: ['svelte-sonner']
         },
