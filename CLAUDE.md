@@ -142,6 +142,7 @@ Tool page pattern (all 34 follow it — keep new tools the same):
 - Professional profile display
 - Skills and experience showcase
 - Real-time Spotify activity (via Soul WebSocket)
+- Home bento tiles in `src/components/home/`: local time in WIB (`src/lib/localTime.ts`), GitHub public activity (`src/lib/github.ts` — unauthenticated `api.github.com` events, 60 req/h per IP, so cached 10 min in `localStorage.githubActivity`), featured tools
 - Notes management (CRUD via Soul API)
 - Diary (Home view when logged in: Profile / Dashboard / Diary) — status-style quick notes over the Notes API, filtered by tags saved in `localStorage.diaryTagIds`; helpers in `src/lib/diary.ts` (tested with `npm test`), components in `src/components/diary/`
 - Finance tracking (via Soul API)

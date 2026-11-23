@@ -6,12 +6,13 @@
   import ConnectWithMe from '../components/ConnectWithMe.svelte';
   import DashboardView from '../components/DashboardView.svelte';
   import DiaryView from '../components/diary/DiaryView.svelte';
-  import { Command, LayoutDashboard, NotebookPen, User, X } from '@lucide/svelte';
-  import { getAllTools } from '../lib/toolsConfig';
+  import { LayoutDashboard, NotebookPen, User, X } from '@lucide/svelte';
+  import LocalTimeTile from '../components/home/LocalTimeTile.svelte';
+  import GithubActivity from '../components/home/GithubActivity.svelte';
+  import FeaturedTools from '../components/home/FeaturedTools.svelte';
   import { BentoCard, BentoGrid, Segmented, Tag } from '$lib/components/ds';
   import { readHomeView, writeHomeView, type HomeView } from '../lib/diary';
 
-  const toolCount = getAllTools().length;
   const stack = ['php', 'laravel', 'typescript', 'svelte', 'linux'];
 
   let showPhoto = $state(false);
@@ -140,22 +141,13 @@
         </div>
       </BentoCard>
 
-      <BentoCard tone="lime" label="Tools" title="{toolCount} utilities" href="/tools">
-        <p class="text-body-sm m-0 mt-auto font-normal">Free dev tools that run in your browser.</p>
-      </BentoCard>
+      <LocalTimeTile />
 
       <SpotifyActivity />
 
-      <BentoCard tone="deep" label="Based in" colSpan={4}>
-        <p class="text-title m-0">Sidoarjo, Indonesia</p>
-        <p class="text-body-sm m-0 mt-auto flex flex-wrap items-center gap-2 font-normal">
-          Press
-          <kbd class="inline-flex items-center gap-1 rounded-md bg-ink-on-dark/15 px-1.5 font-mono text-xs">
-            <Command class="size-3" />K
-          </kbd>
-          to jump anywhere on the site.
-        </p>
-      </BentoCard>
+      <GithubActivity />
+
+      <FeaturedTools />
     </BentoGrid>
   {/if}
 
