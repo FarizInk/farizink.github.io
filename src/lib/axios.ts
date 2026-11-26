@@ -6,6 +6,16 @@ import axios, {
 } from 'axios';
 import { API_BASE_URL } from './constants';
 
+declare module 'axios' {
+  interface AxiosRequestConfig {
+    /**
+     * Treat a 403 as "logged in but not allowed" instead of an expired session:
+     * keep the token and let the caller show the message (e.g. admin-only /links).
+     */
+    keepSessionOnForbidden?: boolean;
+  }
+}
+
 // Create axios instance with default config
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -40,7 +50,9 @@ apiClient.interceptors.response.use(
     }
 
     // Handle 401/403 - unauthorized
-    if (error.response?.status === 401 || error.response?.status === 403) {
+    const status = error.response?.status;
+    const forbiddenOnly = status === 403 && error.config?.keepSessionOnForbidden;
+    if (status === 401 || (status === 403 && !forbiddenOnly)) {
       // Clear auth and dispatch logout event
       if (typeof localStorage !== 'undefined') {
         localStorage.removeItem('authToken');

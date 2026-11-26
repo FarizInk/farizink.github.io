@@ -6,6 +6,7 @@
     Wrench,
     FileText,
     Wallet,
+    Link2,
     Download,
     X,
     RefreshCw,
@@ -352,7 +353,9 @@
             ? 'notes'
             : path.startsWith('/finance')
               ? 'finance'
-              : undefined;
+              : path.startsWith('/links')
+                ? 'links'
+                : undefined;
   });
 
   onMount(() => {
@@ -537,6 +540,7 @@
 {#snippet toolsIcon()}<Wrench />{/snippet}
 {#snippet notesIcon()}<FileText />{/snippet}
 {#snippet financeIcon()}<Wallet />{/snippet}
+{#snippet linksIcon()}<Link2 />{/snippet}
 
 <Sidebar
   bind:open={drawerOpen}
@@ -556,7 +560,8 @@
             label: 'Personal',
             items: [
               { id: 'notes', label: 'Notes', href: '/notes', icon: notesIcon },
-              { id: 'finance', label: 'Finance', href: '/finance', icon: financeIcon }
+              { id: 'finance', label: 'Finance', href: '/finance', icon: financeIcon },
+              { id: 'links', label: 'Links', href: '/links', icon: linksIcon }
             ]
           }
         ]

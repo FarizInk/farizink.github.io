@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 1. **Portfolio Website** — Showcases professional profile, skills, and experience
 2. **Developer Tools Collection** — 34 fully implemented developer utilities as technical demonstrations
-3. **Soul API Consumer** — Frontend app that connects to the Soul backend for Notes, Finance, Files, and Spotify activity
+3. **Soul API Consumer** — Frontend app that connects to the Soul backend for Notes, Finance, Files, Short links, and Spotify activity
 
 Deployed as a static site on GitHub Pages with SPA routing support. No server-side code — all data comes from the Soul API.
 
@@ -63,7 +63,7 @@ src/
 ├── App.svelte                 # Root component
 ├── routes/
 │   ├── index.ts               # Route aggregator
-│   ├── main.ts                # Main site routes (Home, Notes, Finance, Login, Files)
+│   ├── main.ts                # Main site routes (Home, Notes, Finance, Links, Login, Files)
 │   └── tools.ts               # 34 tool routes
 ├── components/
 │   ├── Navigation.svelte      # Floating theme toggle + menu drawer
@@ -84,6 +84,8 @@ src/
     ├── NotesCreate.svelte     # Create note (TipTap editor)
     ├── NotesEdit.svelte       # Edit note
     ├── Finance.svelte         # Personal finance tracker
+    ├── Links.svelte           # Short links manager (admin) — list, search, create
+    ├── LinkDetail.svelte      # One short link: stats, edit, on/off, delete
     ├── Files.svelte           # File download via short codes
     └── tools/                 # 34 individual tool pages
 ```
@@ -146,6 +148,7 @@ Tool page pattern (all 34 follow it — keep new tools the same):
 - Notes management (CRUD via Soul API)
 - Diary (Home view when logged in: Profile / Dashboard / Diary) — status-style quick notes over the Notes API, filtered by tags saved in `localStorage.diaryTagIds`; helpers in `src/lib/diary.ts` (tested with `npm test`), components in `src/components/diary/`
 - Finance tracking (via Soul API)
+- Short links (`/links`, `/links/:id`, admin only) — manage `fariz.dev/s/<slug>` links via `/api/links*`. Client in `src/lib/links.ts`, pure helpers in `src/lib/linkHelpers.ts` (tested), components in `src/components/links/`. Redirects are **not** handled here: Cloudflare forwards `/s/*` to Soul before GitHub Pages, so never add SPA routes under `/s/` or redirect logic in `404.html`. Requests pass `keepSessionOnForbidden` so a non-admin 403 shows "Admins only" instead of logging out.
 - File sharing (via Soul API)
 - Command palette (Ctrl+K)
 - Responsive floating navigation

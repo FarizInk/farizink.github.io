@@ -1,4 +1,4 @@
-import { House, FileText, User, Plus, Edit2, Wallet } from '@lucide/svelte';
+import { House, FileText, User, Plus, Edit2, Wallet, Link2, ChartColumn } from '@lucide/svelte';
 import Home from '../pages/Home.svelte';
 import type { Route } from '../lib/router';
 
@@ -59,6 +59,26 @@ export const mainRoutes: Route[] = [
     keywords: 'finance, money tracker, income, expense, budget',
     robots: 'noindex, nofollow',
     icon: Wallet
+  },
+  {
+    // Shortlink manager (admin). Never add SPA routes under /s/*: Cloudflare
+    // forwards those to Soul before they reach GitHub Pages.
+    path: '/links',
+    load: () => import('../pages/Links.svelte'),
+    title: 'Links - Fariz',
+    description: 'Create and manage fariz.dev short links.',
+    keywords: 'short links, url shortener, link stats',
+    robots: 'noindex, nofollow',
+    icon: Link2
+  },
+  {
+    path: '/links/:id',
+    load: () => import('../pages/LinkDetail.svelte'),
+    title: 'Link stats - Fariz',
+    description: 'Clicks, visitors and referrers for one short link.',
+    keywords: 'short link stats, clicks, referrers',
+    robots: 'noindex, nofollow',
+    icon: ChartColumn
   },
   {
     path: '/files/:code',

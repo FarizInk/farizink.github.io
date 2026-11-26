@@ -47,7 +47,7 @@ src/
 ├── App.svelte           # Root component
 ├── routes/
 │   ├── index.ts         # Route aggregator
-│   ├── main.ts          # Home, Notes, Finance, Login, Files
+│   ├── main.ts          # Home, Notes, Finance, Links, Login, Files
 │   └── tools.ts         # 34 tool routes
 ├── components/          # Reusable UI components
 ├── lib/
@@ -86,6 +86,7 @@ src/
 | `GET/POST/PUT/DELETE /api/notes/*` | Notes CRUD |
 | `GET/POST/PUT/DELETE /api/finance/*` | Finance CRUD + summary |
 | `POST /api/temp-upload/*` | File uploads + shortlinks |
+| `GET/POST/PATCH/DELETE /api/links*` | Short links (admin): CRUD, `/toggle`, `/stats?range=` — `/links` page; `fariz.dev/s/*` redirects are Cloudflare → Soul, never SPA routes |
 
 ### State Management
 - **Svelte 5 Runes**: `$state` for reactive state, `$derived` for computed
